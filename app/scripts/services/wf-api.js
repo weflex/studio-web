@@ -5,9 +5,9 @@
     .module('wechatApp')
     .factory('wfAPI', wfAPI);
 
-  wfAPI.$inject = ['wfDebug', '$http', 'wfConfig', 'wfUrlUtil', 'customerRouteHelper'];
+  wfAPI.$inject = ['wfDebug', '$http', 'wfConfig', 'wfUrlUtil'];
 
-  function wfAPI(wfDebug, $http, wfConfig, wfUrlUtil, customerRouteHelper) {
+  function wfAPI(wfDebug, $http, wfConfig, wfUrlUtil) {
     var BASE_URL = wfConfig.BASE_URL;
 
     var factory = {

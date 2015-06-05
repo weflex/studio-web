@@ -1,23 +1,4 @@
 angular.module('wechatApp')
-.factory('customerRouteHelper', ['$location', 'wfUrlUtil', function($location, wfUrlUtil) {
-  return {
-    toHome: function() {
-      $location.url('/');
-    },
-    toNotFound: function() {
-      $location.url('/404');
-    },
-    toClassList: function() {
-      $location.url('/classes');
-    },
-    toClass: function(classId) {
-      $location.url('/classes/' + classId);
-    },
-    toOAuth: function(redirectUrl) {
-      $location.url(wfUrlUtil.concatUrl('/oauth/redirect', {redirect_url: decodeURIComponent(redirectUrl)}));
-    }
-  }
-}])
 .factory('adminRouteHelper', ['$location', function($location) {
   return {
     url: {
