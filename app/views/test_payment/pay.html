@@ -1,0 +1,41 @@
+<div class="pay">
+  <div class="content">
+    <table width="100%">
+      <colgroup width="25%">
+        <col />
+      </colgroup>
+      <colgroup width="75%">
+        <col />
+      </colgroup>
+      <tr>
+        <td translate="ITEM" class="label"></td>
+        <td ng-bind="event.classTitle"></td>
+      </tr>
+      <tr>
+        <td translate="STUDIO" class="label"></td>
+        <td ng-bind="event.venueName"></td>
+      </tr>
+      <tr>
+        <td translate="ADDRESS" class="label"></td>
+        <td ng-bind="event.venueAddress"></td>
+      </tr>
+      <tr>
+        <td translate="TIME" class="label"></td>
+        <td ng-bind-template="{{event.timeFrom | amDateFormat:'MMM Do, ddd'}} , {{event.timeFrom | amDateFormat:'hh:mm'}} - {{event.timeTo | amDateFormat:'hh:mm a'}}"></td>
+      </tr>
+      <tr>
+        <td translate="PRICE" class="label"></td>
+        <td ng-bind-template="RMB {{event.price}}"></td>
+      </tr>
+    </table>
+    <div class="phone">
+      <div class="label" translate="PHONE_NUMBER"></div>
+      <input type="text" class="phone-input" ng-model="user.phone" placeholder="{{phonePlaceholder | wfi18n}}" />
+      <p class="payment-attention" translate="PAYMENT_ATTENTION"></p>
+    </div>
+    <div class="action">
+      <button class="pay-button button button-block green" ng-disabled="!prepayOrderCreated || !user.phone" ng-click="onPay()"><span translate="PROCEED_TO_PAYMENT"></span></button>
+      <p class="refund-policy" translate="REFUND_POLICY"></p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,48 @@
+<div class="admin-home">
+  <br />
+  <h1>Welcome!</h1>
+  <button class="button" ng-click="onAddVenue()">Add Venue</button>
+  <button class="button" ng-click="onAddClass()">Add Class</button>
+
+  <br /><br />
+  <table border="1" class="classes">
+    <caption>Classes</caption>
+    <thead>
+      <tr>
+        <th>Class Name</th>
+        <th>Venue</th>
+        <th ng-click="dateReverse=!dateReverse" class="filter">Date</th>
+        <th>Time</th>
+        <th>Spots</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="event in events | orderBy:'from':dateReverse">
+        <td><a href="/#{{editClassURL}}{{event.id}}" ng-bind="event.title.en"></a></td>
+        <td ng-bind="event.venue.name.en" class="venue"></td>
+        <td ng-bind="event.from | amDateFormat:'YYYY-MM-DD'"></td>
+        <td ng-bind-template="{{event.from | amDateFormat:'h:mm'}} - {{event.to | amDateFormat:'h:mm a'}}"></td>
+        <td ng-bind="event.spots"></td>
+        <td ng-bind="event.price.en | currency:'￥':'0'"></td>
+      </tr>
+    </tbody>
+  </table>
+  <br />
+  <table border="1">
+    <caption>Venues</caption>
+    <thead>
+      <tr>
+        <th>Venue Name</th>
+        <th>Venue Address</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="venue in venues">
+        <td><a href="/#{{editVenueURL}}{{venue.id}}" ng-bind-template="{{venue.name.en}}"></a></td>
+        <td ng-bind="venue.address.en"></td>
+      </tr>
+    </tbody>
+  </table>
+  <br /><br />
+</div>

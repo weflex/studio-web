@@ -1,0 +1,8 @@
+{
+  "version": "0.1.0",
+  "files": {
+    "scripts": ["app/scripts/**/*.js"],
+    "styles":  ["app/styles/*.css"],
+    "views":   ["app/views/**/*.html", "app/index.html", "app/404.html"]
+  }
+}

@@ -1,0 +1,598 @@
+body, h1, h2, h3, h4, h5, h6, hr, p, blockquote,
+dl, dt, dd, ul, ol, li,
+pre,
+form, fieldset, legend, button, input, textarea,
+th, td {
+  margin: 0;
+  padding: 0;
+}
+
+ul, ol { list-style: none; }
+
+
+body {
+  font-family: "Hiragino Sans GB", helvetica, sans-serif;
+}
+
+table th, table td {
+  line-height: 32px;
+  padding: 0 5px;
+}
+
+button {
+  -webkit-appearance: none;
+  outline: none;
+  border: none;
+}
+
+input[type="text"].ng-touched.ng-invalid, input[type="time"].ng-touched.ng-invalid, input[type="date"].ng-touched.ng-invalid {
+  border: 1px solid #FD8D9E;
+}
+
+.clearfix:after {
+  display: table;
+  content: "";
+  clear: both;
+}
+.left {
+  float: left;
+}
+.right {
+  float: right;
+  max-width: 70%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.red {
+  background: #FD8D9E;
+  color: #ffffff;
+}
+.blue {
+  background: #00E4FF;
+  color: #ffffff;
+}
+.green {
+  background: #55DAB3;
+  color: #ffffff;
+}
+
+.order-button {
+  display: inline-block;
+  background: #00E4FF;
+  border-radius: 4px;
+  color: #ffffff;
+  vertical-align: middle;
+  line-height: 24px;
+  text-align: center;
+}
+
+.button {
+  border-radius: 4px;
+  font-size: 12px;
+  width: 75px;
+  height: 25px;
+  cursor: pointer;
+}
+.button:hover, .button:active {
+  text-decoration: none;
+}
+
+.button-primary {
+  background: #00E4FF;
+  color: #FFFFFF;
+}
+
+.button.button-block {
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  font-size: 18px;
+  display: block;
+  margin: 0 auto;
+}
+.button.disabled {
+  background: #B5BBC3;
+}
+
+.button[disabled="disabled"] {
+  background: #ccc;
+  color: #aaa;
+}
+
+ul.horizontal li {
+  display: inline-block;
+}
+
+.anchor {
+  text-decoration: underline;
+  color: #009BFF;
+  cursor: pointer;
+}
+
+.avatar-list {
+  padding: 10px;
+  background: rgba(80, 227, 194, 0.22);
+  overflow-x: auto;
+  margin-bottom: 8px;
+}
+.avatar-list .avatar {
+  height: 50px;
+  width: 50px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-right: 12px;
+  float: left;
+}
+.avatar-list img {
+  width: 50px;
+}
+
+.simple-map .close {
+  width: 100px;
+  height: 100px;
+  position: fixed;
+  top: -55px;
+  right: -55px;
+  background: rgba(155,155,155,0.8);
+  padding: 10px;
+  border-radius: 50%;
+  z-index: 1001;
+}
+.simple-map .close-icon {
+  color: #ffffff;
+  position: absolute;
+  top: 56px;
+  left: 20px;
+  font-size: 45px;
+}
+.simple-map .normal {
+  width: 100%;
+  height: 200px;
+}
+.simple-map .full-screen {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: 1000;
+  top: 0px;
+  left: 0px;
+}
+
+.share-button .overlay {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+}
+.share-button img {
+  max-width: 100%;
+  position: absolute;
+  right: 0px;
+  z-index: 2;
+  width: 80px;
+}
+.share-button .text-wrapper {
+  position: absolute;
+  left: 50%;
+  width: 70%;
+}
+.share-button .text {
+  position: absolute;
+  left: -50%;
+  top: 85px;
+  z-index: 2;
+  width: 100%;
+  text-align: center;
+  background: #ffffff;
+  padding: 20px 0px;
+  border-radius: 4px;
+}
+.share-button .share-mask {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 1;
+}
+.share-button .button {
+  font-size: 16px;
+}
+/* Customize container */
+@media (min-width: 768px) {
+  .container {
+    max-width: 730px;
+    margin: 0 auto;
+  }
+}
+
+.footer {
+  border-top: 1px solid #DADDE1;
+  padding: 10px 0;
+
+  font-size: 12px;
+  color: #7D8895;
+  text-align: center;
+  line-height: 16px;
+}
+
+.content {
+  padding: 0px 12px;
+}
+
+.admin-home table {
+  width: 100%;
+  font-size: 14px;
+}
+.admin-home table th, .admin-home table td {
+  text-align: left;
+}
+.admin-home .filter {
+  text-decoration: underline;
+}
+.admin-home .filter:hover {
+  cursor: pointer;
+}
+.admin-home .classes .venue {
+  max-width: 120px;
+}
+
+.edit {
+  font-size: 16px;
+}
+.edit .item {
+  padding: 10px 0;
+  margin: 10px 0;
+}
+.edit h1 {
+  font-size: 36px;
+}
+.edit h2 {
+  font-size: 24px;
+}
+.edit textarea {
+  display: block;
+  height: 150px;
+  width: 300px;
+}
+.edit input, .edit select {
+  height: 40px;
+  width: 300px;
+}
+.edit label {
+  display: inline-block;
+  width: 100px;
+}
+
+
+.edit-class table {
+  width: 100%;
+}
+.edit-class table tr td {
+  padding: 5px;
+}
+.edit-class table img {
+  width: 50px;
+  height: 50px;
+  vertical-align: middle;
+}
+
+.class-list {
+  font-size: 14px;
+}
+.class-list .row::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.class-list .row {
+  padding-top: 12px;
+}
+.class-list .row:first-child {
+  margin-top: 0px;
+}
+.class-list .row:last-child {
+  padding-top: 9px;
+}
+
+.class-list .date {
+  background: #00E4FF;
+  color: #ffffff;
+  height: 30px;
+  line-height: 31px;
+  padding-left: 16px;
+  font-size: 18px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.2);
+}
+.class-list .group {
+  margin-bottom: 10px;
+}
+.class-list .event {
+  border-left: 10px solid #F6F9FE;
+  border-bottom: 1px solid #DADDE1;
+  padding: 0px 12px 11px 12px;
+  cursor: pointer;
+}
+.class-list .event.ordered {
+  border-left-color: #66DFC1;
+}
+.class-list .event:first-child {
+  margin-top: 4px;
+}
+.class-list .venue {
+  color: #7D8895;
+}
+
+.class-list .category {
+  color: #000000;
+}
+.class-list .title {
+  font-size: 18px;
+  color: #000000;
+  text-decoration: underline;
+}
+.class-list .price {
+  font-size: 18px;
+  color: #4A4A4A;
+}
+.class-list .time {
+  color: #7D8895;
+}
+.class-list .venue-address {
+  color: #7D8895;
+}
+.class-list .show-all {
+  font-size: 14px;
+  color: #9013FE;
+  text-decoration: underline;
+  cursor: pointer;
+  margin: 10px 12px 5px 0px;
+  float: right;
+}
+
+
+.class-detail {
+  font-size: 18px;
+  color: #000000;
+}
+.class-detail .row {
+  margin-bottom: 12px;
+}
+.class-detail .row:first-child {
+  margin-bottom: 8px;
+}
+.class-detail .row:last-child {
+  margin-bottom: 0px;
+}
+.class-detail .header {
+  line-height: 28px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  color: #000000;
+  font-size: 15px;
+  box-shadow: 0px 4px 4px 0px rgba(0,0,0,0.2);
+  position: relative;
+  z-index: 999;
+  width: 100%;
+}
+.class-detail .title {
+  font-size: 18px;
+  text-decoration: underline;
+  margin-left: 12px;
+  display: inline;
+  vertical-align: middle;
+}
+.class-detail .header .share-button {
+  display: inline-block;
+  margin-left: 10px;
+}
+.class-detail .header .button {
+  width: auto;
+  line-height: 16px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.class-detail .summary {
+  box-shadow: 0px -4px 4px 0px rgba(0,0,0,0.2);
+  padding-top: 12px;
+  padding-bottom: 14px;
+  position: relative;
+}
+.class-detail .header .order-button {
+  font-size: 14px;
+  line-height: initial;
+  padding: 7px 15px;
+  height: auto;
+  width: auto;
+  margin-right: 12px;
+}
+.class-detail .venue-name {
+  color: #4A4A4A;
+}
+.class-detail .category {
+  font-size: 14px;
+}
+.class-detail .venue-name, .class-detail .category {
+  line-height: 27px;
+}
+.class-detail .datetime {
+  color: #909AA4;
+}
+.class-detail .class-about {
+  color: #4A4A4A;
+  margin-top: 18px;
+  margin-bottom: 18px;
+  font-size: 14px;
+}
+.class-detail .class-about p {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+.class-detail .class-about p:first-child {
+  margin-top: 0px;
+}
+.class-detail .class-about p:last-child {
+  margin-bottom: 0px;
+}
+.class-detail .venue-photo img {
+  width: 100%;
+}
+.class-detail .event {
+  margin-bottom: 70px;
+}
+.class-detail .pay-button {
+  width: 100%;
+  position: fixed;
+  height: 50px;
+  bottom: 0px;
+  left: 0px;
+  border-radius: 0px;
+}
+.class-detail .divider {
+  width: 90%;
+  margin: 10px auto;
+  border-bottom: 1px solid rgba(218, 221, 225, 0.6);
+}
+
+
+.pay {
+  font-size: 18px;
+  color: #000000;
+  margin-top: 14px;
+}
+.pay table tr td {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  vertical-align: top;
+}
+.pay .summary {
+  padding-top: 20px;
+  border-bottom: 1px solid #DADDE1;
+  margin-bottom: 10px;
+}
+.pay .label {
+  color: #7D8895;
+}
+.pay .item {
+  color: #7D8895;
+  padding: 5px 0;
+}
+.pay .item::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.pay .venue {
+  border-bottom: 1px dashed #DADDE1;
+}
+.pay .pay-summary {
+  margin: 14px 0;
+  line-height: 24px;
+}
+.pay .price {
+  color: #FD8D9E;
+  font-size: 24px;
+}
+.pay .phone {
+  margin-top: 15px;
+  border-top: 1px solid #DADDE1;
+  padding-top: 15px;
+}
+.pay .phone-input {
+  width: 100%;
+  height: 32px;
+  border: 1px solid #979797;
+  border-radius: 4px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+.pay .action {
+  padding: 20px 0px 18px 0px;
+  width: 85%;
+  margin: 0px auto;
+}
+.pay .pay-button {
+  width: 100%;
+  height: 50px;
+  font-size: 18px;
+  border-radius: 4px;
+}
+.pay .pay-button .fixed {
+  position: fixed;
+  bottom: 0px;
+}
+.pay .payment-attention {
+  font-size: 14px;
+  color: #7D8895;
+  text-align: center;
+}
+.pay .refund-policy {
+  color: #7D8895;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 5px;
+}
+
+
+
+.order {
+  font-size: 18px;
+  color: #000000;
+}
+.order .order-content {
+  width: 100%;
+  position: relative;
+  background: #fff;
+  padding: 18px 0px;
+  box-shadow: 0px -4px 4px 0px rgba(0,0,0,0.2);
+}
+.order .header {
+  margin-bottom: 10px;
+  line-height: 27px;
+}
+.order .category {
+  font-size: 14px;
+}
+.order .title {
+  font-size: 18px;
+  text-decoration: underline;
+}
+.order .datetime {
+  color: #7D8895;
+  margin-bottom: 10px;
+}
+.order .venue {
+  margin-bottom: 8px;
+}
+.order .action {
+  position: relative;
+}
+.order .passcode-text, .order .instructor {
+  color: #7D8895;
+}
+.order .passcode-text {
+  position: absolute;
+  top: 8px;
+}
+.order .passcode {
+  font-size: 30px;
+  text-align: center;
+}
+.order .instructor {
+  text-align: center;
+  font-size: 14px;
+}
+.order .button {
+  margin-top: 15px;
+  width: 85%;
+  height: 50px;
+}
+.order .refund-policy {
+  color: #7D8895;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 5px;
+  width: 85%;
+  margin: 8px auto;
+}

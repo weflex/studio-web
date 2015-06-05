@@ -1,0 +1,35 @@
+<div class="order">
+  <div class="venue-map">
+    <wf-simple-map data-id="venueMap"
+                   loc="{{vm.order.event.venue.loc}}"
+                   fit-view="false"
+                   fit-content-id="order-content"></wf-simple-map>
+  </div>
+  <div id="order-content" class="order-content">
+
+    <div class="class-info">
+      <div class="clearfix content header">
+        <h1 class="title left" ng-bind-template="{{vm.order.event.title | wfi18n}} ({{vm.order.event.level | wfi18n}})"></h1>
+        <div class="category right" ng-bind="vm.order.event.category | wfi18n"></div>
+      </div>
+      <div class="datetime content" ng-bind-template="{{vm.order.event.from | amDateFormat:'MMM Do, ddd'}}, {{vm.order.event.from | amDateFormat:'h:mm'}} - {{vm.order.event.to | amDateFormat:'h:mm a'}}"></div>
+      <div class="venue content">
+        <div class="venue-name" ng-bind="vm.order.event.venue.name | wfi18n"></div>
+        <div class="venue-address" ng-bind="vm.order.event.venue.address | wfi18n"></div>
+      </div>
+      <wf-avatar-list list="vm.order.event.attendees"></wf-avatar-list>
+    </div>
+
+    <div class="action content">
+      <div class="cancel-order">
+        <div>
+          <div translate="CLASS_PASSCODE" class="passcode-text"></div>
+          <div class="passcode" ng-bind="vm.order.passcode"></div>
+          <p translate="SHOW_PASSCODE_TO_STUDIO_TO_ACCESS" class="instructor"></p>
+        </div>
+        <button translate="CANCEL_ORDER" class="button button-block red" ng-click="vm.onCancelOrder()"></button>
+        <p class="refund-policy" translate="REFUND_POLICY"></p>
+      </div>
+    </div>
+  </div>
+</div>

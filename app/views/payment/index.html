@@ -1,0 +1,491 @@
+<!doctype html>
+<html>
+  <title>WeFlex竞趣</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, user-scalable=0"/>
+  <head>
+    <style type="text/css">
+    body {
+      font-family: "Hiragino Sans GB", helvetica, sans-serif;
+    }
+    p {
+      margin: 0px;
+    }
+    button {
+      -webkit-appearance: none;
+      outline: none;
+      border: none;
+    }
+    .green {
+      background: #55DAB3;
+      color: #ffffff;
+    }
+    .button {
+      border-radius: 4px;
+      font-size: 12px;
+      width: 75px;
+      height: 25px;
+      cursor: pointer;
+    }
+    .button.button-block {
+      width: 100%;
+      height: 40px;
+      line-height: 40px;
+      font-size: 18px;
+      display: block;
+      margin: 0 auto;
+    }
+    .button.disabled {
+      background: #B5BBC3;
+    }
+
+    .button:disabled {
+      background: #ccc;
+      color: #aaa;
+    }
+
+    .pay {
+      font-size: 18px;
+      color: #000000;
+      margin-top: 14px;
+    }
+    .pay table tr td {
+      padding-top: 4px;
+      padding-bottom: 4px;
+      vertical-align: top;
+    }
+    .pay .summary {
+      padding-top: 20px;
+      border-bottom: 1px solid #DADDE1;
+      margin-bottom: 10px;
+    }
+    .pay .label {
+      color: #7D8895;
+    }
+    .pay .item {
+      color: #7D8895;
+      padding: 5px 0;
+    }
+    .pay .item::after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+    .pay .venue {
+      border-bottom: 1px dashed #DADDE1;
+    }
+    .pay .pay-summary {
+      margin: 14px 0;
+      line-height: 24px;
+    }
+    .pay .price {
+      color: #FD8D9E;
+      font-size: 24px;
+    }
+    .pay .phone {
+      margin-top: 15px;
+      border-top: 1px solid #DADDE1;
+      padding-top: 15px;
+    }
+    .pay .phone-input {
+      font-size: 16px;
+      width: 100%;
+      height: 32px;
+      border: 1px solid #979797;
+      border-radius: 4px;
+      margin-top: 10px;
+      margin-bottom: 15px;
+    }
+    .pay .action {
+      padding: 20px 0px 18px 0px;
+      width: 85%;
+      margin: 0px auto;
+    }
+    .pay .pay-button {
+      width: 100%;
+      height: 50px;
+      font-size: 18px;
+      border-radius: 4px;
+    }
+    .pay .pay-button .fixed {
+      position: fixed;
+      bottom: 0px;
+    }
+    .pay .payment-attention {
+      font-size: 14px;
+      color: #7D8895;
+      text-align: center;
+    }
+    .pay .refund-policy {
+      color: #7D8895;
+      font-size: 14px;
+      text-align: center;
+      margin-top: 5px;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="pay container">
+      <div class="content">
+        <table width="100%">
+          <colgroup width="25%">
+            <col />
+          </colgroup>
+          <colgroup width="75%">
+            <col />
+          </colgroup>
+          <tr>
+            <td id="lItem" class="label"></td>
+            <td id="item"></td>
+          </tr>
+          <tr>
+            <td id="lStudio" class="label"></td>
+            <td id="studio"></td>
+          </tr>
+          <tr>
+            <td id="lAddress" class="label"></td>
+            <td id="address"></td>
+          </tr>
+          <tr>
+            <td id="lDatetime" class="label"></td>
+            <td id="datetime"></td>
+          </tr>
+          <tr>
+            <td id="lPrice" class="label"></td>
+            <td id="price"></td>
+          </tr>
+        </table>
+        <div class="phone">
+          <div class="label" id="lPhoneNumber"></div>
+          <input type="text" class="phone-input" id="phoneNumberInput" />
+          <p class="payment-attention" id="paymentAttention"></p>
+        </div>
+        <div class="action">
+          <button class="pay-button button button-block green" id="payButton" disabled onclick="onPay()"></button>
+          <p class="refund-policy" id="refundPolicy"></p>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript">
+    var onPay;
+    (function() {
+      var cookieUtil = {
+        read: function(key) {
+          var nameEQ = encodeURIComponent(key) + "=";
+          var ca = document.cookie.split(';');
+          for (var i = 0; i < ca.length; i++) {
+              var c = ca[i];
+              while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+              if (c.indexOf(nameEQ) === 0) return decodeURIComponent(c.substring(nameEQ.length, c.length));
+          }
+          return null;
+        },
+        write: function(key, value, days) {
+          var expires;
+
+          if (days) {
+              var date = new Date();
+              date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+              expires = "; expires=" + date.toGMTString();
+          } else {
+              expires = "";
+          }
+          document.cookie = encodeURIComponent(key) + "=" + encodeURIComponent(value) + expires + "; path=/";
+        }
+      };
+
+      var appid = 'wx1ba55acac2fd5884';
+      var baseUrl = 'http://api.theweflex.com';
+      var portal = 'http://api.theweflex.com';
+      var order = {};
+      var search = getSearch();
+      var lang = search.lang;
+      var boughtClassChecked = false;
+      var prepayOrderCreated = false;
+      var phoneNumberEntered = false;
+      var payButton = $('#payButton');
+      var phoneNumberInput = $('#phoneNumberInput');
+      var event = {
+        classId: search.class_id,
+        classTitle: search.class_title,
+        venueName: search.venue,
+        venueAddress: search.venue_address,
+        price: search.cost,
+        datetime: search.datetime
+      };
+
+      renderLabelText();
+      renderOrderDetail();
+
+      if(!hasLoggedIn()) {
+        login();
+      } else {
+        onPay = _onPay;
+        checkIfHasBoughtThisClass();
+        createPrepayOrder();
+        renderPhoneNumber();
+        phoneNumberInput.on('input', phoneNumberInputChangeHandler);
+      }
+
+      function registerListenerWhenWeixinReady(callback) {
+        if(typeof WeixinJSBridge == "undefined"){
+           if( document.addEventListener ){
+               document.addEventListener('WeixinJSBridgeReady', callback, false);
+           } else if (document.attachEvent){
+               document.attachEvent('WeixinJSBridgeReady', callback);
+               document.attachEvent('onWeixinJSBridgeReady', callback);
+           }
+        } else {
+          callback();
+        }
+      }
+
+      function hideOptionMenu() {
+        if (typeof WeixinJSBridge != "undefined") {
+          WeixinJSBridge.call('hideOptionMenu');
+        }
+      }
+
+      function getSearch() {
+        var searchStr = window.location.search;
+        var search = [];
+        var result = {};
+        if(searchStr.length <= 1) {
+          return result;
+        }
+        search = searchStr.substr(1).split('&');
+        for (var i = 0; i < search.length; i++) {
+          var temp = search[i].split('=');
+          result[temp[0]] = window.decodeURIComponent(temp[1]);
+        }
+        return result;
+      }
+
+      function renderLabelText() {
+        if (!lang) return;
+
+        var dict = {
+          lItem: {en: 'Class', zh: '项目'},
+          lAddress: {en: 'Location', zh: '地址'},
+          lDatetime: {en: 'Time/Date', zh: '时间'},
+          lPrice: {en: 'Price', zh: '价格'},
+          lStudio: {en: 'Studio', zh: '工作室'},
+          lPhoneNumber: {en: 'Mobile Number', zh: '手机号码'},
+          phoneNumberPlaceholder: {en: 'Please enter your mobile number here', zh: '请输入手机号码'},
+          paymentAttention: {
+            en: 'Our customer support specialist will reach you by this mobile number',
+            zh: '您留下的手机号码是课程发生变动时我们客服人员联系您的重要方式，请填写您最常使用的手机号码。'
+          },
+          confirmPayment: {en: 'Proceed to Payment', zh: '确认支付'},
+          refundPolicy: {
+            en: 'Cancellations must be made at least 3 hours before class time, in order to receive full refund. No cancellations are allowed within 3 hours.',
+            zh: '温馨提示：取消预约需至少提前3小时并申请退款，否则无法取消。'
+          }
+        };
+        $('#lItem').html(dict.lItem[lang]);
+        $('#lAddress').html(dict.lAddress[lang]);
+        $('#lDatetime').html(dict.lDatetime[lang]);
+        $('#lPrice').html(dict.lPrice[lang]);
+        $('#lStudio').html(dict.lStudio[lang]);
+        $('#lPhoneNumber').html(dict.lPhoneNumber[lang]);
+        $('#phoneNumberInput').prop('placeholder', dict.phoneNumberPlaceholder[lang]);
+        $('#paymentAttention').html(dict.paymentAttention[lang]);
+        $('#payButton').text(dict.confirmPayment[lang]);
+        $('#refundPolicy').html(dict.refundPolicy[lang]);
+      }
+
+      function renderOrderDetail() {
+        $('#item').html(event.classTitle);
+        $('#studio').html(event.venueName);
+        $('#address').html(event.venueAddress);
+        $('#datetime').html(event.datetime);
+        $('#price').html('RMB ' + event.price);
+      }
+
+      function hasLoggedIn() {
+        if (search.openid) {
+          cookieUtil.write('openid', search.openid);
+          cookieUtil.write('phone', search.phone);
+          return search.openid;
+        }
+        return cookieUtil.read('openid');
+      }
+
+      function login() {
+        var originalUrl = location.href;
+        var redirectUrl = concatUrl(portal + '/oauth', {original_url: originalUrl});
+        console.log(redirectUrl);
+        var oAuthUrl = concatUrl('https://open.weixin.qq.com/connect/oauth2/authorize', {
+          'appid': appid,
+          'redirect_uri': redirectUrl,
+          'response_type': 'code',
+          'scope': 'snsapi_userinfo'
+        }, 'wechat_redirect');
+
+        location.replace(oAuthUrl);
+      }
+
+      function renderPhoneNumber() {
+        var phone = cookieUtil.read('phone');
+        if(phone) {
+          phoneNumberInput.val(phone);
+          phoneNumberEntered = true;
+          updatePayButton();
+        }
+      }
+
+      function checkIfHasBoughtThisClass() {
+        var requestUrl = concatUrl(baseUrl + '/orders', {
+          openid: cookieUtil.read('openid'),
+          event_id: event.classId,
+          status: 'paid'
+        });
+
+        var translation = {
+          en: 'You have already purchased this class',
+          zh: '你已经购买过该课程'
+        };
+
+        $.ajax({
+          type: 'GET',
+          url: requestUrl,
+          dataType: 'json',
+          success: function(orders) {
+            if(orders.length > 0) {
+              alert(translation[lang]);
+              location.replace('/classes');
+            } else {
+              boughtClassChecked = true;
+              updatePayButton();
+            }
+          }
+        });
+      }
+
+      function createPrepayOrder() {
+        $.ajax({
+          type: 'POST',
+          url: baseUrl + '/payments',
+          data: {
+            product_id: event.classId,
+            product_cost: parseInt(event.price, 10) * 100,
+            product_desc: event.classTitle,
+            user_id: cookieUtil.read('openid')
+          },
+          dataType: 'json',
+          success: function(result) {
+            order.prepayId = result.prepay_id;
+            order.orderId = result.order_id;
+            prepayOrderCreated = true;
+            updatePayButton();
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            console.error(errorThrown);
+          }
+        });
+      }
+
+      function updatePayButton() {
+        if(boughtClassChecked && prepayOrderCreated && phoneNumberEntered) {
+          payButton.prop('disabled', false);
+        } else {
+          payButton.prop('disabled', true);
+        }
+      }
+
+      function _onPay() {
+        var user = {
+          openid: cookieUtil.read('openid'),
+          phone: cookieUtil.read('phone')
+        };
+
+        _updateUserAndPay(user);
+      }
+
+      function _updateUserAndPay(user) {
+        if(!user || !user.openid) return;
+
+        $.ajax({
+          type: 'POST',
+          url: baseUrl + '/users/' + user.openid,
+          data: user,
+          dataType: 'json',
+          success: function() {
+            _getSignAndPay();
+          }
+        })
+      }
+
+      function _getSignAndPay() {
+        var nonceStr = Math.random().toString(36).substr(2, 15);
+        var timestamp = parseInt(new Date().getTime() / 1000, 10) + '';
+        var params = {
+          'appId' : appid,
+          'timeStamp': timestamp,
+          'nonceStr' : nonceStr,
+          'package' : 'prepay_id=' + order.prepayId,
+          'signType' : 'MD5'
+        };
+
+        $.ajax({
+          type: 'POST',
+          url: baseUrl + '/common/sign',
+          data: params,
+          dataType: 'text',
+          success: function(sign) {
+            params.paySign = sign;
+            registerListenerWhenWeixinReady(onBridgeReady);
+
+            function onBridgeReady(){
+              WeixinJSBridge.invoke(
+                'getBrandWCPayRequest', params,
+                function(res){
+                  if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+                    location.replace('/orders/' + order.orderId);
+                  } else {
+                    console.error(res.err_msg);
+                  }
+                }
+              );
+            }
+          }
+        });
+      }
+
+      function phoneNumberInputChangeHandler(e) {
+        if(phoneNumberInput.val()) {
+          phoneNumberEntered = true;
+        } else {
+          phoneNumberEntered = false;
+        }
+        updatePayButton();
+      }
+
+      function concatUrl(path, search, hash) {
+        var _resultUrl = path;
+        var searchArray = [];
+
+        if(!path) {
+          return "";
+        }
+
+        $.each(search, function(key, value) {
+          searchArray.push(encodeURIComponent(key) + '=' + encodeURIComponent(value));
+        });
+
+        if(searchArray.length > 0) {
+          _resultUrl += '?' + searchArray.join('&');
+        }
+
+        if (hash) {
+          _resultUrl += '#' + hash;
+        }
+
+        return _resultUrl;
+      }
+    })();
+    </script>
+  </body>
+</html>

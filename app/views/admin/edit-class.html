@@ -1,0 +1,96 @@
+<form class="edit-class edit" name="classForm" novalidate>
+  <div class="item">
+    <h1>Class ID</h1>
+    <span ng-bind="class.id"></span>
+  </div>
+
+  <div class="item">
+    <h1>Title</h1>
+    <div>
+      <label>en<span>*</span></label>
+      <input type="text" ng-model="class.title.en" required />
+    </div>
+    <div>
+      <label>cn</label>
+      <input type="text" ng-model="class.title.zh" />
+    </div>
+  </div>
+
+
+  <div class="item" ng-show="class.attendees.length > 0">
+    <h1>Attendees</h1>
+    <table border="1">
+      <thead>
+        <td></td>
+        <td>Nickname</td>
+        <td>Phone</td>
+      </thead>
+      <tbody>
+        <tr ng-repeat="attendee in class.attendees">
+          <td><img ng-src="{{attendee.headimgurl}}"></td>
+          <td ng-bind="attendee.nickname"></td>
+          <td ng-bind="attendee.phone"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="item">
+    <h1>Category</h1>
+    <div>
+      <label>Category<span>*</span></label>
+      <wf-select data-model="class.category" data-type="category" required></wf-select>
+    </div>
+  </div>
+
+  <div class="item">
+    <h1>Level</h1>
+    <div>
+      <label>Level<span>*</span></label>
+      <wf-select data-model="class.level" data-type="level" required></wf-select>
+    </div>
+  </div>
+
+  <div class="item">
+    <h1>Price</h1>
+    <div>
+      <label>Price(￥)<span>*</span></label>
+      <wf-select data-model="class.price" data-type="price" required></wf-select>
+    </div>
+  </div>
+
+  <div class="item">
+    <h1>Venue</h1>
+    <div>
+      <label>Venue<span>*</span></label>
+      <wf-select data-model="class.venue" data-type="venue" required ></wf-select>
+    </div>
+  </div>
+
+  <div class="item">
+    <h1>About</h1>
+    <div>
+      <label>en</label>
+      <textarea ng-model="class.about.en"></textarea>
+    </div>
+    <div>
+      <label>cn</label>
+      <textarea ng-model="class.about.zh"></textarea>
+    </div>
+  </div>
+
+  <div class="item">
+    <h1>Date Time</h1>
+    <wf-datetime-range data-from-model="class.from" data-to-model="class.to"></wf-datetime-range>
+  </div>
+
+  <div class="item">
+    <h1>Spots</h1>
+    <label>Total<span>*</span></label>
+    <input type="number" ng-model="class.spots" required />
+  </div>
+
+  <br />
+  <input type="submit" value="Submit" ng-click="onSubmit()"/>
+  <input type="button" value="Cancel" ng-click="onCancel()" />
+</form>
