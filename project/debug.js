@@ -1,4 +1,4 @@
-var llport = 35729; // livereload listen port
+var llport = 35728; // livereload listen port
 
 module.exports = {
 
@@ -125,7 +125,7 @@ module.exports = {
 
     "connect": {
       "options": {
-        "port": 80,
+        "port": 9001,
         "hostname": "0.0.0.0",
         "livereload": llport
       },
