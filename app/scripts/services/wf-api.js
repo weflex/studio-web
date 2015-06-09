@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('wechatApp')
+    .module('weflexAdmin')
     .factory('wfAPI', wfAPI);
 
   wfAPI.$inject = ['wfDebug', '$http', 'wfConfig', 'wfUrlUtil'];

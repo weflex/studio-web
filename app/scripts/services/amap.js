@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('wechatApp')
+angular.module('weflexAdmin')
 .factory('amap', ['$translate', function($translate) {
 
   function _AMap(id) {

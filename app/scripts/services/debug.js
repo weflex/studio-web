@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('wechatApp')
+angular.module('weflexAdmin')
 .factory('wfDebug', ['wfConfig', function(wfConfig) {
   return {
     log: function(msg) {

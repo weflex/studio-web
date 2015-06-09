@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('wechatApp')
+    .module('weflexAdmin')
     .config(config);
 
   config.$inject = ['$routeProvider', '$locationProvider'];

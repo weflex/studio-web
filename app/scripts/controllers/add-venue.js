@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('wechatApp').
+angular.module('weflexAdmin').
 controller('AddVenueCtrl', ['$scope', 'wfAPI', 'adminRouteHelper', 'amap', function($scope, wfAPI, adminRouteHelper, amap) {
   var mapObj = amap.initMap();
 

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('wechatApp').
+angular.module('weflexAdmin').
 controller('AdminHomeCtrl', ['$scope', 'wfAPI', 'adminRouteHelper', function($scope, wfAPI, adminRouteHelper) {
   wfAPI.venueAPI.getVenues().success(function(venues) {
     $scope.venues = venues;

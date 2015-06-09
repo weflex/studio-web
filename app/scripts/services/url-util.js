@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('wechatApp')
+angular.module('weflexAdmin')
 .factory('wfUrlUtil', ['$sce', function($sce) {
 
   //TODO: Test

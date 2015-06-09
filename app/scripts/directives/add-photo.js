@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('wechatApp')
+    .module('weflexAdmin')
     .directive('wfAddPhoto', wfAddPhoto);
 
   function wfAddPhoto() {

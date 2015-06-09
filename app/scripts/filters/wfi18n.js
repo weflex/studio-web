@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('wechatApp')
+angular.module('weflexAdmin')
 .filter('wfi18n', ['$translate', function($translate) {
   return function(obj) {
     if(!obj || !obj.i18n) {

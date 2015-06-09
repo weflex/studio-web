@@ -1,4 +1,4 @@
-angular.module('wechatApp')
+angular.module('weflexAdmin')
 .factory('adminRouteHelper', ['$location', function($location) {
   return {
     url: {

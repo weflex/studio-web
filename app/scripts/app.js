@@ -2,14 +2,14 @@
 
 /**
  * @ngdoc overview
- * @name wechatApp
+ * @name weflexAdmin
  * @description
- * # wechatApp
+ * # weflexAdmin
  *
  * Main module of the application.
  */
 angular
-.module('wechatApp', [
+.module('weflexAdmin', [
   'ngCookies',
   'ngRoute',
   'ngSanitize',

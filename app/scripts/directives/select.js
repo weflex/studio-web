@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('wechatApp')
+angular.module('weflexAdmin')
 .directive('wfSelect', ['wfAPI', function(wfAPI) {
   return {
     restrict: 'E',

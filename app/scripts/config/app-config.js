@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('wechatApp')
+angular.module('weflexAdmin')
   .constant('wfConfig', {
     debug: {
       on: true,

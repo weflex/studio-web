@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('wechatApp')
+angular.module('weflexAdmin')
 .config(['$translateProvider', function($translateProvider) {
   $translateProvider
     .preferredLanguage('zh')

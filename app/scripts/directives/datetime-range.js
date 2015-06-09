@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('wechatApp')
+angular.module('weflexAdmin')
 .directive('wfDatetimeRange', ['$parse', function($parse) {
 
   function syncDate(base, date) {

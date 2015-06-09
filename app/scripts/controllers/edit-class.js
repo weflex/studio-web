@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('wechatApp')
+angular.module('weflexAdmin')
 .controller('EditClassCtrl', ['$scope', '$routeParams', 'adminRouteHelper', 'wfAPI', function($scope, $routeParams, adminRouteHelper, wfAPI) {
 
   var classId = $routeParams.classId;
