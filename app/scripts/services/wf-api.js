@@ -8,7 +8,7 @@
   wfAPI.$inject = ['wfDebug', '$http', 'wfConfig', 'wfUrlUtil'];
 
   function wfAPI(wfDebug, $http, wfConfig, wfUrlUtil) {
-    var BASE_URL = wfConfig.BASE_URL;
+    var baseUrl = wfConfig.BASE_URL.API + '/api';
 
     var factory = {
       commonAPI: {
@@ -60,7 +60,7 @@
     }
 
    function getUserinfo(openid) {
-      var requestUrl = wfUrlUtil.concatUrl(BASE_URL.API + '/users/' + openid);
+      var requestUrl = wfUrlUtil.concatUrl(baseUrl + '/users/' + openid);
       return $http.get(requestUrl)
                   .success(function(result) {
                     wfDebug.log('wf-api.js: Get userinfo success');
@@ -68,26 +68,26 @@
     }
 
     function updateUser(user) {
-      return $http.post(BASE_URL.API + '/users/' + user.openid, user);
+      return $http.post(baseUrl + '/users/' + user.openid, user);
     }
 
     function getCategories() {
-      return $http.get(BASE_URL.API + '/categories');
+      return $http.get(baseUrl + '/categories');
     }
 
     function getLevels() {
-      return $http.get(BASE_URL.API + '/levels');
+      return $http.get(baseUrl + '/levels');
     }
 
     function getPrices() {
-      return $http.get(BASE_URL.API + '/prices');
+      return $http.get(baseUrl + '/prices');
     }
 
     function createWechatOrder(classId, cost, classDesc, openid) {
 
       wfDebug.log('Creating Wechat prepay order... openid: ' + openid);
 
-      return $http.post(BASE_URL.API + '/payments', {
+      return $http.post(baseUrl + '/payments', {
                     product_id: classId,
                     product_cost: parseInt(cost, 10) * 100,
                     product_desc: classDesc.substring(0, 31),
@@ -108,7 +108,7 @@
     }
 
     function getOrders(filter) {
-      return $http.get(wfUrlUtil.concatUrl(BASE_URL.API + '/orders', filter))
+      return $http.get(wfUrlUtil.concatUrl(baseUrl + '/orders', filter))
                   .success(function(orders) {
                     angular.forEach(orders, function(order) {
                       order.event.from = _toDate(order.event.from);
@@ -118,7 +118,7 @@
     }
 
     function getOrderById(orderId) {
-      return $http.get(wfUrlUtil.concatUrl(BASE_URL.API) + '/orders/' + orderId )
+      return $http.get(wfUrlUtil.concatUrl(baseUrl) + '/orders/' + orderId )
                   .success(function(order) {
                     order.event.from = _toDate(order.event.from);
                     order.event.to = _toDate(order.event.to);
@@ -126,61 +126,46 @@
     }
 
     function getVenueById(venueId) {
-      return $http.get(BASE_URL.API + '/venues/' + venueId);
+      return $http.get(baseUrl + '/venues/' + venueId);
     }
 
     function getVenues() {
-      return $http.get(BASE_URL.API + '/venues');
+      return $http.get(baseUrl + '/venues');
     }
 
     function addVenue(venue) {
-      return $http.post(BASE_URL.API + '/venues', venue);
+      return $http.post(baseUrl + '/venues', venue);
     }
 
     function updateVenue(venueId, venue) {
-      return $http.post(BASE_URL.API + '/venues/' + venueId, venue);
+      return $http.put(baseUrl + '/venues/' + venueId, venue);
     }
 
     function getClassById(classId) {
-      return $http.get(BASE_URL.API + '/classes/' + classId).success(function(aClass) {
-        aClass.from = _toDate(aClass.from);
-        aClass.to = _toDate(aClass.to);
+      return $http.get(baseUrl + '/classes/' + classId).success(function(aClass) {
+        aClass.from = new Date(aClass.from);
+        aClass.to = new Date(aClass.to);
         return aClass;
       });
     }
 
     function getClasses(filter) {
-      var requestUrl = wfUrlUtil.concatUrl(BASE_URL.API + '/classes', filter);
+      var requestUrl = wfUrlUtil.concatUrl(baseUrl + '/classes', filter);
       return $http.get(requestUrl).success(function(classes) {
         angular.forEach(classes, function(aClass) {
-          aClass.from = _toDate(aClass.from);
-          aClass.to = _toDate(aClass.to);
+          aClass.from = new Date(aClass.from);
+          aClass.to = new Date(aClass.to);
         });
         return classes;
       });
     }
 
     function addClass(aClass) {
-      var classCopy = angular.copy(aClass);
-      if (classCopy && classCopy.from) {
-        classCopy.from = _toTimeStamp(classCopy.from);
-      }
-      if (classCopy && classCopy.to) {
-        classCopy.to = _toTimeStamp(classCopy.to);
-      }
-      console.log(classCopy);
-      return $http.post(BASE_URL.API + '/classes', classCopy);
+      return $http.post(baseUrl + '/classes', aClass);
     }
 
     function updateClass(classId, aClass) {
-      var classCopy = angular.copy(aClass);
-      if (classCopy && classCopy.from) {
-        classCopy.from = _toTimeStamp(classCopy.from);
-      }
-      if (classCopy && classCopy.to) {
-        classCopy.to = _toTimeStamp(classCopy.to);
-      }
-      return $http.post(BASE_URL.API + '/classes/' + classId, classCopy);
+      return $http.put(baseUrl + '/classes/' + classId, aClass);
     }
   }
 })();

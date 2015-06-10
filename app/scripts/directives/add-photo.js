@@ -14,16 +14,15 @@
       },
       template: '<div class="add-images">'+
                 '<ul style="margin-bottom: 10px;">'+
-                  '<li ng-repeat="photo in photos" clearfix>'+
+                  '<li ng-repeat="photo in photos track by $index" clearfix>'+
                     '<div style="display:inline-block;width:50%;text-align:right;">'+
-                      '<input type="text" ng-model="photo.url" placeholder="Url" style="width:100%" />'+
-                      '<input type="text" ng-model="photo.caption" placeholder="Caption" style="width:100%" />'+
+                      '<input type="text" ng-model="photos[$index]" placeholder="Url" style="width:100%" />'+
                     '</div>'+
                     '<div style="display:inline-block;width:20%;text-align:right;">'+
                       '<button ng-click="onRemovePhoto($index)">Remove</button>'+
                     '</div>'+
                     '<div style="display:inline-block;width:30%; vertical-align:top;text-align:right;">'+
-                      '<img ng-src="{{photo.url}}" height="90px" />'+
+                      '<img ng-src="{{photo}}" height="90px" />'+
                     '</div>'+
                   '</li>'+
                 '</ul>'+
@@ -40,7 +39,8 @@
         if (!scope.photos) {
           scope.photos = [];
         }
-        scope.photos.push({});
+        console.log(scope.photos);
+        scope.photos.push('');
       }
 
       scope.onRemovePhoto = function(index) {

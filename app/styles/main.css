@@ -25,7 +25,10 @@ button {
   border: none;
 }
 
-input[type="text"].ng-touched.ng-invalid, input[type="time"].ng-touched.ng-invalid, input[type="date"].ng-touched.ng-invalid {
+input[type="text"].ng-touched.ng-invalid,
+input[type="time"].ng-touched.ng-invalid,
+input[type="date"].ng-touched.ng-invalid,
+input[type="number"].ng-touched.ng-invalid {
   border: 1px solid #FD8D9E;
 }
 

@@ -13,7 +13,6 @@
         <th>Venue</th>
         <th ng-click="dateReverse=!dateReverse" class="filter">Date</th>
         <th>Time</th>
-        <th>Spots</th>
         <th>Price</th>
       </tr>
     </thead>
@@ -23,8 +22,7 @@
         <td ng-bind="event.venue.name.en" class="venue"></td>
         <td ng-bind="event.from | amDateFormat:'YYYY-MM-DD'"></td>
         <td ng-bind-template="{{event.from | amDateFormat:'h:mm'}} - {{event.to | amDateFormat:'h:mm a'}}"></td>
-        <td ng-bind="event.spots"></td>
-        <td ng-bind="event.price.en | currency:'￥':'0'"></td>
+        <td ng-bind="event.price | currency:'￥':'0'"></td>
       </tr>
     </tbody>
   </table>
