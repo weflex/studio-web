@@ -14,6 +14,7 @@ angular
   'ngRoute',
   'ngSanitize',
   'ngTouch',
+  'ngResource',
   'angularMoment',
   'pascalprecht.translate'
 ])
