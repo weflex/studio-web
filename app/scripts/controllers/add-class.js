@@ -1,20 +1,17 @@
 'use strict';
 
 angular.module('weflexAdmin')
-.controller('AddClassCtrl', ['$scope', 'wfAPI', 'adminRouteHelper', function($scope, wfAPI, adminRouteHelper) {
-  $scope.submitDisabled = false;
+.controller('AddClassCtrl', ['$scope', 'adminRouteHelper', 'Classes', function($scope, adminRouteHelper, Classes) {
+
   $scope.class = {};
 
   $scope.onSubmit = function() {
     if ($scope.classForm.$valid) {
       $scope.submitDisabled = true;
-      wfAPI.classAPI.addClass($scope.class).success(function() {
+
+      Classes.save($scope.class, function() {
         alert('Successfully add class.');
         adminRouteHelper.toHome();
-      })
-      .error(function() {
-        alert('Add class failed.');
-        console.error('AddClassCtrl Error: Add class failed.');
       });
     }
   }
