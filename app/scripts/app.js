@@ -17,12 +17,10 @@ angular
   'angularMoment',
   'pascalprecht.translate'
 ])
-.run(['$location', 'wfConfig', 'amMoment', '$translate', function($location, wfConfig, amMoment, $translate) {
+.run(['$location', 'amMoment', '$translate', function($location, amMoment, $translate) {
   if ($location.search().lang) {
     $translate.use($location.search().lang);
   }
 
   amMoment.changeLocale($translate.use());
-
-  wfConfig.BASE_URL.APP = $location.host();
 }]);

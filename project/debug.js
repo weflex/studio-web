@@ -48,6 +48,12 @@ module.exports = {
     },
 
     "copy":{
+      "config": {
+        "cwd":    "app/config",
+        "expand": true,
+        "src":    (process.env.NODE_ENV || "dev") + ".js",
+        "dest":   ".tmp/scripts/"
+      },
       "styles": {
         "cwd":    "app/styles",
         "expand": true,
@@ -93,20 +99,11 @@ module.exports = {
     "injector": {
       "options": {
         "relative": true,
-        "addRootSlash": false,
-        "sort": function (a, b) {
-          if (/.*\/module.js/.test(a) || /.*\/app.js/.test(a)) {
-            return -1;
-          }
-          if (/.*\/module.js/.test(b) || /.*\/app.js/.test(b)) {
-            return 1;
-          }
-          return 0;
-        }
+        "addRootSlash": false
       },
       "scripts": {
         "files": {
-          ".tmp/index.html": ".tmp/scripts/**/*.js"
+          ".tmp/index.html": [".tmp/scripts/" + (process.env.NODE_ENV || "dev") + ".js", ".tmp/scripts/**/*.js"]
         }
       },
       "styles": {

@@ -7,8 +7,6 @@ angular.module('weflexAdmin')
       quiet: true
     },
     BASE_URL: {
-      API: 'https://weflex-api-dev.herokuapp.com',
-      PORTAL: 'http://api.theweflex.com',
-      APP: 'http://app.theweflex.com'
+      API: weflex.env.API_URL
     }
   });
