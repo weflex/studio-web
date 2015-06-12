@@ -8,8 +8,7 @@ angular.module('weflexAdmin')
   $scope.onSubmit = function() {
     if ($scope.classForm.$valid) {
       $scope.submitDisabled = true;
-
-      Classes.save($scope.class, function() {
+      Classes.save($scope.class).$promise.then(function() {
         alert('Successfully add class.');
         adminRouteHelper.toHome();
       });

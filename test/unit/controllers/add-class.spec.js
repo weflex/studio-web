@@ -1,44 +1,53 @@
 'use strict';
 
 describe('Controller AddClassCtrl', function() {
-  var baseUrl = weflex.env.API_URL;
-  var ctrl, scope, adminRouter, $httpBackend;
+  var ctrl, scope, mockClassesResource, saveDeferred, adminRouteHelper;
 
   beforeEach(module('weflexAdmin'));
 
-  beforeEach(inject(function($controller, $rootScope, _$httpBackend_, _adminRouteHelper_) {
-    $httpBackend = _$httpBackend_;
-    scope = $rootScope.$new();
-    ctrl = $controller('AddClassCtrl', {
-      '$scope': scope
-    });
-    adminRouter = _adminRouteHelper_;
+  beforeEach(inject(function($q) {
+    mockClassesResource = {
+      save: function() {
+        saveDeferred = $q.defer();
+        return {$promise: saveDeferred.promise};
+      }
+    };
+
+    spyOn(mockClassesResource, 'save').and.callThrough();
   }));
 
-  it('should save new added class when form is valid and route to home after adding class success', function() {
-    scope.class = {};
+  beforeEach(inject(function($rootScope, $controller, _adminRouteHelper_) {
+    scope = $rootScope.$new();
+    adminRouteHelper = _adminRouteHelper_;
+    ctrl = $controller('AddClassCtrl', {
+      $scope: scope,
+      Classes: mockClassesResource,
+      adminRouteHelper: _adminRouteHelper_
+    });
+  }));
+
+  it('should save class if form is valid', function() {
     scope.classForm = {
       $valid: true
     };
+    scope.class = {id: 'testId'};
 
-    $httpBackend.whenPOST(baseUrl + '/api/classes').respond(200);
-    $httpBackend.expectPOST(baseUrl + '/api/classes');
+    spyOn(adminRouteHelper, 'toHome');
 
-    spyOn(adminRouter, 'toHome');
     scope.onSubmit();
+    saveDeferred.resolve();
+    scope.$apply();
 
-    $httpBackend.flush();
-
-    expect(adminRouter.toHome).toHaveBeenCalled();
+    expect(mockClassesResource.save).toHaveBeenCalledWith({id: 'testId'});
+    expect(adminRouteHelper.toHome).toHaveBeenCalled();
   });
 
-  it('should not request to save class when form is invalid', function() {
-    scope.class = {};
+  it('should not save class if form is invalid', function() {
     scope.classForm = {
       $valid: false
     };
 
     scope.onSubmit();
-
+    expect(mockClassesResource.save).not.toHaveBeenCalled();
   });
 });
