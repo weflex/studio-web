@@ -40,5 +40,22 @@ describe('Resource Classes', function() {
 
       $httpBackend.flush();
     });
+  });
+
+  describe('Get a class', function() {
+    var responseData = '{"id": "testclass"}';
+
+    beforeEach(function() {
+      $httpBackend.whenGET(baseUrl + '/api/classes/testclass').respond(200, responseData);
+      $httpBackend.expectGET(baseUrl + '/api/classes/testclass');
+    });
+
+    it('should get a class by id', function() {
+      var clazz = Classes.get({classId: 'testclass'});
+
+      $httpBackend.flush();
+
+      expect(clazz.id).toEqual('testclass');
+    })
   })
 });
