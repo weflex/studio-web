@@ -2,6 +2,7 @@
 
 angular.module('weflexAdmin').
 controller('AddVenueCtrl', ['$scope', 'wfAPI', 'adminRouteHelper', 'amap', function($scope, wfAPI, adminRouteHelper, amap) {
+  $scope.submitDisabled = false;
   var mapObj = amap.initMap();
 
   $scope.venue = {};
@@ -19,7 +20,7 @@ controller('AddVenueCtrl', ['$scope', 'wfAPI', 'adminRouteHelper', 'amap', funct
 
   $scope.onSubmit = function() {
     if($scope.venueForm.$valid) {
-
+      $scope.submitDisabled = true;
       wfAPI.venueAPI.addVenue($scope.venue).success(function(result) {
         adminRouteHelper.toHome();
       })

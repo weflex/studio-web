@@ -2,6 +2,7 @@
 
 angular.module('weflexAdmin')
 .controller('EditVenueCtrl', ['$scope', '$routeParams', 'wfAPI', 'adminRouteHelper', 'amap', function($scope, $routeParams, wfAPI, adminRouteHelper, amap) {
+  $scope.submitDisabled = false;
   var venueId = $routeParams.venueId,
       mapObj = amap.initMap();
 
@@ -33,7 +34,7 @@ angular.module('weflexAdmin')
 
   $scope.onSubmit = function() {
     if ($scope.venueForm.$valid) {
-
+      $scope.submitDisabled = true;
       wfAPI.venueAPI.updateVenue(venueId, $scope.venue).success(function() {
         alert('Successfully update Venue!');
         adminRouteHelper.toHome();

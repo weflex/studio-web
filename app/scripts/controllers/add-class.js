@@ -2,12 +2,12 @@
 
 angular.module('weflexAdmin')
 .controller('AddClassCtrl', ['$scope', 'wfAPI', 'adminRouteHelper', function($scope, wfAPI, adminRouteHelper) {
-
+  $scope.submitDisabled = false;
   $scope.class = {};
 
   $scope.onSubmit = function() {
     if ($scope.classForm.$valid) {
-
+      $scope.submitDisabled = true;
       wfAPI.classAPI.addClass($scope.class).success(function() {
         alert('Successfully add class.');
         adminRouteHelper.toHome();
