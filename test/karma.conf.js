@@ -33,7 +33,7 @@ module.exports = function(config) {
       'bower_components/angular-resource/angular-resource.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
-      'app/config/' + (process.env.NODE_ENV || 'dev' + '.js'),
+      'app/config/' + (process.env.NODE_ENV || 'prod' + '.js'),
       'app/scripts/**/*.js',
       'test/unit/**/*.js'
     ],

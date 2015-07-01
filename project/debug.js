@@ -51,7 +51,7 @@ module.exports = {
       "config": {
         "cwd":    "app/config",
         "expand": true,
-        "src":    (process.env.NODE_ENV || "dev") + ".js",
+        "src":    (process.env.NODE_ENV || "prod") + ".js",
         "dest":   ".tmp/scripts/"
       },
       "styles": {
@@ -103,7 +103,7 @@ module.exports = {
       },
       "scripts": {
         "files": {
-          ".tmp/index.html": [".tmp/scripts/" + (process.env.NODE_ENV || "dev") + ".js", ".tmp/scripts/**/*.js"]
+          ".tmp/index.html": [".tmp/scripts/" + (process.env.NODE_ENV || "prod") + ".js", ".tmp/scripts/**/*.js"]
         }
       },
       "styles": {
