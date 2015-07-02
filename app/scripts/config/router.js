@@ -35,6 +35,10 @@
         templateUrl: 'views/edit-class.html',
         controller: 'AddClassCtrl'
       })
+      .when('/admin/orders', {
+        templateUrl: 'views/order-list.html',
+        controller: 'OrderListCtrl'
+      })
       .otherwise({
         redirectTo: '/admin'
       });

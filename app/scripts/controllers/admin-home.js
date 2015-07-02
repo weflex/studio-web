@@ -21,4 +21,8 @@ controller('AdminHomeCtrl', ['$scope', 'wfAPI', 'adminRouteHelper', function($sc
   $scope.onAddClass = function() {
     adminRouteHelper.toAddClass();
   }
+
+  $scope.onViewOrders = function() {
+    adminRouteHelper.toOrderList();
+  }
 }]);

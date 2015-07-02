@@ -36,5 +36,8 @@ angular.module('weflexAdmin')
     toEditClass: function(classId) {
       $location.url(this.url.EDIT_CLASS + classId);
     },
+    toOrderList: function() {
+      $location.url('/admin/orders');
+    }
   }
 }])

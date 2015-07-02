@@ -114,11 +114,9 @@ ul.horizontal li {
 }
 
 /* Customize container */
-@media (min-width: 768px) {
-  .container {
-    max-width: 730px;
-    margin: 0 auto;
-  }
+.container {
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 .footer {
@@ -135,11 +133,11 @@ ul.horizontal li {
   padding: 0px 12px;
 }
 
-.admin-home table {
+table {
   width: 100%;
   font-size: 14px;
 }
-.admin-home table th, .admin-home table td {
+table th, .admin-home table td {
   text-align: left;
 }
 .admin-home .filter {
