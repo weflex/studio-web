@@ -13,19 +13,9 @@ angular.module('weflexAdmin')
       $scope.class = response;
     });
 
-    if (!Users.accessToken()) {
-      Users.login({username: 'king', password: 'iamthekingoftheweflex'}).$promise.then(function() {
-        getOrders();
-      });
-    } else {
-      getOrders();
-    }
-
-    function getOrders() {
-      Orders.query({'filter[where][classId]': classId, access_token: Users.accessToken()}).$promise.then(function(response) {
-        $scope.orders = response;
-      });
-    }
+    Orders.query({'filter[where][classId]': classId, access_token: Users.accessToken()}).$promise.then(function(response) {
+      $scope.orders = response;
+    });
 
     $scope.onSubmit = function() {
       if($scope.classForm.$valid) {
