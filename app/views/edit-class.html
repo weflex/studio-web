@@ -16,6 +16,25 @@
     </div>
   </div>
 
+  <div class="item">
+    <h1>Attendees</h1>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Passcode</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="order in orders">
+          <td ng-bind="order.user.username"></td>
+          <td ng-bind="order.user.phone"></td>
+          <td ng-bind="order.passcode"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
   <div class="category">
     <h1>Category</h1>
