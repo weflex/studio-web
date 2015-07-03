@@ -18,17 +18,22 @@
 
   <div class="item">
     <h1>Attendees</h1>
-    <table border="1">
+    <div class="fa fa-spinner fa-pulse" ng-hide="orders"></div>
+    <p ng-show="orders.length <= 0">No attendees</p>
+    <table border="1" ng-show="orders.length > 0">
       <thead>
         <tr>
-          <th>Name</th>
+          <th>User</th>
           <th>Phone</th>
           <th>Passcode</th>
         </tr>
       </thead>
       <tbody>
         <tr ng-repeat="order in orders">
-          <td ng-bind="order.user.username"></td>
+          <td>
+            <img ng-src="{{order.user.avatarUrl}}" class="avatar">
+            <span ng-bind="order.user.nickname"></span>
+          </td>
           <td ng-bind="order.user.phone"></td>
           <td ng-bind="order.passcode"></td>
         </tr>

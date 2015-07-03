@@ -19,6 +19,18 @@ table th, table td {
   padding: 0 5px;
 }
 
+table tr td {
+  padding: 5px;
+}
+
+table {
+  width: 100%;
+  font-size: 14px;
+}
+table th, table td {
+  text-align: left;
+}
+
 button {
   -webkit-appearance: none;
   outline: none;
@@ -60,14 +72,10 @@ input[type="number"].ng-touched.ng-invalid {
   color: #ffffff;
 }
 
-.order-button {
-  display: inline-block;
-  background: #00E4FF;
-  border-radius: 4px;
-  color: #ffffff;
+.avatar {
+  width: 30px;
+  height: 30px;
   vertical-align: middle;
-  line-height: 24px;
-  text-align: center;
 }
 
 .button {
@@ -133,13 +141,6 @@ ul.horizontal li {
   padding: 0px 12px;
 }
 
-table {
-  width: 100%;
-  font-size: 14px;
-}
-table th, .admin-home table td {
-  text-align: left;
-}
 .admin-home .filter {
   text-decoration: underline;
 }
@@ -177,15 +178,3 @@ table th, .admin-home table td {
   width: 100px;
 }
 
-
-.edit-class table {
-  width: 100%;
-}
-.edit-class table tr td {
-  padding: 5px;
-}
-.edit-class table img {
-  width: 50px;
-  height: 50px;
-  vertical-align: middle;
-}
