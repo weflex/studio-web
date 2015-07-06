@@ -133,7 +133,8 @@ module.exports = {
         "dest": ".tmp/styles/main.css"
       },
       "scripts": {
-        "src":  ["app/scripts/**/*.js",
+        "src":  ["app/config/prod.js",
+                 "app/scripts/**/*.js",
                  "!app/scripts/libs/*.js"],
         "dest": ".tmp/scripts/main.js"
       },
