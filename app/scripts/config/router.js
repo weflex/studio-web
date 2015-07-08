@@ -27,6 +27,10 @@
       .when('/admin/venues/', {
         templateUrl: 'views/venue-list.html',
       })
+      .when('/admin/classes', {
+        templateUrl: 'views/class-list.html',
+        controller: 'ClassListCtrl'
+      })
       .when('/admin/classes/edit/:classId', {
         templateUrl: 'views/edit-class.html',
         controller: 'EditClassCtrl'

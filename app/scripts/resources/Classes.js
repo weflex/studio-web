@@ -8,6 +8,11 @@
         'classId': '@classId'
       };
       var actions = {
+        'query': {
+          method: 'GET',
+          isArray: true,
+          transformResponse: _transformArrayResponse
+        },
         'update': {
           method: 'PUT'
         },

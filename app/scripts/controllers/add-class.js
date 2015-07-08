@@ -1,9 +1,22 @@
 'use strict';
 
 angular.module('weflexAdmin')
-.controller('AddClassCtrl', ['$scope', 'adminRouteHelper', 'Classes', function($scope, adminRouteHelper, Classes) {
+.controller('AddClassCtrl', ['$scope', '$routeParams', 'adminRouteHelper', 'Classes', 'Users', function($scope, $routeParams, adminRouteHelper, Classes, Users) {
+  var copiedFrom = $routeParams.copied_from;
 
-  $scope.class = {};
+  if (!copiedFrom) {
+    $scope.class = {
+      isTemplate: true
+    }
+  } else {
+    Classes.get({classId: copiedFrom}).$promise.then(function(template) {
+      $scope.class = angular.copy(template);
+      $scope.class.id = null;
+      $scope.class.attendees = [];
+      $scope.class.copiedFrom = template.id;
+      $scope.class.isTemplate = false;
+    });
+  }
 
   $scope.onSubmit = function() {
     if ($scope.classForm.$valid) {

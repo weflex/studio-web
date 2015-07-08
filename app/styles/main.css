@@ -81,8 +81,9 @@ input[type="number"].ng-touched.ng-invalid {
 .button {
   border-radius: 4px;
   font-size: 12px;
-  width: 75px;
   height: 25px;
+  padding-left: 5px;
+  padding-right: 5px;
   cursor: pointer;
 }
 .button:hover, .button:active {

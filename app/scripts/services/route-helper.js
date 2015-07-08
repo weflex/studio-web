@@ -30,7 +30,7 @@ angular.module('weflexAdmin')
     toClass: function(classId) {
       $location.url('/admin/classes/' + classId);
     },
-    toAddClass: function() {
+    toAddClassTemplate: function() {
       $location.url(this.url.ADD_CLASS);
     },
     toEditClass: function(classId) {
