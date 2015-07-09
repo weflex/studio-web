@@ -12,22 +12,17 @@
       scope: {
         photos: '='
       },
-      template: '<div class="add-images">'+
-                '<ul style="margin-bottom: 10px;">'+
-                  '<li ng-repeat="photo in photos track by $index" clearfix>'+
-                    '<div style="display:inline-block;width:50%;text-align:right;">'+
-                      '<input type="text" ng-model="photos[$index]" placeholder="Url" style="width:100%" />'+
-                    '</div>'+
-                    '<div style="display:inline-block;width:20%;text-align:right;">'+
-                      '<button ng-click="onRemovePhoto($index)">Remove</button>'+
-                    '</div>'+
-                    '<div style="display:inline-block;width:30%; vertical-align:top;text-align:right;">'+
-                      '<img ng-src="{{photo}}" height="90px" />'+
-                    '</div>'+
-                  '</li>'+
-                '</ul>'+
-                '<button ng-click="onAddPhoto()">Add</button>'+
-              '</div>',
+      template: '<div class="add-photos">'+
+                  '<div class="control"'+
+                    '<label>Photo URL</label><input type="text" ng-model="newPhoto" />'+
+                    '<button ng-click="onAdd()">Add</button>'+
+                  '</div>'+
+                  '<ul class="photo-list">'+
+                    '<li class="photo" ng-repeat="photo in photos">'+
+                      '<img ng-src="{{photo}}" /><div ng-click="onRemove($index)" class="delete fa fa-close"></div>'+
+                    '</li>'+
+                  '</ul>'+
+                '</div>',
       link: link
     };
 
@@ -35,15 +30,18 @@
 
     function link(scope, elem, attrs) {
 
-      scope.onAddPhoto = function() {
+      scope.onAdd = function() {
+        if (!scope.newPhoto) {
+          return;
+        }
         if (!scope.photos) {
           scope.photos = [];
         }
-        console.log(scope.photos);
-        scope.photos.push('');
+        scope.photos.push(scope.newPhoto);
+        scope.newPhoto = "";
       }
 
-      scope.onRemovePhoto = function(index) {
+      scope.onRemove = function(index) {
         scope.photos.splice(index, 1);
       }
     }
