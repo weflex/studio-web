@@ -37,7 +37,7 @@ angular.module('weflexAdmin')
       $scope.submitDisabled = true;
       wfAPI.venueAPI.updateVenue(venueId, $scope.venue).success(function() {
         alert('Successfully update Venue!');
-        adminRouteHelper.toHome();
+        adminRouteHelper.back();
       })
       .error(function() {
         alert('Update venue failed');
@@ -46,6 +46,6 @@ angular.module('weflexAdmin')
   }
 
   $scope.onCancel = function() {
-    adminRouteHelper.toHome();
+    adminRouteHelper.back();
   }
 }]);

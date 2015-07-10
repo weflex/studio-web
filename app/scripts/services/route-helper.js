@@ -1,5 +1,5 @@
 angular.module('weflexAdmin')
-.factory('adminRouteHelper', ['$location', function($location) {
+.factory('adminRouteHelper', ['$location', '$window', function($location, $window) {
   return {
     url: {
       VENUES: '/admin/venues/',
@@ -8,6 +8,9 @@ angular.module('weflexAdmin')
       CLASSES: '/admin/classes/',
       ADD_CLASS: '/admin/classes/add/',
       EDIT_CLASS: '/admin/classes/edit/'
+    },
+    back: function() {
+      $window.history.back();
     },
     toHome: function() {
       $location.url('/admin');

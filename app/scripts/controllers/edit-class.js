@@ -4,9 +4,9 @@
 angular.module('weflexAdmin')
   .controller('EditClassCtrl', EditClassCtrl);
 
-  EditClassCtrl.$inject = ['$scope', '$routeParams', 'adminRouteHelper', 'Classes', 'Orders', 'Users'];
+  EditClassCtrl.$inject = ['adminRouteHelper', '$scope', '$routeParams', 'Classes', 'Orders', 'Users'];
 
-  function EditClassCtrl($scope, $routeParams, adminRouteHelper, Classes, Orders, Users) {
+  function EditClassCtrl(adminRouteHelper, $scope, $routeParams, Classes, Orders, Users) {
     var classId = $routeParams.classId;
 
     Classes.get({classId: classId}).$promise.then(function(response) {
@@ -22,13 +22,13 @@ angular.module('weflexAdmin')
         $scope.submitDisabled = true;
         Classes.update({classId: $scope.class.id}, $scope.class).$promise.then(function() {
           alert('Edit class success');
-          adminRouteHelper.toHome();
+          adminRouteHelper.back();
         });
       }
     };
 
     $scope.onCancel = function() {
-      adminRouteHelper.toHome();
+      adminRouteHelper.back();
     };
   }
 })();

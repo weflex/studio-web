@@ -23,11 +23,11 @@ angular.module('weflexAdmin')
       $scope.submitDisabled = true;
       Classes.save($scope.class).$promise.then(function() {
         alert('Successfully add class.');
-        adminRouteHelper.toHome();
+        adminRouteHelper.back();
       });
     }
   }
   $scope.onCancel = function() {
-    adminRouteHelper.toHome();
+    adminRouteHelper.back();
   };
 }]);

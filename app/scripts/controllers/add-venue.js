@@ -22,7 +22,7 @@ controller('AddVenueCtrl', ['$scope', 'wfAPI', 'adminRouteHelper', 'amap', funct
     if($scope.venueForm.$valid) {
       $scope.submitDisabled = true;
       wfAPI.venueAPI.addVenue($scope.venue).success(function(result) {
-        adminRouteHelper.toHome();
+        adminRouteHelper.back();
       })
       .error(function() {
         console.error('AddVenueCtrl: add venue failed.');
@@ -31,7 +31,7 @@ controller('AddVenueCtrl', ['$scope', 'wfAPI', 'adminRouteHelper', 'amap', funct
   };
 
   $scope.onCancel = function() {
-    adminRouteHelper.toHome();
+    adminRouteHelper.back();
   };
 
 }]);
