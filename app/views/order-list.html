@@ -3,16 +3,18 @@
     <caption>Orders</caption>
     <thead>
       <tr>
-        <th>Class Name</th>
+        <th ng-click="order('clazz.title.en')" class="filter">Class Name</th>
         <th>Studio</th>
-        <th>Time</th>
+        <th ng-click="order('clazz.from')" class="filter">Class Time</th>
         <th>User</th>
         <th>Passcode</th>
+        <th ng-click="order('_raw.time_end')" class="filter">Order Time</th>
+        <th ng-click="order('status')" class="filter">Status</th>
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="order in orders" ng-show="orders.length > 0">
-        <td ng-bind="order.clazz.title.en"></td>
+      <tr ng-repeat="order in orders | orderBy:predicate:reverse" ng-show="orders.length > 0">
+        <td><a ng-href="/#/admin/classes/edit/{{order.clazz.id}}" ng-bind="order.clazz.title.en"></a></td>
         <td ng-bind="order.clazz.venue.name.en"></td>
         <td ng-bind-template="{{order.clazz.from | amDateFormat:'YYYY-MM-DD'}} {{order.clazz.from | amDateFormat:'h:mm'}} - {{order.clazz.to | amDateFormat:'h:mm a'}}"></td>
         <td>
@@ -20,6 +22,8 @@
           <span ng-bind="order.user.nickname"></span>
         </td>
         <td ng-bind="order.passcode"></td>
+        <td ng-bind="order._raw.time_end"></td>
+        <td ng-bind="order.status"></td>
       </tr>
     </tbody>
   </table>

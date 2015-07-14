@@ -14,21 +14,22 @@ body {
   font-family: "Hiragino Sans GB", helvetica, sans-serif;
 }
 
-table th, table td {
-  line-height: 32px;
-  padding: 0 5px;
-}
-
-table tr td {
-  padding: 5px;
-}
-
 table {
   width: 100%;
   font-size: 14px;
 }
+
+table tr:hover {
+  background-color: #eee;
+}
 table th, table td {
+  line-height: 32px;
+  padding: 0 5px;
   text-align: left;
+}
+
+table tr td {
+  padding: 5px;
 }
 
 button {
@@ -179,9 +180,12 @@ ul.horizontal li {
   padding: 0px 12px;
 }
 
-.admin-home .filter {
+
+.order-list .filter,  .admin-home .filter{
   text-decoration: underline;
+  cursor: pointer;
 }
+
 .admin-home .filter:hover {
   cursor: pointer;
 }
