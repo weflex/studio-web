@@ -10,7 +10,7 @@
       <p ng-show="class.isTemplate">Yes</p>
       <div ng-hide="class.isTemplate">
         <p>No</p>
-        <p>Copied From: <span ng-bind-template="{{class.title.en}} - {{class.venue.name.en}}"></span></p>
+        <p>Copied From: <a ng-href="/admin/classes/edit/{{class.copiedFrom}}" ng-bind="class.copiedFrom"></a></p>
       </div>
     </div>
   </div>
@@ -84,11 +84,11 @@
     <h1>About</h1>
     <div>
       <label>en</label>
-      <textarea ng-model="class.description.en"></textarea>
+      <wf-markdown-editor id="aboutEn" data-model="class.description.en" class="description"></wf-markdown-editor>
     </div>
     <div>
-      <label>cn</label>
-      <textarea ng-model="class.description.zh"></textarea>
+      <label>zh</label>
+      <wf-markdown-editor id="aboutZh" data-model="class.description.zh" class="description"></wf-markdown-editor>
     </div>
   </div>
 

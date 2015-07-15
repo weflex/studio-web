@@ -220,3 +220,29 @@ ul.horizontal li {
   width: 100px;
 }
 
+.edit-class .description {
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-top: 4px;
+  color: #4A4A4A;
+  font-size: 14px;
+}
+.edit-class .description h1,
+.edit-class .description h2,
+.edit-class .description h3,
+.edit-class .description h4,
+.edit-class .description h5,
+.edit-class .description h6 {
+  margin-top: 19px;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+.edit-class .description p {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+.edit-class .description img {
+  width: 100%;
+}
+
