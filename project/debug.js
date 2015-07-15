@@ -114,7 +114,7 @@ module.exports = {
       },
       "styles": {
         "files": {
-          ".tmp/index.html": ".tmp/styles/**/*.css"
+          ".tmp/index.html": [".tmp/styles/**/*.css", "!.tmp/styles/markdown-editor.css"]
         }
       }
     },
