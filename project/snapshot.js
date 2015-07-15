@@ -35,6 +35,12 @@ module.exports = {
         "src":    "**/*.min.css",
         "dest":   "out/styles/"
       },
+      "markdown-editor": {
+        "cwd": "bower_components/markdown-editor-flavored",
+        "expand": true,
+        "src": "markdown-editor.css",
+        "dest": "out/styles/"
+      },
       "scripts": {
         "cwd":    ".tmp/scripts",
         "expand": true,
@@ -89,7 +95,7 @@ module.exports = {
       },
       "styles": {
         "files": {
-          "out/index.html": "out/styles/**/*.css"
+          "out/index.html": ["out/styles/**/*.css", "!out/styles/markdown-editor.css"]
         }
       }
     },
