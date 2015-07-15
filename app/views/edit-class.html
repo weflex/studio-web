@@ -5,6 +5,17 @@
   </div>
 
   <div class="item">
+    <h1>Is Template?</h1>
+    <div>
+      <p ng-show="class.isTemplate">Yes</p>
+      <div ng-hide="class.isTemplate">
+        <p>No</p>
+        <p>Copied From: <span ng-bind-template="{{class.title.en}} - {{class.venue.name.en}}"></span></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="item">
     <h1>Title</h1>
     <div>
       <label>en<span>*</span></label>
@@ -13,6 +24,14 @@
     <div>
       <label>cn</label>
       <input type="text" ng-model="class.title.zh" />
+    </div>
+  </div>
+
+  <div class="item">
+    <h1>Venue</h1>
+    <div>
+      <label>Venue<span>*</span></label>
+      <wf-select data-model="class.venue" data-type="venue" required ></wf-select>
     </div>
   </div>
 
@@ -58,14 +77,6 @@
     <div>
       <label>Original Price(￥)<span>*</span></label>
       <input type="number" ng-model="class.originalPrice" required />
-    </div>
-  </div>
-
-  <div class="item">
-    <h1>Venue</h1>
-    <div>
-      <label>Venue<span>*</span></label>
-      <wf-select data-model="class.venue" data-type="venue" required ></wf-select>
     </div>
   </div>
 
