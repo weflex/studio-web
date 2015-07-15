@@ -60,6 +60,12 @@ module.exports = {
         "src":    "*.css",
         "dest":   ".tmp/styles/"
       },
+      "markdown-editor": {
+        "cwd": "bower_components/markdown-editor-flavored",
+        "expand": true,
+        "src": "markdown-editor.css",
+        "dest": ".tmp/styles"
+      },
       "images": {
         "cwd":    "app/images",
         "expand": true,
@@ -108,7 +114,7 @@ module.exports = {
       },
       "styles": {
         "files": {
-          ".tmp/index.html": ".tmp/styles/**/*.css"
+          ".tmp/index.html": [".tmp/styles/**/*.css", "!.tmp/styles/markdown-editor.css"]
         }
       }
     },
