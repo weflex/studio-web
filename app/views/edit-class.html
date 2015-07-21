@@ -48,7 +48,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="order in orders">
+        <tr ng-repeat="order in orders | filter:{status: 'paid'}">
           <td>
             <img ng-src="{{order.user.avatarUrl}}" class="avatar">
             <span ng-bind="order.user.nickname"></span>
