@@ -4,9 +4,9 @@
 angular.module('weflexAdmin')
   .controller('EditClassCtrl', EditClassCtrl);
 
-  EditClassCtrl.$inject = ['adminRouteHelper', '$scope', '$routeParams', 'Classes', 'Orders', 'Users'];
+  EditClassCtrl.$inject = ['adminRouteHelper', '$scope', '$routeParams', 'Classes', 'Orders', 'Users', 'Venues'];
 
-  function EditClassCtrl(adminRouteHelper, $scope, $routeParams, Classes, Orders, Users) {
+  function EditClassCtrl(adminRouteHelper, $scope, $routeParams, Classes, Orders, Users, Venues) {
     var classId = $routeParams.classId;
 
     Classes.get({classId: classId}).$promise.then(function(response) {
@@ -15,6 +15,10 @@ angular.module('weflexAdmin')
 
     Orders.query({'filter[where][classId]': classId, access_token: Users.accessToken()}).$promise.then(function(response) {
       $scope.orders = response;
+    });
+
+    Venues.query().$promise.then(function(res) {
+      $scope.venues = res;
     });
 
     $scope.onSubmit = function() {

@@ -31,7 +31,7 @@
     <h1>Venue</h1>
     <div>
       <label>Venue<span>*</span></label>
-      <wf-select data-model="class.venue" data-type="venue" required ></wf-select>
+      <select ng-model="class.venue" ng-options="item.name.en for item in venues | orderBy:'name.en' track by item.id" required></select>
     </div>
   </div>
 
