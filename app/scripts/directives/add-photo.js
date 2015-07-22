@@ -16,6 +16,7 @@
                   '<div class="control"'+
                     '<label>Photo URL</label><input type="text" ng-model="newPhoto" />'+
                     '<button ng-click="onAdd()">Add</button>'+
+                    '<button ng-click="onClear()">Clear ALL photos</button>'+
                   '</div>'+
                   '<ul class="photo-list">'+
                     '<li class="photo" ng-repeat="photo in photos">'+
@@ -37,9 +38,22 @@
         if (!scope.photos) {
           scope.photos = [];
         }
+        if (scope.photos.indexOf(scope.newPhoto) !== -1) {
+          alert('photo exists!');
+          return;
+        }
         scope.photos.push(scope.newPhoto);
         scope.newPhoto = "";
       }
+
+      scope.onClear = function() {
+        var confirm = window.confirm('Do you want to clear ALL photos?');
+        if (confirm) {
+          scope.photos = [];
+        } else {
+          return;
+        }
+      };
 
       scope.onRemove = function(index) {
         scope.photos.splice(index, 1);

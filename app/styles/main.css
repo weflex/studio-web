@@ -116,6 +116,9 @@ input[type="number"].ng-touched.ng-invalid {
   height: 90px;
   width: auto;
 }
+.add-photos button {
+  margin-left: 8px;
+}
 .button {
   border-radius: 4px;
   font-size: 12px;
