@@ -12,8 +12,12 @@
       .when('/', {
         redirectTo: '/admin'
       })
+      .when('/login/', {
+        templateUrl: 'views/login.html',
+        controller: 'LoginCtrl'
+      })
       .when('/admin/', {
-      templateUrl: 'views/home.html',
+        templateUrl: 'views/home.html',
         controller: 'AdminHomeCtrl'
       })
       .when('/admin/venues/edit/:venueId', {

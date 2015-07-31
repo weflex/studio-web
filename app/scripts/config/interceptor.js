@@ -6,7 +6,7 @@
       $httpProvider.interceptors.push(['$q', '$rootScope', function($q, $rootScope) {
         return {
           'responseError': function(rejection) {
-            if (rejection.data.error.status === 401) {
+            if (rejection.data.error.status === 401 && rejection.data.error.message !== 'login failed') {
               var deferred = $q.defer();
               var req = {
                 config: rejection.config,
