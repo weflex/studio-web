@@ -218,6 +218,10 @@ ul.horizontal li {
   height: 40px;
   width: 300px;
 }
+.edit input[type="checkbox"] {
+  width: auto;
+  height: auto;
+}
 .edit label {
   display: inline-block;
   width: 100px;
