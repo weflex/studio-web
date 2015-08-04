@@ -18,7 +18,7 @@ angular
   'angularMoment',
   'pascalprecht.translate'
 ])
-.run(['$rootScope', 'Users', '$http', function($rootScope, Users, $http) {
+.run(['$rootScope', 'Users', '$http', '$location', function($rootScope, Users, $http, $location) {
   $rootScope.requestsUnAuthorized = [];
   $rootScope.$on('event:loginConfirmed', function() {
     var requests = $rootScope.requestsUnAuthorized;
@@ -35,9 +35,7 @@ angular
     }
   });
   $rootScope.$on('event:loginRequired', function() {
-    Users.login({username: 'king', password: 'iamthekingoftheweflex'}).$promise.then(function() {
-      $rootScope.$broadcast('event:loginConfirmed');
-    })
+    $location.url('/login');
   });
 }])
 .run(['$location', 'amMoment', '$translate', function($location, amMoment, $translate) {

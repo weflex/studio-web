@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('weflexAdmin')
-  .factory('Users', ['$resource', 'wfConfig', '$rootScope', function($resource, wfConfig, $rootScope){
+  .factory('Users', ['$resource', 'wfConfig', '$cookies', function($resource, wfConfig, $cookies){
     var baseUrl = wfConfig.BASE_URL.API;
 
     var paramDefaults = {
@@ -21,9 +21,9 @@ angular.module('weflexAdmin')
 
     resource.accessToken = function(accessToken) {
       if (accessToken) {
-        $rootScope.accessToken = accessToken;
+        $cookies.accessToken = accessToken;
       } else {
-        return $rootScope.accessToken;
+        return $cookies.accessToken;
       }
 
     }
@@ -33,7 +33,7 @@ angular.module('weflexAdmin')
 
     function _saveAccessToken(data) {
       var response = JSON.parse(data);
-      $rootScope.accessToken = response.id;
+      $cookies.accessToken = response.id;
       return response;
     }
   }]);
