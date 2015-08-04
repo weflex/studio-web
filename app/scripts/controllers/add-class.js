@@ -6,7 +6,8 @@ angular.module('weflexAdmin')
 
   if (!copiedFrom) {
     $scope.class = {
-      isTemplate: true
+      isTemplate: true,
+      available: true
     }
   } else {
     Classes.get({classId: copiedFrom}).$promise.then(function(template) {
