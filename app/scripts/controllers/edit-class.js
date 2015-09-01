@@ -8,6 +8,7 @@ angular.module('weflexAdmin')
 
   function EditClassCtrl(adminRouteHelper, $scope, $routeParams, Classes, Orders, Users) {
     var classId = $routeParams.classId;
+    $scope.productType = 'class';
 
     Classes.get({classId: classId}).$promise.then(function(response) {
       $scope.class = response;

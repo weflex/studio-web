@@ -36,6 +36,9 @@ angular.module('weflexAdmin')
     toAddClassTemplate: function() {
       $location.url(this.url.ADD_CLASS);
     },
+    toAddDaypass: function() {
+      $location.url('/admin/daypasses/add');
+    },
     toEditClass: function(classId) {
       $location.url(this.url.EDIT_CLASS + classId);
     },
