@@ -14,6 +14,10 @@ angular.module('weflexAdmin')
       $scope.class = response;
     });
 
+    Orders.query({'filter[where][prodId]': daypassId, access_token: Users.accessToken()}).$promise.then(function(response) {
+      $scope.orders = response;
+    });
+
     $scope.onSubmit = function() {
       if($scope.classForm.$valid) {
         $scope.submitDisabled = true;

@@ -14,7 +14,7 @@ angular.module('weflexAdmin')
       $scope.class = response;
     });
 
-    Orders.query({'filter[where][classId]': classId, access_token: Users.accessToken()}).$promise.then(function(response) {
+    Orders.query({'filter[where][prodId]': classId, access_token: Users.accessToken()}).$promise.then(function(response) {
       $scope.orders = response;
     });
 
