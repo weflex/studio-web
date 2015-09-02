@@ -43,6 +43,10 @@
         templateUrl: 'views/edit-class.html',
         controller: 'AddClassCtrl'
       })
+      .when('/admin/daypasses', {
+        templateUrl: 'views/class-list.html',
+        controller: 'DaypassListCtrl'
+      })
       .when('/admin/daypasses/add/', {
         templateUrl: 'views/edit-class.html',
         controller: 'AddDaypassCtrl'
