@@ -13,6 +13,7 @@ angular.module('weflexAdmin')
                   '<li ng-repeat="(amenity, checked) in allAmenities">'+
                     '<label class="label">'+
                       '<input type="checkbox" ng-model="allAmenities[amenity]" ng-change="onChange(amenity, checked)"/>'+
+                      '<span class="icon icon-{{amenity}}"></span>'+
                       '{{amenity}}'+
                     '</label>'+
                   '</li>'+
@@ -24,11 +25,11 @@ angular.module('weflexAdmin')
 
     function link(scope, elem, attrs) {
       scope.allAmenities = {
-        'Wi-Fi': false,
-        'Shower': false,
-        'Parking': false,
-        'Toilet': false,
-        'Changing Room': false
+        'wifi': false,
+        'shower': false,
+        'parking': false,
+        'toilet': false,
+        'changingRoom': false
       };
 
       scope.onChange = function(amenity, checked) {

@@ -26,7 +26,7 @@ angular.module('weflexAdmin')
       scope.list = {
         isPTrainer: false,
         isForLadies: false
-      }
+      };
     }
   });
 })();
