@@ -119,6 +119,12 @@ input[type="number"].ng-touched.ng-invalid {
 .add-photos button {
   margin-left: 8px;
 }
+
+.amenities .label,
+.class-properties .label {
+  width: 180px;
+}
+
 .button {
   border-radius: 4px;
   font-size: 12px;
@@ -221,6 +227,7 @@ ul.horizontal li {
 .edit input[type="checkbox"] {
   width: auto;
   height: auto;
+  margin-right: 15px;
 }
 .edit label {
   display: inline-block;

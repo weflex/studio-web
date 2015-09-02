@@ -63,18 +63,16 @@
   <div class="item">
     <h1>Available</h1>
     <div>
-      <label for="available">Available</label>
       <input id="available" type="checkbox" ng-model="class.available" />
+      <label for="available">Available</label>
     </div>
   </div>
 
   <div class="item">
-    <h1>Is PT Class?</h1>
-    <div>
-      <label for="pt">PT Class</label>
-      <input id="pt" type="checkbox" ng-model="class.isPTrainer" />
-    </div>
+    <h1>Type</h1>
+    <wf-class-properties list="class.properties"></wf-class-properties>
   </div>
+
   <div class="category">
     <h1>Category</h1>
     <div>
