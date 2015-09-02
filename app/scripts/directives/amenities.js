@@ -29,7 +29,7 @@ angular.module('weflexAdmin')
         'shower': false,
         'parking': false,
         'toilet': false,
-        'changingRoom': false
+        'changing-room': false
       };
 
       scope.onChange = function(amenity, checked) {
