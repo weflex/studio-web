@@ -73,6 +73,31 @@ input[type="number"].ng-touched.ng-invalid {
   color: #ffffff;
 }
 
+.icon {
+  background: url('/images/icon.png') 0px 0px/90px 60px;
+  width: 30px;
+  height: 30px;
+  display: inline-block;
+}
+.icon-wifi {
+  background-position: 0 0;
+}
+.icon-shower {
+  background-position: -30px 0;
+}
+.icon-parking {
+  background-position: -60px 0;
+}
+.icon-changingRoom {
+  background-position: 0px -30px;
+}
+.icon-toilet {
+  background-position: -30px -30px;
+}
+.icon-resting-area {
+  background-position: -60px -30px;
+}
+
 .avatar {
   width: 30px;
   height: 30px;
@@ -119,6 +144,12 @@ input[type="number"].ng-touched.ng-invalid {
 .add-photos button {
   margin-left: 8px;
 }
+
+.amenities .label,
+.class-properties .label {
+  width: 180px;
+}
+
 .button {
   border-radius: 4px;
   font-size: 12px;
@@ -203,6 +234,9 @@ ul.horizontal li {
   padding: 10px 0;
   margin: 10px 0;
 }
+.edit .icon {
+  vertical-align: middle;
+}
 .edit h1 {
   font-size: 36px;
 }
@@ -221,6 +255,7 @@ ul.horizontal li {
 .edit input[type="checkbox"] {
   width: auto;
   height: auto;
+  margin-right: 15px;
 }
 .edit label {
   display: inline-block;
