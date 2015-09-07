@@ -3,7 +3,7 @@
 
 angular.module('weflexAdmin')
   .controller('AddDaypassCtrl', ['$scope', 'adminRouteHelper', 'Daypasses', function($scope, adminRouteHelper, Daypasses){
-    $scope.productType = 'daypass';
+    $scope.prodType = 'daypass';
 
     $scope.class = {
       isTemplate: true

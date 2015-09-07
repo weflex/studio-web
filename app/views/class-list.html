@@ -1,28 +1,28 @@
 <div class="class-list">
   <table border="1" class="classes">
-    <caption ng-bind="productType"></caption>
+    <caption ng-bind="prodType"></caption>
     <thead>
       <tr>
         <th>Class Name</th>
         <th>Venue</th>
         <th ng-click="dateReverse=!dateReverse" class="filter">Datetime</th>
         <th>Price</th>
-        <th ng-if="productType==='class'">Duplicate</th>
+        <th ng-if="prodType==='class'">Duplicate</th>
       </tr>
     </thead>
     <tbody>
       <tr ng-repeat="clazz in classes | orderBy:'from':dateReverse">
         <td>
-          <a ng-if="productType==='class'" href="/admin/classes/edit/{{clazz.id}}" ng-bind="clazz.title.en"><i class="fa fa-pencil"></i></a>
-          <a ng-if="productType==='daypass'" href="/admin/daypasses/edit/{{clazz.id}}" ng-bind="clazz.title.en"><i class="fa fa-pencil"></i></a>
+          <a ng-if="prodType==='class'" href="/admin/classes/edit/{{clazz.id}}" ng-bind="clazz.title.en"><i class="fa fa-pencil"></i></a>
+          <a ng-if="prodType==='daypass'" href="/admin/daypasses/edit/{{clazz.id}}" ng-bind="clazz.title.en"><i class="fa fa-pencil"></i></a>
         </td>
         <td ng-bind="clazz.venue.name.en" class="venue"></td>
         <td>
-          <span ng-if="productType==='class'" ng-bind-template="{{clazz.from | amDateFormat:'YYYY-MM-DD'}} {{clazz.from | amDateFormat:'h:mm'}} - {{clazz.to | amDateFormat:'h:mm a'}}"></span>
-          <span ng-if="productType==='daypass'" ng-bind="clazz.open"></span>
+          <span ng-if="prodType==='class'" ng-bind-template="{{clazz.from | amDateFormat:'YYYY-MM-DD'}} {{clazz.from | amDateFormat:'h:mm'}} - {{clazz.to | amDateFormat:'h:mm a'}}"></span>
+          <span ng-if="prodType==='daypass'" ng-bind="clazz.open"></span>
         </td>
         <td ng-bind="clazz.price | currency:'￥':'0'"></td>
-        <td ng-if="productType==='class'" style="text-align: center;"><a ng-show="clazz.isTemplate" href="/admin/classes/add?copied_from={{clazz.id}}"><i class="fa fa-plus"></i></a></td>
+        <td ng-if="prodType==='class'" style="text-align: center;"><a ng-show="clazz.isTemplate" href="/admin/classes/add?copied_from={{clazz.id}}"><i class="fa fa-plus"></i></a></td>
       </tr>
     </tbody>
   </table>
