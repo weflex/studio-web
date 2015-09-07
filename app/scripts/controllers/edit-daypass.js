@@ -8,7 +8,7 @@ angular.module('weflexAdmin')
 
   function EditDaypassCtrl(adminRouteHelper, $scope, $routeParams, Daypasses, Orders, Users) {
     var daypassId = $routeParams.daypassId;
-    $scope.productType = 'daypass';
+    $scope.prodType = 'daypass';
 
     Daypasses.get({daypassId: daypassId}).$promise.then(function(response) {
       $scope.class = response;
