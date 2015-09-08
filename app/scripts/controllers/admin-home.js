@@ -18,9 +18,13 @@ controller('AdminHomeCtrl', ['$scope', 'wfAPI', 'adminRouteHelper', 'Classes', '
 
   $scope.onAddVenue = function() {
     adminRouteHelper.toAddVenue();
-  }
+  };
 
   $scope.onAddClassTemplate = function() {
     adminRouteHelper.toAddClassTemplate();
-  }
+  };
+
+  $scope.onAddDaypass = function() {
+    adminRouteHelper.toAddDaypass();
+  };
 }]);

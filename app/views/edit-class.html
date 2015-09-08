@@ -4,7 +4,7 @@
     <span ng-bind="class.id"></span>
   </div>
 
-  <div class="item">
+  <div class="item" ng-if="prodType==='class'">
     <h1>Is Template?</h1>
     <div>
       <p ng-show="class.isTemplate">Yes</p>
@@ -105,12 +105,20 @@
     </div>
   </div>
 
-  <div class="item">
+  <div class="item" ng-if="prodType==='class'">
     <h1>Date Time</h1>
     <wf-datetime-range data-from-model="class.from" data-to-model="class.to"></wf-datetime-range>
   </div>
 
-  <div class="item">
+  <div class="item" ng-if="prodType==='daypass'">
+    <h1>Open</h1>
+    <div>
+      <label>Open</label>
+      <input type="text" ng-model="class.open"/>
+    </div>
+  </div>
+
+  <div class="item" ng-if="prodType==='class'">
     <h1>Spots</h1>
     <div>
       <label>Total<span>*</span></label>
@@ -119,6 +127,14 @@
     <div>
       <label>Available<span>*</span></label>
       <input type="number" ng-model="class.spots.available" required />
+    </div>
+  </div>
+
+  <div class="item" ng-if="prodType==='daypass'">
+    <h1>Spots</h1>
+    <div>
+      <label>Spots</label>
+      <input type="number" ng-model="class.spots" />
     </div>
   </div>
 

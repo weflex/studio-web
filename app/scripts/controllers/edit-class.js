@@ -8,12 +8,13 @@ angular.module('weflexAdmin')
 
   function EditClassCtrl(adminRouteHelper, $scope, $routeParams, Classes, Orders, Users) {
     var classId = $routeParams.classId;
+    $scope.prodType = 'class';
 
     Classes.get({classId: classId}).$promise.then(function(response) {
       $scope.class = response;
     });
 
-    Orders.query({'filter[where][classId]': classId, access_token: Users.accessToken()}).$promise.then(function(response) {
+    Orders.query({'filter[where][prodId]': classId, access_token: Users.accessToken()}).$promise.then(function(response) {
       $scope.orders = response;
     });
 

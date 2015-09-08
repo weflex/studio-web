@@ -3,6 +3,7 @@
 angular.module('weflexAdmin')
 .controller('AddClassCtrl', ['$scope', '$routeParams', 'adminRouteHelper', 'Classes', 'Users', function($scope, $routeParams, adminRouteHelper, Classes, Users) {
   var copiedFrom = $routeParams.copied_from;
+  $scope.prodType = 'class';
 
   if (!copiedFrom) {
     $scope.class = {

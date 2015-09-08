@@ -12,7 +12,7 @@ angular.module('weflexAdmin')
       template: '<ul class="amenities">'+
                   '<li ng-repeat="(amenity, checked) in allAmenities">'+
                     '<label class="label">'+
-                      '<input type="checkbox" ng-model="allAmenities[amenity]" ng-change="onChange(amenity, checked)"/>'+
+                      '<input type="checkbox" ng-model="checked" ng-change="onChange(amenity, checked)"/>'+
                       '<span class="icon icon-{{amenity}}"></span>'+
                       '{{amenity}}'+
                     '</label>'+
@@ -31,6 +31,14 @@ angular.module('weflexAdmin')
         'toilet': false,
         'changing-room': false
       };
+
+      scope.$watch('list', function(newValue, oldValue) {
+        if (newValue !== oldValue) {
+          angular.forEach(newValue, function(value) {
+            scope.allAmenities[value] = true;
+          });
+        }
+      });
 
       scope.onChange = function(amenity, checked) {
         scope.list = scope.list || [];
