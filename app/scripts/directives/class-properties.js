@@ -23,10 +23,20 @@ angular.module('weflexAdmin')
     return directive;
 
     function link(scope, elem, attrs) {
-      scope.list = {
+      scope.allProperties = {
         isPTrainer: false,
         isForLadies: false
       };
+
+      scope.list = angular.copy(scope.allProperties);
+
+      scope.$watch('list', function(newValue, oldValue) {
+        if (newValue !== oldValue) {
+          angular.forEach(scope.allProperties, function(value, prop) {
+            newValue[prop] = newValue[prop] || scope.allProperties;
+          });
+        }
+      });
     }
   });
 })();
