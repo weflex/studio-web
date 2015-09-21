@@ -246,7 +246,7 @@ ul.horizontal li {
 .edit textarea {
   display: block;
   height: 150px;
-  width: 300px;
+  width: 100%;
 }
 .edit input, .edit select {
   height: 40px;
