@@ -1,10 +1,35 @@
-<form class="edit-voucher edit">
+<form class="edit-voucher edit" name="voucherForm" novalidate>
+  <div class="item">
+    <h1>New Voucher</h1>
+  </div>
 
+  <div>
+    <label>Owner<span>*</span></label>
+    <input type="text" ng-model="voucher.owner" required />
+  </div>
+
+  <div>
+    <label>Campaign<span>*</span></label>
+    <input type="text" ng-model="voucher.campaign" required />
+  </div>
+
+  <div>
+    <label>Value<span>*</span></label>
+    <input type="number" ng-model="voucher.value" required />
+  </div>
+
+  <div>
+    <label>Number<span>*</span></label>
+    <input type="number" ng-model="count" required />
+  </div>
+
+  <br />
+  <input type="submit" value="Submit" ng-click="onSubmit()" ng-disabled="submitDisabled" />
 </form>
 
-<div class="class-list">
-  <table border="1" class="classes">
-    <caption>Vouchers</caption>
+<div class="voucher-list">
+  <h1>Vouchers</h1>
+  <table border="1" class="vouchers">
     <thead>
       <tr>
         <th>Owner</th>

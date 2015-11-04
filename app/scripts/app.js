@@ -18,12 +18,9 @@ angular
   'angularMoment',
   'pascalprecht.translate'
 ])
-.config( [
-  '$compileProvider',
-  function( $compileProvider ) {
+.config(['$compileProvider', function($compileProvider) {
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension|data):/);
-  }
-])
+}])
 .run(['$rootScope', 'Users', '$http', '$location', function($rootScope, Users, $http, $location) {
   $rootScope.requestsUnAuthorized = [];
   $rootScope.$on('event:loginConfirmed', function() {

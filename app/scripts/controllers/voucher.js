@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('weflexAdmin')
-  .controller('VoucherCtrl', ['$scope', 'Coins', function($scope, Coins){
+  .controller('VoucherCtrl', ['$scope', '$route', 'Coins', function ($scope, $route, Coins) {
 
     function getBatchId (c) {
       return [c.owner, c.campaign, c.value].join('_');
@@ -48,6 +48,18 @@ angular.module('weflexAdmin')
 
       $scope.download = function (obj) {
         return 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(obj));
+      };
+
+      $scope.voucher = {};
+      $scope.count   = 0;
+
+      $scope.onSubmit = function () {
+        if ($scope.voucherForm.$valid) {
+          $scope.submitDisabled = true;
+          Coins.batch($scope.voucher, $scope.count).$promise.then(function () {
+            $route.reload();
+          });
+        }
       };
     });
   }]);

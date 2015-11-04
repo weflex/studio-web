@@ -2,7 +2,7 @@
   'use strict';
 
   angular.module('weflexAdmin')
-    .factory('Coins', ['$resource', '$cookies', 'wfConfig', 'Users', function($resource, $cookies, wfConfig, Users){
+    .factory('Coins', ['$resource', '$cookies', 'wfConfig', 'Users', function ($resource, $cookies, wfConfig, Users) {
       var baseUrl = wfConfig.BASE_URL.API + '/api';
       var paramDefaults = {
         'access_token': $cookies.accessToken
