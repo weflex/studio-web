@@ -1,0 +1,29 @@
+<form class="edit-voucher edit">
+
+</form>
+
+<div class="class-list">
+  <table border="1" class="classes">
+    <caption>Vouchers</caption>
+    <thead>
+      <tr>
+        <th>Owner</th>
+        <th>Campaign</th>
+        <th>Value</th>
+        <th>Number</th>
+        <th>Download</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="batch in batches">
+        <td ng-bind="batch.owner"></td>
+        <td ng-bind="batch.campaign"></td>
+        <td ng-bind="batch.value"></td>
+        <td ng-bind-template="{{batch.available}}/{{batch.number}}"></td>
+        <td>
+          <a href="{{download(batch.members)}}" download="vouchers.json">donwload as JSON</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

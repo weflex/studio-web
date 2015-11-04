@@ -16,6 +16,10 @@
         templateUrl: 'views/login.html',
         controller: 'LoginCtrl'
       })
+      .when('/vouchers', {
+        templateUrl: 'views/voucher.html',
+        controller: 'VoucherCtrl'
+      })
       .when('/admin/', {
         templateUrl: 'views/home.html',
         controller: 'AdminHomeCtrl'
