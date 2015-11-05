@@ -53,13 +53,32 @@ angular.module('weflexAdmin')
       $scope.voucher = {};
       $scope.count   = 0;
 
+      $scope.onTickAssignUser = function () {
+        if ($scope.assignUser) {
+          $scope.voucher.owner = 'WeFlex';
+          $scope.voucher.campaign = 'Admin';
+          $scope.count = 1;
+        }
+      };
+
       $scope.onSubmit = function () {
-        if ($scope.voucherForm.$valid) {
-          $scope.submitDisabled = true;
-          Coins.batch($scope.voucher, $scope.count).$promise.then(function () {
+        if (!$scope.voucherForm.$valid) {
+          return false;
+        }
+        $scope.submitDisabled = true;
+
+        Coins.batch($scope.voucher, $scope.count).$promise
+          .then(function (status) {
+            var coinId = status.results[0].id;
+
+            if ($scope.assignUser && coinId) {
+              return Coins.assign(coinId, $scope.assignUserId).$promise
+            }
+            return;
+          })
+          .then(function () {
             $route.reload();
           });
-        }
       };
     });
   }]);

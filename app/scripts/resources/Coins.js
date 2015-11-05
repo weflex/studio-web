@@ -16,6 +16,10 @@
         method: 'POST'
       };
 
+      var assign = {
+        method: 'POST'
+      };
+
       return {
         query: function () {
           return $resource(baseUrl + '/coins/', paramDefaults, {query}).query();
@@ -23,8 +27,15 @@
         batch: function (data, count) {
           return $resource(baseUrl + '/coins/batch', paramDefaults, {batch})
             .batch({data, count});
+        },
+        assign: function (coinId, userId) {
+          return $resource(baseUrl + '/coins/:coin_id/assign', {
+              coin_id: coinId,
+              user_id: userId,
+              access_token: $cookies.accessToken
+            },
+            {assign}).assign();
         }
       };
     }]);
-
-})();            
+})();

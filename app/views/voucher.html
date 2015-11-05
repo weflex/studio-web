@@ -5,12 +5,12 @@
 
   <div>
     <label>Owner<span>*</span></label>
-    <input type="text" ng-model="voucher.owner" required />
+    <input type="text" ng-model="voucher.owner" ng-disabled="assignUser" required />
   </div>
 
   <div>
     <label>Campaign<span>*</span></label>
-    <input type="text" ng-model="voucher.campaign" required />
+    <input type="text" ng-model="voucher.campaign" ng-disabled="assignUser" required />
   </div>
 
   <div>
@@ -20,7 +20,16 @@
 
   <div>
     <label>Number<span>*</span></label>
-    <input type="number" ng-model="count" required />
+    <input type="number" ng-model="count" ng-disabled="assignUser" required />
+  </div>
+
+  <div>
+    <div>
+      <label>Assign user</label>
+      <input type="checkbox" ng-model="assignUser" ng-click="onTickAssignUser()"/>
+    </div>
+    <label>User ID</label>
+    <input type="text" ng-model="assignUserId" ng-disabled="!assignUser" required />
   </div>
 
   <br />
