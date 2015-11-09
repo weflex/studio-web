@@ -1,6 +1,6 @@
 {
   "name": "wechat",
-  "version": "1.5.3",
+  "version": "1.9.1",
   "dependencies": {},
   "devDependencies": {
     "connect-modrewrite": "^0.7.11",
