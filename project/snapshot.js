@@ -4,6 +4,7 @@ module.exports = {
     "clean",
     "bower_concat",
     "concat",
+    "babel",
     "autoprefixer",
     "cssmin",
     "uglify",
@@ -100,10 +101,21 @@ module.exports = {
       }
     },
 
+    "babel": {
+      "options": {
+        "presets": ["es2015"]
+      },
+      "es2015": {
+        "files": {
+          ".tmp/scripts/main.es5.js": ".tmp/scripts/main.js"
+        }
+      }
+    },
+
     "uglify": {
       "scripts": {
         "files": {
-          ".tmp/scripts/main.min.js": ".tmp/scripts/main.js",
+          ".tmp/scripts/main.min.js": ".tmp/scripts/main.es5.js",
           ".tmp/scripts/bower_components.min.js": ".tmp/scripts/bower_components.js"
         }
       }
