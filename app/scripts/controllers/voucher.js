@@ -18,13 +18,13 @@ angular.module('weflexAdmin')
         campaign:  c.campaign,
         members:   [c]
       };
-    }              
+    }
 
     Coins.query().$promise.then(function(coins) {
       $scope.batches = coins.reduce(function (batches, coin, index) {
 
         if (1 === index) {
-          let first = batches;
+          var first = batches;
           batches = [newBatch(first)];
         }
 
@@ -42,7 +42,7 @@ angular.module('weflexAdmin')
         } else {
           batches.push(newBatch(coin));
         }
-          
+
         return batches;
       });
 
