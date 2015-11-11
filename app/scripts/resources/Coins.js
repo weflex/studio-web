@@ -22,7 +22,7 @@
 
       return {
         query: function () {
-          return $resource(baseUrl + '/coins/', paramDefaults, {query}).query();
+          return $resource(baseUrl + '/coins', paramDefaults, {query}).query();
         },
         batch: function (data, count) {
           return $resource(baseUrl + '/coins/batch', paramDefaults, {batch})

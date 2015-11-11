@@ -2,16 +2,18 @@
   WeFlex Admin Portal
 </h1>
 
-<div>
-  <label>User name
-    <input type="text" ng-model="username"/>
-  </label>
-</div>
+<form>
+  <div>
+    <label>User name
+      <input type="text" ng-model="username"/>
+    </label>
+  </div>
 
-<div>
-  <label>Password
-    <input type="password" ng-model="password"/>
-  </label>
-</div>
-
-<button ng-click="onLogin()">login</button>
+  <div>
+    <label>Password
+      <input type="password" ng-model="password"/>
+    </label>
+  </div>
+  
+  <button ng-click="onLogin()">login</button>
+</form>

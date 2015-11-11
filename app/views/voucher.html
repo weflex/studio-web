@@ -29,7 +29,7 @@
       <input type="checkbox" ng-model="assignUser" ng-click="onTickAssignUser()"/>
     </div>
     <label>User ID</label>
-    <input type="text" ng-model="assignUserId" ng-disabled="!assignUser" required />
+    <input type="text" ng-model="assignUserId" ng-disabled="!assignUser" ng-required="assignUser" />
   </div>
 
   <br />
@@ -50,12 +50,12 @@
     </thead>
     <tbody>
       <tr ng-repeat="batch in batches">
-        <td ng-bind="batch.owner"></td>
-        <td ng-bind="batch.campaign"></td>
-        <td ng-bind="batch.value"></td>
-        <td ng-bind-template="{{batch.available}}/{{batch.number}}"></td>
+        <td ng-bind="batch.members[0].owner"></td>
+        <td ng-bind="batch.members[0].campaign"></td>
+        <td ng-bind="batch.members[0].value"></td>
+        <td ng-bind-template="{{batch.available}}/{{batch.members.length}}"></td>
         <td>
-          <a href="{{download(batch.members)}}" download="vouchers.json">donwload as JSON</a>
+          <a href="{{batch.asJSON}}" download="vouchers.json">donwload as JSON</a>
         </td>
       </tr>
     </tbody>
