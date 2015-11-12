@@ -33,7 +33,7 @@ angular.module('weflexAdmin')
       scope.$watch('list', function(newValue, oldValue) {
         if (newValue !== oldValue) {
           angular.forEach(scope.allProperties, function(value, prop) {
-            newValue[prop] = newValue[prop] || scope.allProperties;
+            newValue[prop] = newValue[prop] || scope.allProperties[prop];
           });
         }
       });
