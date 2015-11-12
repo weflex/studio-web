@@ -7,7 +7,7 @@ angular.module('weflexAdmin')
     Coins.query().$promise.then((coins) => {
       let coinsInBatch = coins.reduce((batches, coin, index) => {
         let batchId = [coin.owner, coin.campaign, coin.value].join('_');
-        if (typeof batches[batchId] !== undefined) {
+        if (typeof batches[batchId] === 'undefined') {
           batches[batchId] = [];
         }
         batches[batchId].push(coin);
