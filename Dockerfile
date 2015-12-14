@@ -1,12 +1,9 @@
-FROM       scottoasis/nginx-grunt-bower:latest
+FROM       node:5.2.0
 RUN        mkdir /app
 WORKDIR    /app
 ADD        package.json /app/
 RUN        npm install
-ADD        bower.json /app/
-RUN        bower install --allow-root
 ADD        . /app/
-RUN        grunt snapshot
-ADD        project/nginx.conf /etc/nginx/
-ENTRYPOINT ["nginx"]
+RUN        make build
+ENTRYPOINT ["node", "/app/server.js"]
 

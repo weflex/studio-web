@@ -1,35 +1,40 @@
-# WeChat Web Repository
+WeFlex Admin Web App
+====================
 
-## Debug: start a server
+Build Dependencies
+------------------
 
-````
-> grunt debug:serve
-````
-or
-````
-> grunt debug
-````
+* NodeJS (>= 2.5.0)
 
+See [Official Repo](https://nodejs.org/en/download/)
 
-## Testing: execute unit tests
+* Watchman (>= 4.1.0)
 
 ````
-> grunt test
+> brew update && brew install --HEAD watchman
+````
+
+* Make
+
+
+Static Builds
+-------------
+
+To make a static build, simply
+
+````
+> make
 ````
 
 
-## Building: making snaphot builds
+Start a Server
+--------------
+
+To start a http server, simply
 
 ````
-> grunt snapshot
+> make watch
 ````
 
-
-## Building: add more build tasks
-
-You will find out debug script _project/debug.js_ being helpful.
-
-
-## Testing: write more tests
-
-Test suites are under _test/spec_ folder.
+this will start a server listening on port 8080. Even better, any
+change you made will trigger a rebuild and reload the web page :).
