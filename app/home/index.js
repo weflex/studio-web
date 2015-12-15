@@ -1,4 +1,4 @@
-const React = require('React');
+const React = require('react');
 const NavBar = require('../navbar');
 const ToolBar = require('../toolbar');
 const User = require('../api/user');
