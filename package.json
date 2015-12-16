@@ -32,6 +32,7 @@
     "node": ">=2.5.0"
   },
   "scripts": {
-    "test": "make test"
+    "test": "make test",
+    "start": "make serve"
   }
 }
