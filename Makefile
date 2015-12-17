@@ -25,7 +25,7 @@ dist/fonts: dist
 dist/bundle.js: app/index.js $(sources) node_modules dist
 	node_modules/.bin/browserify \
 	  --transform [ babelify \
-	    --plugins [ transform-react-jsx ] \
+	    --plugins [ transform-react-jsx syntax-flow ] \
 	    --presets [ es2015 \
 	                stage-0 \
 	                stage-1 \
