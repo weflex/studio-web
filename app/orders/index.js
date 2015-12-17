@@ -1,4 +1,11 @@
-import React, {Component} from 'react';
+'use strict';
+const React = require('react');
+const {
+  Table,
+  Thead,
+  Tr, Td, Th
+} = require('reactable');
+
 const Order = require('../api/order');
 const NavBar = require('../navbar');
 const ToolBar = require('../toolbar');
@@ -8,27 +15,27 @@ function sortBy (attr) {
   return false;
 }
 
-class OrderItem extends Component {
+class OrderItem extends React.Component {
   render () {
     let order = this.props.content;
     return (
-      <tr>
-        <td>{order.clazz.title.en}</td>
-        <td>{order.clazz.venue.name.en}</td>
-        <td>{order.clazz.from}</td>
-        <td>
+      <Tr>
+        <Td>{order.prod.title.en}</Td>
+        <Td>{order.prod.venue.name.en}</Td>
+        <Td>{order.prod.from}</Td>
+        <Td>
           <img className='avatar' src={order.user.avatarUrl}/>
           <span>{order.user.nickname}</span>
-        </td>
-        <td>{order.passcode}</td>
-        <td>{order._raw.time_end}</td>
-        <td>{order.status}</td>
-      </tr>
+        </Td>
+        <Td>{order.passcode}</Td>
+        <Td>{order._raw.time_end}</Td>
+        <Td>{order.status}</Td>
+      </Tr>
     );
   }
 }
 
-class Orders extends Component {
+class Orders extends React.Component {
   constructor () {
     super();
     this.state = {
@@ -37,11 +44,9 @@ class Orders extends Component {
     };
   }
   async componentDidMount () {
-    let orders;
-    let token = 'bwoCafmtjR7QrgJQQbmG0UWEcURH4lYdDzN85JG0QoNqLHZ8Yi5qiRifcBIjQTzw';
-    orders = await Order.list(token);
-    this.setState({orders});
-    // TODO: emmit error message;
+    this.setState({
+      orders: await Order.list()
+    });
   }
   render () {
     return (
@@ -49,25 +54,23 @@ class Orders extends Component {
         <NavBar />
         <ToolBar />
         <div className='order-list'>
-          <table>
+          <Table>
             <caption>Orders</caption>
-            <thead>
-              <tr>
-                <th onClick={sortBy.bind(this, 'clazz.name')} className='filter'>Class Name</th>
-                <th>Studio</th>
-                <th onClick={sortBy.bind(this, 'clazz.from')} className='filter'>Class Time</th>
-                <th>User</th>
-                <th>Passcode</th>
-                <th onClick={sortBy.bind(this, '_raw.time_end')} className='filter'>Order Time</th>
-                <th onClick={sortBy.bind(this, 'status')} className='filter'>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              { this.state.orders.map((order, i) => <OrderItem key={i} content={order} />) }
-            </tbody>
-          </table>
+            <Thead>
+              <Tr>
+                <Th onClick={sortBy.bind(this, 'clazz.name')} className='filter'>Class Name</Th>
+                <Th>Studio</th>
+                <Th onClick={sortBy.bind(this, 'clazz.from')} className='filter'>Class Time</Th>
+                <Th>User</th>
+                <Th>Passcode</th>
+                <Th onClick={sortBy.bind(this, '_raw.time_end')} className='filter'>Order Time</Th>
+                <Th onClick={sortBy.bind(this, 'status')} className='filter'>Status</Th>
+              </Tr>
+            </Thead>
+            {this.state.orders.map((order, i) => <OrderItem key={i} content={order} />)}
+          </Table>
         </div>
-      </div>
+      </Div>
     );
   }
 }
