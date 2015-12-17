@@ -32,18 +32,19 @@ module.exports = {
     localStorage.setItem('weflex.user', JSON.stringify(obj));
   },
 
-  request: async function (endpoint, method="get", data={}: any) {
+  request: async function (endpoint='/', method='get', data={}) {
     var req = Agent[method.toLowerCase()](endpoint);
     req.use(Prefix(BASE_URL));
     req.query({
-      access_token: this.user.accessToken
+      access_token: this.user.accessToken,
+      lastest: Math.random()
     });
-    req.send(data)
+    req.send(data);
     var res;
     try {
       res = await req.end();
     } catch (e) {
-      if (e.response.status === 401 || e.response.status === 403) {
+      if (e.response && (e.response.status === 401 || e.response.status === 403)) {
         location.href = '/login?reason=' +
           (e.message || 'internal_error').toLowerCase();
       } else {

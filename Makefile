@@ -7,7 +7,7 @@ node          = '/usr/local/bin/node'
 npm           = '/usr/local/bin/npm'
 watchman-make = '/usr/local/bin/watchman-make'
 
-build: dist/bundle.js dist/index.html dist/style.css dist/fonts
+build: dist/bundle.js dist/index.html dist/style.css dist/common dist/fonts
 
 watch: serve
 	$(watchman-make) \
@@ -50,5 +50,9 @@ purge: node_modules clean
 
 dist:
 	@mkdir $@
+
+dist/common: node_modules
+	@mkdir $@
+	@cp -r node_modules/fixed-data-table/dist/fixed-data-table.min.css dist/common/fixed-data-table.min.css
 
 .PHONY: build clean watch serve
