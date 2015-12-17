@@ -14,7 +14,7 @@ gulp.task('dist/bundle.js', function () {
   bundler
     .transform(
       bablify,
-      { plugins: ['transform-react-jsx'],
+      { plugins: ['transform-react-jsx', 'syntax-flow'],
         presets: ['es2015', 'stage-0', 'stage-1', 'stage-2', 'stage-3'] })
     .bundle()
     .pipe(source('bundle.js'))
