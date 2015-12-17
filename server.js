@@ -6,10 +6,14 @@ var port = 8080;
 
 var app = serve('dist');
 
-http.createServer(function (req, res, done) {
-  var done = finalize(req, res);
-  app(req, res, done);
-}).listen(port);
+http.createServer(
+  function (req, res, done) {
+    var done = finalize(req, res);
+    if (!/\.(js|html|css)$/.test(req.url)) {
+      req.url = '/index.html';
+    }
+    app(req, res, done);
+  }).listen(port);
 
 var server = livereload.createServer();
 server.watch('dist');
