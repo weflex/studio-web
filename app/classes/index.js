@@ -6,7 +6,7 @@ const {
   Column, 
   Cell 
 } = require('fixed-data-table');
-const Order = require('../api/order');
+const Clazz = require('../api/class');
 
 var SortTypes = {
   ASC: 'ASC',
@@ -17,7 +17,7 @@ function reverseSortDirection (sortDir) {
   return sortDir === SortTypes.DESC ? SortTypes.ASC : SortTypes.DESC;
 }
 
-function getValueByNamespace (obj, namespace, isDate) {
+function getValueByNamespace (obj, namespace, type) {
   var curr = obj;
   var names = namespace.split('.');
   var key;
@@ -28,8 +28,10 @@ function getValueByNamespace (obj, namespace, isDate) {
     }
   } 
   while (key && curr);
-  if (isDate) {
+  if (type === 'date') {
     return Moment(curr).fromNow();
+  } else if (type === 'bool') {
+    return curr ? 'Yes' : 'No';
   } else {
     return curr;
   }
@@ -63,12 +65,12 @@ class SortHeaderCell extends React.Component {
   }
 }
 
-const TextCell = ({rowIndex, data, columnKey, isDate, ...props}) => (
+const TextCell = ({rowIndex, data, columnKey, type, ...props}) => (
   <Cell {...props}>
     {getValueByNamespace(
       data.getObjectAt(rowIndex),
       columnKey,
-      isDate
+      type
     )}
   </Cell>
 );
@@ -100,7 +102,7 @@ class Orders extends React.Component {
     this._onSortChange = this._onSortChange.bind(this);
   }
   async componentDidMount() {
-    this._dataList = await Order.list();
+    this._dataList = await Clazz.list();
     this._index.call(this);
     this.setState({
       sortedDataList: new DataListWrapper(this._defaultSortIndexes, this._dataList)
@@ -147,11 +149,23 @@ class Orders extends React.Component {
         height={window.innerHeight}
         {...this.props}>
         <Column
-          columnKey="prod.venue.name.en"
+          columnKey="category"
           header={
             <SortHeaderCell
               onSortChange={this._onSortChange}
-              sortDir={colSortDirs['prod.venue.name.en']}>
+              sortDir={colSortDirs['category']}>
+              Private Trainer
+            </SortHeaderCell>
+          }
+          cell={<TextCell data={sortedDataList} />}
+          width={200}
+        />
+        <Column
+          columnKey="venue.name.en"
+          header={
+            <SortHeaderCell
+              onSortChange={this._onSortChange}
+              sortDir={colSortDirs['venue.name.en']}>
               Studio
             </SortHeaderCell>
           }
@@ -159,11 +173,11 @@ class Orders extends React.Component {
           width={200}
         />
         <Column
-          columnKey="prod.title.en"
+          columnKey="title.en"
           header={
             <SortHeaderCell
               onSortChange={this._onSortChange}
-              sortDir={colSortDirs['prod.title.en']}>
+              sortDir={colSortDirs['title.en']}>
               Class Name
             </SortHeaderCell>
           }
@@ -171,64 +185,40 @@ class Orders extends React.Component {
           width={200}
         />
         <Column
-          columnKey="prod.from"
+          columnKey="from"
           header={
             <SortHeaderCell
               onSortChange={this._onSortChange}
-              sortDir={colSortDirs['prod.from']}>
+              sortDir={colSortDirs['from']}>
               Class Time
             </SortHeaderCell>
           }
-          cell={<TextCell data={sortedDataList} isDate={true} />}
+          cell={<TextCell data={sortedDataList} type="date" />}
           width={200}
         />
         <Column
-          columnKey="created"
+          columnKey="properties.isPTrainer"
           header={
             <SortHeaderCell
               onSortChange={this._onSortChange}
-              sortDir={colSortDirs['created']}>
-              Order Time
+              sortDir={colSortDirs['properties.isPTrainer']}>
+              Private Trainer
             </SortHeaderCell>
           }
-          cell={<TextCell data={sortedDataList} isDate={true} />}
+          cell={<TextCell data={sortedDataList} type="bool" />}
           width={200}
         />
         <Column
-          columnKey="user.nickname"
+          columnKey="properties.isForLadies"
           header={
             <SortHeaderCell
               onSortChange={this._onSortChange}
-              sortDir={colSortDirs['user.nickname']}>
-              User
+              sortDir={colSortDirs['properties.isForLadies']}>
+              Ladies
             </SortHeaderCell>
           }
-          cell={<TextCell data={sortedDataList} />}
+          cell={<TextCell data={sortedDataList} type="bool" />}
           width={200}
-        />
-        <Column
-          columnKey="passcode"
-          header={
-            <SortHeaderCell
-              onSortChange={this._onSortChange}
-              sortDir={colSortDirs['passcode']}>
-              Passcode
-            </SortHeaderCell>
-          }
-          cell={<TextCell data={sortedDataList} />}
-          width={200}
-        />
-        <Column
-          columnKey="status"
-          header={
-            <SortHeaderCell
-              onSortChange={this._onSortChange}
-              sortDir={colSortDirs['status']}>
-              Status
-            </SortHeaderCell>
-          }
-          cell={<TextCell data={sortedDataList} />}
-          width={150}
         />
       </Table>
     );

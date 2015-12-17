@@ -37,7 +37,8 @@ module.exports = {
     req.use(Prefix(BASE_URL));
     req.query({
       access_token: this.user.accessToken,
-      lastest: Math.random()
+      lastest: Math.random(),
+      'filter[order]': 'created DESC'
     });
     req.send(data);
     var res;
