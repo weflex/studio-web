@@ -38,17 +38,20 @@ const Daypasses = React.createClass({
     </div>
 });
 
-const App = React.createClass({
-  render: () =>
-    <Locations>
-      <Location path='/orders'    handler={Orders} />
-      <Location path='/classes'   handler={Classes} />
-      <Location path='/daypasses' handler={Daypasses} />
-      <Location path='/home'      handler={Home} />
-      <Location path='/'          handler={Orders} />
-      <Location path='/login'     handler={Login} />
-    </Locations>
-});
+class App extends React.Component {
+  render () {
+    return (
+      <Locations>
+        <Location path='/orders'    handler={Orders} />
+        <Location path='/classes'   handler={Classes} />
+        <Location path='/daypasses' handler={Daypasses} />
+        <Location path='/home'      handler={Home} />
+        <Location path='/'          handler={Orders} />
+        <Location path='/login'     handler={Login} />
+      </Locations>
+    );
+  }
+}
 
 (function () {
   ReactDOM.render(
