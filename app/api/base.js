@@ -15,7 +15,7 @@ module.exports = {
     }
     var ret = {};
     for (let key in obj) {
-      Object.defineProperty(obj[key], {
+      Object.defineProperty(ret, key, {
         get: function () {
           return obj[key];
         },
