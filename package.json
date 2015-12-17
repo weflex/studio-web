@@ -20,11 +20,8 @@
     "connect": "3.4.0",
     "finalhandler": "0.4.1",
     "gulp": "3.9.0",
-    "gulp-livereload": "3.8.1",
-    "gulp-server-livereload": "1.5.4",
-    "gulp-stylus": "2.1.1",
+    "gulp-concat-css": "2.2.0",
     "livereload": "0.4.0",
-    "lodash": "3.10.1",
     "serve-static": "1.10.0",
     "vinyl-source-stream": "1.1.0"
   },
@@ -32,7 +29,8 @@
     "node": ">=2.5.0"
   },
   "scripts": {
-    "test": "make test",
-    "start": "make serve"
+    "test":  "make test",
+    "build": "node_modules/.bin/gulp",
+    "start": "node server.js"
   }
 }

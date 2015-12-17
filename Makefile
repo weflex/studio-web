@@ -5,7 +5,6 @@ styles  = $(shell find app -name '*.css')
 # build dependencies
 node          = '/usr/local/bin/node'
 npm           = '/usr/local/bin/npm'
-watchman      = '/usr/local/bin/watchman'
 watchman-make = '/usr/local/bin/watchman-make'
 
 build: dist/bundle.js dist/index.html dist/style.css dist/fonts
@@ -44,6 +43,9 @@ node_modules: package.json
 	$(npm) install
 
 clean: dist
+	@rm -rf $<
+
+purge: node_modules clean
 	@rm -rf $<
 
 dist:
