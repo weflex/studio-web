@@ -4,7 +4,12 @@ const Base = require('./base');
 
 module.exports = {
   list: async () => {
-    var res = await Base.request('/api/classes');
-    return res;
+    return await Base.request('/api/classes');
+  },
+  create: async (prod) => {
+    return await Base.request('/api/classes', 'post', prod);
+  },
+  update: async (id, updates) => {
+    return await Base.request('/api/classes/' + id, 'put', updates);
   }
 };
