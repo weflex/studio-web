@@ -280,8 +280,6 @@ class SortedTable extends React.Component {
     );
   }
   render() {
-    var controlledScrolling = this.props.left !== undefined || 
-      this.props.top !== undefined;
     return (
       <TouchableWrapper {...this.props}>
         <Table
