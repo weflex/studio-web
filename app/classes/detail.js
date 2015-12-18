@@ -40,6 +40,9 @@ class ClassDetail extends React.Component {
       }
     };
   }
+  componentDidMount() {
+    console.log(this.props.context.toolbar.actionButton);
+  }
   render() {
     return (
       <form style={this.styles.form}>

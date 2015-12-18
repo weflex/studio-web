@@ -27,7 +27,7 @@ class Daypasses extends React.Component {
 }
 
 function createViewWithBars (component) {
-  var self = {
+  var context = {
     component: component,
     style: {
       position: 'absolute',
@@ -35,16 +35,32 @@ function createViewWithBars (component) {
       top: 50,
       right: 0,
       bottom: 0,
-      zIndex: 0,
+      zIndex: 100,
       overflowY: 'scroll'
+    },
+    _navbar: null,
+    _toolbar: null,
+    get navbar () {
+      return context._navbar;
+    },
+    get toolbar () {
+      return context._toolbar;
     }
   };
   return (
     <div>
-      <NavBar />
-      <ToolBar />
-      <div style={self.style}>
-        <self.component />
+      <NavBar ref={node => {
+        if (node && !context._navbar) {
+          context._navbar = node;
+        }
+      }}/>
+      <ToolBar ref={node => {
+        if (node && !context._toolbar) {
+          context._toolbar = node;
+        }
+      }}/>
+      <div style={context.style}>
+        <context.component context={context} />
       </div>
     </div>
   );

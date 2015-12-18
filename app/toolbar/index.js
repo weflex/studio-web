@@ -33,11 +33,16 @@ class NotificationCenter extends React.Component {
 class ToolBar extends React.Component {
   constructor (props) {
     super(props);
+    this.actionButton = null;
   }
   render () {
     return (
       <ul className='toolbar'>
-        <li><ActionButton /></li>
+        <li>
+          <ActionButton ref={node => {
+            if (node) this.actionButton = node;
+          }} />
+        </li>
         <li><SearchBox /></li>
         <li><NotificationCenter /></li>
       </ul>

@@ -2,3 +2,7 @@
   font-size: 11px;
   text-align: center;
 }
+.public_fixedDataTable_header,
+.fixedDataTableLayout_rowsContainer > * {
+  transform: translateZ(0);
+}

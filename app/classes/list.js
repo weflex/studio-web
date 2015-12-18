@@ -13,6 +13,8 @@ class ClassList extends SortedTable {
   render() {
     return (
       <SortedTable getDataSource={this.getDataSource}
+        tableHeight={window.innerHeight - 50}
+        tableWidth={window.innerWidth - 100}
         columns={[
           {
             title: '分类',
