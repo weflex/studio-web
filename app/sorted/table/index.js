@@ -1,6 +1,5 @@
 'use strict';
 const React = require('react');
-const cloneWithProps = require('react/lib/cloneWithProps');
 const Moment = require('moment');
 const {
   Scroller
