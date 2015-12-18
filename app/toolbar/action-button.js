@@ -1,22 +1,35 @@
+'use strict';
+
 const React = require('react');
-const initialState = { path: 'class', action: 'create' };
-const actions = {
-  create: {
-    icon: 'create-icon'
-  }
+const { Link } = require('react-router-component');
+const defaultState = {
+  title: '创建新课程',
+  action: '/classes/add'
 };
 
 class ActionButton extends React.Component {
   constructor () {
     super();
-    this.state = initialState;
+    this.state = defaultState;
   }
   render () {
-    return (
-      <div className='action-button'>
-        <span className='action'>创建新课程</span>
-      </div>
-    );
+    var action = this.state.action;
+    var title = this.state.title;
+    var button;
+    if (typeof action === 'string') {
+      button = (
+        <span className="action">
+          <Link href={action}>{title}</Link>
+        </span>
+      );
+    } else {
+      button = (
+        <span className="action" onClick={action.bind(this)}>
+          {title}
+        </span>
+      );
+    }
+    return <div className='action-button'>{button}</div>;
   }
 }
 

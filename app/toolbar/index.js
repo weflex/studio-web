@@ -11,6 +11,9 @@ const NotificationCenter = React.createClass({
 
 
 class ToolBar extends React.Component {
+  constructor (props) {
+    super(props);
+  }
   render () {
     return (
       <ul className='toolbar'>

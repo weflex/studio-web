@@ -33,7 +33,10 @@ function createViewWithBars (component) {
       position: 'absolute',
       left: 100,
       top: 50,
-      zIndex: 0
+      right: 0,
+      bottom: 0,
+      zIndex: 0,
+      overflowY: 'scroll'
     }
   };
   return (
@@ -52,15 +55,18 @@ class App extends React.Component {
     const LoginView = Login;
     const OrderListView = createViewWithBars(Orders.List);
     const ClassListView = createViewWithBars(Classes.List);
+    const ClassDetailView = createViewWithBars(Classes.Detail);
     const DaypassListView = createViewWithBars(Daypasses);
     const HomeView = createViewWithBars(Home);
     return (
       <Locations>
         <Location path="/login" handler={Login} />
         <Location path="/" handler={OrderListView} />
-        <Location path="/home" handler={Home} />
+        <Location path="/home" handler={HomeView} />
         <Location path="/orders" handler={OrderListView} />
         <Location path="/classes" handler={ClassListView} />
+        <Location path="/classes/add" handler={ClassDetailView} />
+        <Location path="/classes/:id" handler={ClassDetailView} />
         <Location path="/daypasses" handler={DaypassListView} />
       </Locations>
     );
