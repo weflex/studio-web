@@ -1,14 +1,34 @@
 const React = require('react');
 const ActionButton = require('./action-button');
 
-const SearchBox = React.createClass({
-  render: () => <div>搜索</div> // place-holder
-});
+class SearchBox extends React.Component {
+  constructor () {
+    super();
+    this.state = {
+      searchText: ''
+    };
+  }
+  render () {
+    return (
+      <div className='search'>
+        <div className='search-box'>
+          <input type='text' />
+          <i className='icon-font icon-search'></i>
+        </div>
+      </div>
+    ); // place-holder
+  }
+}
 
-const NotificationCenter = React.createClass({
-  render: () => <div>通知</div> // ditto
-});
-
+class NotificationCenter extends React.Component {
+  render () {
+    return (
+      <div>
+        <span>通知</span>
+      </div>
+    ); // ditto
+  }
+}
 
 class ToolBar extends React.Component {
   constructor (props) {

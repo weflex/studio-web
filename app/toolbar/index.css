@@ -12,10 +12,47 @@
 .toolbar li {
   float: left;
   margin: 10px 0;
-  padding: 7px 20px;
+  padding: 6px 20px;
   font-size: 12px;
   display: block;
   border-right: 1px solid #ececec;
   text-align: center;
+  height: 18px;
 }
 
+.toolbar a {
+  text-decoration: none;
+  color: #242f40;
+}
+
+.toolbar .search {
+  height: 0;
+}
+
+.toolbar .search-box {
+  height: 28px;
+  width: 250px;
+  border-radius: 14px;
+  border: 1px solid #d8d8d8;
+  padding: 0;
+  position: relative;
+  top: -6px;
+}
+.toolbar .search-box .icon-search {
+  width: 20px;
+  heigth: 100%;
+  font-size: 16px;
+  color: #888;
+  display: block;
+  float: left;
+  padding: 5px 0 0 2px;
+}
+.toolbar .search-box input {
+  height: 100%;
+  width: calc(100% - 40px);
+  font-size: 14px;
+  -webkit-appearance: none;
+  outline: none;
+  border: none;
+  background: none;
+}
