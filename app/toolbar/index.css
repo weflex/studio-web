@@ -1,0 +1,21 @@
+
+.toolbar {
+  width: calc(100% - 100px);
+  height: 50px;
+  position: absolute;
+  top: 0;
+  left: 100px;
+  background-color: white;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.2);
+}
+
+.toolbar li {
+  float: left;
+  margin: 10px 0;
+  padding: 7px 20px;
+  font-size: 12px;
+  display: block;
+  border-right: 1px solid #ececec;
+  text-align: center;
+}
+

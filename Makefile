@@ -17,7 +17,8 @@ dist/index.html: app/index.html dist
 	@cp $< $@
 
 dist/style.css: $(styles) dist
-	@cat $< > $@
+	@cat $(styles) > $@
+	@touch dist/index.html
 
 dist/fonts: dist
 	@cp -r app/fonts $</
@@ -53,6 +54,8 @@ dist:
 
 dist/common: node_modules
 	@mkdir $@
-	@cp -r node_modules/fixed-data-table/dist/fixed-data-table.min.css dist/common/fixed-data-table.min.css
+	@cp -r \
+	  $</fixed-data-table/dist/fixed-data-table.min.css \
+	  $@/fixed-data-table.min.css
 
 .PHONY: build clean watch serve
