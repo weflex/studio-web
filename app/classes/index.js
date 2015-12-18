@@ -4,7 +4,7 @@ const Moment = require('moment');
 const { 
   Table, 
   Column, 
-  Cell 
+  Cell
 } = require('fixed-data-table');
 const Clazz = require('../api/class');
 

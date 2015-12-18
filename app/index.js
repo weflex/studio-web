@@ -1,10 +1,14 @@
+'use strict';
+
 require('babel-polyfill');
 const React = require('react');
 const ReactDOM = require('react-dom');
-const Router = require('react-router-component');
-const Locations = Router.Locations;
-const Location = Router.Location;
-const Link = Router.Link;
+const {
+  Locations,
+  Location
+} = require('react-router-component');
+
+/* custom components */
 const NavBar = require('./navbar');
 const ToolBar = require('./toolbar');
 const Home = require('./home');

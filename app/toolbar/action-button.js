@@ -1,5 +1,5 @@
 const React = require('react');
-const initialState = { path:'class', action:'create' };
+const initialState = { path: 'class', action: 'create' };
 const actions = {
   create: {
     icon: 'create-icon'
