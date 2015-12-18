@@ -73,12 +73,6 @@ input[type="number"].ng-touched.ng-invalid {
   color: #ffffff;
 }
 
-.icon-star:before { content: '\e814'; }
-.icon-inbox:before { content: '\e811'; }
-.icon-database:before { content: '\e807'; }
-.icon-tag:before { content: '\e80e'; }
-.icon-user:before { content: '\e80b'; }
-
 .icon {
 /*  background: url('/images/icon.png') 0px 0px/90px 60px; */
   width: 30px;
