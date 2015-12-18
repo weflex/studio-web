@@ -2,7 +2,8 @@
 
 const Agent = require('superagent-promise')(require('superagent'), Promise);
 const Prefix = require('superagent-prefix');
-const BASE_URL = 'http://weflex-api-dev.herokuapp.com';
+// const BASE_URL = 'https://weflex-api-dev.herokuapp.com';
+const BASE_URL = 'http://api.theweflex.com';
 
 module.exports = {
 
