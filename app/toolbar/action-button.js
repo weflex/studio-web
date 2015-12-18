@@ -14,8 +14,7 @@ class ActionButton extends React.Component {
   render () {
     return (
       <div className='action-button'>
-        <i className='icon'>{actions[this.state.action].icon}</i>&nbsp;
-        <span className='action'>{this.state.action}</span>
+        <span className='action'>创建新课程</span>
       </div>
     );
   }

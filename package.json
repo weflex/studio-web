@@ -6,7 +6,8 @@
     "react": "0.14.3",
     "react-dom": "0.14.3",
     "react-router-component": "0.28.0",
-    "superagent": "1.5.0"
+    "superagent": "1.5.0",
+    "superagent-prefix": "0.0.2"
   },
   "devDependencies": {
     "babel-plugin-syntax-flow": "^6.3.13",
