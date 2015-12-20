@@ -52,10 +52,7 @@ purge: node_modules clean
 dist:
 	@mkdir $@
 
-dist/common: node_modules
-	@mkdir $@
-	@cp -r \
-	  $</fixed-data-table/dist/fixed-data-table.min.css \
-	  $@/fixed-data-table.min.css
+dist/common: node_modules dist
+	@cp -r node_modules/fixed-data-table/dist $@
 
 .PHONY: build clean watch serve
