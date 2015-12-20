@@ -4,7 +4,7 @@ WeFlex Admin Web App
 Build Dependencies
 ------------------
 
-* NodeJS (>= 2.5.0)
+* NodeJS (>= 5.0.0)
 
 See [Official Repo](https://nodejs.org/en/download/)
 
@@ -17,13 +17,19 @@ See [Official Repo](https://nodejs.org/en/download/)
 * Make
 
 
-Static Builds
+Generating Static Builds
 -------------
 
 To make a static build, simply
 
 ````
 > make
+````
+
+or alternatively, you could use gulp
+
+````
+> gulp
 ````
 
 
