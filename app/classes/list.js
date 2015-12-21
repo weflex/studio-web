@@ -54,9 +54,6 @@ class ClassList extends SortedTable {
       </SortedTable>
     );
   }
-  _onSearchInputChange(val) {
-    console.log(val);
-  }
 }
 
 module.exports = ClassList;
