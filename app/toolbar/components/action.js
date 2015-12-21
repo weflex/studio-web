@@ -7,27 +7,21 @@ const defaultState = {
 };
 
 export class ActionButton extends React.Component {
-  constructor () {
-    super();
+  constructor(props) {
+    super(props);
     this.state = defaultState;
   }
-  render () {
-    var action = this.state.action;
-    var title = this.state.title;
-    var button;
-    if (typeof action === 'string') {
-      button = (
-        <span className="action">
-          <Link href={action}>{title}</Link>
-        </span>
-      );
-    } else {
-      button = (
-        <span className="action" onClick={action.bind(this)}>
-          {title}
-        </span>
-      );
-    }
+  render() {
+    const { action, title } = this.state;
+    const button = (typeof action === 'string') ? (
+      <span className="action">
+        <Link href={action}>{title}</Link>
+      </span>
+    ) : (
+      <span className="action" onClick={action.bind(this)}>
+        {title}
+      </span>
+    );
     return <div className='action-button'>{button}</div>;
   }
 }
