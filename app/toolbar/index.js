@@ -1,50 +1,27 @@
 const React = require('react');
-const ActionButton = require('./action-button');
-
-class SearchBox extends React.Component {
-  constructor () {
-    super();
-    this.state = {
-      searchText: ''
-    };
-  }
-  render () {
-    return (
-      <div className='search'>
-        <div className='search-box'>
-          <input type='text' />
-          <i className='icon-font icon-search'></i>
-        </div>
-      </div>
-    ); // place-holder
-  }
-}
-
-class NotificationCenter extends React.Component {
-  render () {
-    return (
-      <div>
-        <span>通知</span>
-      </div>
-    ); // ditto
-  }
-}
+const { ActionButton } = require('./components/action');
+const { SearchInput  } = require('./components/search');
+const { Notifier     } = require('./components/notifier');
 
 class ToolBar extends React.Component {
   constructor (props) {
     super(props);
-    this.actionButton = null;
+  }
+  componentDidMount () {
+    console.log(this);
   }
   render () {
     return (
       <ul className='toolbar'>
         <li>
-          <ActionButton ref={node => {
-            if (node) this.actionButton = node;
-          }} />
+          <ActionButton ref="actionButton" />
         </li>
-        <li><SearchBox /></li>
-        <li><NotificationCenter /></li>
+        <li>
+          <SearchInput ref="searchInput" />
+        </li>
+        <li>
+          <Notifier ref="notifier" />
+        </li>
       </ul>
     );
   }

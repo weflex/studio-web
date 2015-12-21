@@ -1,5 +1,4 @@
 'use strict';
-
 const React = require('react');
 const { Link } = require('react-router-component');
 const defaultState = {
@@ -7,7 +6,7 @@ const defaultState = {
   action: '/classes/add'
 };
 
-class ActionButton extends React.Component {
+export class ActionButton extends React.Component {
   constructor () {
     super();
     this.state = defaultState;
@@ -32,5 +31,3 @@ class ActionButton extends React.Component {
     return <div className='action-button'>{button}</div>;
   }
 }
-
-module.exports = ActionButton;

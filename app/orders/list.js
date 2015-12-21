@@ -2,6 +2,7 @@
 const React = require('react');
 const SortedTable = require('../sorted/table');
 const Order = require('../api/order');
+const { SearchInput } = require('../toolbar/components/search');
 
 class OrderList extends SortedTable {
   constructor(props) {
@@ -10,9 +11,14 @@ class OrderList extends SortedTable {
   async getDataSource() {
     return await Order.list();
   }
+  componentDidMount() {
+    const table = this.refs.table;
+    SearchInput.Listen('onChange', table.filter.bind(table));
+  }
   render() {
     return (
-      <SortedTable getDataSource={this.getDataSource}
+      <SortedTable ref="table"
+        getDataSource={this.getDataSource}
         tableHeight={window.innerHeight - 50}
         tableWidth={window.innerWidth - 100}
         columns={[

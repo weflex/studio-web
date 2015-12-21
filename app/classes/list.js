@@ -2,17 +2,24 @@
 const React = require('react');
 const SortedTable = require('../sorted/table');
 const Clazz = require('../api/class');
+const { SearchInput } = require('../toolbar/components/search');
 
 class ClassList extends SortedTable {
   constructor(props) {
     super(props);
+  }
+  componentDidMount() {
+    const table = this.refs.table;
+    SearchInput.Listen('onChange', table.filter.bind(table));
   }
   async getDataSource() {
     return await Clazz.list();
   }
   render() {
     return (
-      <SortedTable getDataSource={this.getDataSource}
+      <SortedTable
+        ref="table"
+        getDataSource={this.getDataSource}
         tableHeight={window.innerHeight - 50}
         tableWidth={window.innerWidth - 100}
         columns={[
@@ -46,6 +53,9 @@ class ClassList extends SortedTable {
         ]}>
       </SortedTable>
     );
+  }
+  _onSearchInputChange(val) {
+    console.log(val);
   }
 }
 
