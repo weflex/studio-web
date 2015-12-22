@@ -44,6 +44,11 @@
   text-align: left;
   padding-left: 15px;
 }
+.navbar li:first-child .icon-settings {
+  position: absolute;
+  top: 15px;
+  right: 0;
+}
 
 .navbar .icon-font {
   padding-right: 10px;

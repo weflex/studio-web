@@ -44,6 +44,7 @@ class NavBar extends React.Component {
           <Link href='#'>
             <div className='studio-name'>WeFlex</div>
             <div className='username'>Scott</div>
+            <span className='icon-font icon-settings'></span>
             <DataItem value='8'  hint='课程登记' type='signup' />
             <DataItem value='5'  hint='课程取消' type='cancel' />
             <DataItem value='10' hint='课程签到' type='checkin' />
