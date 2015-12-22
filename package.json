@@ -27,7 +27,6 @@
     "gulp-concat-css": "2.2.0",
     "livereload": "0.4.0",
     "moment": "^2.10.6",
-    "react-couple": "file:react-couple",
     "serve-static": "1.10.0",
     "superagent-promise": "git+https://git@github.com/yorkie/superagent-promise",
     "vinyl-source-stream": "1.1.0"
