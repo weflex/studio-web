@@ -4,7 +4,7 @@ var serve = require('serve-static');
 var http = require('http');
 var finalize = require('finalhandler');
 var livereload = require('livereload');
-var port = process.env.PORT;
+var port = process.env.PORT || 8080;
 
 var app = serve('./');
 

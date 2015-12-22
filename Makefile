@@ -38,7 +38,8 @@ dist/bundle.js: app/index.js $(sources) node_modules dist
 	  $< -o $@
 
 serve: build
-	$(node) server.js > .server.log &
+	@cd ./dist && \
+		$(node) ./server.js > .server.log &
 	@echo
 	@echo ["\033[32mINFO\033[0m"] server is up and running at localhost:8080
 	@echo

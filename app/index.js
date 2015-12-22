@@ -7,7 +7,6 @@ const {
   Location
 } = require('react-router-component');
 
-/* custom components */
 const NavBar = require('./navbar');
 const ToolBar = require('./toolbar');
 const Home = require('./home');
