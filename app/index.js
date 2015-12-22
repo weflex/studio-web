@@ -29,7 +29,7 @@ function createViewWithBars (component) {
     component: component,
     style: {
       position: 'absolute',
-      left: 100,
+      left: 150,
       top: 50,
       right: 0,
       bottom: 0,
@@ -74,14 +74,14 @@ class App extends React.Component {
     const HomeView = createViewWithBars(Home);
     return (
       <Locations>
-        <Location path="/login"          handler={Login} />
-        <Location path="/"               handler={OrderListView} />
-        <Location path="/home"           handler={HomeView} />
-        <Location path="/orders"         handler={OrderListView} />
-        <Location path="/classes"        handler={ClassListView} />
-        <Location path="/classes/add"    handler={ClassDetailView} />
-        <Location path="/classes/:id"    handler={ClassDetailView} />
-        <Location path="/daypasses"      handler={DaypassListView} />
+        <Location path="/login"         handler={Login} />
+        <Location path="/"              handler={HomeView} />
+        <Location path="/home"          handler={HomeView} />
+        <Location path="/orders"        handler={OrderListView} />
+        <Location path="/classes"       handler={ClassListView} />
+        <Location path="/classes/add"   handler={ClassDetailView} />
+        <Location path="/classes/:id"   handler={ClassDetailView} />
+        <Location path="/daypasses"     handler={DaypassListView} />
       </Locations>
     );
   }
