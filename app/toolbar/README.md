@@ -82,7 +82,7 @@ SearchInput.Listen('onChange', (val) => {
 });
 ```
 
-Note: The `.Listen` function is a static member of `SearchInput`, so we should keep the only 1 input can be initialiated at one time,
+Note: The `.Listen` function is a static member of `SearchInput`, so we should keep the only 1 input is initialiated at one time,
 but we still can have more than 1 components to listen the changes.
 
 ## Notifier
