@@ -8,7 +8,8 @@ npm           = '/usr/local/bin/npm'
 watchman-make = '/usr/local/bin/watchman-make'
 
 build: dist/bundle.js dist/index.html dist/style.css dist/common dist/fonts
-deploy: sh ./deploy.sh
+deploy: 
+	sh ./deploy.sh
 
 watch: serve
 	$(watchman-make) \
