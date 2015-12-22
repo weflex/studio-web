@@ -23,12 +23,15 @@
 
 .toolbar .actions {
   float: left;
+  height: 100%;
 }
 
 .toolbar .action-button {
+  display: inline-block;
   padding: 10px;
   margin: 6px 15px;
   font-size: 12px;
+  cursor: pointer;
 }
 
 .toolbar a {
