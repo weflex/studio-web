@@ -49,9 +49,9 @@ class NavBar extends React.Component {
             <DataItem value='10' hint='课程签到' type='checkin' />
           </Link>
         </li>
-        <NavItem location='/home'        hint='总览' icon='star' />
-        <NavItem location='/orders'      hint='订单' icon='inbox' />
-        <NavItem location='/classes'     hint='课程' icon='idea' />
+        <NavItem location='/home'        hint='总览' icon='heart' />
+        <NavItem location='/orders'      hint='订单' icon='light-bulb' />
+        <NavItem location='/classes'     hint='课程' icon='star' />
         <NavItem location='/memberships' hint='次卡' icon='tag' />
         <NavItem location='/users'       hint='会员' icon='user' />
         <NavItem location='/trainers'    hint='教练' icon='database' />
