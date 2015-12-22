@@ -3,7 +3,6 @@ const React = require('react');
 
 class ClassDetail extends React.Component {
   constructor(props) {
-    console.log(props);
     super(props);
     this.data = {
       isTemplate: true,
@@ -40,6 +39,20 @@ class ClassDetail extends React.Component {
         fontSize: 12
       }
     };
+  }
+  get actions() {
+    return [
+      {
+        title: '完成添加',
+        onClick: () => {
+          alert('添加成功');
+        }
+      },
+      {
+        title: '创建工作室',
+        path: '/venues/add'
+      }
+    ];
   }
   render() {
     return (

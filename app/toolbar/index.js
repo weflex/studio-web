@@ -1,5 +1,5 @@
 const React = require('react');
-const { ActionButton } = require('./components/action');
+const { Actions      } = require('./components/actions');
 const { SearchInput  } = require('./components/search');
 const { Notifier     } = require('./components/notifier');
 
@@ -9,12 +9,9 @@ class ToolBar extends React.Component {
   }
   render () {
     return (
-      <div className='toolbar'>
-        <div className='actions'>
-          <ActionButton ref="actionButton" />
-        </div>
-
-        <ul className='toolbox'>
+      <div className="toolbar">
+        <Actions ref="actions" />
+        <ul className="toolbox">
           <li>
             <Notifier ref="notifier" />
           </li>

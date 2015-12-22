@@ -25,29 +25,30 @@ class Daypasses extends React.Component {
 }
 
 function createViewWithBars (component) {
-  const context = {
-    component: component,
-    style: {
-      position: 'absolute',
-      left: 150,
-      top: 50,
-      right: 0,
-      bottom: 0,
-      zIndex: 100,
-      overflowY: 'scroll'
+  return class Page extends React.Component {
+    componentDidMount () {
+      this.refs.toolbar.refs.actions.updateActions(
+        this.refs.main.actions
+      );
     }
-  };
-  return class MainView extends React.Component {
     render () {
+      // TODO(Yorkie): use polyfill
+      const props = Object.assign({ref: 'main'}, this.props);
+      const main = React.createElement(component, props);
       return (
         <div>
           <NavBar ref="navbar" />
           <ToolBar ref="toolbar" />
-          <div style={context.style}>
-            <context.component 
-              context={context} 
-              {...this.props} 
-            />
+          <div style={{
+            position: 'absolute',
+            left: 150,
+            top: 50,
+            right: 0,
+            bottom: 0,
+            zIndex: 100,
+            overflowY: 'scroll'
+          }}>
+            {main}
           </div>
         </div>
       );
