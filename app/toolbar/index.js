@@ -7,9 +7,6 @@ class ToolBar extends React.Component {
   constructor (props) {
     super(props);
   }
-  componentDidMount () {
-    console.log(this);
-  }
   render () {
     return (
       <ul className='toolbar'>

@@ -25,7 +25,7 @@ class Daypasses extends React.Component {
 }
 
 function createViewWithBars (component) {
-  var context = {
+  const context = {
     component: component,
     style: {
       position: 'absolute',
@@ -35,33 +35,24 @@ function createViewWithBars (component) {
       bottom: 0,
       zIndex: 100,
       overflowY: 'scroll'
-    },
-    _navbar: null,
-    _toolbar: null,
-    get navbar () {
-      return context._navbar;
-    },
-    get toolbar () {
-      return context._toolbar;
     }
   };
-  return (
-    <div>
-      <NavBar ref={node => {
-        if (node && !context._navbar) {
-          context._navbar = node;
-        }
-      }}/>
-      <ToolBar ref={node => {
-        if (node && !context._toolbar) {
-          context._toolbar = node;
-        }
-      }}/>
-      <div style={context.style}>
-        <context.component context={context} />
-      </div>
-    </div>
-  );
+  return class MainView extends React.Component {
+    render () {
+      return (
+        <div>
+          <NavBar ref="navbar" />
+          <ToolBar ref="toolbar" />
+          <div style={context.style}>
+            <context.component 
+              context={context} 
+              {...this.props} 
+            />
+          </div>
+        </div>
+      );
+    }
+  };
 }
 
 class App extends React.Component {
@@ -74,14 +65,14 @@ class App extends React.Component {
     const HomeView = createViewWithBars(Home);
     return (
       <Locations>
-        <Location path="/login"          handler={Login} />
-        <Location path="/"               handler={OrderListView} />
-        <Location path="/home"           handler={HomeView} />
-        <Location path="/orders"         handler={OrderListView} />
-        <Location path="/classes"        handler={ClassListView} />
-        <Location path="/classes/add"    handler={ClassDetailView} />
-        <Location path="/classes/:id"    handler={ClassDetailView} />
-        <Location path="/daypasses"      handler={DaypassListView} />
+        <Location path="/login"       handler={Login} />
+        <Location path="/"            handler={OrderListView} />
+        <Location path="/home"        handler={HomeView} />
+        <Location path="/orders"      handler={OrderListView} />
+        <Location path="/classes"     handler={ClassListView} />
+        <Location path="/classes/add" handler={ClassDetailView} action="add" />
+        <Location path="/classes/:id" handler={ClassDetailView} action="view" />
+        <Location path="/daypasses"   handler={DaypassListView} />
       </Locations>
     );
   }

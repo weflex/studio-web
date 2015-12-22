@@ -3,6 +3,7 @@ const React = require('react');
 
 class ClassDetail extends React.Component {
   constructor(props) {
+    console.log(props);
     super(props);
     this.data = {
       isTemplate: true,
@@ -39,9 +40,6 @@ class ClassDetail extends React.Component {
         fontSize: 12
       }
     };
-  }
-  componentDidMount() {
-    console.log(this.props.context.toolbar.actionButton);
   }
   render() {
     return (
