@@ -9,17 +9,20 @@ class ToolBar extends React.Component {
   }
   render () {
     return (
-      <ul className='toolbar'>
-        <li>
+      <div className='toolbar'>
+        <div className='actions'>
           <ActionButton ref="actionButton" />
-        </li>
-        <li>
-          <SearchInput ref="searchInput" />
-        </li>
-        <li>
-          <Notifier ref="notifier" />
-        </li>
-      </ul>
+        </div>
+
+        <ul className='toolbox'>
+          <li>
+            <Notifier ref="notifier" />
+          </li>
+          <li>
+            <SearchInput ref="searchInput" />
+          </li>
+        </ul>
+      </div>
     );
   }
 }

@@ -29,7 +29,7 @@ function createViewWithBars (component) {
     component: component,
     style: {
       position: 'absolute',
-      left: 100,
+      left: 150,
       top: 50,
       right: 0,
       bottom: 0,

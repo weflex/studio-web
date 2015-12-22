@@ -1,10 +1,10 @@
 
 .toolbar {
-  width: calc(100% - 100px);
+  width: calc(100% - 150px);
   height: 50px;
   position: absolute;
   top: 0;
-  left: 100px;
+  left: 150px;
   background-color: white;
   box-shadow: 0 2px 2px 0 rgba(0,0,0,0.2);
 }
@@ -18,6 +18,17 @@
   border-right: 1px solid #ececec;
   text-align: center;
   height: 18px;
+  float: right;
+}
+
+.toolbar .actions {
+  float: left;
+}
+
+.toolbar .action-button {
+  padding: 10px;
+  margin: 6px 15px;
+  font-size: 12px;
 }
 
 .toolbar a {
@@ -38,7 +49,7 @@
   position: relative;
   top: -6px;
 }
-.toolbar .search-box .icon-search {
+.toolbar .search-box .icon-font {
   width: 20px;
   heigth: 100%;
   font-size: 16px;
@@ -55,4 +66,8 @@
   outline: none;
   border: none;
   background: none;
+}
+
+.toolbar .notifier .icon-font {
+  font-size: 18px;
 }
