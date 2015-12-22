@@ -1,0 +1,16 @@
+{
+  "name": "admin-server",
+  "version": "1.0.0",
+  "description": "a server for admin",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "finalhandler": "0.4.1",
+    "livereload": "0.4.0",
+    "serve-static": "1.10.0"
+  },
+  "author": "Scott Wang <scott.wang@theweflex.com>",
+  "license": "WeFlex"
+}

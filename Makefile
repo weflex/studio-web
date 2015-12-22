@@ -7,13 +7,14 @@ node          = '/usr/local/bin/node'
 npm           = '/usr/local/bin/npm'
 watchman-make = '/usr/local/bin/watchman-make'
 
-build: dist/bundle.js dist/index.html dist/style.css dist/common dist/fonts
-deploy: 
-	sh ./deploy.sh
+build: dist/bundle.js dist/index.html dist/style.css dist/common dist/fonts dist/server
 
 watch: serve
 	$(watchman-make) \
 	  -p 'app/*' 'app/**/*' -t 'build'
+
+dist/server: dist
+	@cp -r server/* dist/
 
 dist/index.html: app/index.html dist
 	@cp $< $@

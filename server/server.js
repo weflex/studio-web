@@ -1,10 +1,12 @@
+"use strict";
+
 var serve = require('serve-static');
 var http = require('http');
 var finalize = require('finalhandler');
 var livereload = require('livereload');
-var port = 8080;
+var port = process.env.PORT;
 
-var app = serve('dist');
+var app = serve('./');
 
 http.createServer(
   function (req, res, done) {
@@ -16,4 +18,4 @@ http.createServer(
   }).listen(port);
 
 var server = livereload.createServer();
-server.watch('dist');
+server.watch('./');

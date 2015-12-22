@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+make clean build
+
 REMOTE=`git remote -v | grep origin | grep push | awk '{split($0,a," "); print a[2]}'`
 cd dist
 

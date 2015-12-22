@@ -4,6 +4,8 @@ const Agent = require('superagent-promise')(require('superagent'), Promise);
 const Prefix = require('superagent-prefix');
 // const BASE_URL = 'https://weflex-api-dev.herokuapp.com';
 const BASE_URL = 'http://api.theweflex.com';
+const APP_URL = location.protocol + '//' + location.host +
+  (process.env.NODE_ENV === 'github' ? '/admin' : '');
 
 module.exports = {
 
@@ -47,7 +49,7 @@ module.exports = {
       res = await req.end();
     } catch (e) {
       if (e.response && (e.response.status === 401 || e.response.status === 403)) {
-        location.href = '/login?reason=' +
+        location.href = APP_URL + '/login?reason=' +
           (e.message || 'internal_error').toLowerCase();
       } else {
         throw e;
