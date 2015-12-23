@@ -6,6 +6,7 @@ const {
   Locations,
   Location
 } = require('react-router-component');
+const assign = Object.assign || require('object-assign');
 
 const NavBar = require('./navbar');
 const ToolBar = require('./toolbar');
@@ -32,8 +33,7 @@ function createViewWithBars (component) {
       );
     }
     render () {
-      // TODO(Yorkie): use polyfill
-      const props = Object.assign({ref: 'main'}, this.props);
+      const props = assign({ref: 'main'}, this.props);
       const main = React.createElement(component, props);
       return (
         <div>
