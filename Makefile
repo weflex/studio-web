@@ -7,7 +7,7 @@ node          = '/usr/local/bin/node'
 npm           = '/usr/local/bin/npm'
 watchman-make = '/usr/local/bin/watchman-make'
 
-build: dist/bundle.js dist/index.html dist/common dist/fonts dist/server
+build: dist/bundle.js dist/index.html dist/fonts dist/server
 
 watch: serve
 	$(watchman-make) \
@@ -24,9 +24,6 @@ dist/fonts: dist
 
 dist/bundle.js: $(sources) $(styles) node_modules dist
 	node_modules/.bin/webpack
-
-dist/common: node_modules dist
-	@cp -r node_modules/fixed-data-table/dist $@
 
 serve: build
 	@make -C server $@

@@ -18,6 +18,7 @@ const Orders = require('./orders');
 
 require('./layout/root.css');
 require('./index.css');
+require('fixed-data-table/dist/fixed-data-table.min.css');
 
 class Daypasses extends React.Component {
   render () {
@@ -43,15 +44,7 @@ function createViewWithBars (component) {
         <div>
           <NavBar ref="navbar" />
           <ToolBar ref="toolbar" />
-          <div style={{
-            position: 'absolute',
-            left: 150,
-            top: 50,
-            right: 0,
-            bottom: 0,
-            zIndex: 100,
-            overflowY: 'scroll'
-          }}>
+          <div className='main'>
             {main}
           </div>
         </div>
