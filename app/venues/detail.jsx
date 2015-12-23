@@ -1,7 +1,7 @@
 "use strict"
 
 import React from 'react';
-import { BaiduMap } from './map';
+import { BaiduMap } from 'react-baidu-map';
 
 export default class VenueDetail extends React.Component {
   constructor(props) {
