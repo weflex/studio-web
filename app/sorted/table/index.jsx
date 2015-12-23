@@ -1,4 +1,8 @@
 'use strict';
+
+require('./index.css');
+require('fixed-data-table/dist/fixed-data-table.min.css');
+
 const React = require('react');
 const Moment = require('moment');
 const {

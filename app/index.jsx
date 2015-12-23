@@ -18,7 +18,6 @@ const Orders = require('./orders');
 
 require('./layout/root.css');
 require('./index.css');
-require('fixed-data-table/dist/fixed-data-table.min.css');
 
 class Daypasses extends React.Component {
   render () {
