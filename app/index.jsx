@@ -15,6 +15,9 @@ const Login = require('./login');
 const Classes = require('./classes');
 const Orders = require('./orders');
 
+require('./layout/root.css');
+require('./index.css');
+
 class Daypasses extends React.Component {
   render () {
     return (

@@ -24,6 +24,7 @@
     "babel-preset-stage-3": "6.1.18",
     "css-loader": "0.23.1",
     "fixed-data-table": "0.6.0",
+    "style-loader": "0.13.0",
     "webpack": "1.12.9"
   },
   "engines": {
