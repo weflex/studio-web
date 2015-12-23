@@ -13,6 +13,7 @@ const ToolBar = require('./toolbar');
 const Home = require('./home');
 const Login = require('./login');
 const Classes = require('./classes');
+const Venues = require('./venues');
 const Orders = require('./orders');
 
 class Daypasses extends React.Component {
@@ -62,6 +63,7 @@ class App extends React.Component {
     const OrderListView = createViewWithBars(Orders.List);
     const ClassListView = createViewWithBars(Classes.List);
     const ClassDetailView = createViewWithBars(Classes.Detail);
+    const VenueDetailView = createViewWithBars(Venues.Detail);
     const DaypassListView = createViewWithBars(Daypasses);
     const HomeView = createViewWithBars(Home);
     return (
@@ -73,6 +75,7 @@ class App extends React.Component {
         <Location path="/classes"     handler={ClassListView} />
         <Location path="/classes/add" handler={ClassDetailView} action="add" />
         <Location path="/classes/:id" handler={ClassDetailView} action="view" />
+        <Location path="/venues/add"  handler={VenueDetailView} action="add" />
         <Location path="/daypasses"   handler={DaypassListView} />
       </Locations>
     );

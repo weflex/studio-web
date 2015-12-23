@@ -15,9 +15,9 @@ export class Actions extends React.Component {
     };
   }
   updateActions(actions) {
-    this.setState({
-      actions: actions
-    });
+    if (Array.isArray(actions)) {
+      this.setState({ actions });
+    }
   }
   render() {
     return (
