@@ -1,0 +1,11 @@
+.class-detail from {
+  padding: 30px;
+}
+
+.class-detail h, h1, h2, h3, h4, h5, h6 {
+  font-size: 12px;
+}
+
+.class-detail div {
+  margin-bottom: 10px;
+}

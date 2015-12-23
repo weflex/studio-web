@@ -1,6 +1,9 @@
 const React = require('react');
 const Link = require('react-router-component').Link;
 
+require('./index.css');
+require('../layout/font.css');
+
 class NavItem extends React.Component {
   render () {
     return (

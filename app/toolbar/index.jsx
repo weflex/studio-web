@@ -3,6 +3,8 @@ const { Actions      } = require('./components/actions');
 const { SearchInput  } = require('./components/search');
 const { Notifier     } = require('./components/notifier');
 
+require('./index.css');
+
 class ToolBar extends React.Component {
   constructor (props) {
     super(props);
