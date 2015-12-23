@@ -3,6 +3,7 @@
   "version": "2.0.0",
   "dependencies": {
     "babel-polyfill": "6.3.14",
+    "moment": "2.10.6",
     "object-assign": "4.0.1",
     "react": "0.14.3",
     "react-dom": "0.14.3",
@@ -21,14 +22,8 @@
     "babel-preset-stage-1": "6.1.18",
     "babel-preset-stage-2": "6.1.18",
     "babel-preset-stage-3": "6.1.18",
-    "connect": "3.4.0",
     "css-loader": "0.23.1",
-    "finalhandler": "0.4.1",
     "fixed-data-table": "0.6.0",
-    "livereload": "0.4.0",
-    "moment": "2.10.6",
-    "serve-static": "1.10.0",
-    "vinyl-source-stream": "1.1.0",
     "webpack": "1.12.9"
   },
   "engines": {

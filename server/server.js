@@ -5,8 +5,11 @@ var http = require('http');
 var finalize = require('finalhandler');
 var livereload = require('livereload');
 var port = process.env.PORT || 8080;
+var dir = function (subpath) {
+  return require('path').join(__dirname, subpath);
+};
 
-var app = serve('./');
+var app = serve(dir('../dist'));
 
 http.createServer(
   function (req, res, done) {
@@ -18,4 +21,4 @@ http.createServer(
   }).listen(port);
 
 var server = livereload.createServer();
-server.watch('./');
+server.watch(dir('../dist'));

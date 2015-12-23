@@ -29,12 +29,11 @@ dist/fonts: dist
 dist/bundle.js: app/index.jsx $(sources) node_modules dist
 	node_modules/.bin/webpack
 
+dist/common: node_modules dist
+	@cp -r node_modules/fixed-data-table/dist $@
+
 serve: build
-	@cd ./dist && \
-		$(node) ./server.js > .server.log &
-	@echo
-	@echo ["\033[32mINFO\033[0m"] server is up and running at localhost:8080
-	@echo
+	@make -C server $@
 
 node_modules: package.json
 	$(npm) install
@@ -44,11 +43,9 @@ clean: dist
 
 purge: node_modules clean
 	@rm -rf $<
+	@make -C server $@
 
 dist:
 	@mkdir $@
-
-dist/common: node_modules dist
-	@cp -r node_modules/fixed-data-table/dist $@
 
 .PHONY: build clean watch serve
