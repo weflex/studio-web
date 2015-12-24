@@ -21,15 +21,22 @@ module.exports = {
         exclude: [/node_modules/, /server/],
         loader: 'babel',
         query: {
-          presets: ['react', 'es2015', 'stage-0', 'stage-1', 'stage-2', 'stage-3']
+          presets: ['react', 'es2015', 'stage-0']
         }
-      }, 
+      },
+      {
+        test: /react-baidu-map\/index\.jsx$/,
+        loader: 'babel',
+        query: {
+          presets: ['react', 'es2015', 'stage-0']
+        }
+      },
       {
         test: /\.js$/,
         exclude: [/node_modules/, /server/],
         loader: 'babel',
         query: {
-          presets: ['es2015', 'stage-0', 'stage-1', 'stage-2', 'stage-3']
+          presets: ['es2015', 'stage-0']
         }
       },
       {

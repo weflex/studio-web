@@ -1,9 +1,11 @@
 "use strict"
 
-import React from 'react';
-import { BaiduMap } from 'react-baidu-map';
+const React = require('react');
+const {
+  BaiduMap
+} = require('./map');
 
-export default class VenueDetail extends React.Component {
+class VenueDetail extends React.Component {
   constructor(props) {
     super(props);
     this.data = {
@@ -104,3 +106,5 @@ export default class VenueDetail extends React.Component {
     )
   }
 }
+
+module.exports = VenueDetail;

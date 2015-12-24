@@ -1,10 +1,12 @@
-'use strict';
+"use strict";
 const React = require('react');
-const SortedTable = require('../sorted/table');
-const Clazz = require('../api/class');
-const { SearchInput } = require('../toolbar/components/search');
+const Tabular = require('../sorted/table');
+const Class = require('../api/class');
+const {
+  SearchInput
+} = require('../toolbar/components/search');
 
-class ClassList extends SortedTable {
+class ClassList extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -13,11 +15,11 @@ class ClassList extends SortedTable {
     SearchInput.Listen('onChange', table.filter.bind(table));
   }
   async getDataSource() {
-    return await Clazz.list();
+    return await Class.list();
   }
   render() {
     return (
-      <SortedTable
+      <Tabular
         ref="table"
         getDataSource={this.getDataSource}
         tableHeight={window.innerHeight - 50}
@@ -51,7 +53,7 @@ class ClassList extends SortedTable {
             type: 'bool'
           }
         ]}>
-      </SortedTable>
+      </Tabular>
     );
   }
 }
