@@ -21,7 +21,7 @@ export class Actions extends React.Component {
   }
   render() {
     return (
-      <div className="actions-button">
+      <div className="actions">
         {this.state.actions.map((action, index) => {
           const link = typeof action.path !== 'string' ? action.title :
             <Link href={action.path}>{action.title}</Link>;

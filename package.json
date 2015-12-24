@@ -6,7 +6,6 @@
     "moment": "2.10.6",
     "object-assign": "4.0.1",
     "react": "0.14.3",
-    "react-baidu-map": "^1.2.0",
     "react-dom": "0.14.3",
     "react-router-component": "0.28.0",
     "react-touchable-tabular": "^1.2.5",

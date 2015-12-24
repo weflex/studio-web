@@ -1,6 +1,5 @@
 'use strict';
 
-var webpack = require('webpack');
 function dir (subpath) {
   return require('path').join(__dirname, subpath);
 }
