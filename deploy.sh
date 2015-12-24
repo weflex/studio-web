@@ -1,14 +1,13 @@
 #!/usr/bin/env sh
 
 rm -rf dist
-make build
+make heroku
 
-REMOTE=`git remote -v | grep origin | grep push | awk '{split($0,a," "); print a[2]}'`
+REMOTE=`git remote -v | grep origin | grep push | awk '{print $2}'`
 cd dist
 
 git init
 git add .
 git commit -a -m 'update gh-pages'
-git branch 'gh-pages'
-git checkout 'gh-pages'
+git checkout -b 'gh-pages'
 git push $REMOTE 'gh-pages' --force

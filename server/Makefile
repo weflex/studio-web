@@ -11,6 +11,5 @@ serve: node_modules
 node_modules: package.json
 	$(npm) install
 
-
 purge: node_modules
 	@rm -rf $<
