@@ -8,6 +8,6 @@ cd dist
 
 git init
 git add .
-git commit -a -m 'update gh-pages'
-git checkout -b 'gh-pages'
-git push $REMOTE 'gh-pages' --force
+git commit -a -m 'update heroku-studio'
+git checkout -b 'heroku-studio'
+git push $REMOTE 'heroku-studio' --force
