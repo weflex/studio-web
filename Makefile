@@ -1,7 +1,16 @@
 # source files
 sources  = $(shell find app -name '*.js*')
 styles   = $(shell find app -name '*.css')
-servekit = $(shell find server -type f)
+servekit = \
+	dist/Makefile \
+	dist/Procfile \
+	dist/package.json \
+	dist/server.js
+assets   = \
+	dist/index.html \
+	dist/favicon.ico \
+	dist/fonts \
+	dist/apple-touch-icon.png
 
 # build dependencies
 node          = '/usr/local/bin/node'
@@ -10,7 +19,7 @@ watchman-make = '/usr/local/bin/watchman-make'
 
 
 # trigger static build
-build: dist/bundle.js dist/index.html dist/fonts
+build: dist/bundle.js $(assets)
 
 
 # generate files required for heroku branch
@@ -35,14 +44,11 @@ purge: node_modules clean
 	@rm -rf $<
 	@make -C server $@
 
-dist/index.html: app/index.html dist
-	@cp $< $@
+$(assets): $(patsubst dist/%,app/%,$(assets)) dist
+	@cp -r $(patsubst dist/%,app/%,$@) $@
 
-dist/fonts: app/fonts dist
-	@cp -r $< $@
-
-$(servekit): server dist
-	@cp $@ $(patsubst server%,dist%,$@)
+$(servekit): $(patsubst dist/%,server/%,$(servekit)) dist
+	@cp $(patsubst dist/%,server/%,$@) $@
 
 dist/bundle.js: $(sources) $(styles) node_modules dist
 	node_modules/.bin/webpack

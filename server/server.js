@@ -10,7 +10,7 @@ var app = serve('./');
 http.createServer(
   function (req, res, done) {
     var done = finalize(req, res);
-    if (!/\.(js|html|css|woff|eot|svg|ttf)/.test(req.url)) {
+    if (!/\.(js|html|css|woff|eot|svg|ttf|ico|jpg|png)/.test(req.url)) {
       req.url = '/index.html';
     }
     app(req, res, done);
