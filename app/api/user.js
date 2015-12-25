@@ -1,6 +1,7 @@
 'use strict';
 
 const Base = require('./base');
+const socket = io('ws://' + Base.hostname);
 
 module.exports = {
   login: async (username, password) => {
@@ -15,5 +16,22 @@ module.exports = {
   },
   logout: () => {
     Base.user = null;
+  },
+  pending: async (onloggedIn) => {
+    const data = await Base.request('/api/users/login/pending');
+    socket.emit('register', {
+      pendingId: data.id
+    });
+    socket.on('logged', (token) => {
+      token = JSON.parse(token);
+      Base.user = {
+        userId: token.userId,
+        accessToken: token.id
+      };
+      if (typeof onloggedIn === 'function') {
+        onloggedIn();
+      }
+    });
+    return data.id;
   }
 };

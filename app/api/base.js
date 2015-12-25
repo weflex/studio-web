@@ -2,12 +2,16 @@
 
 const Agent = require('superagent-promise')(require('superagent'), Promise);
 const Prefix = require('superagent-prefix');
-// const BASE_URL = 'https://weflex-api-dev.herokuapp.com';
-const BASE_URL = 'http://api.theweflex.com';
+const HOSTNAME = 'api.theweflex.com';
+const BASE_URL = 'http:/' + HOSTNAME;
 const APP_URL = location.protocol + '//' + location.host +
   (process.env.NODE_ENV === 'github' ? '/admin' : '');
 
 module.exports = {
+  /**
+   * hostname of API
+   */
+  hostname: HOSTNAME,
 
   get user () {
     var obj = localStorage.getItem('weflex.user');
