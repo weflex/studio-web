@@ -1,0 +1,30 @@
+h1 {
+  font-family: 'Lucida Grande', helvetica, arial, sans-serif;
+  font-size: 36px !important;
+  font-weight: 600;
+}
+
+h1, .hint {
+  color: #fff;
+  text-align: center;
+}
+
+.login-view {
+  width: 200px;
+  height: 300px;
+  padding: calc(50% - 150px) calc(50% - 100px);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #00e4ff;
+}
+
+#qrcode-container {
+  margin: 10px 30px;
+  padding: 6px;
+  background-color: #fff;
+  border-radius: 2px;
+  outline: 1px solid #00cfe6;
+}
+

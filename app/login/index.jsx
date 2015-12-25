@@ -1,41 +1,26 @@
 const React = require('react');
 const User = require('../api/user');
+const QRCode = require('qrcode.react');
+
+require('./index.css');
 
 class Login extends React.Component {
   constructor () {
     User.logout();
     super();
   }
-  async onsubmit (e) {
-    e.preventDefault();
-    await User.login(this.username.value, this.password.value);
-    location.href = '/';
-  }
   render () {
     return (
-      <form>
-        <div>
-          <label>username</label>
-          <input type='text' id='login-username' 
-            ref={(node) => {
-              if (node) {
-                this.username = node;
-              }
-            }}
-          />
+      <div className='login-view'>
+        <h1>WeFlex</h1>
+        <div className='hint'>扫描二维码登录</div>
+        <div id='qrcode-container'>
+          <QRCode value={"http://api-staging.theweflex.com/auth/wechat?state=test"}
+                  size={128}
+                  bgColor={"#fff"}
+                  fgColor={"#000"} />
         </div>
-        <div>
-          <label>password</label>
-          <input type='password' id='login-password'
-            ref={(node) => {
-              if (node) {
-                this.password = node 
-              }
-            }}
-          />
-        </div>
-        <button type="submit" onClick={this.onsubmit.bind(this)}>Login</button>
-      </form>
+      </div>
     );
   }
 }
