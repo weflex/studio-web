@@ -9,6 +9,10 @@ h1, .hint {
   text-align: center;
 }
 
+.hint {
+  font-size: 18px;
+}
+
 .login-view {
   width: 200px;
   height: 300px;
@@ -21,6 +25,8 @@ h1, .hint {
 }
 
 #qrcode-container {
+  display: inline-block;
+  line-height: 0;
   margin: 10px 30px;
   padding: 6px;
   background-color: #fff;
