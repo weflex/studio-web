@@ -61,6 +61,8 @@ class App extends React.Component {
     const VenueDetailView = createViewWithBars(Venues.Detail);
     const DaypassListView = createViewWithBars(Daypasses);
     const HomeView = createViewWithBars(Home);
+    const CardListView = createViewWithBars(require('./card/list'));
+    const CardDetailView = createViewWithBars(require('./card/detail'));
     return (
       <Locations>
         <Location path="/login"       handler={Login} />
@@ -72,6 +74,8 @@ class App extends React.Component {
         <Location path="/classes/:id" handler={ClassDetailView} action="view" />
         <Location path="/venues/add"  handler={VenueDetailView} action="add" />
         <Location path="/daypasses"   handler={DaypassListView} />
+        <Location path="/card"        handler={CardListView} />
+        <Location path="/card/add"    handler={CardDetailView} />
       </Locations>
     );
   }
