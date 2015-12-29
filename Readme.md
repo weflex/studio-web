@@ -11,11 +11,7 @@ The desktop(HD) application for WeFlex Admin based on Web and the following stac
 ### Build Dependencies
 
 * NodeJS (>= 5.0.0) See [Official Repo](https://nodejs.org/en/download/)
-* Watchman (>= 4.1.0)
-
-  ```
-  $ brew update && brew install --HEAD watchman
-  ```
+* Make
 
 * GNU Make 3.81
 

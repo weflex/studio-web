@@ -13,9 +13,9 @@ assets   = \
 	dist/apple-touch-icon.png
 
 # build dependencies
-node          = '/usr/local/bin/node'
-npm           = '/usr/local/bin/npm'
-watchman-make = '/usr/local/bin/watchman-make'
+node    = '/usr/local/bin/node'
+npm     = '/usr/local/bin/npm'
+webpack = 'node_modules/.bin/webpack'
 
 
 # trigger static build
@@ -32,8 +32,7 @@ serve: build $(servekit)
 
 # start a server and watch changes on file-system
 watch: serve
-	$(watchman-make) \
-	  -p 'app/*' 'app/**/*' -t 'build'
+	$(webpack) --watch
 
 # drop static build
 clean: dist
@@ -51,7 +50,7 @@ $(servekit): $(patsubst dist/%,server/%,$(servekit)) dist
 	@cp $(patsubst dist/%,server/%,$@) $@
 
 dist/bundle.js: $(sources) $(styles) node_modules dist
-	node_modules/.bin/webpack
+	$(webpack) -p
 
 node_modules: package.json
 	$(npm) install
