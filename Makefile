@@ -1,11 +1,6 @@
 # source files
 sources  = $(shell find app -name '*.js*')
 styles   = $(shell find app -name '*.css')
-servekit = \
-	dist/Makefile \
-	dist/Procfile \
-	dist/package.json \
-	dist/server.js
 assets   = \
 	dist/index.html \
 	dist/favicon.ico \
@@ -23,11 +18,12 @@ build: dist/bundle.js $(assets)
 
 
 # generate files required for heroku branch
-heroku: build $(servekit)
+heroku: build dist/Makefile
+	@make -C dist $@
 
 
 # start a server at localhot:8080
-serve: build $(servekit)
+serve: build dist/Makefile
 	@make -C dist $@
 
 # start a server and watch changes on file-system
@@ -46,8 +42,8 @@ purge: node_modules clean
 $(assets): $(patsubst dist/%,app/%,$(assets)) dist
 	@cp -r $(patsubst dist/%,app/%,$@) $@
 
-$(servekit): $(patsubst dist/%,server/%,$(servekit)) dist
-	@cp $(patsubst dist/%,server/%,$@) $@
+dist/Makefile: server/Makefile dist
+	@cp $< $@
 
 dist/bundle.js: $(sources) $(styles) node_modules dist
 	$(webpack) -p
