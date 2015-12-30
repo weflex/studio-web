@@ -5,12 +5,13 @@
   background-color: #242f40;
   float: left;
   position: absolute;
+  color: #fafafa;
 }
 
 .navbar li {
   width: 100%;
 }
-.navbar li a {
+.navbar li > a {
   padding: 10px 0;
   margin: 5px 0;
 }
@@ -19,27 +20,33 @@
 }
 
 .navbar a {
-  color: #FAFAFA;
+  color: #fafafa;
   text-decoration: none;
   font-size: 14px;
   text-align: center;
   display: block;
 }
 
-.navbar li:first-child .studio-name {
-  font-size: 18px;
+.navbar li:first-child {
+  padding-top: 15px;
 }
 
-.navbar li:first-child .studio-name,
-.navbar li:first-child .username {
+.navbar .username * {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.navbar .username a {
+  padding: 0 5px;
+  font-size: 12px;
+  border-radius: 2px;
+}
+
+.navbar .studio-name,
+.navbar .username {
   width: 100%;
   text-align: left;
   padding-left: 15px;
-}
-.navbar li:first-child .icon-settings {
-  position: absolute;
-  top: 30px;
-  right: 0;
 }
 
 .navbar .icon-font {
