@@ -28,11 +28,11 @@ class DataItem extends React.Component {
     var backgroundColor = bgColors[this.props.type];
     return (
       <div className='data-item' style={{backgroundColor}}>
-        <div className='hint'>
-          {this.props.hint}
-        </div>
         <div className='value'>
           {this.props.value}
+        </div>
+        <div className='hint'>
+          {this.props.hint}
         </div>
       </div>
     );
@@ -53,12 +53,13 @@ class NavBar extends React.Component {
             <DataItem value='10' hint='课程签到' type='checkin' />
           </Link>
         </li>
-        <NavItem location='/home'        hint='总览' icon='heart' />
-        <NavItem location='/orders'      hint='订单' icon='light-bulb' />
-        <NavItem location='/classes'     hint='课程' icon='star' />
-        <NavItem location='/memberships' hint='次卡' icon='tag' />
-        <NavItem location='/users'       hint='会员' icon='user' />
-        <NavItem location='/trainers'    hint='教练' icon='database' />
+        <NavItem location='/calendar'        hint='课程管理'  icon='calendar' />
+        <NavItem location='/memberships'     hint='卡种管理'  icon='heart' />
+        <NavItem location='/orders'          hint='订单管理'  icon='inbox' />
+        <NavItem location='/class-templates' hint='课程模板'  icon='star' />
+        <NavItem location='/users'           hint='会员管理'  icon='user' />
+        <NavItem location='/trainers'        hint='教练管理'  icon='database' />
+        <NavItem location='/analytics'       hint='数据分析'  icon='light-bulb' />
       </ul>
     );
   }
