@@ -1,5 +1,7 @@
 const React = require('react');
 const Link = require('react-router-component').Link;
+const userId = require('../api/base').user.userId;
+const User = require('../api/user');
 
 require('./index.css');
 require('../layout/font.css');
@@ -40,13 +42,25 @@ class DataItem extends React.Component {
 }
 
 class NavBar extends React.Component {
+  constructor () {
+    super();
+    this.state = {
+      user: {
+        nickname: ''
+      }
+    };
+  }
+  async componentDidMount () {
+    var user = await User.get(userId);
+    this.setState({user});
+  }
   render () {
     return (
       <ul className='navbar'>
         <li>
           <div className='studio-name'>WeFlex</div>
           <div className='username'>
-            Scott
+            { this.state.user.nickname }
             <Link href='/login'>登出</Link>
           </div>
           <DataItem value='8'  hint='课程登记' type='signup' />

@@ -33,5 +33,9 @@ module.exports = {
       }
     });
     return data.id;
+  },
+  get: async (userId) => {
+    var res = await Base.request('/api/users/' + userId);
+    return res;
   }
 };
