@@ -12,13 +12,15 @@ class ToolBar extends React.Component {
   render () {
     return (
       <div className="toolbar">
-        <Actions ref="actions" />
         <ul className="toolbox">
+          <li>
+            <SearchInput ref="searchInput" />
+          </li>
           <li>
             <Notifier ref="notifier" />
           </li>
           <li>
-            <SearchInput ref="searchInput" />
+           <Actions ref="actions" />
           </li>
         </ul>
       </div>
