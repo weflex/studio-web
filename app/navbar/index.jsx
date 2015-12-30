@@ -48,10 +48,10 @@ class NavBar extends React.Component {
             <div className='studio-name'>WeFlex</div>
             <div className='username'>Scott</div>
             <span className='icon-font icon-settings'></span>
-            <DataItem value='8'  hint='课程登记' type='signup' />
-            <DataItem value='5'  hint='课程取消' type='cancel' />
-            <DataItem value='10' hint='课程签到' type='checkin' />
           </Link>
+          <DataItem value='8'  hint='课程登记' type='signup' />
+          <DataItem value='5'  hint='课程取消' type='cancel' />
+          <DataItem value='10' hint='课程签到' type='checkin' />
         </li>
         <NavItem location='/calendar'        hint='课程管理'  icon='calendar' />
         <NavItem location='/memberships'     hint='卡种管理'  icon='heart' />

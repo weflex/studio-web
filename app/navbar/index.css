@@ -9,16 +9,13 @@
 
 .navbar li {
   width: 100%;
-  padding: 15px 0;
 }
-.navbar li:hover {
+.navbar li a {
+  padding: 10px 0;
+  margin: 5px 0;
+}
+.navbar li a:hover {
   background-color: rgba(255, 255, 255, 0.1);
-}
-.navbar li:first-child {
-  padding: 0 0 20px 0;
-}
-.navbar li:first-child:hover {
-  background-color: rgba(255, 255, 255, 0.05);
 }
 
 .navbar a {
@@ -27,10 +24,6 @@
   font-size: 14px;
   text-align: center;
   display: block;
-}
-.navbar li:first-child a {
-  position: relative;
-  top: 15px;
 }
 
 .navbar li:first-child .studio-name {
@@ -45,7 +38,7 @@
 }
 .navbar li:first-child .icon-settings {
   position: absolute;
-  top: 15px;
+  top: 30px;
   right: 0;
 }
 
@@ -70,6 +63,7 @@
   font-family: 'Open Sans';
   font-weight: 100;
   margin: -5px 0;
+  text-align: center;
 }
 
 .data-item > .hint {
