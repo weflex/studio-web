@@ -2,7 +2,7 @@
 
 const Agent = require('superagent-promise')(require('superagent'), Promise);
 const Prefix = require('superagent-prefix');
-const HOSTNAME = 'api-staging.theweflex.com';
+const HOSTNAME = 'localhost';
 const BASE_URL = 'http://' + HOSTNAME;
 const APP_URL = location.protocol + '//' + location.host +
   (process.env.NODE_ENV === 'github' ? '/admin' : '');
