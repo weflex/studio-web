@@ -14,10 +14,10 @@ class ToolBar extends React.Component {
       <div className="toolbar">
         <ul className="toolbox">
           <li>
-            <SearchInput ref="searchInput" />
+            <Notifier ref="notifier" />
           </li>
           <li>
-            <Notifier ref="notifier" />
+            <SearchInput ref="searchInput" />
           </li>
           <li>
            <Actions ref="actions" />
