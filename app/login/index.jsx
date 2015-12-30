@@ -18,12 +18,12 @@ class Login extends React.Component {
     });
   }
   loggedIn() {
-    alert('logged in');
+    location.href = '/';
   }
   render() {
     let qrcode = null;
     if (this.state.pendingId) {
-      const url = 'http://api.theweflex.com/auth/wechat?state=' + btoa('qrcode:' + this.state.pendingId);
+      const url = 'http://api-staging.theweflex.com/auth/wechat?state=' + btoa('qrcode:' + this.state.pendingId);
       qrcode = <QRCode value={url} size={128} bgColor="#fff" fgColor="#000" />;
     }
     return (
