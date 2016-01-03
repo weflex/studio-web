@@ -26,15 +26,12 @@ export class SearchInput extends React.Component {
   render () {
     return (
       <div className='search'>
-        <div className='search-box'>
-          <input type="text"
-            ref="keywords"
-            onChange={this._onchange.bind(this)} 
-          />
-          <i className='icon-font icon-search'></i>
-        </div>
+        <input type="text"
+               ref="keywords"
+               onChange={this._onchange.bind(this)} />
+        <i className='icon-font icon-search'></i>
       </div>
-    ); // place-holder
+    );
   }
   _onchange () {
     SearchInput.Emit('onChange', this.refs.keywords.value);
