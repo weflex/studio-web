@@ -38,9 +38,7 @@
 }
 
 .navbar .username a {
-  padding: 0 8px;
   font-size: 12px;
-  border-left: 1px solid #d8d8d8;
 }
 .navbar .username a:hover {
   text-decoration: underline;
@@ -79,4 +77,5 @@
 
 .data-item > .hint {
   font-size: 12px;
+  text-align: center;
 }

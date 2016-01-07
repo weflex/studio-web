@@ -1,5 +1,15 @@
+body {
+  font-family: 'Helvetica Neue', 'Helvetica','Arial', sans-serif;
+  background-color: #00e4ff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
 h1 {
-  font-family: 'Lucida Grande', helvetica, arial, sans-serif;
+  font-family: 'Lucida Grande', 'Helvetica', 'Arial', sans-serif;
   font-size: 36px !important;
   font-weight: 600;
 }
@@ -14,14 +24,10 @@ h1, .hint {
 }
 
 .login-view {
-  width: 200px;
-  height: 300px;
-  padding: calc(50% - 150px) calc(50% - 100px);
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  background-color: #00e4ff;
 }
 
 #qrcode-container {

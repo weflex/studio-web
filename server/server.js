@@ -10,8 +10,14 @@ var app = serve('./');
 http.createServer(
   function (req, res, done) {
     var done = finalize(req, res);
-    if (!/\.(js|html|css|woff|eot|svg|ttf|ico|jpg|png)/.test(req.url)) {
-      req.url = '/index.html';
+
+    if (!/\.\w+(\?.*)?$/.test(req.url)) { // if url is not a file path
+
+      if (/^\/login(\/.*)?/.test(req.url)) { // redirect to /login/index.html
+        req.url = '/login/index.html';
+      } else {
+        req.url = '/index.html';
+      }
     }
     app(req, res, done);
   }).listen(port);

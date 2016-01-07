@@ -5,10 +5,13 @@ function dir (subpath) {
 }
 
 module.exports = {
-  entry: dir('app/index.jsx'),
+  entry: {
+    "bundle.js": dir('app/index.jsx'),
+    "login/index.js": dir('app/login/index.jsx')
+  },
   output: {
     path: dir('dist'),
-    filename: 'bundle.js'
+    filename: "[name]"
   },
   resolve: {
     extensions: ['', '.jsx', '.js']

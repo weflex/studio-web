@@ -60,8 +60,7 @@ class NavBar extends React.Component {
         <li>
           <div className='studio-name'>WeFlex</div>
           <div className='username'>
-            { this.state.user.nickname }
-            <Link href='/login'>登出</Link>
+            { this.state.user.nickname } | <a href='/login'>登出</a>
           </div>
           <DataItem value='8'  hint='课程登记' type='signup' />
           <DataItem value='5'  hint='课程取消' type='cancel' />

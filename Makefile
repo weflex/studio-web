@@ -5,7 +5,14 @@ assets   = \
 	dist/index.html \
 	dist/favicon.ico \
 	dist/fonts \
+	dist/login/index.html \
 	dist/apple-touch-icon.png
+dirs    = \
+	dist \
+	dist/login
+outputs = \
+	dist/bundle.js \
+	dist/login/index.js
 
 # build dependencies
 node    = '/usr/local/bin/node'
@@ -14,7 +21,7 @@ webpack = 'node_modules/.bin/webpack'
 
 
 # trigger static build
-build: dist/bundle.js $(assets)
+build: $(outputs) dist/login/index.js $(assets)
 
 
 # generate files required for heroku branch
@@ -39,19 +46,19 @@ purge: node_modules clean
 	@rm -rf $<
 	@make -C server $@
 
-$(assets): $(patsubst dist/%,app/%,$(assets)) dist
+$(assets): $(patsubst dist/%,app/%,$(assets)) $(dirs)
 	@cp -r $(patsubst dist/%,app/%,$@) $@
 
 dist/Makefile: server/Makefile dist
 	@cp $< $@
 
-dist/bundle.js: $(sources) $(styles) node_modules dist
+$(outputs): $(sources) $(styles) node_modules dist
 	$(webpack) -p
 
 node_modules: package.json
 	$(npm) install
 
-dist:
-	@mkdir $@
+$(dirs):
+	@mkdir -p $@
 
 .PHONY: build heroku serve watch clean purge

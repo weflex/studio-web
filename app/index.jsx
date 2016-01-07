@@ -11,7 +11,6 @@ const assign = Object.assign || require('object-assign');
 const NavBar = require('./navbar');
 const ToolBar = require('./toolbar');
 const Home = require('./home');
-const Login = require('./login');
 const Classes = require('./classes');
 const Venues = require('./venues');
 const Orders = require('./orders');
@@ -54,7 +53,6 @@ function createViewWithBars (component) {
 
 class App extends React.Component {
   render () {
-    const LoginView = Login;
     const OrderListView = createViewWithBars(Orders.List);
     const ClassListView = createViewWithBars(Classes.List);
     const ClassDetailView = createViewWithBars(Classes.Detail);
@@ -65,7 +63,6 @@ class App extends React.Component {
     const CardDetailView = createViewWithBars(require('./card/detail'));
     return (
       <Locations>
-        <Location path="/login"       handler={Login} />
         <Location path="/"            handler={OrderListView} />
         <Location path="/home"        handler={HomeView} />
         <Location path="/orders"      handler={OrderListView} />

@@ -1,4 +1,6 @@
+require('babel-polyfill');
 const React = require('react');
+const ReactDOM = require('react-dom');
 const User = require('../api/user');
 const QRCode = require('qrcode.react');
 
@@ -38,4 +40,9 @@ class Login extends React.Component {
   }
 }
 
-module.exports = Login;
+
+(function () {
+  ReactDOM.render(
+    <Login />,
+    document.getElementById('root-container'));
+})();
