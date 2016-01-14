@@ -1,7 +1,7 @@
 const React = require('react');
 const NavBar = require('../navbar');
 const ToolBar = require('../toolbar');
-const User = require('../api/user');
+const { user } = require('@weflex/gian').getClient('dev');
 
 class Home extends React.Component {
   constructor () {
@@ -12,7 +12,7 @@ class Home extends React.Component {
   }
 
   async componentDidMount () {
-    let token = await User.login('king', 'iamthekingoftheweflex');
+    let token = await user.login('king', 'iamthekingoftheweflex');
     this.setState({string: JSON.stringify(token)});
   }
   

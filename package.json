@@ -2,6 +2,8 @@
   "name": "studio",
   "version": "2.0.0",
   "dependencies": {
+    "@weflex/gian": "^1.4.28",
+    "@weflex/passport.js": "^1.2.0",
     "babel-polyfill": "6.3.14",
     "material-ui": "^0.14.0",
     "moment": "2.10.6",

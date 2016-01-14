@@ -1,10 +1,8 @@
 "use strict";
 const React = require('react');
 const Tabular = require('../sorted/table');
-const Class = require('../api/class');
-const {
-  SearchInput
-} = require('../toolbar/components/search');
+const { SearchInput } = require('../toolbar/components/search');
+const gian = require('@weflex/gian').getClient('dev');
 
 class ClassList extends React.Component {
   constructor(props) {
@@ -15,7 +13,7 @@ class ClassList extends React.Component {
     SearchInput.Listen('onChange', table.filter.bind(table));
   }
   async getDataSource() {
-    return await Class.list();
+    return await client.class.list();
   }
   render() {
     return (

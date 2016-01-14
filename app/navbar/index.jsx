@@ -1,7 +1,7 @@
 const React = require('react');
 const Link = require('react-router-component').Link;
-const userId = require('../api/base').user.userId;
-const User = require('../api/user');
+const gian = require('@weflex/gian');
+const client = require('@weflex/gian').getClient('dev');
 
 require('./index.css');
 require('../layout/font.css');
@@ -51,7 +51,8 @@ class NavBar extends React.Component {
     };
   }
   async componentDidMount () {
-    var user = await User.get(userId);
+    var user = await client.user.getCurrent();
+    console.log(user);
     this.setState({user});
   }
   render () {

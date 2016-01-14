@@ -1,15 +1,15 @@
 'use strict';
 const React = require('react');
 const SortedTable = require('../sorted/table');
-const Order = require('../api/order');
 const { SearchInput } = require('../toolbar/components/search');
+const client = require('@weflex/gian').getClient('dev');
 
 class OrderList extends SortedTable {
   constructor(props) {
     super(props);
   }
   async getDataSource() {
-    return await Order.list();
+    return await client.order.list();
   }
   componentDidMount() {
     const table = this.refs.table;

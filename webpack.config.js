@@ -23,14 +23,7 @@ module.exports = {
         exclude: [/node_modules/, /server/],
         loader: 'babel',
         query: {
-          presets: ['react', 'es2015', 'stage-0']
-        }
-      },
-      {
-        test: /react-baidu-map\/index\.jsx$/,
-        loader: 'babel',
-        query: {
-          presets: ['react', 'es2015', 'stage-0']
+          presets: ['react', 'es2015', 'stage-1']
         }
       },
       {
@@ -38,7 +31,7 @@ module.exports = {
         exclude: [/node_modules/, /server/],
         loader: 'babel',
         query: {
-          presets: ['es2015', 'stage-0']
+          presets: ['es2015', 'stage-1']
         }
       },
       {
