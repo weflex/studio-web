@@ -19,7 +19,6 @@ class NavItem extends React.Component {
   }
 }
 
-
 class DataItem extends React.Component {
   render () {
     const bgColors = {
@@ -46,13 +45,12 @@ class NavBar extends React.Component {
     super();
     this.state = {
       user: {
-        nickname: ''
+        nickname: '未登陆'
       }
     };
   }
   async componentDidMount () {
     var user = await client.user.getCurrent();
-    console.log(user);
     this.setState({user});
   }
   render () {
@@ -61,18 +59,18 @@ class NavBar extends React.Component {
         <li>
           <div className='studio-name'>WeFlex</div>
           <div className='username'>
-            { this.state.user.nickname } | <a href='/login'>登出</a>
+            {this.state.user.nickname} | <a href='/login'>登出</a>
           </div>
           <DataItem value='8'  hint='课程登记' type='signup' />
           <DataItem value='5'  hint='课程取消' type='cancel' />
           <DataItem value='10' hint='课程签到' type='checkin' />
         </li>
-        <NavItem location='/calendar'        hint='课程管理'  icon='calendar' />
-        <NavItem location='/memberships'     hint='卡种管理'  icon='heart' />
-        <NavItem location='/orders'          hint='订单管理'  icon='inbox' />
-        <NavItem location='/class-templates' hint='课程模板'  icon='star' />
-        <NavItem location='/users'           hint='会员管理'  icon='user' />
-        <NavItem location='/trainers'        hint='教练管理'  icon='database' />
+        <NavItem location='/calendar'        hint='课程日历'  icon='calendar' />
+        <NavItem location='/class/template'  hint='课程模板'  icon='star' />
+        <NavItem location='/class/package'   hint='卡种管理'  icon='heart' />
+        <NavItem location='/trainer'         hint='教练管理'  icon='database' />
+        <NavItem location='/membership'      hint='会员管理'  icon='user' />
+        <NavItem location='/order'           hint='订单管理'  icon='inbox' />
         <NavItem location='/analytics'       hint='数据分析'  icon='light-bulb' />
       </ul>
     );

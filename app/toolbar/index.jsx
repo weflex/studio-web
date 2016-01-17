@@ -6,12 +6,19 @@ const { Notifier     } = require('./components/notifier');
 require('./index.css');
 
 class ToolBar extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
+    this.state = {
+      title: null
+    };
   }
-  render () {
+  setTitle(title: string) {
+    this.setState({title});
+  }
+  render() {
     return (
       <div className="toolbar">
+        <div className="toolbar-title">{this.state.title}</div>
         <ul className="toolbox">
           <li>
             <Notifier ref="notifier" />

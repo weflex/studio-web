@@ -1,4 +1,5 @@
-'use strict';
+"use strict";
+
 const React = require('react');
 const { Link } = require('react-router-component');
 
@@ -9,7 +10,7 @@ export class Actions extends React.Component {
       actions: [
         {
           title: '创建新课程',
-          path: '/classes/add'
+          path: '/class/add'
         }
       ]
     };

@@ -6,45 +6,33 @@ const {
   Locations,
   Location
 } = require('react-router-component');
-const assign = Object.assign || require('object-assign');
 
 const NavBar = require('./navbar');
 const ToolBar = require('./toolbar');
 const Home = require('./home');
-const Classes = require('./classes');
-const Venues = require('./venues');
-const Orders = require('./orders');
+const Order = require('./order');
 
 require('./layout/root.css');
 require('./index.css');
 
-class Daypasses extends React.Component {
-  render () {
-    return (
-      <div>
-        Daypasses
-      </div>
-    );
-  }
-}
-
 function createViewWithBars (component) {
   return class Page extends React.Component {
     componentDidMount () {
+      this.refs.toolbar.setTitle(
+        this.refs.main.title
+      );
       this.refs.toolbar.refs.actions.updateActions(
         this.refs.main.actions
       );
     }
     render () {
-      const props = assign({ref: 'main'}, this.props);
+      const props = Object.assign({ref: 'main'}, this.props);
       const main = React.createElement(component, props);
       return (
         <div>
           <NavBar ref="navbar" />
           <ToolBar ref="toolbar" />
-          <div className='main'>
-            {main}
-          </div>
+          <div className="main">{main}</div>
         </div>
       );
     }
@@ -53,26 +41,25 @@ function createViewWithBars (component) {
 
 class App extends React.Component {
   render () {
-    const OrderListView = createViewWithBars(Orders.List);
-    const ClassListView = createViewWithBars(Classes.List);
-    const ClassDetailView = createViewWithBars(Classes.Detail);
-    const VenueDetailView = createViewWithBars(Venues.Detail);
-    const DaypassListView = createViewWithBars(Daypasses);
-    const HomeView = createViewWithBars(Home);
-    const CardListView = createViewWithBars(require('./card/list'));
-    const CardDetailView = createViewWithBars(require('./card/detail'));
+    const OrderListView = createViewWithBars(Order.List);
     return (
       <Locations>
-        <Location path="/"            handler={OrderListView} />
-        <Location path="/home"        handler={HomeView} />
-        <Location path="/orders"      handler={OrderListView} />
-        <Location path="/classes"     handler={ClassListView} />
-        <Location path="/classes/add" handler={ClassDetailView} action="add" />
-        <Location path="/classes/:id" handler={ClassDetailView} action="view" />
-        <Location path="/venues/add"  handler={VenueDetailView} action="add" />
-        <Location path="/daypasses"   handler={DaypassListView} />
-        <Location path="/card"        handler={CardListView} />
-        <Location path="/card/add"    handler={CardDetailView} />
+        <Location path="/"
+          handler={OrderListView} />
+        <Location path="/order"
+          handler={OrderListView} />
+        <Location path="/calendar"
+          handler={createViewWithBars(require('./calendar'))} />
+        <Location path="/class/template" 
+          handler={createViewWithBars(require('./class-template/list'))} />
+        <Location path="/class/package"
+          handler={createViewWithBars(require('./class-package/list'))} />
+        <Location path="/class/package/add"
+          handler={createViewWithBars(require('./class-package/detail'))} />
+        <Location path="/trainer"
+          handler={createViewWithBars(require('./trainer/list'))} />
+        <Location path="/membership"
+          handler={createViewWithBars(require('./membership/list'))} />
       </Locations>
     );
   }

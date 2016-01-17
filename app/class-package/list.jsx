@@ -40,11 +40,14 @@ class CardList extends React.Component {
       anchorEl: null,
     };
   }
+  get title() {
+    return '卡种管理'
+  }
   get actions() {
     return [
       {
         title: '创建新卡',
-        path: '/card/add'
+        path: '/class/package/add'
       }
     ];
   }
@@ -57,9 +60,6 @@ class CardList extends React.Component {
   render() {
     return (
       <div style={this.styles.container}>
-        <div style={this.styles.header}>
-          <h1 style={this.styles.title}>卡种分类</h1>
-        </div>
         <div style={this.styles.toolbar}>
           <SelectField style={this.styles.orderBy}>
             <MenuItem key={0} primaryText="按类型排序" />
