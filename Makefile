@@ -23,14 +23,12 @@ webpack = 'node_modules/.bin/webpack'
 # trigger static build
 build: $(outputs) dist/login/index.js $(assets)
 
-
 # generate files required for heroku branch
 heroku: build dist/Makefile
 	@make -C dist $@
 
-
 # start a server at localhot:8080
-serve: build dist/Makefile
+serve: dist/Makefile
 	@make -C dist $@
 
 # start a server and watch changes on file-system
