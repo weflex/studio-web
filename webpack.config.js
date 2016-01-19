@@ -1,4 +1,6 @@
-'use strict';
+"use strict";
+
+const webpack = require('webpack');
 
 function dir (subpath) {
   return require('path').join(__dirname, subpath);
@@ -39,5 +41,9 @@ module.exports = {
         loader: 'style-loader!css-loader'
       }
     ]
-  }
+  },
+  plugins: [
+    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /zh/),
+    new webpack.optimize.DedupePlugin()
+  ]
 };

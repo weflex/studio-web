@@ -9,7 +9,6 @@ const {
 
 const NavBar = require('./navbar');
 const ToolBar = require('./toolbar');
-const Home = require('./home');
 const Order = require('./order');
 
 require('./layout/root.css');
