@@ -21,7 +21,7 @@ webpack = 'node_modules/.bin/webpack'
 
 
 # trigger static build
-build: $(outputs) dist/login/index.js $(assets)
+build: $(outputs) dist/login/index.js $(assets) node_modules
 
 # generate files required for heroku branch
 heroku: build dist/Makefile
@@ -32,7 +32,7 @@ serve: dist/Makefile
 	@make -C dist $@
 
 # start a server and watch changes on file-system
-watch: serve
+watch: serve build
 	$(webpack) --watch
 
 # drop static build
