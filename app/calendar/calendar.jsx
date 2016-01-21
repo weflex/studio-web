@@ -6,6 +6,7 @@ import {
   getWeek,
   getRange,
   getWeekEnd,
+  getFormatTime,
   getWeekBegin,
 } from './util.js'
 
@@ -96,7 +97,7 @@ class WeekHeader extends React.Component {
             onClick={this.goNextWeek.bind(this)}>{'>'}
           </span>
         </div>
-        <TableHeader currentDate={this.props.currentDate}/>
+        <TableHeader currentDate={this.props.currentDate} />
         <div className="scroll-div"></div>
       </div>
     );
@@ -179,7 +180,7 @@ class Calendar extends React.Component {
     });
 
     return (
-     <ul  key="hour-axis" className="hour-axis" style={style.ul}>
+      <ul key="hour-axis" className="hour-axis" style={style.ul}>
         {col}
       </ul>
     );
@@ -187,7 +188,9 @@ class Calendar extends React.Component {
 
   getTableColumn(weekSchedule, dayIndex) {
     let daySchedule = weekSchedule.get(dayIndex);
-    let col = getRange(0, DAYHOUR - 1).map((value, hourIndex) => this.getCards(daySchedule, hourIndex));
+    let col = getRange(0, DAYHOUR - 1).map((value, hourIndex) => {
+      return this.getCards(daySchedule, hourIndex);
+    });
 
     return (
       <ul key={dayIndex} ref={ul => {if (ul){this.colList[dayIndex] = ul.getBoundingClientRect()}}}>{col}</ul>
@@ -195,14 +198,12 @@ class Calendar extends React.Component {
   }
 
   getTableBody() {
-    let tableBody = [];
     let hourAxis = this.getHourAxis();
-
-    tableBody.push(hourAxis);
+    let tableBody = [hourAxis];
 
     for (let i = 1; i <= WEEKDAY; ++i) {
       let col = this.getTableColumn(this.state.weekSchedule, i);
-      tableBody.push(col);
+      tableBody[i] = col;
     }
 
     return tableBody;
@@ -211,7 +212,6 @@ class Calendar extends React.Component {
   setBaseline(e) {
     let baselineTop = e.clientY - this.table.top + this.state.scrollTop;
     let baselineLeft = e.clientX - this.table.left;
-
     this.setState({baselineTop});
 
     for (let index in this.cellList) {
@@ -233,44 +233,44 @@ class Calendar extends React.Component {
           minute: minute
         };
 
-
         this.setState({baselineClock});
         break;
       }
     }
 
-    for (let index in this.colList) {
-
-    }
+    this.colList.forEach((col, index) => {
+      if (col.left < baselineLeft && baselineLeft < col.right) {
+        this.setState({pointerDay: index});
+      }
+    });
   }
 
   getBaseLine(time, top) {
-    let {hour, minute} = time;
-    let baselineHour = hour < 10 ? ('0' + hour) : hour;
-    let baselineMin = minute  < 10 ? ('0' + minute) : minute;
     let style = {
       marginTop: top
     };
+    let timeString = getFormatTime(time);
 
     if (top > 0) {
       return (
         <div className="baseline-wrap" >
           <div className="baseline-clock" style={style}>
-            {baselineHour}:{baselineMin}
+            {timeString}
           </div>
           <div className="baseline" style={style}>
           </div>
         </div>
-
       );
     }
     return ;
   }
 
   handleScroll(e) {
-    this.setState({
-      scrollTop: e.target.scrollTop
-    });
+    if (e.target.scrollTop) {
+      this.setState({
+        scrollTop: e.target.scrollTop
+      });
+    }
   }
 
 

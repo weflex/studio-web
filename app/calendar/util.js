@@ -1,6 +1,28 @@
 import moment from 'moment';
 const CELL_HEIGHT = 50;
 
+function getCardWidth(length) {
+  return (1 / length * 100) + '%';
+}
+
+function getFormatTime(time) {
+  let hour, minute;
+
+  if (time.minute < 10) {
+     minute = '0' + time.minute;
+  } else {
+     minute = time.minute;
+  }
+
+  if (time.hour < 10) {
+     hour = '0' + time.hour;
+  } else {
+     hour = time.hour;
+  }
+
+  return `${hour}:${minute}`;
+}
+
 function getWeek(date, format) {
   let weekDate = {};
   weekDate.begin = getWeekBegin(date, format);
@@ -94,14 +116,26 @@ function getGridOffsetByTime(from, height) {
   return offsetTop;
 }
 
+function getDateBySplit(newTime, date) {
+  if (newTime && 'hour' in newTime && date) {
+    const oldDate = moment(date).format('YYYY-MM-DD');
+    const newDate = new Date(oldDate + ` ${getFormatTime(newTime)}`);
+    return newDate;
+  } else {
+    return date;
+  }
+}
+
 export {
   getWeek,
   getRange,
   getWeekEnd,
   getWeekBegin,
+  getFormatTime,
   getCellHeight,
   addTimeByHour,
   getGridHeight,
+  getDateBySplit,
   getTimeDuration,
   addTimeByMinute,
   getGridOffsetByTime,

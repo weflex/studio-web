@@ -4,9 +4,11 @@ import moment from 'moment';
 import PopUp from '@weflex/react-portal-tooltip';
 import Hammer from 'hammerjs';
 import {
+  getFormatTime,
   getCellHeight,
   addTimeByHour,
   getGridHeight,
+  getDateBySplit,
   getTimeDuration,
   addTimeByMinute,
   getGridOffsetByTime,
@@ -90,38 +92,21 @@ class OrderInfo extends React.Component {
   }
 }
 
-// 目前没有用上, 在同一时段有多个事件
-function getCardWidth(length) {
-  return (1 / length * 100) + '%';
-}
-
-function timeFormat(time) {
-  let hour, minute;
-
-  if (time.minute < 10) {
-     minute = '0' + time.minute;
-  } else {
-     minute = time.minute;
-  }
-
-  if (time.hour < 10) {
-     hour = '0' + time.hour;
-  } else {
-     hour = time.hour;
-  }
-
-  return `${hour}:${minute}`;
-}
-
 class ClassCard extends React.Component {
   constructor(props) {
     super(props);
+    const cellHeight = getCellHeight();
+    const height = getGridHeight(this.props.cardInfo.from, this.props.cardInfo.to, cellHeight);
+    const top = getGridOffsetByTime(this.props.cardInfo.from, cellHeight);
+    // keep orginal style
+    this.style = {
+      height: height,
+      marginTop: top,
+      marginLeft: 0,
+    };
+
     this.state = {
-      style: {
-        height: 0,
-        marginTop: 0,
-        marginLeft: 0,
-      },
+      style: this.style,
       isDrag: false,
       isMove: false,
       arrow: 'center',
@@ -141,53 +126,84 @@ class ClassCard extends React.Component {
         'color': '#f7f7f7'
       }
     };
-    this.cellHeight = 0;
+
+    this.cellHeight = cellHeight;
   }
 
   createMoveHanler(hanlder) {
     const hammer = new Hammer(hanlder);
     const classDuration = getTimeDuration(this.props.cardInfo.from, this.props.cardInfo.to);
-
-    Hammer.on(hanlder, 'click', function (ev) {
-      ev.preventDefault();
-    });
-
     hammer.get('pan').set({
       threshold: 0
     });
 
-    hammer.on('panstart', (ev) => {
+    hammer.on('panstart', (event) => {
       const timeToFrom = getTimeDuration(this.props.cardInfo.from, this.props.baselineClock);
+      const pointerDay = this.props.calendar.state.pointerDay;
       this.setState({
-        timeToFrom
-      });
-    });
-
-    hammer.on('pan', (ev) => {
-      if (this.state.isDrag) return;
-
-      const marginTop = this.style.marginTop + ev.deltaY;
-      const height = this.style.height;
-      const hourOffset = -(this.state.timeToFrom / 60);
-      const from = addTimeByHour(this.props.baselineClock, hourOffset);
-      this.setState({
-        from,
-        style: {
-          marginTop,
-          height,
-        },
+        timeToFrom,
         isMove: true,
+        fromDay: pointerDay,
       });
     });
 
+    hammer.on('pan', (event) => {
+      if (this.state.isDrag) {
+        return;
+      }
 
-    hammer.on('panend', (ev) => {
-      if (this.state.isDrag) return;
-      const newTime = this.getRoundTime(this.state.from);
-      const newCard = this.getNewCard(function (card) {
-        card.from = newTime;
-        card.to = addTimeByMinute(newTime, classDuration);
-      }, newTime);
+      const pointerDay = this.props.calendar.state.pointerDay;
+      const marginTop = this.style.marginTop + event.deltaY;
+      const marginLeft = this.style.marginLeft + event.deltaX;
+      const col = this.props.calendar.colList[pointerDay];
+      const height = this.style.height;
+      const width = col.right - col.left;
+      const hourOffset = -(this.state.timeToFrom / 60);
+      const newHourTime = addTimeByHour(this.props.baselineClock, hourOffset);
+      console.log('col:', col);
+      console.log('table:', this.props.calendar.table);
+      const style = {
+          marginTop,
+          marginLeft,
+          height,
+          width
+      };
+
+      this.setState({
+        newHourTime,
+        style,
+      });
+    });
+
+    hammer.on('panend', (event) => {
+      if (this.state.isDrag) {
+        return;
+      }
+      const pointerDay = this.props.calendar.state.pointerDay;
+      const toDay = moment(this.props.cardInfo.date)
+                    .add(pointerDay - this.state.fromDay, 'day')
+                    .format('YYYY-MM-DD');
+
+      let newFromHour = this.getRoundTime(this.state.newHourTime);
+      if (newFromHour.hour < 0) {
+        newFromHour.hour = 0;
+        newFromHour.minute = 0;
+      }
+
+      let newToHour = addTimeByMinute(newFromHour, classDuration);
+      if (newToHour.hour >= 24 && newToHour.minute >= 0) {
+        newToHour = {
+          hour: 24,
+          minute: 0
+        }
+        newFromHour = addTimeByMinute(newToHour, -classDuration);
+      }
+
+      const newCard = this.getNewCard((card) => {
+        card.from = newFromHour;
+        card.to = newToHour;
+        card.date = getDateBySplit(card.from, toDay);
+      });
       this.props.updateCard(newCard);
     });
   }
@@ -209,36 +225,33 @@ class ClassCard extends React.Component {
         newTime.minute = 30;
       }
     }
+
     return newTime;
   }
 
-  getNewCard(callback, newTime) {
+  getNewCard(callback, newTime, date) {
     const newCard = Object.assign({}, this.props.cardInfo);
-    const oldDate = moment(this.props.cardInfo.date).format('YYYY-MM-DD');
-    newCard.date = new Date(oldDate + ` ${timeFormat(newTime)}`);
     callback.call(this, newCard);
     return newCard;
   }
 
   createDragger(dragger, direction) {
     const hammer = new Hammer(dragger);
-
-    Hammer.on(dragger, 'click', function (ev) {
-      ev.stopPropagation();
-    });
-
     hammer.get('pan').set({
       direction: Hammer.DIRECTION_VERTICAL,
       threshold: 0
     });
 
-    hammer.on('panup pandown', (ev) => {
-      console.log('a');
-      let marginTop = this.style.marginTop + ev.deltaY;
-      let height = this.style.height - ev.deltaY;
+    hammer.on('panstart', (event) => {
+      this.setState({isDrag: true});
+    })
+
+    hammer.on('panup pandown', (event) => {
+      let marginTop = this.style.marginTop + event.deltaY;
+      let height = this.style.height - event.deltaY;
       if (direction === 'bottom') {
         marginTop = this.style.marginTop;
-        height = this.style.height + ev.deltaY;
+        height = this.style.height + event.deltaY;
       }
 
       let isOverDrag = (height <= this.cellHeight);
@@ -255,16 +268,14 @@ class ClassCard extends React.Component {
         style: {
           marginTop,
           height
-        },
-        isDrag: true
+        }
       });
     });
 
-    hammer.on('panend', (ev) => {
-
-      let height = this.style.height - ev.deltaY;
+    hammer.on('panend', (event) => {
+      let height = this.style.height - event.deltaY;
       if (direction === 'bottom') {
-        height = this.style.height + ev.deltaY;
+        height = this.style.height + event.deltaY;
       }
       let time = this.props.baselineClock;
       const isOverDrag = (height <= this.cellHeight);
@@ -287,23 +298,14 @@ class ClassCard extends React.Component {
             card.from = addTimeByHour(newTime, -1);
           }
         }
-      }, newTime);
+        card.date = getDateBySplit(card.from, this.props.cardInfo.date);
+      });
 
       this.props.updateCard(newCard);
     });
   }
 
   componentDidMount() {
-    const cellHeight = getCellHeight();
-    const height = getGridHeight(this.props.cardInfo.from, this.props.cardInfo.to, cellHeight);
-    const top = getGridOffsetByTime(this.props.cardInfo.from, cellHeight);
-    this.style = {
-      height: height,
-      marginTop: top,
-      marginLeft: 0
-    };
-    this.cellHeight = cellHeight;
-
     const card = this.refs.card;
     const topDragger = this.refs.topDragger;
     const bottomDragger = this.refs.bottomDragger;
@@ -311,10 +313,6 @@ class ClassCard extends React.Component {
     this.createMoveHanler(card);
     this.createDragger(topDragger, 'top');
     this.createDragger(bottomDragger, 'bottom');
-
-    this.setState({
-      style: this.style,
-    });
   }
 
   showPopUp(e) {
@@ -351,7 +349,7 @@ class ClassCard extends React.Component {
 
   render() {
     const {id, from, to, date, template, orders} = this.props.cardInfo;
-    const duration = `${timeFormat(from)} - ${timeFormat(to)}`;
+    const duration = `${getFormatTime(from)} - ${getFormatTime(to)}`;
     const dayOfYear = moment(date).format('MM[月]DD[日]');
     const dayOfWeek = moment(date).format('ddd');
     const trainer = template.trainer;

@@ -138,7 +138,7 @@ body {
 
 .schedule-table ul li:empty:hover {
   cursor: crosshair;
-  box-shadow: 0 0 0 2px #0066ff inset;
+  /* box-shadow: 0 0 0 2px #0066ff inset; */
 }
 
 .schedule-table .baseline-wrap {
