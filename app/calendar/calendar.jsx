@@ -1,153 +1,67 @@
-"use strict";
-
 import React from 'react';
-import './index.css'
+import ReactDOM from 'react-dom';
+import moment from 'moment';
+import './index.css';
+import {
+  getWeek,
+  getRange,
+  getWeekEnd,
+  getWeekBegin,
+} from './util.js'
 
-const moment = require('moment');
 const DAYHOUR = 24;
 const WEEKDAY = 7;
+const BORDER_HEIGHt = 1;
+
 moment.locale('zh-cn');
 
-function getWeek(date, format) {
-  var weekDate = {};
-  weekDate.begin = getWeekBegin(date, format);
-  weekDate.end = getWeekEnd(date, format);
-  return weekDate;
-}
+class TableHeader extends React.Component {
+  render() {
+    let header = [];
+    let date = this.props.currentDate;
 
-function getWeekEnd(date, formatString) {
-  return moment(date).endOf('week').format(formatString);
-}
-
-function getWeekBegin(date, formatString) {
-  return moment(date).startOf('week').format(formatString);
-}
-
-function range(start, end) {
-  if (!end) {
-    end = start;
-    start = 0;
-  }
-  let c = [];
-  while (end > start) {
-    c[start++] = start
-  }
-  return c;
-}
-
-function TableHeader(props) {
-  let header = [];
-  let date = props.currentDate;
-
-  header.push(
-    <li key="header-index" className="header-index">时间</li>
-  );
-  for (let i = 1; i <= WEEKDAY; i++) {
-    let day = moment(date).days(i);
-    let dayDate = day.format('MM/DD');
-    let dayLocale = day.format('ddd');
     header.push(
-      <li key={i}>{dayDate} {dayLocale}</li>
+      <li key="header-index" className="header-index">时间</li>
+    );
+
+    for (let i = 1; i <= WEEKDAY; i++) {
+      let day = moment(date).days(i);
+      let dayDate = day.format('MM/DD');
+      let dayLocale = day.format('ddd');
+
+      header.push(
+        <li key={i}>{dayDate} {dayLocale}</li>
+      );
+     }
+
+    return (
+      <ul className="table-header">{header}</ul>
     );
   }
-  return (
-    <ul className="table-header">{header}</ul>
-  );
 }
 
-function Cards(props) {
-  return (
-    <div className='cards'>
-      {props.cardsInfo.map((card, index) => {
-        return <props.cardTemplate key={index} {...card} />;
-      })}
-    </div>
-  );
-}
-
-class ScheduleTable extends React.Component {
+class Cards extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      tableHeight: 0
-    };
-  }
-
-  renderCards(cardsInfo, index) {
-    return (
-      <li key={index} style={{height: this.props.cellHeight}}>
-        <Cards cardsInfo={cardsInfo} cardTemplate={this.props.cardTemplate} />
-      </li>
-    );
-  }
-
-  getCards(daySchedule, hourIndex) {
-    let style = {height: this.props.cellHeight};
-    if (daySchedule) {
-      let cardsInfo = daySchedule.get(hourIndex);
-      if (cardsInfo) {
-        return this.renderCards(cardsInfo, hourIndex);
-      }
-    }
-    return <li key={hourIndex} style={style}></li>
-  }
-
-  getHourAxis() {
-    let style = {
-      li: {
-        height: this.props.cellHeight + 1,
-        lineHeight: parseInt(this.props.cellHeight + 1) + 'px'
-      },
-      ul: {
-        marginTop: DAYHOUR
-      }
-    }
-    let col = range(DAYHOUR).map(function (value, index) {
-      return <li key={index} style={style.li}>{ value === DAYHOUR ? '' : `${value}:00`}</li>
-    });
-    col.pop();
-    // FIXME(Yorkie): key can't be covered in the same value
-    return (
-      <ul  key="hour-axis" className='hour-axis' style={style.ul}>
-        {col}
-      </ul>
-    );
-  }
-
-  getTableColumn(weekSchedule, dayIndex) {
-    var daySchedule = weekSchedule.get(dayIndex);
-    return (
-      <ul key={dayIndex}>
-        {range(DAYHOUR).map((value, hourIndex) => {
-          return this.getCards(daySchedule, hourIndex);
-        })}
-      </ul>
-    );
-  }
-
-  getTableBody() {
-    var tableBody = [];
-    var hourAxis = this.getHourAxis();
-    tableBody.push(hourAxis);
-    for (let i = 1; i <= WEEKDAY; i++) {
-      let col = this.getTableColumn(this.props.weekSchedule, i);
-      tableBody.push(col);
-    }
-    return tableBody;
-  }
-
-  componentDidMount() {
-    var table = this.refs.table.getBoundingClientRect();
-    var tableHeight = window.innerHeight - table.top;
-    this.setState({tableHeight: tableHeight});
   }
 
   render() {
+    let cards = this.props.cardsInfo.map((card, index) => {
+      return (
+        <this.props.cardTemplate
+          key={index}
+          cardInfo={card}
+          baselineClock={this.props.baselineClock}
+        />
+      );
+    });
+
     return (
-      <div className="schedule-table" ref="table" style={{
-        height: this.state.tableHeight
-      }}>
-        {this.getTableBody()}
+      <div
+        className="cards"
+        ref='cards'
+        onClick={this.handleClick}>
+        {cards}
       </div>
     );
   }
@@ -169,7 +83,8 @@ class WeekHeader extends React.Component {
   }
 
   render() {
-    const weekDate = getWeek(this.props.currentDate, 'MM[月]DD[日]');
+    let weekDate = getWeek(this.props.currentDate, 'MM[月]DD[日]');
+
     return (
       <div className="week-header">
         <div className="selector">
@@ -181,8 +96,8 @@ class WeekHeader extends React.Component {
             onClick={this.goNextWeek.bind(this)}>{'>'}
           </span>
         </div>
-        <TableHeader currentDate={this.props.currentDate} />
-        <div className="scroll-div" style={{width: this.props.scrollBarWidth}}></div>
+        <TableHeader currentDate={this.props.currentDate}/>
+        <div className="scroll-div"></div>
       </div>
     );
   }
@@ -191,47 +106,240 @@ class WeekHeader extends React.Component {
 class Calendar extends React.Component {
   constructor(props) {
     super(props);
-    var currentDate         = moment();
-    var weekDate            = getWeek(currentDate, 'YYYYMMDD');
-    var currentWeekSchedule = props.schedule.get(`${weekDate.begin}-${weekDate.end}`) || new Map();
+    const currentDate  = moment();
+    const weekDate     = getWeek(currentDate, 'YYYYMMDD');
+    const weekSchedule = props.schedule.get(`${weekDate.begin}-${weekDate.end}`) || new Map();
 
+    this.table = {};
+    this.cellList = [];
+    this.colList = [];
     this.state = {
-      currentDate: currentDate,
-      currentWeekSchedule: currentWeekSchedule,
+      currentDate,
+      weekSchedule,
+      tableHeight: 0,
+      scrollTop : 0,
+      baselineTop: 0,
+      cellHeight: props.cellHeight || 40,
+      baselineClock: {
+        hour: 0,
+        minute: 0,
+      },
     };
-    this.scrollBarWidth = 15;
   }
 
-  componentWillReceiveProps(nextProps) {
-    let currentDate         = moment();
-    let weekDate            = getWeek(currentDate, 'YYYYMMDD');
-    let currentWeekSchedule = nextProps.schedule.get(`${weekDate.begin}-${weekDate.end}`) || new Map();
-    this.setState({currentDate, currentWeekSchedule});
+  renderCards(cardsInfo, index) {
+    return (
+      <li
+        key={index}
+        style={{height: this.state.cellHeight}}
+        ref={c => {if (c) {this.cellList[index] = c.getBoundingClientRect()}}}>
+        <Cards
+          cardsInfo={cardsInfo} 
+          cardTemplate={this.props.cardTemplate}
+          baselineClock={this.state.baselineClock}
+        />
+      </li>
+    );
   }
 
-  setCurrentDate(date) {
-    let weekDate = getWeek(date, 'YYYYMMDD');
-    let currentWeekSchedule = this.props.schedule.get(`${weekDate.begin}-${weekDate.end}`) || new Map();
-    this.setState({currentDate: date, currentWeekSchedule});
+  getCards(daySchedule, hourIndex) {
+    let style = {height: this.state.cellHeight};
+    if (daySchedule) {
+      let cardsInfo = daySchedule.get(hourIndex);
+      if (cardsInfo) {
+        return this.renderCards(cardsInfo, hourIndex);
+      }
+    }
+
+    return (
+      <li
+        style={style}
+        key={hourIndex}
+        ref={c => {if (c) {this.cellList[hourIndex] = c.getBoundingClientRect()}}}>
+      </li>
+    );
+  }
+
+  getHourAxis() {
+    let style = {
+      li: {
+        height: this.state.cellHeight + 1,
+        lineHeight: parseInt(this.state.cellHeight + 1) + 'px'
+      },
+      ul: {
+        marginTop: (this.state.cellHeight + 1) / 2
+      }
+    };
+
+    let col = getRange(1, DAYHOUR - 1).map((value) => {
+      if (value < 10) {
+        value = '0' + value;
+      }
+      return <li key={value} style={style.li}>{`${value}:00`}</li>
+    });
+
+    return (
+     <ul  key="hour-axis" className="hour-axis" style={style.ul}>
+        {col}
+      </ul>
+    );
+  }
+
+  getTableColumn(weekSchedule, dayIndex) {
+    let daySchedule = weekSchedule.get(dayIndex);
+    let col = getRange(0, DAYHOUR - 1).map((value, hourIndex) => this.getCards(daySchedule, hourIndex));
+
+    return (
+      <ul key={dayIndex} ref={ul => {if (ul){this.colList[dayIndex] = ul.getBoundingClientRect()}}}>{col}</ul>
+    );
+  }
+
+  getTableBody() {
+    let tableBody = [];
+    let hourAxis = this.getHourAxis();
+
+    tableBody.push(hourAxis);
+
+    for (let i = 1; i <= WEEKDAY; ++i) {
+      let col = this.getTableColumn(this.state.weekSchedule, i);
+      tableBody.push(col);
+    }
+
+    return tableBody;
+  }
+
+  setBaseline(e) {
+    let baselineTop = e.clientY - this.table.top + this.state.scrollTop;
+    let baselineLeft = e.clientX - this.table.left;
+
+    this.setState({baselineTop});
+
+    for (let index in this.cellList) {
+      let cell = this.cellList[index];
+      let top = cell.top - this.table.top + this.state.scrollTop;
+      let bottom  = cell.bottom - this.table.top + this.state.scrollTop;
+      if (top <= baselineTop && baselineTop <= bottom) {
+        let offsetTop = baselineTop - top;
+        let offsetBottom = bottom - baselineTop;
+        let minute = Math.floor((offsetTop) / cell.height * 60);
+        let hour = parseInt(index);
+        if (minute === 60) {
+          hour = hour + 1;
+          minute = 0;
+        }
+
+        let baselineClock = {
+          hour: hour,
+          minute: minute
+        };
+
+
+        this.setState({baselineClock});
+        break;
+      }
+    }
+
+    for (let index in this.colList) {
+
+    }
+  }
+
+  getBaseLine(time, top) {
+    let {hour, minute} = time;
+    let baselineHour = hour < 10 ? ('0' + hour) : hour;
+    let baselineMin = minute  < 10 ? ('0' + minute) : minute;
+    let style = {
+      marginTop: top
+    };
+
+    if (top > 0) {
+      return (
+        <div className="baseline-wrap" >
+          <div className="baseline-clock" style={style}>
+            {baselineHour}:{baselineMin}
+          </div>
+          <div className="baseline" style={style}>
+          </div>
+        </div>
+
+      );
+    }
+    return ;
+  }
+
+  handleScroll(e) {
+    this.setState({
+      scrollTop: e.target.scrollTop
+    });
+  }
+
+
+  componentDidMount() {
+    let table = this.refs.table.getBoundingClientRect();
+    let tableHeight = window.innerHeight - table.top;
+    this.table = table;
+    this.setState({tableHeight});
   }
 
   render() {
+    let tableBody = this.getTableBody();
+    let baseline = this.getBaseLine(this.state.baselineClock, this.state.baselineTop);
+    return (
+      <div
+        ref="table"
+        className="schedule-table"
+        style={{height: this.state.tableHeight}}
+        onMouseMove={this.setBaseline.bind(this)}
+        onScroll={this.handleScroll.bind(this)}>
+        {tableBody}
+        {baseline}
+      </div>
+    );
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const currentDate  = moment();
+    const weekDate     = getWeek(currentDate, 'YYYYMMDD');
+    const weekSchedule = nextProps.schedule.get(`${weekDate.begin}-${weekDate.end}`) || new Map();
+
+    const state = {currentDate, weekSchedule};
+
+    this.setState(state);
+  }
+
+  setCurrentDate(currentDate) {
+    let weekDate = getWeek(date, 'YYYYMMDD');
+    let weekSchedule = this.props.schedule.get(`${weekDate.begin}-${weekDate.end}`) || new Map();
+    this.setState({currentDate, weekSchedule});
+  }
+
+  render() {
+
+    let tableBody = this.getTableBody();
+    let baseline = this.getBaseLine(this.state.baselineClock, this.state.baselineTop);
+
     return (
       <div className="calendar">
         <WeekHeader
           currentDate={this.state.currentDate}
           setDate={this.setCurrentDate.bind(this)}
-          scrollBarWidth={this.scrollBarWidth}/>
-        <ScheduleTable
-          weekSchedule={this.state.currentWeekSchedule}
-          cardTemplate={this.props.cardTemplate}
-          cellHeight={this.props.cellHeight || 40}
-          containerHeight={this._calendarHeight}
-          />
+        />
+        <div
+          ref="table"
+          className="schedule-table"
+          style={{height: this.state.tableHeight}}
+          onMouseMove={this.setBaseline.bind(this)}
+          onScroll={this.handleScroll.bind(this)}>
+          {tableBody}
+          {baseline}
+        </div>
       </div>
     );
   }
 };
 
-exports.Calendar = Calendar;
-exports.getWeek = getWeek;
+
+export {
+  getWeek,
+  Calendar
+};

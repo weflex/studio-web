@@ -1,34 +1,39 @@
-"use strict";
-
+require('babel-polyfill');
 import React from 'react';
-import ClassCard from './card';
-import {
-  Calendar,
-  getWeek
-} from './calendar';
+import moment from 'moment';
+import ReactDOM from 'react-dom'
+import ClassCard from './card.jsx'
+import {getCellHeight} from './util.js';
+import {Calendar, getWeek} from './calendar.jsx'
+const classes = require('json!./classes.json');
 
-const client = require('@weflex/gian').getClient();
-const moment = require('moment');
-const CELL_HEIGHT = 50;
+moment.locale('zh-cn');
 
 class WeflexCalendar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       schedule: new Map(),
-    };
+      allClass: new Map(),
+    }
   }
-  get title() {
-    return '课程日历';
-  }
+
   async getClassData() {
-    const schedule = new Map();
-    const classes = await client.class.list({
-      include: {
-        'template': 'trainer'
-      }
+
+    classes.forEach((classInfo) => {
+      this.state.allClass.set(classInfo.id, classInfo);
     });
-    classes.forEach(function (classInfo) {
+
+    this.getSchedule();
+  }
+
+  componentDidMount() {
+    this.getClassData();
+  }
+
+  getSchedule() {
+    let schedule = new Map();
+    this.state.allClass.forEach(function (classInfo) {
       let date = moment(classInfo.date);
       let week = getWeek(date, 'YYYYMMDD');
       let weekIndex = `${week.begin}-${week.end}`;
@@ -60,21 +65,36 @@ class WeflexCalendar extends React.Component {
         schedule.set(weekIndex, weekSchedule);
       }
     });
-    console.log(schedule);
     this.setState({schedule: schedule});
   }
 
-  componentDidMount() {
-    this.getClassData();
+  getCardTemplate() {
+    let updateCard = this.updateSchedule.bind(this);
+    let calendar = this.refs.calendar;
+    return class CardTemplate extends React.Component {
+      render() {
+        const props = Object.assign({}, this.props);
+        return (
+          <ClassCard {...props} updateCard={updateCard} calendar={calendar}/>
+        );
+      }
+    }
+  }
+
+  updateSchedule(newCard) {
+    this.state.allClass.set(newCard.id, newCard);
+    this.getSchedule();
   }
 
   render() {
+    const cellHeight = getCellHeight();
     return (
       <Calendar
+        ref="calendar"
+        cellHeight={cellHeight}
         schedule={this.state.schedule}
-        cardTemplate={ClassCard}
-        cellHeight={CELL_HEIGHT}
-        schedule={this.state.schedule}/>
+        cardTemplate={this.getCardTemplate()}
+      />
     );
   }
 }

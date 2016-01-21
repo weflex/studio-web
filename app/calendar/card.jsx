@@ -1,102 +1,59 @@
-"use strict";
-
 import React from 'react';
 import ReactDOM from 'react-dom';
+import moment from 'moment';
 import PopUp from '@weflex/react-portal-tooltip';
+import Hammer from 'hammerjs';
+import {
+  getCellHeight,
+  addTimeByHour,
+  getGridHeight,
+  getTimeDuration,
+  addTimeByMinute,
+  getGridOffsetByTime,
+  transferToPercentage,
+} from './util.js'
 
-const client = require('@weflex/gian').getClient();
-const moment = require('moment');
 moment.locale('zh-cn');
 
-function transferToPersent(number) {
-  return number * 100 + '%';
-}
-
-function getTimeDuration(from, to) {
-  return (to.hour - from.hour) * 60 + (to.minute - from.minute);
-}
-
-function getGridHeight(from, to, cellHeight) {
-  let duration = getTimeDuration(from, to);
-  if (duration <= 0) return 0;
-  let borderHeight = Math.floor(duration / 60);
-  let height = (duration / 60) * cellHeight + borderHeight;
-  return height;
-}
-
-function getGridOffset(from, cellHeight) {
-  let offsetTop = from.minute / 60 * cellHeight;
-  return offsetTop;
-}
 
 class OrderInfo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      orders: [],
+      orders: this.props.orders,
       option: 'all',
     };
+
     this.options = {
       'paid': '已付款',
       'checkin': '签到',
       'cancel': '取消',
     };
-    // this orders is for storing the original orders
-    this.orders = [];
-  }
-
-  async componentWillUpdate(nextProps, nextState) {
-    if (nextProps.classId !== this.props.classId) {
-      await this.updateOrders(nextProps.classId);
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  async componentDidMount() {
-    await this.updateOrders();  
-  }
-
-  async updateOrders(classId) {
-    // clear
-    this.orders = [];
-    this.setState({orders: []});
-    // set
-    this.orders = await client.order.list({
-      where: {
-        classId: classId || this.props.classId
-      },
-      include: 'user'
-    });
-    this.setState({
-      orders: this.orders
-    });
   }
 
   selectOption(option) {
     return () => {
       if (option === this.state.option) {
         this.setState({
-          option: 'all', 
-          orders: this.orders
+          option: 'all',
+          orders: this.props.orders
         });
       } else {
         this.setState({
           option,
-          orders: this.orders.filter(o => o.status === option)
+          orders: this.props.orders.filter(o => o.status === option)
         });
       }
-    };
+    }
   }
 
-  getStatusLable(status) {
+  getStatusLabel(status) {
     return <div className={`label-${status}`}></div>
   }
 
   render() {
-    const ordersInfo = this.state.orders.map(order => {
-      const label = this.getStatusLable(order.status);
+    const ordersInfo = this.state.orders.map((order) => {
+      const label = this.getStatusLabel(order.status);
       return (
         <li key={`order_${order.id}`}>{label} {order.user.nickname}</li>
       );
@@ -109,13 +66,15 @@ class OrderInfo extends React.Component {
       if (this.state.option === key) {
         className += ' selected';
       }
+
       selectButtons.push(
-        <div className={className} key={key} onClick={this.selectOption.call(this, key)}>
-          {this.getStatusLable(key)}
-          <span>{value}</span>
-        </div>
+        <li className={className} key={key} onClick={this.selectOption.call(this, key)}>
+          {this.getStatusLabel(key)}
+          <span className={key}>{value}</span>
+        </li>
       );
     }
+
     return (
       <div className="order-info">
         <div className="divider"></div>
@@ -137,52 +96,228 @@ function getCardWidth(length) {
 }
 
 function timeFormat(time) {
+  let hour, minute;
+
   if (time.minute < 10) {
-    var minute = '0' + time.minute;
+     minute = '0' + time.minute;
   } else {
-    var minute = time.minute;
+     minute = time.minute;
   }
-  return `${time.hour}:${minute}`;
+
+  if (time.hour < 10) {
+     hour = '0' + time.hour;
+  } else {
+     hour = time.hour;
+  }
+
+  return `${hour}:${minute}`;
 }
 
 class ClassCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      style: {},
-      isPopUpActive: false,
-      id: props.id,
+      style: {
+        height: 0,
+        marginTop: 0,
+        marginLeft: 0,
+      },
+      isDrag: false,
+      isMove: false,
       arrow: 'center',
-      position: 'right'
+      position: 'right',
+      isPopUpActive: false,
     };
     this.popUpStyle = {
       style: {
+        'zIndex': '200',
         'padding': '10px',
         'minWidth': '200px',
         'minHeight': '220px',
         'background': '#f7f7f7',
-        'zIndex': '200',
         'transition': 'all .1s ease-out'
       },
       arrowStyle: {
         'color': '#f7f7f7'
       }
     };
+    this.cellHeight = 0;
+  }
+
+  createMoveHanler(hanlder) {
+    const hammer = new Hammer(hanlder);
+    const classDuration = getTimeDuration(this.props.cardInfo.from, this.props.cardInfo.to);
+
+    Hammer.on(hanlder, 'click', function (ev) {
+      ev.preventDefault();
+    });
+
+    hammer.get('pan').set({
+      threshold: 0
+    });
+
+    hammer.on('panstart', (ev) => {
+      const timeToFrom = getTimeDuration(this.props.cardInfo.from, this.props.baselineClock);
+      this.setState({
+        timeToFrom
+      });
+    });
+
+    hammer.on('pan', (ev) => {
+      if (this.state.isDrag) return;
+
+      const marginTop = this.style.marginTop + ev.deltaY;
+      const height = this.style.height;
+      const hourOffset = -(this.state.timeToFrom / 60);
+      const from = addTimeByHour(this.props.baselineClock, hourOffset);
+      this.setState({
+        from,
+        style: {
+          marginTop,
+          height,
+        },
+        isMove: true,
+      });
+    });
+
+
+    hammer.on('panend', (ev) => {
+      if (this.state.isDrag) return;
+      const newTime = this.getRoundTime(this.state.from);
+      const newCard = this.getNewCard(function (card) {
+        card.from = newTime;
+        card.to = addTimeByMinute(newTime, classDuration);
+      }, newTime);
+      this.props.updateCard(newCard);
+    });
+  }
+
+  getRoundTime(time) {
+    const {minute} = time;
+    const newTime = Object.assign({}, time);
+    if (0 <= minute && minute <= 29) {
+      if (minute <= 14) {
+        newTime.minute = 0;
+      } else {
+        newTime.minute = 30;
+      }
+    } else if (minute > 29) {
+      if (minute > 44) {
+        newTime.minute = 0;
+        newTime.hour = newTime.hour + 1;
+      } else {
+        newTime.minute = 30;
+      }
+    }
+    return newTime;
+  }
+
+  getNewCard(callback, newTime) {
+    const newCard = Object.assign({}, this.props.cardInfo);
+    const oldDate = moment(this.props.cardInfo.date).format('YYYY-MM-DD');
+    newCard.date = new Date(oldDate + ` ${timeFormat(newTime)}`);
+    callback.call(this, newCard);
+    return newCard;
+  }
+
+  createDragger(dragger, direction) {
+    const hammer = new Hammer(dragger);
+
+    Hammer.on(dragger, 'click', function (ev) {
+      ev.stopPropagation();
+    });
+
+    hammer.get('pan').set({
+      direction: Hammer.DIRECTION_VERTICAL,
+      threshold: 0
+    });
+
+    hammer.on('panup pandown', (ev) => {
+      console.log('a');
+      let marginTop = this.style.marginTop + ev.deltaY;
+      let height = this.style.height - ev.deltaY;
+      if (direction === 'bottom') {
+        marginTop = this.style.marginTop;
+        height = this.style.height + ev.deltaY;
+      }
+
+      let isOverDrag = (height <= this.cellHeight);
+      if (isOverDrag) {
+        let stickBorderTime = this.props.cardInfo.to;
+        if (direction === 'bottom') {
+          stickBorderTime = this.props.cardInfo.from;
+        }
+        this.setState({stickBorderTime});
+        return;
+      }
+
+      this.setState({
+        style: {
+          marginTop,
+          height
+        },
+        isDrag: true
+      });
+    });
+
+    hammer.on('panend', (ev) => {
+
+      let height = this.style.height - ev.deltaY;
+      if (direction === 'bottom') {
+        height = this.style.height + ev.deltaY;
+      }
+      let time = this.props.baselineClock;
+      const isOverDrag = (height <= this.cellHeight);
+
+      if (isOverDrag) {
+        time = this.state.stickBorderTime;
+      }
+      const newTime = this.getRoundTime(time);
+      const newCard = this.getNewCard(function (card) {
+        if (direction === 'bottom') {
+          card.to = newTime;
+          if (isOverDrag) {
+            card.from = newTime;
+            card.to = addTimeByHour(newTime, 1);
+          }
+        } else if (direction === 'top') {
+          card.from = newTime;
+          if (isOverDrag) {
+            card.to = newTime;
+            card.from = addTimeByHour(newTime, -1);
+          }
+        }
+      }, newTime);
+
+      this.props.updateCard(newCard);
+    });
   }
 
   componentDidMount() {
-    const card = ReactDOM.findDOMNode(this.refs.card);
-    const cellHeight = card.offsetParent.offsetHeight;
-    const height = getGridHeight(this.props.from, this.props.to, cellHeight);
-    const top = getGridOffset(this.props.from, cellHeight);
-    const style = {
+    const cellHeight = getCellHeight();
+    const height = getGridHeight(this.props.cardInfo.from, this.props.cardInfo.to, cellHeight);
+    const top = getGridOffsetByTime(this.props.cardInfo.from, cellHeight);
+    this.style = {
       height: height,
-      marginTop: top
+      marginTop: top,
+      marginLeft: 0
     };
-    this.setState({style});
+    this.cellHeight = cellHeight;
+
+    const card = this.refs.card;
+    const topDragger = this.refs.topDragger;
+    const bottomDragger = this.refs.bottomDragger;
+
+    this.createMoveHanler(card);
+    this.createDragger(topDragger, 'top');
+    this.createDragger(bottomDragger, 'bottom');
+
+    this.setState({
+      style: this.style,
+    });
   }
 
-  async showPopUp() {
+  showPopUp(e) {
     const card = ReactDOM.findDOMNode(this.refs.card);
     const clientRect = card.getBoundingClientRect();
     const maxHeight = window.innerHeight / 2;
@@ -210,41 +345,55 @@ class ClassCard extends React.Component {
     this.setState({isPopUpActive: false});
   }
 
+  disableMouseDown(e) {
+    e.preventDefault();
+  }
+
   render() {
-    const duration = `${timeFormat(this.props.from)} -
-                    ${timeFormat(this.props.to)}`
-    const date = moment(this.props.date).format('MM[月]DD[日]');
-    const dayOfWeek = moment(this.props.date).format('ddd');
-    const trainer = this.props.template.trainer;
+    const {id, from, to, date, template, orders} = this.props.cardInfo;
+    const duration = `${timeFormat(from)} - ${timeFormat(to)}`;
+    const dayOfYear = moment(date).format('MM[月]DD[日]');
+    const dayOfWeek = moment(date).format('ddd');
+    const trainer = template.trainer;
     const trainerName = `${trainer.fullname.first} ${trainer.fullname.last}`;
+    let className = 'class-card';
+    if (this.state.isDrag) {
+      className += ' dragged';
+    } else if (this.state.isMove) {
+      className += ' moved';
+    }
+
     return (
       <div
-        className='class-card'
+        className={className}
         style={this.state.style}
-        id={`class_${this.state.id}`}
-        onClick={this.showPopUp.bind(this)}
+        id={`class_${id}`}
         onMouseLeave={this.hidePopUp.bind(this)}
-        ref='card'>
-        <p className='class-duration'>
+        onClick={this.showPopUp.bind(this)}
+        onMouseDown={this.disableMouseDown}
+        ref="card">
+        <div className="top-dragger" ref="topDragger"></div>
+        <p className="class-duration" >
           {duration}
         </p>
-        <p>{this.props.template.name}</p>
+        <p>{template.name}</p>
+        <div className="bottom-dragger" ref="bottomDragger"></div>
         <PopUp
           style={this.popUpStyle}
           active={this.state.isPopUpActive}
-          parent={`#class_${this.state.id}`}
+          parent={`#class_${id}`}
           arrow={this.state.arrow}
           position={this.state.position}
           transition={0.0}>
-          <p className='class-title'>{this.props.template.name}</p>
-          <div className='class-date'>
-            <span>{date}</span>
+          <p className="class-title">{template.name}</p>
+          <div className="class-date">
+            <span>{dayOfYear}</span>
             <span>{dayOfWeek}</span>
             <span>{duration}</span>
           </div>
-          <div className='trainer'>{trainerName}</div>
-          <div className='btn-modify-class'>修改课程</div>
-          <OrderInfo classId={this.props.id} />
+          <div className="trainer">{trainerName}</div>
+          <div className="btn-modify-class">修改课程</div>
+          <OrderInfo orders={orders} />
         </PopUp>
       </div>
     );
