@@ -4,6 +4,7 @@ import moment from 'moment';
 import PopUp from '@weflex/react-portal-tooltip';
 import Hammer from 'hammerjs';
 import {
+  getRoundTime,
   getFormatTime,
   getCellHeight,
   addTimeByHour,
@@ -16,7 +17,6 @@ import {
 } from './util.js'
 
 moment.locale('zh-cn');
-
 
 class OrderInfo extends React.Component {
   constructor(props) {
@@ -98,7 +98,6 @@ class ClassCard extends React.Component {
     const cellHeight = getCellHeight();
     const height = getGridHeight(this.props.cardInfo.from, this.props.cardInfo.to, cellHeight);
     const top = getGridOffsetByTime(this.props.cardInfo.from, cellHeight);
-    // keep orginal style
     this.style = {
       height: height,
       marginTop: top,
@@ -134,12 +133,14 @@ class ClassCard extends React.Component {
     const hammer = new Hammer(hanlder);
     const classDuration = getTimeDuration(this.props.cardInfo.from, this.props.cardInfo.to);
     hammer.get('pan').set({
-      threshold: 0
+      threshold: 0,
     });
 
     hammer.on('panstart', (event) => {
+      this.props.calendar.isDragCard = true;
+
       const timeToFrom = getTimeDuration(this.props.cardInfo.from, this.props.baselineClock);
-      const pointerDay = this.props.calendar.state.pointerDay;
+      const pointerDay = this.props.calendar.state.atCol;
       this.setState({
         timeToFrom,
         isMove: true,
@@ -151,17 +152,20 @@ class ClassCard extends React.Component {
       if (this.state.isDrag) {
         return;
       }
+      //prevent carlendar to create card
+      const createCardStyle =  Object.assign({}, this.props.calendar.state.createCardStyle);
+      createCardStyle.height = 0
+      this.props.calendar.setState({ createCardStyle })
 
-      const pointerDay = this.props.calendar.state.pointerDay;
+      const atCol = this.props.calendar.state.atCol;
       const marginTop = this.style.marginTop + event.deltaY;
       const marginLeft = this.style.marginLeft + event.deltaX;
-      const col = this.props.calendar.colList[pointerDay];
+      const col = this.props.calendar.colList[atCol];
       const height = this.style.height;
       const width = col.right - col.left;
       const hourOffset = -(this.state.timeToFrom / 60);
       const newHourTime = addTimeByHour(this.props.baselineClock, hourOffset);
-      console.log('col:', col);
-      console.log('table:', this.props.calendar.table);
+
       const style = {
           marginTop,
           marginLeft,
@@ -179,12 +183,14 @@ class ClassCard extends React.Component {
       if (this.state.isDrag) {
         return;
       }
-      const pointerDay = this.props.calendar.state.pointerDay;
+      this.props.calendar.state.isDragCard = false;
+
+      const pointerDay = this.props.calendar.state.atCol;
       const toDay = moment(this.props.cardInfo.date)
                     .add(pointerDay - this.state.fromDay, 'day')
                     .format('YYYY-MM-DD');
 
-      let newFromHour = this.getRoundTime(this.state.newHourTime);
+      let newFromHour = getRoundTime(this.state.newHourTime);
       if (newFromHour.hour < 0) {
         newFromHour.hour = 0;
         newFromHour.minute = 0;
@@ -208,45 +214,31 @@ class ClassCard extends React.Component {
     });
   }
 
-  getRoundTime(time) {
-    const {minute} = time;
-    const newTime = Object.assign({}, time);
-    if (0 <= minute && minute <= 29) {
-      if (minute <= 14) {
-        newTime.minute = 0;
-      } else {
-        newTime.minute = 30;
-      }
-    } else if (minute > 29) {
-      if (minute > 44) {
-        newTime.minute = 0;
-        newTime.hour = newTime.hour + 1;
-      } else {
-        newTime.minute = 30;
-      }
-    }
-
-    return newTime;
-  }
-
   getNewCard(callback, newTime, date) {
     const newCard = Object.assign({}, this.props.cardInfo);
     callback.call(this, newCard);
     return newCard;
   }
 
-  createDragger(dragger, direction) {
-    const hammer = new Hammer(dragger);
+  createResizeHanler(handler, direction) {
+    const hammer = new Hammer(handler);
     hammer.get('pan').set({
       direction: Hammer.DIRECTION_VERTICAL,
       threshold: 0
     });
 
     hammer.on('panstart', (event) => {
-      this.setState({isDrag: true});
-    })
+      this.setState({ isDrag: true });
+
+      // prevent carlendar to create card
+      this.props.calendar.state.isDragCar = true;
+    });
 
     hammer.on('panup pandown', (event) => {
+      const createCardStyle =  Object.assign({}, this.props.calendar.state.createCardStyle);
+      createCardStyle.height = 0
+      this.props.calendar.setState({ createCardStyle })
+
       let marginTop = this.style.marginTop + event.deltaY;
       let height = this.style.height - event.deltaY;
       if (direction === 'bottom') {
@@ -260,7 +252,7 @@ class ClassCard extends React.Component {
         if (direction === 'bottom') {
           stickBorderTime = this.props.cardInfo.from;
         }
-        this.setState({stickBorderTime});
+        this.setState({ stickBorderTime });
         return;
       }
 
@@ -273,6 +265,8 @@ class ClassCard extends React.Component {
     });
 
     hammer.on('panend', (event) => {
+      this.props.calendar.state.isDragCard = false;
+
       let height = this.style.height - event.deltaY;
       if (direction === 'bottom') {
         height = this.style.height + event.deltaY;
@@ -283,7 +277,7 @@ class ClassCard extends React.Component {
       if (isOverDrag) {
         time = this.state.stickBorderTime;
       }
-      const newTime = this.getRoundTime(time);
+      const newTime = getRoundTime(time);
       const newCard = this.getNewCard(function (card) {
         if (direction === 'bottom') {
           card.to = newTime;
@@ -311,8 +305,8 @@ class ClassCard extends React.Component {
     const bottomDragger = this.refs.bottomDragger;
 
     this.createMoveHanler(card);
-    this.createDragger(topDragger, 'top');
-    this.createDragger(bottomDragger, 'bottom');
+    this.createResizeHanler(topDragger, 'top');
+    this.createResizeHanler(bottomDragger, 'bottom');
   }
 
   showPopUp(e) {
@@ -340,7 +334,7 @@ class ClassCard extends React.Component {
   }
 
   hidePopUp() {
-    this.setState({isPopUpActive: false});
+    this.setState({ isPopUpActive: false });
   }
 
   disableMouseDown(e) {

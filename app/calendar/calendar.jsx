@@ -1,13 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import moment from 'moment';
+import Hammer from 'hammerjs';
 import './index.css';
 import {
   getWeek,
   getRange,
   getWeekEnd,
-  getFormatTime,
   getWeekBegin,
+  getRoundTime,
+  getFormatTime,
+  getGridHeight,
+  getTimeDuration,
+  getGridOffsetByTime,
 } from './util.js'
 
 const DAYHOUR = 24;
@@ -17,6 +22,11 @@ const BORDER_HEIGHt = 1;
 moment.locale('zh-cn');
 
 class TableHeader extends React.Component {
+  constructor(props) {
+    super(props);
+    this.dayList = [];
+  }
+
   render() {
     let header = [];
     let date = this.props.currentDate;
@@ -31,12 +41,12 @@ class TableHeader extends React.Component {
       let dayLocale = day.format('ddd');
 
       header.push(
-        <li key={i}>{dayDate} {dayLocale}</li>
+        <li key={i} ref={(c)=> {this.dayList[i] = day}}>{dayDate} {dayLocale}</li>
       );
      }
 
     return (
-      <ul className="table-header">{header}</ul>
+      <ul className="table-header" ref="table-header">{header}</ul>
     );
   }
 }
@@ -97,7 +107,7 @@ class WeekHeader extends React.Component {
             onClick={this.goNextWeek.bind(this)}>{'>'}
           </span>
         </div>
-        <TableHeader currentDate={this.props.currentDate} />
+        <TableHeader currentDate={this.props.currentDate} ref="tableHeader" />
         <div className="scroll-div"></div>
       </div>
     );
@@ -109,10 +119,11 @@ class Calendar extends React.Component {
     super(props);
     const currentDate  = moment();
     const weekDate     = getWeek(currentDate, 'YYYYMMDD');
-    const weekSchedule = props.schedule.get(`${weekDate.begin}-${weekDate.end}`) || new Map();
+    const weekIndex    = `${weekDate.begin}-${weekDate.end}`;
+    const weekSchedule = props.schedule.get(weekIndex) || new Map();
 
     this.table = {};
-    this.cellList = [];
+    this.rowList = [];
     this.colList = [];
     this.state = {
       currentDate,
@@ -125,6 +136,12 @@ class Calendar extends React.Component {
         hour: 0,
         minute: 0,
       },
+      createCardStyle: {
+        top: 0,
+        left: 0,
+        height: 0,
+        width: 0,
+      }
     };
   }
 
@@ -133,7 +150,7 @@ class Calendar extends React.Component {
       <li
         key={index}
         style={{height: this.state.cellHeight}}
-        ref={c => {if (c) {this.cellList[index] = c.getBoundingClientRect()}}}>
+        ref={c => {if (c) {this.rowList[index] = c.getBoundingClientRect()}}}>
         <Cards
           cardsInfo={cardsInfo} 
           cardTemplate={this.props.cardTemplate}
@@ -156,7 +173,7 @@ class Calendar extends React.Component {
       <li
         style={style}
         key={hourIndex}
-        ref={c => {if (c) {this.cellList[hourIndex] = c.getBoundingClientRect()}}}>
+        ref={c => {if (c) {this.rowList[hourIndex] = c.getBoundingClientRect()}}}>
       </li>
     );
   }
@@ -193,7 +210,14 @@ class Calendar extends React.Component {
     });
 
     return (
-      <ul key={dayIndex} ref={ul => {if (ul){this.colList[dayIndex] = ul.getBoundingClientRect()}}}>{col}</ul>
+      <ul 
+        key={dayIndex} 
+        ref={ul => {
+          if (ul) {
+            this.colList[dayIndex] = ul.getBoundingClientRect()
+        }}}>
+        {col}
+      </ul>
     );
   }
 
@@ -212,17 +236,16 @@ class Calendar extends React.Component {
   setBaseline(e) {
     let baselineTop = e.clientY - this.table.top + this.state.scrollTop;
     let baselineLeft = e.clientX - this.table.left;
-    this.setState({baselineTop});
+    this.setState({ baselineTop });
 
-    for (let index in this.cellList) {
-      let cell = this.cellList[index];
-      let top = cell.top - this.table.top + this.state.scrollTop;
-      let bottom  = cell.bottom - this.table.top + this.state.scrollTop;
+    this.rowList.forEach((row, index) => {
+      let top = row.top - this.table.top + this.state.scrollTop;
+      let bottom  = row.bottom - this.table.top + this.state.scrollTop;
       if (top <= baselineTop && baselineTop <= bottom) {
         let offsetTop = baselineTop - top;
         let offsetBottom = bottom - baselineTop;
-        let minute = Math.floor((offsetTop) / cell.height * 60);
-        let hour = parseInt(index);
+        let minute = Math.floor((offsetTop) / row.height * 60);
+        let hour = index;
         if (minute === 60) {
           hour = hour + 1;
           minute = 0;
@@ -233,23 +256,27 @@ class Calendar extends React.Component {
           minute: minute
         };
 
-        this.setState({baselineClock});
-        break;
+        this.setState({
+          baselineClock,
+          atRow: index
+        });
       }
-    }
+    });
 
     this.colList.forEach((col, index) => {
       if (col.left < baselineLeft && baselineLeft < col.right) {
-        this.setState({pointerDay: index});
+        this.setState({
+          atCol: index,
+        });
       }
     });
   }
 
   getBaseLine(time, top) {
-    let style = {
+    const style = {
       marginTop: top
     };
-    let timeString = getFormatTime(time);
+    const timeString = getFormatTime(time);
 
     if (top > 0) {
       return (
@@ -266,61 +293,142 @@ class Calendar extends React.Component {
   }
 
   handleScroll(e) {
-    if (e.target.scrollTop) {
+    if (e.target.scrollTop >= 0) {
       this.setState({
         scrollTop: e.target.scrollTop
       });
     }
   }
 
-
-  componentDidMount() {
-    let table = this.refs.table.getBoundingClientRect();
-    let tableHeight = window.innerHeight - table.top;
-    this.table = table;
-    this.setState({tableHeight});
+  getCreateCard() {
+    return (
+      <div className="create-card" style={this.state.createCardStyle}></div>
+    );
   }
 
-  render() {
-    let tableBody = this.getTableBody();
-    let baseline = this.getBaseLine(this.state.baselineClock, this.state.baselineTop);
-    return (
-      <div
-        ref="table"
-        className="schedule-table"
-        style={{height: this.state.tableHeight}}
-        onMouseMove={this.setBaseline.bind(this)}
-        onScroll={this.handleScroll.bind(this)}>
-        {tableBody}
-        {baseline}
-      </div>
-    );
+  createCard() {
+    const hammer = new Hammer.Manager(this.refs.table);
+    hammer.add(new Hammer.Pan());
+    hammer.add(new Hammer.Tap({event: 'singletap'}));
+
+    hammer.get('pan').set({
+      direction: Hammer.DIRECTION_VERTICAL,
+      threshold: 0
+    });
+
+    hammer.on('singletap', (event) => {
+      const createCardStyle = {
+        height: 0,
+        width: 0
+      };
+
+      this.setState({ createCardStyle });
+    })
+
+
+    hammer.on('panstart', (event) => {
+      if (this.state.isDragCard) {
+        return;
+      }
+
+      const col = this.colList[this.state.atCol];
+      const row = this.rowList[this.state.atRow];
+      const left = col.left - this.table.left;
+      const width = col.right - col.left;
+      const selectBeginTime = this.state.baselineClock;
+      const top = this.state.baselineTop - this.state.scrollTop;
+      this.createCardTop = top;
+      const createCardStyle = {
+        top,
+        left,
+        width,
+      }
+
+      this.setState({ createCardStyle, selectBeginTime });
+    });
+
+
+
+    hammer.on('panup pandown', (event) => {
+      if (this.state.isDragCard) {
+        return;
+      }
+      if (event.deltaY > 0) {
+        const height = event.deltaY;
+        const createCardStyle = Object.assign({}, this.state.createCardStyle);
+        createCardStyle.top = this.createCardTop + this.state.scrollTop;
+        createCardStyle.height = height;
+
+        this.setState({ createCardStyle });
+      }
+    });
+
+    hammer.on('panend', (event) => {
+      if (this.state.isDragCard) {
+        return;
+      }
+      if (this.state.createCardStyle.height) {
+        const newFromHour = getRoundTime(this.state.selectBeginTime);
+        const newToHour = getRoundTime(this.state.baselineClock);
+        const rowIndex = newFromHour.hour;
+        const row = this.rowList[rowIndex];
+        const top = row.top - this.table.top + this.state.scrollTop;
+        const marginTop = getGridOffsetByTime(newFromHour, this.state.cellHeight);
+        const height = getGridHeight(newFromHour, newToHour, this.state.cellHeight);
+        const createCardStyle = Object.assign({}, this.state.createCardStyle);
+        createCardStyle.height = height;
+        createCardStyle.top = top;
+        createCardStyle.marginTop = marginTop;
+
+        this.setState({ createCardStyle });
+
+        const duration = getTimeDuration(newFromHour, newToHour);
+        if (duration) {
+          const date = this.refs.weekHeader
+                         .refs.tableHeader
+                         .dayList[this.state.atCol]
+                         .format('YYYY-MM-DD');
+
+          const formatTime = getFormatTime(newFromHour);
+          const newDate = new Date(`${date} ${formatTime}`);
+          this.props.onAddCard(newFromHour, newToHour, date);
+        }
+      }
+    });
+  }
+
+  componentDidMount() {
+    const table = this.refs.table.getBoundingClientRect();
+    const tableHeight = window.innerHeight - table.top;
+    this.table = table;
+    this.createCard();
+    this.setState({ tableHeight });
   }
 
   componentWillReceiveProps(nextProps) {
     const currentDate  = moment();
     const weekDate     = getWeek(currentDate, 'YYYYMMDD');
     const weekSchedule = nextProps.schedule.get(`${weekDate.begin}-${weekDate.end}`) || new Map();
-
     const state = {currentDate, weekSchedule};
 
     this.setState(state);
   }
 
   setCurrentDate(currentDate) {
-    let weekDate = getWeek(date, 'YYYYMMDD');
-    let weekSchedule = this.props.schedule.get(`${weekDate.begin}-${weekDate.end}`) || new Map();
-    this.setState({currentDate, weekSchedule});
+    const weekDate = getWeek(currentDate, 'YYYYMMDD');
+    const weekSchedule = this.props.schedule.get(`${weekDate.begin}-${weekDate.end}`) || new Map();
+    this.setState({ currentDate, weekSchedule });
   }
 
   render() {
-
-    let tableBody = this.getTableBody();
-    let baseline = this.getBaseLine(this.state.baselineClock, this.state.baselineTop);
+    const tableBody = this.getTableBody();
+    const baseline = this.getBaseLine(this.state.baselineClock, this.state.baselineTop);
+    const createCard = this.getCreateCard();
 
     return (
-      <div className="calendar">
+      <div className="calendar" ref="calendar">
         <WeekHeader
+          ref="weekHeader"
           currentDate={this.state.currentDate}
           setDate={this.setCurrentDate.bind(this)}
         />
@@ -332,14 +440,17 @@ class Calendar extends React.Component {
           onScroll={this.handleScroll.bind(this)}>
           {tableBody}
           {baseline}
+          {createCard}
         </div>
       </div>
     );
   }
 };
 
+Calendar.propTypes = {
+  schedule: React.PropTypes.object,
+  cellHeight: React.PropTypes.number,
+  onAddCard: React.PropTypes.func,
+}
 
-export {
-  getWeek,
-  Calendar
-};
+module.exports = Calendar;

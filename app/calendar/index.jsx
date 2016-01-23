@@ -1,10 +1,15 @@
-require('babel-polyfill');
+"use strict";
 import React from 'react';
 import moment from 'moment';
 import ReactDOM from 'react-dom'
 import ClassCard from './card.jsx'
-import {getCellHeight} from './util.js';
-import {Calendar, getWeek} from './calendar.jsx'
+import Calendar from './calendar.jsx'
+import {
+  getWeek,
+  getCellHeight,
+} from './util.js';
+
+
 const classes = require('json!./classes.json');
 
 moment.locale('zh-cn');
@@ -69,7 +74,7 @@ class WeflexCalendar extends React.Component {
   }
 
   getCardTemplate() {
-    let updateCard = this.updateSchedule.bind(this);
+    let updateCard = this.updateClasses.bind(this);
     let calendar = this.refs.calendar;
     return class CardTemplate extends React.Component {
       render() {
@@ -81,8 +86,12 @@ class WeflexCalendar extends React.Component {
     }
   }
 
-  updateSchedule(newCard) {
-    this.state.allClass.set(newCard.id, newCard);
+  onAddCard(from, to, date) {
+    // modal
+  }
+
+  updateClasses(newClass) {
+    this.state.allClass.set(newClass.id, newClass);
     this.getSchedule();
   }
 
@@ -93,6 +102,7 @@ class WeflexCalendar extends React.Component {
         ref="calendar"
         cellHeight={cellHeight}
         schedule={this.state.schedule}
+        onAddCard={this.onAddCard.bind(this)}
         cardTemplate={this.getCardTemplate()}
       />
     );

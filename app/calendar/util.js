@@ -5,6 +5,27 @@ function getCardWidth(length) {
   return (1 / length * 100) + '%';
 }
 
+function getRoundTime(time) {
+  const {minute} = time;
+  const newTime = Object.assign({}, time);
+  if (0 <= minute && minute <= 29) {
+    if (minute <= 14) {
+      newTime.minute = 0;
+    } else {
+      newTime.minute = 30;
+    }
+  } else if (minute > 29) {
+    if (minute <= 44) {
+      newTime.minute = 30;
+    } else {
+      newTime.minute = 0;
+      newTime.hour = newTime.hour + 1;
+    }
+  }
+
+  return newTime;
+}
+
 function getFormatTime(time) {
   let hour, minute;
 
@@ -131,6 +152,7 @@ export {
   getRange,
   getWeekEnd,
   getWeekBegin,
+  getRoundTime,
   getFormatTime,
   getCellHeight,
   addTimeByHour,
