@@ -1,33 +1,46 @@
 "use strict";
-
 import React from 'react';
-import ClassCard from './card';
+import moment from 'moment';
+import ReactDOM from 'react-dom';
+import ClassCard from './card.jsx';
+import Calendar from './calendar.jsx';
+import { NewClassTemplate } from './new.jsx';
+import { DropModal } from 'boron';
 import {
-  Calendar,
-  getWeek
-} from './calendar';
+  getWeek,
+  getCellHeight,
+  getFormatTime,
+} from './util.js';
+import '../layout/font.css';
+import './index.css';
 
-const client = require('@weflex/gian').getClient();
-const moment = require('moment');
-const CELL_HEIGHT = 50;
+moment.locale('zh-cn');
 
 class WeflexCalendar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       schedule: new Map(),
-    };
+      allClass: new Map(),
+    }
   }
-  get title() {
-    return '课程日历';
-  }
+
   async getClassData() {
-    const schedule = new Map();
-    const classes = await client.class.list({
-      include: {
-        'template': 'trainer'
-      }
+    classes.forEach((classInfo) => {
+      this.state.allClass.set(classInfo.id, classInfo);
     });
+
+    const schedule = this.getSchedule(classes);
+    this.originalSchedule = schedule;
+    this.setState({ schedule });
+  }
+
+  componentDidMount() {
+    this.getClassData();
+  }
+
+  getSchedule(classes) {
+    let schedule = new Map();
     classes.forEach(function (classInfo) {
       let date = moment(classInfo.date);
       let week = getWeek(date, 'YYYYMMDD');
@@ -60,21 +73,94 @@ class WeflexCalendar extends React.Component {
         schedule.set(weekIndex, weekSchedule);
       }
     });
-    console.log(schedule);
-    this.setState({schedule: schedule});
+    return schedule;
   }
 
-  componentDidMount() {
-    this.getClassData();
+  getCardTemplate() {
+    const updateCard = this.updateClasses.bind(this);
+    const calendar = this.refs.calendar;
+
+    return class CardTemplate extends React.Component {
+      render() {
+        const props = Object.assign({}, this.props);
+        return (
+          <ClassCard
+            {...props}
+            calendar={calendar}
+            updateCard={updateCard}
+          />
+        );
+      }
+    }
+  }
+
+  setCreateClassTemplate(from, to, date) {
+    const handleCreateClass = this.handleCreateClass.bind(this);
+    const newClassTemplate = class ClassTemplate extends React.Component {
+      render() {
+        const props = {from, to, date};
+        return (
+          <NewClassTemplate
+            {...props}
+            ref="classTemplate"
+            onCreateClass={handleCreateClass}
+          />
+        );
+      }
+    };
+    this.setState({
+      newClassTemplate
+    });
+  }
+
+  handleCreateClass(newClass) {
+    this.refs.newClassModal.hide();
+    this.updateClasses(newClass);
+    this.refs.calendar.cancelCreateCard();
+  }
+
+  async onAddCard(from, to, date) {
+    const fromString = getFormatTime(from);
+    const toString = getFormatTime(to);
+
+    await this.setCreateClassTemplate(fromString, toString, date);
+    this.refs.newClassModal.show();
+  }
+
+  updateClasses(newClass) {
+    this.state.allClass.set(newClass.id, newClass);
+    const schedule = this.getSchedule(this.state.allClass);
+    this.setState({ schedule });
+  }
+
+  handleHideModal() {
+    this.refs.calendar.cancelCreateCard();
+    if (this.refs.newClassModal.refs.classTemplate) {
+      this.refs.newClassModal.refs.classTemplate.setState({
+        isModalShow: false
+      });
+    }
   }
 
   render() {
+    const cellHeight = getCellHeight();
     return (
-      <Calendar
-        schedule={this.state.schedule}
-        cardTemplate={ClassCard}
-        cellHeight={CELL_HEIGHT}
-        schedule={this.state.schedule}/>
+      <div>
+        <Calendar
+          ref="calendar"
+          cellHeight={cellHeight}
+          schedule={this.state.schedule}
+          onAddCard={this.onAddCard.bind(this)}
+          cardTemplate={this.getCardTemplate()}
+        />
+        <DropModal
+          ref="newClassModal"
+          contentStyle={{ padding: 10 }}
+          onShow={this.handleHideModal.bind(this)}
+        >
+          {this.state.newClassTemplate ? <this.state.newClassTemplate /> : <div></div>}
+        </DropModal>
+      </div>
     );
   }
 }

@@ -1,34 +1,33 @@
-p, body, ul, div, li {
+.calendar {
+  height: 100%;
   margin: 0;
   padding: 0;
   font-family: sans-serif;
 }
 
-ul, ol { list-style: none; }
+.calendar li {
+  list-style: none;
+}
 
-.go-prev-btn, .go-next-btn {
+.week-header .go-prev-btn,.go-next-btn {
   border: 1px solid #b3b3b3;
   background: #f7f7f7;
-  padding: 4px 8px;
-  border-radius: 30px;
+  padding: 3px 3px;
+  border-radius: 50%;
   color: #777;
   font-size: 15px;
-  font-family: monospace;
   text-decoration: none;
   vertical-align: middle;
   cursor: pointer;
   transition: background-color 0.3s linear;
 }
 
-.go-prev-btn:hover, .go-next-btn:hover {
+.week-header .go-prev-btn:hover, .go-next-btn:hover {
   background-color:#e9e9e9;
 }
 
-.calendar {
-  height: 100%;
-}
-
 .week-header {
+  padding-top: 20px;
   text-align: center;
   height: 98px;
 }
@@ -36,12 +35,10 @@ ul, ol { list-style: none; }
 .week-header .selector {
   height: 48px;
 }
-
 .week-header .selector .week-date {
-  font-size: 1.5em;
+  font-size: 24px;
   display: inline-block;
   font-family: Arial;
-  padding: 10px;
   width: 240px;
   vertical-align: middle;
   height: 51px;
@@ -50,15 +47,22 @@ ul, ol { list-style: none; }
 }
 
 .week-header .table-header {
+  /* width equal to total width substract scroll-div's width */
   width: calc(100% - 15px);
   border-top: 1px solid #ccc;
   border-bottom: 1px solid #ccc;
   height: 30px;
+  line-height: 30px;
   margin-top: 18px;
+  margin-bottom: 0px;
+  padding: 0px;
   display: inline-block;
+
 }
 
+/* scroll-div is an placeholder, align table-header horizontal to table-body */
 .week-header .scroll-div {
+  width: 15px;
   height: 30px;
   display: inline-block;
   border-bottom: 1px solid #ccc;
@@ -67,11 +71,13 @@ ul, ol { list-style: none; }
 
 .week-header .table-header .header-index {
   border: none;
-  width: calc((100% - 6px) / 20);
+  width: 60px;
 }
 
 .week-header .table-header li {
-  width: calc((100% - ((100% - 6px) / 20) - 7px) / 7);
+  /* set table-header cell width by substract serven border width and header-index width
+   * and divide equally by serven cell */
+  width: calc((100% - 60px - 7px) / 7);
   display: inline;
   border-left: 1px solid #ccc;
   text-align: center;
@@ -81,33 +87,33 @@ ul, ol { list-style: none; }
 
 .schedule-table {
   overflow-y: scroll;
-}
-
-.schedule-table  {
+  position: relative;
   width: 100%;
 }
 
-.schedule-table  ul{
+.schedule-table ul {
   float: left;
   margin: 0;
   padding: 0;
   border-left: 1px solid #ccc;
-  width: calc((100% - ((100% - 6px) / 20) - 7px) / 7);
+  /* same as table-header's cell */
+  width: calc((100% - 60px - 7px) / 7);
   text-align: center;
 }
 
-.schedule-table  ul > li{
+.schedule-table ul > li {
   border-bottom: 1px solid #ccc;
   height: 40px;
   position: relative;
 }
 
-.schedule-table  .hour-axis{
-  width: calc((100% - 6px) / 20);
+.schedule-table .hour-axis {
+  /* same as table-header's header-index */
+  width: 60px;
   border: none;
 }
 
-.schedule-table  .hour-axis li {
+.schedule-table .hour-axis li {
   border: none;
   vertical-align: middle;
 }
@@ -125,6 +131,36 @@ ul, ol { list-style: none; }
   outline: 1px solid slategrey;
 }
 
+.schedule-table ul li:empty:hover {
+  cursor: crosshair;
+}
+
+.schedule-table .baseline-wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100%;
+}
+
+.schedule-table .baseline-clock {
+  width: 60px;
+  text-align: center;
+  line-height: 1px;
+  height: 1px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.schedule-table .baseline {
+  height: 1px;
+  line-height: 1px;
+  border-top: 1px dotted red;
+  display: inline-block;
+  width: calc(100% - 60px);
+  vertical-align: middle;
+}
+
 .schedule-table .cards {
   position: absolute;
   z-index: 1;
@@ -134,7 +170,9 @@ ul, ol { list-style: none; }
   height: 100%;
 }
 
+
 .schedule-table .class-card {
+  position: relative;
   background-color: rgba(255, 179, 0, 0.28);
   border-left: 2px solid #ff9632;
   transition: background-color 0.3s linear;
@@ -147,9 +185,51 @@ ul, ol { list-style: none; }
   box-sizing: border-box;
 }
 
-.schedule-table .class-card:hover {
+.schedule-table .class-card p {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.schedule-table .class-card .bottom-dragger {
+  width: 100%;
+  content: "";
+  display: inline-block;
+  position: absolute;
+  left: 0px;
+  bottom: -5px;
+  color: transparent;
+  border-top: 5px solid transparent;
+  cursor: row-resize;
+  z-index: 10;
+}
+
+.schedule-table .class-card .top-dragger {
+  width: 100%;
+  content: "";
+  display: inline-block;
+  position: absolute;
+  left: 0px;
+  top: -5px;
+  color: transparent;
+  border-top: 5px solid transparent;
+  cursor: row-resize;
+  z-index: 10;
+}
+
+.schedule-table .class-card:not(.dragged):not(.moved):hover {
   background-color: #ff9632;
   color: #fff;
+}
+
+.schedule-table .class-card p {
+  margin: 0px;
+}
+
+.schedule-table .create-card {
+  background: rgba(12, 0, 204, 0.26);
+  position: absolute;
 }
 
 .ToolTipPortal .class-date {
@@ -166,6 +246,7 @@ ul, ol { list-style: none; }
   font-size: 0.8em;
   color: #777;
   margin-top: 5px;
+  font-family: sans-serif;
 }
 
 .ToolTipPortal .divider {
@@ -201,6 +282,7 @@ ul, ol { list-style: none; }
 .ToolTipPortal .class-title {
   font-size: 20px;
   font-family: sans-serif;
+  margin: 0px;
 }
 
 .ToolTipPortal .user-status {
@@ -276,3 +358,4 @@ ul, ol { list-style: none; }
   margin-bottom: 5px;
   color: #777;
 }
+
