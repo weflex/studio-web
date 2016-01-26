@@ -22,8 +22,8 @@ class OrderList extends React.Component {
       },
       {
         title: '卡种选择',
-        sortBy: o => o.classPackage && o.classPackage.name,
-        display: o => o.classPackage && o.classPackage.name
+        sortBy: o => '',
+        display: o => ''
       },
       {
         title: '客户',
@@ -32,8 +32,8 @@ class OrderList extends React.Component {
       },
       {
         title: '有效期',
-        sortBy: o => o.classPackage && o.classPackage.expiredAt,
-        display: o => moment(o.classPackage.expiredAt).format('lll')
+        sortBy: o => Date.now(),
+        display: o => Date.now()
       }
     ];
   }
@@ -54,15 +54,15 @@ class OrderList extends React.Component {
           </div>
           <div className="list-view-fieldset">
             <label>卡种类型</label>
-            <span>{data.classPackage.name}</span>
+            <span>单次购买</span>
           </div>
           <div className="list-view-fieldset">
             <label>有效期</label>
-            <span>{moment(data.classPackage.expiredAt).format('lll')}</span>
+            <span>2017-08-22</span>
           </div>
           <div className="list-view-fieldset">
             <label>使用次数</label>
-            <span>{data.classPackage.passes}次</span>
+            <span>3次</span>
           </div>
           <div className="list-view-fieldset">
             <label>剩余次数</label>
@@ -91,7 +91,7 @@ class OrderList extends React.Component {
       <ListView
         dataSource={async () => {
           return await client.order.list({
-            include: ['classPackage', 'user']
+            include: ['user']
           });
         }}
         renderView={this.renderView}
