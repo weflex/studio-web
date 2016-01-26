@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import moment from 'moment';
 import Hammer from 'hammerjs';
-import './index.css';
 import {
   getWeek,
   getRange,
@@ -62,7 +61,6 @@ class Cards extends React.Component {
         <this.props.cardTemplate
           key={index}
           cardInfo={card}
-          baselineClock={this.props.baselineClock}
         />
       );
     });
@@ -99,12 +97,12 @@ class WeekHeader extends React.Component {
     return (
       <div className="week-header">
         <div className="selector">
-          <span className="go-prev-btn"
-            onClick={this.goPrevWeek.bind(this)}>{'<'}
+          <span className="go-prev-btn icon-font icon-left-open"
+            onClick={this.goPrevWeek.bind(this)}>
           </span>
           <div className="week-date">{weekDate.begin} - {weekDate.end}</div>
-          <span className="go-next-btn"
-            onClick={this.goNextWeek.bind(this)}>{'>'}
+          <span className="go-next-btn icon-font icon-right-open"
+            onClick={this.goNextWeek.bind(this)}>
           </span>
         </div>
         <TableHeader currentDate={this.props.currentDate} ref="tableHeader" />
@@ -154,7 +152,6 @@ class Calendar extends React.Component {
         <Cards
           cardsInfo={cardsInfo} 
           cardTemplate={this.props.cardTemplate}
-          baselineClock={this.state.baselineClock}
         />
       </li>
     );
@@ -300,9 +297,20 @@ class Calendar extends React.Component {
     }
   }
 
+  cancelCreateCard() {
+    const createCardStyle = Object.assign({}, this.state.createCardStyle);
+    createCardStyle.height = 0;
+    this.setState({ createCardStyle });
+  }
+
   getCreateCard() {
     return (
-      <div className="create-card" style={this.state.createCardStyle}></div>
+      <div 
+        ref="createCard"
+        className="create-card" 
+        style={this.state.createCardStyle} 
+      >
+      </div>
     );
   }
 
@@ -389,8 +397,6 @@ class Calendar extends React.Component {
                          .dayList[this.state.atCol]
                          .format('YYYY-MM-DD');
 
-          const formatTime = getFormatTime(newFromHour);
-          const newDate = new Date(`${date} ${formatTime}`);
           this.props.onAddCard(newFromHour, newToHour, date);
         }
       }

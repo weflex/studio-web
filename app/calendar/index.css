@@ -9,14 +9,13 @@
   list-style: none;
 }
 
-.week-header .go-prev-btn, .go-next-btn {
+.week-header .go-prev-btn,.go-next-btn {
   border: 1px solid #b3b3b3;
   background: #f7f7f7;
-  padding: 2px 6px;
+  padding: 3px 3px;
   border-radius: 50%;
   color: #777;
   font-size: 15px;
-  font-family: monospace;
   text-decoration: none;
   vertical-align: middle;
   cursor: pointer;
@@ -359,3 +358,4 @@
   margin-bottom: 5px;
   color: #777;
 }
+

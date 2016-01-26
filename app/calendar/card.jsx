@@ -139,7 +139,7 @@ class ClassCard extends React.Component {
     hammer.on('panstart', (event) => {
       this.props.calendar.isDragCard = true;
 
-      const timeToFrom = getTimeDuration(this.props.cardInfo.from, this.props.baselineClock);
+      const timeToFrom = getTimeDuration(this.props.cardInfo.from, this.props.calendar.state.baselineClock);
       const pointerDay = this.props.calendar.state.atCol;
       this.setState({
         timeToFrom,
@@ -164,7 +164,7 @@ class ClassCard extends React.Component {
       const height = this.style.height;
       const width = col.right - col.left;
       const hourOffset = -(this.state.timeToFrom / 60);
-      const newHourTime = addTimeByHour(this.props.baselineClock, hourOffset);
+      const newHourTime = addTimeByHour(this.props.calendar.state.baselineClock, hourOffset);
 
       const style = {
           marginTop,
@@ -271,7 +271,7 @@ class ClassCard extends React.Component {
       if (direction === 'bottom') {
         height = this.style.height + event.deltaY;
       }
-      let time = this.props.baselineClock;
+      let time = this.props.calendar.state.baselineClock;
       const isOverDrag = (height <= this.cellHeight);
 
       if (isOverDrag) {

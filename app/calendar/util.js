@@ -83,6 +83,11 @@ function addTimeByHour(time, offsetHour) {
   let newTime = Object.assign({}, time);
   let hour = Math.floor(offsetHour);
   let minute = Math.floor((offsetHour - hour) * 60);
+  if (offsetHour < 0) {
+    hour = Math.ceil(offsetHour);
+    minute = (offsetHour - hour) * 60;
+  }
+
   newTime.hour += hour;
   newTime.minute += minute;
   if (newTime.minute >= 60) {
@@ -93,6 +98,16 @@ function addTimeByHour(time, offsetHour) {
     newTime.minute = newTime.minute + 60;
   }
 
+  if (newTime.hour >= 24) {
+    newTime.hour = 24;
+    newTime.minute = 0;
+  }
+
+  if (newTime.hour < 0) {
+    newTime.hour = 0;
+    newTime.minute = 0;
+  }
+
   return newTime;
 }
 
@@ -100,7 +115,9 @@ function addTimeByMinute(time, offsetMinute) {
   let newTime = Object.assign({}, time);
   let hour = Math.floor(offsetMinute / 60);
   let minute = offsetMinute % 60;
-
+  if (offsetMinute < 0) {
+    hour = Math.ceil(offsetMinute / 60);
+  }
   newTime.hour += hour;
   newTime.minute += minute;
 
@@ -110,6 +127,16 @@ function addTimeByMinute(time, offsetMinute) {
   } else if (newTime.minute < 0) {
     newTime.hour -= 1;
     newTime.minute = newTime.minute + 60;
+  }
+
+  if (newTime.hour >= 24) {
+    newTime.hour = 24;
+    newTime.minute = 0;
+  }
+
+  if (newTime.hour < 0) {
+    newTime.hour = 0;
+    newTime.minute = 0;
   }
 
   return newTime;
