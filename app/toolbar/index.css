@@ -8,21 +8,28 @@
   box-shadow: 0 2px 2px 0 rgba(0,0,0,0.2);
 }
 
-.toolbar-title {
+.toolbar .title {
   position: absolute;
-  top: 25%;
-  left: 20px;
+  width: 120px;
+  left: calc(50% - 60px);
+  top: 3px;
+  color: 535353;
+  text-align: center;
 }
+
+.toolbar > ul, .toolbar > div {
+  padding: 12px;
+  height: 28px;
+}
+
 
 .toolbar li {
   float: right;
-  margin: 10px 0;
-  padding: 4px 12px;
+  margin: 0;
   font-size: 12px;
   display: block;
-  border-right: 1px solid #ececec;
   text-align: center;
-  height: 24px;
+  height: 28px;
 }
 
 .toolbar li * {
@@ -31,8 +38,8 @@
 
 .toolbar .action-button {
   display: inline-block;
-  padding: 2px 5px;
-  margin: 0 10px;
+  padding: 4px 10px;
+  margin: 0;
   font-size: 12px;
   cursor: pointer;
   border-radius: 4px;
@@ -47,6 +54,10 @@
   color: #242f40;
 }
 
+.toolbar .searchbox {
+  float: left;
+}
+
 .toolbar .search {
   position: relative;
 }
@@ -58,11 +69,11 @@
   display: block;
   padding: 4px 0 0 5px;
   position: absolute;
-  top: 0;
+  top: 2px;
   left: 0;
 }
 .toolbar .search input {
-  height: 24px;
+  height: 28px;
   width: 100px;
   padding: 0 5px 0 30px;
   font-size: 14px;
@@ -80,31 +91,4 @@
 
 .toolbar .search input:focus + .icon-font {
   color: #00cfe6;
-}
-
-.toolbar .notifier {
-  cursor: pointer;
-  position: relative;
-  padding: 3px;
-  border-radius: 4px;
-}
-
-.toolbar .notifier:hover {
-  background-color: rgba(0, 0, 0, 0.075);
-}
-
-.toolbar .notifier .notifier-spot {
-  position: absolute;
-  top: -3px;
-  right: 3px;
-  background-color: #f00;
-  color: #fff;
-  border-radius: 4px;
-  display: block;
-  height: 8px;
-  width: 8px;
-}
-
-.toolbar .notifier .icon-font {
-  font-size: 18px;
 }

@@ -18,12 +18,9 @@ class ToolBar extends React.Component {
   render() {
     return (
       <div className="toolbar">
-        <div className="toolbar-title">{this.state.title}</div>
+        <div className="title">{this.state.title}</div>
         <ul className="toolbox">
-          <li>
-            <Notifier ref="notifier" />
-          </li>
-          <li>
+          <li className ="searchbox">
             <SearchInput ref="searchInput" />
           </li>
           <li>
