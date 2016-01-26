@@ -79,7 +79,6 @@ class WeflexCalendar extends React.Component {
   getCardTemplate() {
     const updateCard = this.updateClasses.bind(this);
     const calendar = this.refs.calendar;
-    const isTemplateMode = this.state.isTemplateMode;
 
     return class CardTemplate extends React.Component {
       render() {
@@ -89,16 +88,15 @@ class WeflexCalendar extends React.Component {
             {...props}
             calendar={calendar}
             updateCard={updateCard}
-            isTemplateMode={isTemplateMode}
           />
         );
       }
     }
   }
 
-  setClassDialog(from, to, date) {
+  setCreateClassTemplate(from, to, date) {
     const handleCreateClass = this.handleCreateClass.bind(this);
-    const dialog = class ClassTemplate extends React.Component {
+    const newClassTemplate = class ClassTemplate extends React.Component {
       render() {
         const props = {from, to, date};
         return (
@@ -111,7 +109,7 @@ class WeflexCalendar extends React.Component {
       }
     };
     this.setState({
-      newClassDialog: dialog
+      newClassTemplate
     });
   }
 
@@ -125,7 +123,7 @@ class WeflexCalendar extends React.Component {
     const fromString = getFormatTime(from);
     const toString = getFormatTime(to);
 
-    await this.setClassDialog(fromString, toString, date);
+    await this.setCreateClassTemplate(fromString, toString, date);
     this.refs.newClassModal.show();
   }
 
@@ -160,7 +158,7 @@ class WeflexCalendar extends React.Component {
           contentStyle={{ padding: 10 }}
           onShow={this.handleHideModal.bind(this)}
         >
-          {this.state.newClassDialog ? <this.state.newClassDialog /> : <div></div>}
+          {this.state.newClassTemplate ? <this.state.newClassTemplate /> : <div></div>}
         </DropModal>
       </div>
     );

@@ -5,7 +5,6 @@ import {
   BeatLoader
 } from 'halogen';
 import './new.css';
-import classes from 'json!./classes.json';
 const client = require('@weflex/gian').getClient('dev');
 
 class NewClassTemplate extends React.Component {
@@ -31,18 +30,8 @@ class NewClassTemplate extends React.Component {
   }
 
   onCreateClass() {
-    const newClass = Object.assign({}, classes[0]);
-    newClass.id = 'mockUpClass';
-    newClass.from = {
-      hour: 2,
-      minute: 0 
-    };
-    newClass.to = {
-      hour: 3,
-      minute: 0
-    }
-    newClass.date = new Date();
-    this.props.onCreateClass(newClass);
+    // update class 
+    // this.props.onCreateClass(newClass);
   }
 
   render() {
