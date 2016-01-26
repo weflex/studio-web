@@ -13,14 +13,16 @@ class NewClassTemplate extends React.Component {
     this.state = {
       venues: [],
       trainers: [],
-      loading: true
+      loading: true,
+      isModalShow: true
     };
 
     this.newClass = {}
   }
 
   async componentDidMount() {
-    if (this.state.isModalShow) {
+    console.log(this.state.isModalShow);
+    if (this.state.isModalShow !== false) {
       this.setState({
         venues: await client.venue.list(),
         trainers: await client.trainer.list(),
@@ -31,7 +33,7 @@ class NewClassTemplate extends React.Component {
 
   onCreateClass() {
     // update class 
-    // this.props.onCreateClass(newClass);
+    this.props.onCreateClass(this.newClass);
   }
 
   render() {

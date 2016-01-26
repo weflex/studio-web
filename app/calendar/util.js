@@ -22,7 +22,6 @@ function getRoundTime(time) {
       newTime.hour = newTime.hour + 1;
     }
   }
-
   return newTime;
 }
 

@@ -1,6 +1,5 @@
 "use strict";
 import React from 'react';
-import moment from 'moment';
 import ReactDOM from 'react-dom';
 import ClassCard from './card.jsx';
 import Calendar from './calendar.jsx';
@@ -11,9 +10,12 @@ import {
   getCellHeight,
   getFormatTime,
 } from './util.js';
+
 import '../layout/font.css';
 import './index.css';
 
+const client = require('@weflex/gian').getClient('dev');
+const moment = require('moment');
 moment.locale('zh-cn');
 
 class WeflexCalendar extends React.Component {
@@ -26,6 +28,9 @@ class WeflexCalendar extends React.Component {
   }
 
   async getClassData() {
+    const classes = await client.class.list({
+      include: ['trainer', 'template', 'orders']
+    });
     classes.forEach((classInfo) => {
       this.state.allClass.set(classInfo.id, classInfo);
     });
@@ -95,6 +100,7 @@ class WeflexCalendar extends React.Component {
   }
 
   setCreateClassTemplate(from, to, date) {
+    const self = this;
     const handleCreateClass = this.handleCreateClass.bind(this);
     const newClassTemplate = class ClassTemplate extends React.Component {
       render() {
@@ -102,7 +108,11 @@ class WeflexCalendar extends React.Component {
         return (
           <NewClassTemplate
             {...props}
-            ref="classTemplate"
+            ref={(node) => {
+              if (node) {
+                self.newClassTemplate = node;
+              }
+            }}
             onCreateClass={handleCreateClass}
           />
         );
@@ -119,11 +129,11 @@ class WeflexCalendar extends React.Component {
     this.refs.calendar.cancelCreateCard();
   }
 
-  async onAddCard(from, to, date) {
+  onAddCard(from, to, date) {
     const fromString = getFormatTime(from);
     const toString = getFormatTime(to);
 
-    await this.setCreateClassTemplate(fromString, toString, date);
+    this.setCreateClassTemplate(fromString, toString, date);
     this.refs.newClassModal.show();
   }
 
@@ -135,8 +145,8 @@ class WeflexCalendar extends React.Component {
 
   handleHideModal() {
     this.refs.calendar.cancelCreateCard();
-    if (this.refs.newClassModal.refs.classTemplate) {
-      this.refs.newClassModal.refs.classTemplate.setState({
+    if (this.newClassTemplate) {
+      this.newClassTemplate.setState({
         isModalShow: false
       });
     }
@@ -156,7 +166,7 @@ class WeflexCalendar extends React.Component {
         <DropModal
           ref="newClassModal"
           contentStyle={{ padding: 10 }}
-          onShow={this.handleHideModal.bind(this)}
+          onHide={this.handleHideModal.bind(this)}
         >
           {this.state.newClassTemplate ? <this.state.newClassTemplate /> : <div></div>}
         </DropModal>

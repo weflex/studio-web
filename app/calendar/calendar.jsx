@@ -263,7 +263,7 @@ class Calendar extends React.Component {
     this.colList.forEach((col, index) => {
       if (col.left < baselineLeft && baselineLeft < col.right) {
         this.setState({
-          atCol: index,
+          atCol: index + 1,
         });
       }
     });
@@ -299,7 +299,8 @@ class Calendar extends React.Component {
 
   cancelCreateCard() {
     const createCardStyle = Object.assign({}, this.state.createCardStyle);
-    createCardStyle.height = 0;
+    createCardStyle.top = -20;
+    createCardStyle.opacity = 0;
     this.setState({ createCardStyle });
   }
 
@@ -307,9 +308,8 @@ class Calendar extends React.Component {
     return (
       <div 
         ref="createCard"
-        className="create-card" 
-        style={this.state.createCardStyle} 
-      >
+        className="create-card create-card-shown"
+        style={this.state.createCardStyle}>
       </div>
     );
   }
@@ -350,12 +350,11 @@ class Calendar extends React.Component {
         top,
         left,
         width,
-      }
+        opacity: 1
+      };
 
       this.setState({ createCardStyle, selectBeginTime });
     });
-
-
 
     hammer.on('panup pandown', (event) => {
       if (this.state.isDragCard) {

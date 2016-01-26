@@ -342,11 +342,10 @@ class ClassCard extends React.Component {
   }
 
   render() {
-    const {id, from, to, date, template, orders} = this.props.cardInfo;
+    const {id, from, to, date, template, trainer, orders} = this.props.cardInfo;
     const duration = `${getFormatTime(from)} - ${getFormatTime(to)}`;
     const dayOfYear = moment(date).format('MM[月]DD[日]');
     const dayOfWeek = moment(date).format('ddd');
-    const trainer = template.trainer;
     const trainerName = `${trainer.fullname.first} ${trainer.fullname.last}`;
     let className = 'class-card';
     if (this.state.isDrag) {
