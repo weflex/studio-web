@@ -232,7 +232,7 @@ class Calendar extends React.Component {
 
   setBaseline(e) {
     let baselineTop = e.clientY - this.table.top + this.state.scrollTop;
-    let baselineLeft = e.clientX - this.table.left;
+    let baselineLeft = e.clientX;
     this.setState({ baselineTop });
 
     this.rowList.forEach((row, index) => {
@@ -263,7 +263,7 @@ class Calendar extends React.Component {
     this.colList.forEach((col, index) => {
       if (col.left < baselineLeft && baselineLeft < col.right) {
         this.setState({
-          atCol: index + 1,
+          atCol: index,
         });
       }
     });
@@ -411,7 +411,7 @@ class Calendar extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const currentDate  = moment();
+    const currentDate  = this.state.currentDate;
     const weekDate     = getWeek(currentDate, 'YYYYMMDD');
     const weekSchedule = nextProps.schedule.get(`${weekDate.begin}-${weekDate.end}`) || new Map();
     const state = {currentDate, weekSchedule};
