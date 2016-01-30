@@ -5,23 +5,25 @@
   top: 0;
   left: 150px;
   background-color: white;
-  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.2);
+  border-bottom: 1px solid #EBEBEB;
+  /*box-shadow: 0 2px 2px 0 rgba(0,0,0,0.2);*/
 }
 
 .toolbar .title {
   position: absolute;
-  width: 120px;
-  left: calc(50% - 60px);
-  top: 3px;
-  color: 535353;
+  left: calc(50% - 160px);
+  color: #535353;
   text-align: center;
+  padding: 0;
+  margin: 0;
+  height: 52px;
+  line-height: 52px;
 }
 
 .toolbar > ul, .toolbar > div {
   padding: 12px;
   height: 28px;
 }
-
 
 .toolbar li {
   float: right;

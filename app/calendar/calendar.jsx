@@ -17,7 +17,6 @@ import {
 const DAYHOUR = 24;
 const WEEKDAY = 7;
 const BORDER_HEIGHt = 1;
-
 moment.locale('zh-cn');
 
 class TableHeader extends React.Component {
@@ -31,16 +30,18 @@ class TableHeader extends React.Component {
     let date = this.props.currentDate;
 
     header.push(
-      <li key="header-index" className="header-index">时间</li>
+      <li key="header-index" className="header-index"></li>
     );
 
     for (let i = 1; i <= WEEKDAY; i++) {
       let day = moment(date).days(i);
-      let dayDate = day.format('MM/DD');
+      let dayDate = day.format('DD');
       let dayLocale = day.format('ddd');
 
       header.push(
-        <li key={i} ref={(c)=> {this.dayList[i] = day}}>{dayDate} {dayLocale}</li>
+        <li key={i} ref={(c)=> {this.dayList[i] = day}}>
+          {dayLocale} {dayDate}
+        </li>
       );
      }
 
@@ -207,7 +208,8 @@ class Calendar extends React.Component {
     });
 
     return (
-      <ul 
+      <ul
+        className="schedule-table-column"
         key={dayIndex} 
         ref={ul => {
           if (ul) {
@@ -279,7 +281,10 @@ class Calendar extends React.Component {
       return (
         <div className="baseline-wrap" >
           <div className="baseline-clock" style={style}>
-            {timeString}
+            <span className="baseline-clock-base">
+              {timeString}
+            </span>
+            <span className="baseline-clock-triangle"></span>
           </div>
           <div className="baseline" style={style}>
           </div>
@@ -391,11 +396,7 @@ class Calendar extends React.Component {
 
         const duration = getTimeDuration(newFromHour, newToHour);
         if (duration) {
-          const date = this.refs.weekHeader
-                         .refs.tableHeader
-                         .dayList[this.state.atCol]
-                         .format('YYYY-MM-DD');
-
+          const date = this.refs.tableHeader.dayList[this.state.atCol].format('YYYY-MM-DD');
           this.props.onAddCard(newFromHour, newToHour, date);
         }
       }
@@ -429,14 +430,12 @@ class Calendar extends React.Component {
     const tableBody = this.getTableBody();
     const baseline = this.getBaseLine(this.state.baselineClock, this.state.baselineTop);
     const createCard = this.getCreateCard();
-
     return (
       <div className="calendar" ref="calendar">
-        <WeekHeader
-          ref="weekHeader"
-          currentDate={this.state.currentDate}
-          setDate={this.setCurrentDate.bind(this)}
-        />
+        <div className="week-header">
+          <TableHeader currentDate={this.state.currentDate} ref="tableHeader" />
+          <div className="scroll-div"></div>
+        </div>
         <div
           ref="table"
           className="schedule-table"

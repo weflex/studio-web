@@ -1,9 +1,10 @@
 "use strict";
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ClassCard from './card.jsx';
-import Calendar from './calendar.jsx';
-import { NewClassTemplate } from './new.jsx';
+import ClassCard from './card';
+import Calendar from './calendar';
+import { WeekPicker } from './components/week-picker';
+import { NewClassTemplate } from './new';
 import { DropModal } from 'boron';
 import {
   getWeek,
@@ -24,7 +25,26 @@ class WeflexCalendar extends React.Component {
     this.state = {
       schedule: new Map(),
       allClass: new Map(),
-    }
+    };
+  }
+
+  get title() {
+    return (
+      <WeekPicker
+        calendar={this.refs.calendar}
+      />
+    );
+  }
+
+  get actions() {
+    return [
+      {
+        title: '添加课程'
+      },
+      {
+        title: '显示课程模版'
+      }
+    ];
   }
 
   async getClassData() {

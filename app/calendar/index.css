@@ -9,64 +9,31 @@
   list-style: none;
 }
 
-.week-header .go-prev-btn,.go-next-btn {
-  border: 1px solid #b3b3b3;
-  background: #f7f7f7;
-  padding: 3px 3px;
-  border-radius: 50%;
-  color: #777;
-  font-size: 15px;
-  text-decoration: none;
-  vertical-align: middle;
-  cursor: pointer;
-  transition: background-color 0.3s linear;
-}
-
-.week-header .go-prev-btn:hover, .go-next-btn:hover {
-  background-color:#e9e9e9;
-}
-
 .week-header {
-  padding-top: 20px;
   text-align: center;
-  height: 98px;
-}
-
-.week-header .selector {
-  height: 48px;
-}
-.week-header .selector .week-date {
-  font-size: 24px;
-  display: inline-block;
-  font-family: Arial;
-  width: 240px;
-  vertical-align: middle;
-  height: 51px;
-  line-height: 51px;
-  color: #777;
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.2);
 }
 
 .week-header .table-header {
   /* width equal to total width substract scroll-div's width */
   width: calc(100% - 15px);
-  border-top: 1px solid #ccc;
-  border-bottom: 1px solid #ccc;
+  margin: 0;
+  padding: 0;
+}
+
+.week-header .table-header,
+.week-header .scroll-div {
+  display: inline-block;
   height: 30px;
   line-height: 30px;
-  margin-top: 18px;
-  margin-bottom: 0px;
-  padding: 0px;
-  display: inline-block;
-
+  vertical-align: middle;
+  border-top: 1px solid #EBEBEB;
+  border-bottom: 1px solid rgba(0,0,0,.2);
 }
 
 /* scroll-div is an placeholder, align table-header horizontal to table-body */
 .week-header .scroll-div {
-  width: 15px;
-  height: 30px;
-  display: inline-block;
-  border-bottom: 1px solid #ccc;
-  border-top: 1px solid #ccc;
+  width: 7px;
 }
 
 .week-header .table-header .header-index {
@@ -78,48 +45,59 @@
   /* set table-header cell width by substract serven border width and header-index width
    * and divide equally by serven cell */
   width: calc((100% - 60px - 7px) / 7);
-  display: inline;
-  border-left: 1px solid #ccc;
+  display: inline-block;
+  border-left: 1px solid #EBEBEB;
   text-align: center;
-  float: left;
-  height: 100%;
+  height: 16px;
+  line-height: 16px;
+  font-family: 'PingFang SC', sans-serif;
+  font-size: 12px;
+  color: #4A4A4A;
 }
 
 .schedule-table {
   overflow-y: scroll;
   position: relative;
   width: 100%;
+  background-color: #fafafa;
+}
+
+.schedule-table-column {
+  background: #fff;
 }
 
 .schedule-table ul {
   float: left;
   margin: 0;
   padding: 0;
-  border-left: 1px solid #ccc;
+  border-left: 1px solid #EBEBEB;
   /* same as table-header's cell */
   width: calc((100% - 60px - 7px) / 7);
   text-align: center;
 }
 
 .schedule-table ul > li {
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #EBEBEB;
   height: 40px;
   position: relative;
 }
 
-.schedule-table .hour-axis {
+.schedule-table ul.hour-axis {
   /* same as table-header's header-index */
   width: 60px;
   border: none;
 }
 
-.schedule-table .hour-axis li {
+.schedule-table ul.hour-axis li {
   border: none;
   vertical-align: middle;
+  color: #696969;
+  font-size: 12px;
+  font-family: 'Open Sans', sans-serif;
 }
 
 .schedule-table::-webkit-scrollbar {
-  width: 15px;
+  width: 7px;
 }
 
 .schedule-table::-webkit-scrollbar-track {
@@ -139,11 +117,12 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: -1;
   width: 100%;
+  z-index: 0;
 }
 
 .schedule-table .baseline-clock {
+  position: relative;
   width: 60px;
   text-align: center;
   line-height: 1px;
@@ -152,13 +131,43 @@
   vertical-align: middle;
 }
 
+.schedule-table .baseline-clock-base {
+  position: absolute;
+  box-sizing: border-box;
+  left: 0;
+  top: -9px;
+  padding-top: 9px;
+  width: 60px;
+  height: 18px;
+  font-size: 12px;
+  font-family: 'Open Sans', sans-serif;
+  color: #fff;
+  background-color: #7ABDDD;
+}
+
+.schedule-table .baseline-clock-triangle {
+  position: absolute;
+  top: -9px;
+  right: -9px;
+  height: 0;
+  width: 0;
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+  border-left: 9px solid #7ABDDD;
+  z-index: 10;
+}
+
 .schedule-table .baseline {
+  position: absolute;
+  left: 60px;
   height: 1px;
   line-height: 1px;
-  border-top: 1px dotted red;
+  border-top: 1px solid #7ABDDD;
   display: inline-block;
   width: calc(100% - 60px);
   vertical-align: middle;
+  z-index: -1;
+  cursor: crosshair;
 }
 
 .schedule-table .cards {
