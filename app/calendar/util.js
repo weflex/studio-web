@@ -8,32 +8,12 @@ function getCardWidth(length) {
 function getRoundTime(time) {
   const {minute} = time;
   const newTime = Object.assign({}, time);
-  if (0 <= minute && minute <= 29) {
-    if (minute <= 14) {
-      newTime.minute = 0;
-    } else {
-      newTime.minute = 30;
-    }
-  } else if (minute > 29) {
-    if (minute <= 44) {
-      newTime.minute = 30;
-    } else {
-      newTime.minute = 0;
-      newTime.hour = newTime.hour + 1;
-    }
-  }
-  return newTime;
-}
-
-function getRoundTime(time) {
-  const {minute} = time;
-  const newTime = Object.assign({}, time);
   const res = minute % 10;
   if (res >= 0 && res <= 2) {
     newTime.minute = minute - res;
   } else if (res >= 3 && res <= 7) {
     newTime.minute = minute - res + 5;
-  } else if (res <= 8) {
+  } else if (res >= 8) {
     newTime.minute =  minute - res + 10;
   }
 
@@ -109,7 +89,7 @@ function addTimeByHour(time, offsetHour) {
   let minute = Math.floor((offsetHour - hour) * 60);
   if (offsetHour < 0) {
     hour = Math.ceil(offsetHour);
-    minute = (offsetHour - hour) * 60;
+    minute = Math.ceil((offsetHour - hour) * 60);
   }
 
   newTime.hour += hour;

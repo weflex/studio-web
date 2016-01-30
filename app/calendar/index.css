@@ -203,31 +203,29 @@
 
 .schedule-table .class-card .bottom-dragger {
   width: 100%;
-  content: "";
   display: inline-block;
   position: absolute;
   left: 0px;
-  bottom: -5px;
+  bottom: -2px;
+  height: 5px;
   color: transparent;
-  border-top: 5px solid transparent;
   cursor: row-resize;
   z-index: 10;
 }
 
 .schedule-table .class-card .top-dragger {
   width: 100%;
-  content: "";
   display: inline-block;
   position: absolute;
   left: 0px;
-  top: -5px;
+  top: -2px;
+  height: 5px;
   color: transparent;
-  border-top: 5px solid transparent;
   cursor: row-resize;
   z-index: 10;
 }
 
-.schedule-table .class-card:not(.dragged):not(.moved):hover {
+.schedule-table .class-card:not(.resized):not(.moved):hover {
   background-color: #ff9632;
   color: #fff;
 }

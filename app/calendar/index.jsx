@@ -62,6 +62,11 @@ class WeflexCalendar extends React.Component {
 
   componentDidMount() {
     this.getClassData();
+    this.getCardTemplate();
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    this.getCardTemplate();
   }
 
   getSchedule(classes) {
@@ -103,15 +108,23 @@ class WeflexCalendar extends React.Component {
 
   getCardTemplate() {
     const updateCard = this.updateClasses.bind(this);
-    const calendar = this.refs.calendar;
+    const ctx = {};
+    ctx.calendar = this.refs.calendar;
+    ctx.cards = [];
+    ctx.calendar.ctx = ctx;
 
-    return class CardTemplate extends React.Component {
+    this.cardTemplate =  class CardTemplate extends React.Component {
+      componentDidMount() {
+        this.refs.classCard.ctx = ctx;
+        ctx.cards.push(this.refs.classCard);
+      }
+
       render() {
         const props = Object.assign({}, this.props);
         return (
           <ClassCard
             {...props}
-            calendar={calendar}
+            ref="classCard"
             updateCard={updateCard}
           />
         );
@@ -152,7 +165,6 @@ class WeflexCalendar extends React.Component {
   onAddCard(from, to, date) {
     const fromString = getFormatTime(from);
     const toString = getFormatTime(to);
-
     this.setCreateClassTemplate(fromString, toString, date);
     this.refs.newClassModal.show();
   }
@@ -166,14 +178,18 @@ class WeflexCalendar extends React.Component {
   handleHideModal() {
     this.refs.calendar.cancelCreateCard();
     if (this.newClassTemplate) {
-      this.newClassTemplate.setState({
-        isModalShow: false
-      });
+      this.newClassTemplate.isModalShow = false;
     }
   }
 
   render() {
     const cellHeight = getCellHeight();
+    if (this.state.newClassTemplate) {
+      var classTempalte = <this.state.newClassTemplate />;
+    } else {
+      classTempalte = null;
+    }
+
     return (
       <div>
         <Calendar
@@ -181,14 +197,14 @@ class WeflexCalendar extends React.Component {
           cellHeight={cellHeight}
           schedule={this.state.schedule}
           onAddCard={this.onAddCard.bind(this)}
-          cardTemplate={this.getCardTemplate()}
+          cardTemplate={this.cardTemplate}
         />
         <DropModal
           ref="newClassModal"
           contentStyle={{ padding: 10 }}
           onHide={this.handleHideModal.bind(this)}
         >
-          {this.state.newClassTemplate ? <this.state.newClassTemplate /> : <div></div>}
+        {classTempalte}
         </DropModal>
       </div>
     );
