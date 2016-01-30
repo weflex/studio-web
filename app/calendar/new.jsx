@@ -14,18 +14,19 @@ class NewClassTemplate extends React.Component {
       venues: [],
       trainers: [],
       loading: true,
-      isModalShow: true
     };
 
     this.newClass = {}
+    this.isModalShow = true;
   }
 
   async componentDidMount() {
-    console.log(this.state.isModalShow);
-    if (this.state.isModalShow !== false) {
+    const venues = await client.venue.list();
+    const trainers = await client.trainer.list();
+    if (this.isModalShow) {
       this.setState({
-        venues: await client.venue.list(),
-        trainers: await client.trainer.list(),
+        venues,
+        trainers,
         loading: false
       });
     }
