@@ -16,24 +16,61 @@ require('./index.css');
 
 function createViewWithBars (component) {
   return class Page extends React.Component {
-    componentDidMount () {
-      this.refs.toolbar.setTitle(
-        this.refs.main.title
-      );
-      this.refs.toolbar.refs.actions.updateActions(
-        this.refs.main.actions
-      );
+    constructor(props) {
+      super(props);
+      this.pageProps = Object.assign({
+        ref: 'main'
+      }, props);
+      this.state = {
+        page: null,
+        resource: null,
+        // resource states
+        width: 100,
+        isResourceShown: false
+      };
     }
-    render () {
-      const props = Object.assign({ref: 'main'}, this.props);
-      const main = React.createElement(component, props);
+    componentDidMount() {
+      const { title, actions, resource } = this.refs.main;
+      this.refs.toolbar.setTitle(title);
+      this.refs.toolbar.refs.actions.updateActions(actions);
+      this.refs.toolbar.refs.actions.setActivity(this);
+      this.setState({ resource });
+    }
+    render() {
+      const activity = React.createElement(component, this.pageProps);
+      const activityStyle = {
+        width: this.state.width + '%'
+      };
+      const resourceStyle = {
+        width: (100 - this.state.width) + '%'
+      };
       return (
         <div>
           <NavBar ref="navbar" />
           <ToolBar ref="toolbar" />
-          <div className="main">{main}</div>
+          <div className="main">
+            <div className="main-activity" style={activityStyle}>
+              {activity}
+            </div>
+            <div className="main-resource" style={resourceStyle}>
+              {this.state.resource}
+            </div>
+          </div>
         </div>
       );
+    }
+    toggleResource() {
+      if (!this.state.isResourceShown) {
+        this.setState({
+          width: 80,
+          isResourceShown: true
+        });
+      } else {
+        this.setState({
+          width: 100,
+          isResourceShown: false
+        });
+      }
     }
   };
 }

@@ -3,6 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ClassCard from './card';
 import Calendar from './calendar';
+import { Resource } from './components/resource';
 import { WeekPicker } from './components/week-picker';
 import { NewClassTemplate } from './new';
 import { DropModal } from 'boron';
@@ -30,9 +31,7 @@ class WeflexCalendar extends React.Component {
 
   get title() {
     return (
-      <WeekPicker
-        calendar={this.refs.calendar}
-      />
+      <WeekPicker calendar={this.refs.calendar} />
     );
   }
 
@@ -42,9 +41,14 @@ class WeflexCalendar extends React.Component {
         title: '添加课程'
       },
       {
-        title: '显示课程模版'
+        title: '显示课程模版',
+        onClick: 'resource.show'
       }
     ];
+  }
+
+  get resource() {
+    return <Resource calendar={this.refs.calendar} />;
   }
 
   async getClassData() {

@@ -179,22 +179,21 @@
   height: 100%;
 }
 
-
 .schedule-table .class-card {
   position: relative;
-  background-color: rgba(255, 179, 0, 0.28);
-  border-left: 2px solid #ff9632;
-  transition: background-color 0.3s linear;
   text-align: left;
-  font-family: sans-serif;
+  background-color: rgba(254,248,217,.5);
+  border: 1px solid rgba(238,64,3,.21);
   font-size: 12px;
+  font-family: 'PingFang SC', sans-serif;
   cursor: pointer;
   color: #555;
-  padding: 5px;
+  padding: 10px;
+  transition: background-color .3s ease-in-out;
   box-sizing: border-box;
 }
 
-.schedule-table .class-card p {
+.schedule-table .class-card span {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -226,12 +225,47 @@
 }
 
 .schedule-table .class-card:not(.resized):not(.moved):hover {
-  background-color: #ff9632;
-  color: #fff;
+  background-color: rgba(254,248,217,1);
 }
 
-.schedule-table .class-card p {
-  margin: 0px;
+.schedule-table .class-card .class-name {
+  font-size: 14px;
+  color: #D0021B;
+}
+
+.schedule-table .class-card .class-during {
+  font-size: 12px;
+  color: #FA021F;
+}
+
+.schedule-table .class-card .class-stats {
+  margin-top: 5px;
+}
+
+.schedule-table .class-card .class-stats > span {
+  display: inline-block;
+  height: 16px;
+  width: 16px;
+  margin: 0 5px 0 0;
+  padding: 1px;
+  border-radius: 3px;
+  color: #fff;
+  text-align: center;
+  font-size: 11px;
+  font-family: 'Open Sans', sans-serif;
+  box-sizing: border-box;
+}
+
+.schedule-table .class-card .class-stats-paid {
+  background-color: #80C7E8;
+}
+
+.schedule-table .class-card .class-stats-cancel {
+  background-color: #FF8AC2;
+}
+
+.schedule-table .class-card .class-stats-checkin {
+  background-color: #6ED4A4;
 }
 
 .schedule-table .create-card {

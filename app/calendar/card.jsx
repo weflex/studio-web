@@ -173,10 +173,10 @@ class ClassCard extends React.Component {
                         this.lastScrollOffset;
 
       const style = {
-          marginTop,
-          marginLeft,
-          height,
-          width
+        marginTop,
+        marginLeft,
+        height,
+        width
       };
       this.setState({
         newHourTime,
@@ -364,10 +364,17 @@ class ClassCard extends React.Component {
         onMouseUp={this.handleMouseUp.bind(this)}
         ref="card">
         <div className="top-dragger" ref="topDragger"></div>
-        <p className="class-duration" >
+        <div className="class-name">
+          {template.name}
+        </div>
+        <div className="class-duration" >
           {duration}
-        </p>
-        <p>{template.name}</p>
+        </div>
+        <div className="class-stats">
+          <span className="class-stats-paid">10</span>
+          <span className="class-stats-cancel">2</span>
+          <span className="class-stats-checkin">5</span>
+        </div>
         <div className="bottom-dragger" ref="bottomDragger"></div>
         <PopUp
           style={this.popUpStyle}
