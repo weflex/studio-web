@@ -7,13 +7,23 @@ require('./index.css');
 require('../layout/font.css');
 
 class NavItem extends React.Component {
+  get iconfont () {
+    return 'icon-font icon-' + this.props.icon;
+  }
   render () {
+    let activeMarker = null;
+    let activeClass = 'navitem';
+    if (location.pathname === this.props.location) {
+      activeMarker = <span className="active-marker"></span>;
+      activeClass += ' active';
+    }
     return (
-      <li>
+      <li className={activeClass}>
         <Link href={this.props.location}>
-          <span className={'icon-font icon-' + this.props.icon}></span>
+          <span className={this.iconfont}></span>
           <span className='ref-text'>{this.props.hint}</span>
         </Link>
+        {activeMarker}
       </li>
     );
   }
@@ -22,9 +32,9 @@ class NavItem extends React.Component {
 class DataItem extends React.Component {
   render () {
     const bgColors = {
-      signup:  '#ff8560',
-      cancel:  '#a489d6',
-      checkin: '#6bdfc2'
+      signup:  '#80C7E8',
+      cancel:  '#FF8AC2',
+      checkin: '#6ED4A4'
     };
     var backgroundColor = bgColors[this.props.type];
     return (
@@ -55,23 +65,23 @@ class NavBar extends React.Component {
   }
   render () {
     return (
-      <ul className='navbar'>
-        <li>
-          <div className='studio-name'>WeFlex</div>
-          <div className='username'>
+      <ul className="navbar">
+        <li className="stats">
+          <div className="studio-name">WeFlex</div>
+          <div className="username">
             {this.state.user.nickname} | <a href='/login'>登出</a>
           </div>
-          <DataItem value='8'  hint='课程登记' type='signup' />
-          <DataItem value='5'  hint='课程取消' type='cancel' />
-          <DataItem value='10' hint='课程签到' type='checkin' />
+          <DataItem value="8"  hint="今日课程报名" type="signup" />
+          <DataItem value="5"  hint="今日课程取消" type="cancel" />
+          <DataItem value="10" hint="今日课程签到" type="checkin" />
         </li>
-        <NavItem location='/calendar'        hint='课程日历'  icon='calendar' />
-        <NavItem location='/class/template'  hint='课程模板'  icon='star' />
-        <NavItem location='/class/package'   hint='卡种管理'  icon='heart' />
-        <NavItem location='/trainer'         hint='教练管理'  icon='database' />
-        <NavItem location='/membership'      hint='会员管理'  icon='user' />
-        <NavItem location='/order'           hint='订单管理'  icon='inbox' />
-        <NavItem location='/analytics'       hint='数据分析'  icon='light-bulb' />
+        <NavItem location="/calendar"         hint="课程日历"  icon="calendar" />
+        <NavItem location="/class/template"   hint="课程模板"  icon="star" />
+        <NavItem location="/class/package"    hint="卡种管理"  icon="heart" />
+        <NavItem location="/membership"       hint="用户管理"  icon="user" />
+        <NavItem location="/order"            hint="订单管理"  icon="inbox" />
+        <NavItem location="/settings"         hint="场馆设置"  icon="settings" />
+        <NavItem location="/docs"             hint="帮助文档"  icon="note" />
       </ul>
     );
   }
