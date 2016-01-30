@@ -127,6 +127,7 @@ class ClassCard extends React.Component {
     };
 
     this.cellHeight = cellHeight;
+    this.lastScrollOffset = 0;
   }
 
   createMoveHanler(hanlder) {
@@ -146,6 +147,7 @@ class ClassCard extends React.Component {
         isMove: true,
         fromDay: pointerDay,
       });
+      this.lastScrollOffset = this.props.calendar.state.scrollTop;
     });
 
     hammer.on('pan', (event) => {
@@ -158,13 +160,15 @@ class ClassCard extends React.Component {
       this.props.calendar.setState({ createCardStyle })
 
       const atCol = this.props.calendar.state.atCol;
-      const marginTop = this.style.marginTop + event.deltaY;
-      const marginLeft = this.style.marginLeft + event.deltaX;
       const col = this.props.calendar.colList[atCol];
       const height = this.style.height;
       const width = col.right - col.left;
       const hourOffset = -(this.state.timeToFrom / 60);
       const newHourTime = addTimeByHour(this.props.calendar.state.baselineClock, hourOffset);
+      const marginLeft = this.style.marginLeft + event.deltaX;
+      const marginTop = this.style.marginTop + event.deltaY +
+                        this.props.calendar.state.scrollTop -
+                        this.lastScrollOffset;
 
       const style = {
           marginTop,

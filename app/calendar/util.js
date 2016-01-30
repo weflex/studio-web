@@ -25,6 +25,31 @@ function getRoundTime(time) {
   return newTime;
 }
 
+function getRoundTime(time) {
+  const {minute} = time;
+  const newTime = Object.assign({}, time);
+  const res = minute % 10;
+  if (res >= 0 && res <= 2) {
+    newTime.minute = minute - res;
+  } else if (res >= 3 && res <= 7) {
+    newTime.minute = minute - res + 5;
+  } else if (res <= 8) {
+    newTime.minute =  minute - res + 10;
+  }
+
+  if (newTime.minute >= 60) {
+    newTime.minute = 0;
+    newTime.hour += 1;
+  }
+
+  if (newTime.hour >= 24) {
+    newTime.hour = 24;
+    newTime.minute = 0;
+  }
+
+  return newTime;
+}
+
 function getFormatTime(time) {
   let hour, minute;
 
