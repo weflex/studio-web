@@ -3,7 +3,7 @@ require('./index.css');
 
 import React from 'react';
 import {
-  BeatLoader
+  ClipLoader
 } from 'halogen';
 
 const _ = require('lodash');
@@ -41,7 +41,7 @@ class ListView extends React.Component {
     let contents;
     if (this.state.loading) {
       contents = (<div className="loader">
-        <BeatLoader color="#242f40" size="12px" />
+        <ClipLoader color="#242f40" size="14px" />
       </div>);
     } else {
       contents = listData.map((item, index) => {

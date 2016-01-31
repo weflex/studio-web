@@ -1,0 +1,68 @@
+.form {
+  padding: 5px;
+  font-size: 14px;
+  font-family: 'PingFang SC', 'Open Sans', sans-serif;
+}
+
+.form-row {
+  display: block;
+  margin: 5px 0;
+}
+
+.form-row > * {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.form-row > label {
+  width: 10%;
+  font-size: 12px;
+}
+
+.form-row > label .label-text {
+  display: inline-block;
+  width: 80%;
+}
+
+.form-row > label.required:after {
+  content: ' *';
+  color: red;
+}
+
+.form-row > label,
+.form-row > .form-row-hint {
+  margin-top: 4px;
+}
+
+.form-row-controls {
+  width: 50%;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.form-row-hint {
+  width: 40%;
+  color: #696969;
+  font-size: 12px;
+}
+
+/* TextInput */
+.form-input, 
+.form-select {
+  border: 1px solid #ebebeb;
+  border-radius: 4px;
+  padding: 5px;
+  outline: none;
+  height: 25px;
+  margin-right: 5px;
+  box-sizing: border-box;
+  transition: all .2s ease-in-out;
+}
+
+.form-input-multiline {
+  min-height: 150px;
+}
+
+.form-input:focus {
+  border: 1px solid #333;
+}

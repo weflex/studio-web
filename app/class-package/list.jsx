@@ -1,65 +1,86 @@
 "use strict";
 
-const React = require('react');
-// const GridList = require('material-ui/lib/grid-list/grid-list');
-// const GridTile = require('material-ui/lib/grid-list/grid-tile');
-// const SelectField = require('material-ui/lib/select-field');
-// const MenuItem = require('material-ui/lib/menus/menu-item');
-// const { Popover } = require('material-ui');
+import _ from 'lodash';
+import React from 'react';
+import { client } from '../api';
+import { ClipLoader } from 'halogen';
+import './list.css';
 
 class CardList extends React.Component {
   constructor(props) {
     super(props);
-    this.styles = {
-      header: {
-        padding: 10,
-        textAlign: 'center',
-        backgroundColor: '#f3f3f3'
-      },
-      title: {
-        fontSize: 18,
-      },
-      toolbar: {
-        position: 'relative',
-      },
-      orderBy: {
-        position: 'absolute',
-        right: 30
-      },
-      contents: {
-        padding: '0 30px',
-      },
-      subtitle: {
-        fontSize: 14,
-        fontWeight: 'normal',
-        margin: '20px 0',
-      }
-    };
     this.state = {
-      activePopover: 'none',
-      anchorEl: null,
+      loading: true,
+      sortKey: 'category',
+      data: [],
     };
   }
   get title() {
-    return '卡种管理'
+    return '我的会员卡';
   }
   get actions() {
     return [
       {
-        title: '创建新卡',
+        title: '添加新卡',
         path: '/class/package/add'
+      },
+      {
+        title: '管理会员卡'
       }
     ];
   }
-  showPopover(e) {
+  async componentWillMount() {
     this.setState({
-      activePopover: 'pop',
-      anchorEl: e.currentTarget,
+      data: await client.classPackage.list(),
+      loading: false
     });
+  }
+  renderGrid() {
+    if (this.state.loading) {
+      return (
+        <div className="class-package-loading">
+          <ClipLoader color="#242f40" size="14px" />
+          <p>正在加载资源</p>
+        </div>
+      );
+    }
+    const sets = _.groupBy(this.state.data, this.state.sortKey);
+    return Object.keys(sets).map((name) => {
+      return (
+        <div className="class-package-grid grid" key={name}>
+          <div className="grid-title">{name}</div>
+          <ul className="grid-items">
+            {sets[name].map((pkg, index) => {
+              return (
+                <li key={index} title={pkg.description}>
+                  <div className="class-package-name">{pkg.name}</div>
+                  <div className="class-package-price">￥{pkg.price}</div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      );
+    });
+  }
+  renderLoading() {
+    return (
+      <BeatLoader color="#242f40" size="12px" />
+    );
   }
   render() {
     return (
-      <div style={this.styles.container}>
+      <div className="class-package-container">
+        <div className="class-package-actions">
+          <select>
+            <option>按类型排序</option>
+            <option>按名称排序</option>
+            <option>按时间排序</option>
+          </select>
+        </div>
+        <div className="class-package-grids">
+          {this.renderGrid()}
+        </div>
       </div>
     );
   }
