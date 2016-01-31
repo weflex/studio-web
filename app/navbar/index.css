@@ -39,23 +39,42 @@
 .navbar li:first-child {
   padding-top: 15px;
 }
-.navbar .username * {
-  display: inline-block;
-  margin-right: 10px;
-  font-size: 12px;
-}
-.navbar .username a {
-  font-size: 12px;
-}
-.navbar .username a:hover {
-  text-decoration: underline;
-}
-
 .navbar .studio-name,
 .navbar .username {
   width: 100%;
-  text-align: left;
-  padding-left: 15px;
+  text-align: center;
+  font-size: 12px;
+  font-family: 'PingFang SC', 'Open Sans', sans-serif;
+}
+.navbar .useravatar {
+  text-align: center;
+  margin-top: 10px;
+}
+.navbar .useravatar img {
+  display: inline-block;
+  height: 60px;
+  width: 60px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: opacity .2s ease-in-out;
+}
+.navbar .useravatar img:hover {
+  opacity: 0.7;
+}
+.navbar .username a {
+  display: inline-block;
+  font-size: 12px;
+  font-family: 'PingFang SC', 'Open Sans', sans-serif;
+}
+.navbar .username > *:first-child:after {
+  content: '|';
+  margin: 0 7px;
+}
+.navbar .username > *:first-child > a {
+  color: #00E4FF;
+}
+.navbar .username a:hover {
+  text-decoration: underline;
 }
 
 .navbar .icon-font {

@@ -55,7 +55,8 @@ class NavBar extends React.Component {
     super();
     this.state = {
       user: {
-        nickname: '未登陆'
+        nickname: '未登陆',
+        avatarUrl: 'http://wx.qlogo.cn/mmopen/ajNVdqHZLLDfNbJqbWG9S38aGHQWa4Y6K7Nl3NOmBsSZId2tFs1Iqz7mjU3q1P9LghSuDE8fMYSqIib8533KTSA/0'
       }
     };
   }
@@ -68,8 +69,14 @@ class NavBar extends React.Component {
       <ul className="navbar">
         <li className="stats">
           <div className="studio-name">WeFlex</div>
+          <div className="useravatar">
+            <img src={this.state.user.avatarUrl} />
+          </div>
           <div className="username">
-            {this.state.user.nickname} | <a href='/login'>登出</a>
+            <span>
+              <a href="#">{this.state.user.nickname}</a>
+            </span>
+            <a href="/login">登出</a>
           </div>
           <DataItem value="8"  hint="今日课程报名" type="signup" />
           <DataItem value="5"  hint="今日课程取消" type="cancel" />
