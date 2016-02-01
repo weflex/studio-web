@@ -66,3 +66,30 @@
 .form-input:focus {
   border: 1px solid #333;
 }
+
+/* TextButton */
+.form-btn {
+  display: inline-block;
+  height: 30px;
+  border: 1px solid #EBEBEB;
+  border-radius: 4px;
+  padding: 0 10px;
+  color: #7e7e7e;
+  font-size: 12px;
+  font-family: 'PingFang SC', 'Open Sans', sans-serif;
+  background-color: #fff;
+  cursor: pointer;
+  transition: all .3s ease-in-out;
+  box-sizing: border-box;
+}
+.form-btn.disabled {
+  border-color: #eee;
+  color: #eee;
+  cursor: no-drop;
+}
+.form-btn:not(.disabled):hover {
+  color: #fff;
+  border-color: #70CCA1;
+  background-color: #70CCA1;
+}
+

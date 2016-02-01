@@ -1,10 +1,11 @@
 "use strict";
 
 import React from 'react';
+import { BindingComponent } from 'react-binding-component';
 import './form.css';
 import './detail.css';
 
-class TextInput extends React.Component {
+class TextInput extends BindingComponent {
   constructor(props) {
     super(props);
   }
@@ -22,7 +23,9 @@ class TextInput extends React.Component {
       return (
         <textarea className={classNames.join(' ')} 
           style={styles}
-          placeholder={this.props.placeholder}>
+          placeholder={this.props.placeholder}
+          onChange={this.onChange.bind(this)}>
+          {this.bindStateValue}
         </textarea>
       );
     } else {
@@ -30,6 +33,8 @@ class TextInput extends React.Component {
         <input type="text"
           className={classNames.join(' ')}
           style={styles}
+          value={this.bindStateValue}
+          onChange={this.onChange.bind(this)}
           placeholder={this.props.placeholder}
         />
       );
@@ -37,16 +42,32 @@ class TextInput extends React.Component {
   }
 }
 
-class OptionsPicker extends React.Component {
+class TextButton extends React.Component {
   constructor(props) {
     super(props);
   }
-  onChange(event) {
-    if (this.props.stateCtx
-      && this.props.stateName) {
-      this.props.stateCtx.setState({
-        [this.props.stateName]: event.target.value
-      })
+  render() {
+    let className = 'form-btn';
+    if (this.props.disabled) {
+      className += ' disabled';
+    }
+    return (
+      <button className={className}
+        onClick={this.props.onClick}
+        disabled={this.props.disabled}>
+        {this.props.text}
+      </button>
+    );
+  }
+}
+
+class OptionsPicker extends BindingComponent {
+  constructor(props) {
+    super(props);
+  }
+  componentDidMount() {
+    if (!this.bindStateValue) {
+      this.bindStateValue = this.props.options[0].value;
     }
   }
   render() {
@@ -59,6 +80,7 @@ class OptionsPicker extends React.Component {
     return (
       <select className="form-select" 
         style={styles}
+        value={this.bindStateValue}
         onChange={this.onChange.bind(this)}>
         {(this.props.options || []).map((item, index) => {
           return <option key={index} value={item.value}>{item.text}</option>;
@@ -135,7 +157,10 @@ class CardDetail extends React.Component {
     super(props);
     this.state = {
       name: null,
-      accessType: null
+      accessType: null,
+      lifetime: {
+        value: null,
+      }
     };
   }
 
@@ -146,13 +171,32 @@ class CardDetail extends React.Component {
   get actions() {
     return [];
   }
+  get disabled() {
+    if (!this.state.name) {
+      return true;
+    }
+    if (!this.state.lifetime.value) {
+      return true;
+    }
+    if (!this.state.price) {
+      return true;
+    }
+    return false;
+  }
+  onsubmit() {
+    console.log(this.state);
+  }
   form() {
     return [
       // name
       <div className="form-row">
         <Label required={true} text="名称" />
         <div className="form-row-controls">
-          <TextInput data={this.state.name} />
+          <TextInput 
+            bindStateCtx={this} 
+            bindStateName="name"
+            bindStateType={String}
+          />
         </div>
         <HintText text="请给您的卡取个简单易懂的名字" />
       </div>,
@@ -161,7 +205,8 @@ class CardDetail extends React.Component {
         <Label required={true} text="次数选择" />
         <div className="form-row-controls">
           <OptionsPicker
-            data={this.state.accessType}
+            bindStateCtx={this} 
+            bindStateName="accessType"
             options={[
               {text: '多次卡', value: 'multiple'},
               {text: '无限次', value: 'unlimited'}
@@ -174,14 +219,20 @@ class CardDetail extends React.Component {
       <div className="form-row">
         <Label required={true} text="有效期" />
         <div className="form-row-controls">
-          <TextInput flex={0.5} />
+          <TextInput 
+            flex={0.5}
+            bindStateCtx={this}
+            bindStateType={Number}
+            bindStateName="lifetime.value"
+          />
           <OptionsPicker 
             flex={0.5}
-            data={this.state.lifetime}
+            bindStateCtx={this}
+            bindStateName="lifetime.scale"
             options={[
               {text: '天', value: 'day'},
-              {text: '周', value: 'week'},
-              {text: '月', value: 'month'}
+              {text: '月', value: 'month'},
+              {text: '年', value: 'year'},
             ]}
           />
         </div>
@@ -189,17 +240,23 @@ class CardDetail extends React.Component {
       </div>,
       // price and price type
       <div className="form-row">
-        <Label required={true} text="价格类别" />
+        <Label required={true} text="价格" />
         <div className="form-row-controls">
-          <PriceControl />
+          <TextInput 
+            bindStateCtx={this}
+            bindStateType={Number} 
+            bindStateName="price" 
+          />
         </div>
-        <HintText text="如果针对不同类型的客人有不同价格，可以在这里选择\n\n描述客人类型（比如会员，非会员）和价格" />
+        <HintText text="课程价格" />
       </div>,
       // delay
       <div className="form-row">
         <Label required={true} text="延期次数" />
         <div className="form-row-controls">
           <OptionsPicker 
+            bindStateCtx={this}
+            bindStateName="extensible"
             options={[
               {text: '不能延期', value: 0},
               {text: '可1次', value: 1},
@@ -213,9 +270,13 @@ class CardDetail extends React.Component {
       </div>,
       // description
       <div className="form-row">
-        <Label required={true} text="描述" />
+        <Label required={false} text="描述" />
         <div className="form-row-controls">
-          <TextInput multiline={true} />
+          <TextInput 
+            bindStateCtx={this}
+            bindStateName="description"
+            multiline={true} 
+          />
         </div>
         <HintText text="您可以在这里添加更多关于该卡的信息" />
       </div>,
@@ -224,6 +285,8 @@ class CardDetail extends React.Component {
         <Label required={true} text="所属种类" />
         <div className="form-row-controls">
           <OptionsPicker 
+            bindStateCtx={this}
+            bindStateName="category"
             options={[
               {text: '年卡', value: '年卡'},
               {text: '次卡', value: '次卡'},
@@ -231,6 +294,15 @@ class CardDetail extends React.Component {
           />
         </div>
         <HintText text="您可以为这张卡和其他您创建过的卡整理归类。只支持单选，可以删除预定义的类别" />
+      </div>,
+      // submit button
+      <div classNames="form-row">
+        <div classNames="form-row-controls">
+          <TextButton text="确认添加" 
+            onClick={this.onsubmit.bind(this)} 
+            disabled={this.disabled}
+          />
+        </div>
       </div>
     ];
   }

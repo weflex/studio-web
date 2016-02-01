@@ -15,6 +15,7 @@
     "object-assign": "4.0.1",
     "qrcode.react": "0.5.2",
     "react": "0.14.3",
+    "react-binding-component": "^1.0.1",
     "react-dom": "0.14.3",
     "react-router-component": "0.28.0",
     "react-touchable-tabular": "^1.2.5",
