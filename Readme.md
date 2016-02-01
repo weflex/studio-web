@@ -1,10 +1,12 @@
-# WeFlex Admin
+# Studio-Web
 
-The desktop(HD) application for WeFlex Admin based on Web and the following stacks:
+The desktop(HD) application for Studio based on Web and the following stacks:
 
 - React
-- Browserify and Makefile to build apps
+- Webpack and Makefile to build apps
 - Heroku to deploy for demo
+
+![v1.0](./history/v1.0.png)
 
 ## Build
 
