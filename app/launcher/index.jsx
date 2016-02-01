@@ -30,7 +30,7 @@ class LaunchScreen extends React.Component {
     await client.org.getCurrent();
     clearInterval(this.inteval);
     this.setState({
-      hint: '完成(3/3)',
+      hint: '正在完成(3/3)',
       count: 0
     });
     setTimeout(this.props.onFinish, 800);
