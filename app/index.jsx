@@ -3,15 +3,12 @@
 import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {
-  Location, Locations
-} from 'react-router-component';
+import { Location, Locations } from 'react-router-component';
+import { LaunchScreen } from './views/launcher';
 
-import { LaunchScreen } from './launcher';
-
-const NavBar = require('./navbar');
-const ToolBar = require('./toolbar');
-const Order = require('./order');
+const NavBar = require('./components/navbar');
+const ToolBar = require('./components/toolbar');
+const Order = require('./views/order');
 
 import './layout/root.css';
 import './index.css';
@@ -103,19 +100,21 @@ class App extends React.Component {
         <Location path="/order"
           handler={OrderListView} />
         <Location path="/calendar"
-          handler={createViewWithBars(require('./calendar'))} />
+          handler={createViewWithBars(require('./views/calendar'))} />
         <Location path="/class/template" 
-          handler={createViewWithBars(require('./class-template/list'))} />
+          handler={createViewWithBars(require('./views/class-template/list'))} />
         <Location path="/class/template/add"
-          handler={createViewWithBars(require('./class-template/detail'))} />
+          handler={createViewWithBars(require('./views/class-template/detail'))} />
         <Location path="/class/package"
-          handler={createViewWithBars(require('./class-package/list'))} />
+          handler={createViewWithBars(require('./views/class-package/list'))} />
         <Location path="/class/package/add"
-          handler={createViewWithBars(require('./class-package/detail'))} />
+          handler={createViewWithBars(require('./views/class-package/detail'))} />
         <Location path="/trainer"
-          handler={createViewWithBars(require('./trainer/list'))} />
+          handler={createViewWithBars(require('./views/trainer/list'))} />
         <Location path="/membership"
-          handler={createViewWithBars(require('./membership/list'))} />
+          handler={createViewWithBars(require('./views/membership/list'))} />
+        <Location path="/venue/settings"
+          handler={createViewWithBars(require('./views/venue/settings'))} />
       </Locations>
     );
   }

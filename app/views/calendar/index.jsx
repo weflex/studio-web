@@ -13,7 +13,7 @@ import {
   getFormatTime,
 } from './util.js';
 
-import '../layout/font.css';
+import '../../layout/font.css';
 import './index.css';
 
 const client = require('@weflex/gian').getClient('dev');
@@ -38,10 +38,13 @@ class WeflexCalendar extends React.Component {
   get actions() {
     return [
       {
-        title: '添加课程'
+        title: '管理课程',
+        onClick: () => {
+          console.log('start to manage classes');
+        }
       },
       {
-        title: '显示课程模版',
+        title: '添加课程',
         onClick: 'resource.show'
       }
     ];

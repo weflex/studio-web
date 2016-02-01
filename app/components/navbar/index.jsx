@@ -6,7 +6,7 @@ const gian = require('@weflex/gian');
 const client = require('@weflex/gian').getClient('dev');
 
 require('./index.css');
-require('../layout/font.css');
+require('../../layout/font.css');
 
 class NavItem extends React.Component {
   get iconfont () {
@@ -95,7 +95,7 @@ class NavBar extends React.Component {
         <NavItem location="/class/package"    hint="卡种管理"  icon="heart" />
         <NavItem location="/membership"       hint="用户管理"  icon="user" />
         <NavItem location="/order"            hint="订单管理"  icon="inbox" />
-        <NavItem location="/settings"         hint="场馆设置"  icon="settings" />
+        <NavItem location="/venue/settings"   hint="场馆设置"  icon="settings" />
         <NavItem location="/docs"             hint="帮助文档"  icon="note" />
       </ul>
     );

@@ -1,13 +1,15 @@
 "use strict";
 
-require('babel-polyfill');
-const React = require('react');
-const ReactDOM = require('react-dom');
-const QRCode = require('qrcode.react');
+import 'babel-polyfill';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import QRCode from 'qrcode.react';
+import { WeChatProvider } from '@weflex/passport.js';
+import './index.css';
+
 const client = require('@weflex/gian').getClient('dev', {
   onAuthFail: () => {}
 });
-const { WeChatProvider } = require('@weflex/passport.js');
 const wechat = new WeChatProvider({
   appid: 'wx1ba55acac2fd5884',
   secret: '57cb056bcfe74dba0920237345c08c62',
@@ -15,8 +17,6 @@ const wechat = new WeChatProvider({
   redirectUri: encodeURIComponent(
     'http://api.theweflex.com/auth/wechat/callback')
 });
-
-require('./index.css');
 
 class Login extends React.Component {
   constructor(props) {

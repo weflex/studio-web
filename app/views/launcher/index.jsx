@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { ClipLoader } from 'halogen';
-import { client } from '../api';
+import { client } from '../../api';
 import './index.css';
 
 class LaunchScreen extends React.Component {

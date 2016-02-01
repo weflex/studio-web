@@ -1,14 +1,10 @@
 "use strict";
 
 import React from 'react';
-import ListView from '../list-view';
+import ListView from '../../components/list-view';
 import QRCode from 'qrcode.react';
-import {
-  DropModal
-} from 'boron';
-import {
-  SearchInput
-} from '../toolbar/components/search';
+import { DropModal } from 'boron';
+import { SearchInput } from '../../components/toolbar/components/search';
 
 const moment = require('moment');
 const client = require('@weflex/gian').getClient('dev');

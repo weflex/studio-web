@@ -1,7 +1,7 @@
 "use strict";
 
 import React from 'react';
-import { client } from '../api';
+import { client } from '../../api';
 import {
   Form,
   Row,
@@ -10,7 +10,7 @@ import {
   Label,
   HintText,
   OptionsPicker
-} from '../form';
+} from '../../components/form';
 import './detail.css';
 
 class CardDetail extends React.Component {

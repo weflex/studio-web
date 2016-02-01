@@ -10,7 +10,7 @@ import {
   Label,
   HintText,
   OptionsPicker
-} from '../form';
+} from '../../components/form';
 import './detail.css';
 
 const client = require('@weflex/gian').getClient('dev');

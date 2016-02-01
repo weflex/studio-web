@@ -1,10 +1,10 @@
 "use strict";
 
 import React from 'react';
-import ListView from '../list-view';
+import ListView from '../../components/list-view';
 import moment from 'moment';
 import { DropModal } from 'boron';
-import { SearchInput } from '../toolbar/components/search';
+import { SearchInput } from '../../components/toolbar/components/search';
 
 const client = require('@weflex/gian').getClient('dev');
 moment.locale('zh-cn');
