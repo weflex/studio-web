@@ -165,41 +165,41 @@ class HintText extends React.Component {
   }
 }
 
-class PriceControl extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      type: 1,
-      prices: []
-    };
-  }
-  render() {
-    return (
-      <div className="price-control">
-        <div className="price-select">
-          <OptionsPicker
-            stateCtx={this}
-            stateName="type"
-            options={[
-              {text: '1种价格', value: 1},
-              {text: '2种价格', value: 2},
-            ]}
-          />
-        </div>
-        <ul className="price-prices">
-          {_.range(1, Number(this.state.type) + 1).map((item, index) => {
-            return (
-              <li key={index}>
-                <TextInput flex={0.7} placeholder="价格名称" />
-                <TextInput flex={0.3} placeholder="价格" />
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    )
-  }
-}
+// class PriceControl extends React.Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       type: 1,
+//       prices: []
+//     };
+//   }
+//   render() {
+//     return (
+//       <div className="price-control">
+//         <div className="price-select">
+//           <OptionsPicker
+//             stateCtx={this}
+//             stateName="type"
+//             options={[
+//               {text: '1种价格', value: 1},
+//               {text: '2种价格', value: 2},
+//             ]}
+//           />
+//         </div>
+//         <ul className="price-prices">
+//           {_.range(1, Number(this.state.type) + 1).map((item, index) => {
+//             return (
+//               <li key={index}>
+//                 <TextInput flex={0.7} placeholder="价格名称" />
+//                 <TextInput flex={0.3} placeholder="价格" />
+//               </li>
+//             );
+//           })}
+//         </ul>
+//       </div>
+//     )
+//   }
+// }
 
 exports.Form = Form;
 exports.Row = Row;
@@ -208,5 +208,3 @@ exports.HintText = HintText;
 exports.TextInput = TextInput;
 exports.TextButton = TextButton;
 exports.OptionsPicker = OptionsPicker;
-
-
