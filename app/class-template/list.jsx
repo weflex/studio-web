@@ -2,17 +2,10 @@
 
 import React from 'react';
 import ListView from '../list-view';
-import {
-  DropModal
-} from 'boron';
-import {
-  SearchInput
-} from '../toolbar/components/search';
-import {
-  NewClassTemplate
-} from './new';
+import moment from 'moment';
+import { DropModal } from 'boron';
+import { SearchInput } from '../toolbar/components/search';
 
-const moment = require('moment');
 const client = require('@weflex/gian').getClient('dev');
 moment.locale('zh-cn');
 
@@ -50,9 +43,7 @@ class ClassTemplateList extends React.Component {
     return [
       {
         title: '新的课程模版',
-        onClick: () => {
-          this.refs.newClassTemplateModal.show();
-        }
+        path: '/class/template/add'
       }
     ];
   }
@@ -105,11 +96,6 @@ class ClassTemplateList extends React.Component {
           renderView={this.renderView}
           rows={this.rows} 
         />
-        <DropModal ref="newClassTemplateModal" contentStyle={{
-          padding: 10
-        }}>
-          <NewClassTemplate />
-        </DropModal>
       </div>
     );
   }

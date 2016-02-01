@@ -106,6 +106,8 @@ class App extends React.Component {
           handler={createViewWithBars(require('./calendar'))} />
         <Location path="/class/template" 
           handler={createViewWithBars(require('./class-template/list'))} />
+        <Location path="/class/template/add"
+          handler={createViewWithBars(require('./class-template/detail'))} />
         <Location path="/class/package"
           handler={createViewWithBars(require('./class-package/list'))} />
         <Location path="/class/package/add"
