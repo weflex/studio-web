@@ -12,7 +12,7 @@ import {
   OptionsPicker
 } from '../../components/form';
 import { client } from '../../api';
-import './index.css';
+import './settings.css';
 
 class Settings extends React.Component {
   constructor(props) {
