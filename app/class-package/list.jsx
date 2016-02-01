@@ -6,7 +6,7 @@ import { client } from '../api';
 import { ClipLoader } from 'halogen';
 import './list.css';
 
-class CardList extends React.Component {
+class ClassPackageList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -40,7 +40,7 @@ class CardList extends React.Component {
       return (
         <div className="class-package-loading">
           <ClipLoader color="#242f40" size="14px" />
-          <p>正在加载资源</p>
+          <p>正在加载会员卡...</p>
         </div>
       );
     }
@@ -86,4 +86,4 @@ class CardList extends React.Component {
   }
 }
 
-module.exports = CardList;
+module.exports = ClassPackageList;

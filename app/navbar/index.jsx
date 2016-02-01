@@ -15,7 +15,8 @@ class NavItem extends React.Component {
   render () {
     let activeMarker = null;
     let activeClass = 'navitem';
-    if (location.pathname === this.props.location) {
+    // check if prefixed with props.location
+    if (location.pathname.search(this.props.location) === 0) {
       activeMarker = <span className="active-marker"></span>;
       activeClass += ' active';
     }

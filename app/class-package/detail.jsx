@@ -179,11 +179,9 @@ class CardDetail extends React.Component {
       }
     };
   }
-
   get title() {
     return '添加新会员卡';
   }
-
   get actions() {
     return [];
   }
