@@ -8,7 +8,6 @@ import {
 } from 'react-router-component';
 
 import { LaunchScreen } from './launcher';
-import { client } from './api';
 
 const NavBar = require('./navbar');
 const ToolBar = require('./toolbar');
@@ -85,14 +84,16 @@ class App extends React.Component {
       pending: true
     };
   }
-  async componentDidMount() {
-    await client.user.getCurrent();
-    await client.org.getCurrent();
+  onLauncherFinish() {
     this.setState({pending: false});
   }
   render() {
     if (this.state.pending) {
-      return <LaunchScreen />;
+      return (
+        <LaunchScreen 
+          onFinish={this.onLauncherFinish.bind(this)}
+        />
+      );
     }
     const OrderListView = createViewWithBars(Order.List);
     return (

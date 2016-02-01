@@ -3,3 +3,7 @@
   width: 100%;
   text-align: center;
 }
+.launch-screen-container p {
+  font-size: 12px;
+  font-family: 'PingFang SC', 'Open Sans', sans-serif;
+}

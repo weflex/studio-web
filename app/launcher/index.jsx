@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { ClipLoader } from 'halogen';
+import { client } from '../api';
 import './index.css';
 
 class LaunchScreen extends React.Component {
@@ -9,17 +10,32 @@ class LaunchScreen extends React.Component {
     super(props);
     this.state = {
       height: window.innerHeight,
+      hint: '准备加载资源(0/3)',
       count: 1
     };
   }
-  componentDidMount() {
-    this.inteval = setInterval(this.countUp.bind(this), 500);
+  async componentDidMount() {
+    this.inteval = setInterval(this.countUp.bind(this), 1000);
     window.onresize = () => {
       this.setState({height: window.innerHeight});
     };
+    //
+    this.setState({
+      hint: '正在加载用户信息(1/3)'
+    });
+    await client.user.getCurrent();
+    this.setState({
+      hint: '正在加载场馆信息(2/3)'
+    });
+    await client.org.getCurrent();
+    clearInterval(this.inteval);
+    this.setState({
+      hint: '完成(3/3)',
+      count: 0
+    });
+    setTimeout(this.props.onFinish, 800);
   }
   componentWillUnmount() {
-    clearInterval(this.inteval);
     window.onresize = null;
   }
   countUp() {
@@ -39,7 +55,7 @@ class LaunchScreen extends React.Component {
     return (
       <div className="launch-screen-container" style={{height: this.state.height}}>
         <ClipLoader color="#696969" size="14" />
-        <p>正在加载资源{countDots}</p>
+        <p>{this.state.hint} {countDots}</p>
       </div>
     );
   }
