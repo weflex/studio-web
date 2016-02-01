@@ -1,3 +1,5 @@
+"use strict";
+
 const React = require('react');
 const Link = require('react-router-component').Link;
 const gian = require('@weflex/gian');
@@ -57,18 +59,23 @@ class NavBar extends React.Component {
       user: {
         nickname: '未登陆',
         avatarUrl: 'http://wx.qlogo.cn/mmopen/ajNVdqHZLLDfNbJqbWG9S38aGHQWa4Y6K7Nl3NOmBsSZId2tFs1Iqz7mjU3q1P9LghSuDE8fMYSqIib8533KTSA/0'
+      },
+      venue: {
+        name: '加载中...'
       }
     };
   }
-  async componentDidMount () {
-    var user = await client.user.getCurrent();
-    this.setState({user});
+  async componentWillMount () {
+    const user = await client.user.getCurrent();
+    const venue = await client.org.getSelectedVenue();
+    console.log(user, venue);
+    this.setState({user, venue});
   }
   render () {
     return (
       <ul className="navbar">
         <li className="stats">
-          <div className="studio-name">WeFlex</div>
+          <div className="studio-name">{this.state.venue.name}</div>
           <div className="useravatar">
             <img src={this.state.user.avatarUrl} />
           </div>

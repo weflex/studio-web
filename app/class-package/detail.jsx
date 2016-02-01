@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { BindingComponent } from 'react-binding-component';
+import { client } from '../api';
 import './form.css';
 import './detail.css';
 
@@ -45,16 +46,31 @@ class TextInput extends BindingComponent {
 class TextButton extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      disabled: false,
+    };
+  }
+  async onClick(event) {
+    this.setState({
+      disabled: true
+    });
+    if (typeof this.props.onClick === 'function') {
+      await this.props.onClick(event);
+    }
+    this.setState({
+      disabled: false
+    });
   }
   render() {
     let className = 'form-btn';
-    if (this.props.disabled) {
+    let disabled = this.props.disabled || this.state.disabled;
+    if (disabled) {
       className += ' disabled';
     }
     return (
       <button className={className}
-        onClick={this.props.onClick}
-        disabled={this.props.disabled}>
+        onClick={this.onClick.bind(this)}
+        disabled={disabled}>
         {this.props.text}
       </button>
     );
@@ -183,8 +199,12 @@ class CardDetail extends React.Component {
     }
     return false;
   }
-  onsubmit() {
-    console.log(this.state);
+  async onsubmit(event) {
+    try {
+      await client.classPackage.create(this.state);
+    } catch (err) {
+      console.error(err && err.stack);
+    }
   }
   form() {
     return [

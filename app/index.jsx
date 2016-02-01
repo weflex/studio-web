@@ -1,18 +1,21 @@
-'use strict';
-require('babel-polyfill');
-const React = require('react');
-const ReactDOM = require('react-dom');
-const {
-  Locations,
-  Location
-} = require('react-router-component');
+"use strict";
+
+import 'babel-polyfill';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import {
+  Location, Locations
+} from 'react-router-component';
+
+import { LaunchScreen } from './launcher';
+import { client } from './api';
 
 const NavBar = require('./navbar');
 const ToolBar = require('./toolbar');
 const Order = require('./order');
 
-require('./layout/root.css');
-require('./index.css');
+import './layout/root.css';
+import './index.css';
 
 function createViewWithBars (component) {
   return class Page extends React.Component {
@@ -76,7 +79,21 @@ function createViewWithBars (component) {
 }
 
 class App extends React.Component {
-  render () {
+  constructor(props) {
+    super(props);
+    this.state = {
+      pending: true
+    };
+  }
+  async componentDidMount() {
+    await client.user.getCurrent();
+    await client.org.getCurrent();
+    this.setState({pending: false});
+  }
+  render() {
+    if (this.state.pending) {
+      return <LaunchScreen />;
+    }
     const OrderListView = createViewWithBars(Order.List);
     return (
       <Locations>
