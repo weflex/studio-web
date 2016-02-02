@@ -120,7 +120,7 @@ class WeflexCalendar extends React.Component {
     ctx.cards = [];
     ctx.calendar.ctx = ctx;
 
-    this.cardTemplate =  class CardTemplate extends React.Component {
+    this.cardTemplate = class CardTemplate extends React.Component {
       componentDidMount() {
         this.refs.classCard.ctx = ctx;
         ctx.cards.push(this.refs.classCard);

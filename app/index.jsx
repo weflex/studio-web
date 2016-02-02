@@ -41,6 +41,7 @@ function createViewWithBars (component) {
         width: this.state.width + '%'
       };
       const resourceStyle = {
+        display: this.state.isResourceShown ? 'inline-block' : 'none',
         width: (100 - this.state.width) + '%'
       };
       return (
@@ -61,7 +62,7 @@ function createViewWithBars (component) {
     toggleResource() {
       if (!this.state.isResourceShown) {
         this.setState({
-          width: 80,
+          width: 85,
           isResourceShown: true
         });
       } else {

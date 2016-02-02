@@ -27,7 +27,6 @@ body {
 }
 .main-activity {
   width: 100%;
-  min-width: 980px;
   transition: all .2s ease-in-out;
 }
 .main-resource {

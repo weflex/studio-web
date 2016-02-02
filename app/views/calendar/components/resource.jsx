@@ -1,6 +1,7 @@
 "use strict";
 
 import React from 'react';
+import Hammer from 'hammerjs';
 import moment from 'moment';
 import './resource.css';
 
@@ -13,11 +14,20 @@ class Resource extends React.Component {
       templates: []
     };
   }
-  async componentDidMount() {
+  async componentWillMount() {
     this.setState({
       templates: await client.classTemplate.list({
         include: 'trainer'
       })
+    });
+  }
+  addMoveHandler(node) {
+    if (!node) {
+      return;
+    }
+    const moveHandler = new Hammer(node);
+    moveHandler.on('pan', event => {
+      console.log(event);
     });
   }
   render() {
@@ -34,7 +44,7 @@ class Resource extends React.Component {
                 <div>{item.name}</div>
                 <div>{'时长1小时'}</div>
                 <div>{item.trainer.fullname.first}</div>
-                <div className="resource-calendar-template-hint">
+                <div className="resource-calendar-template-hint" ref={this.addMoveHandler}>
                   <div className="icon-font icon-attach"></div>
                   <div className="hint-text">拖动模版创建课程</div>
                 </div>
@@ -46,9 +56,5 @@ class Resource extends React.Component {
     );
   }
 }
-
-Resource.propTypes = {
-  
-};
 
 exports.Resource = Resource;

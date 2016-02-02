@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import moment from 'moment';
 import Hammer from 'hammerjs';
+import moment from 'moment';
 import {
   getWeek,
   getRange,
@@ -337,7 +337,7 @@ class Calendar extends React.Component {
       };
 
       this.setState({ createCardStyle });
-    })
+    });
 
     // Hammerjs will trigger both handler while elements are overlap 
     // and listen same event, so need to judge cards is dragging.
@@ -458,6 +458,6 @@ Calendar.propTypes = {
   schedule: React.PropTypes.object,
   cellHeight: React.PropTypes.number,
   onAddCard: React.PropTypes.func,
-}
+};
 
 module.exports = Calendar;
