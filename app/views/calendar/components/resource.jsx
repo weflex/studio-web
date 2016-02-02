@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Hammer from 'hammerjs';
+import { Link } from 'react-router-component';
 import moment from 'moment';
 import './resource.css';
 
@@ -34,8 +35,8 @@ class Resource extends React.Component {
     return (
       <div className="resource-calendar">
         <div className="resource-calendar-links">
-          <a>添加模版</a>
-          <a>管理模版</a>
+          <Link href="/class/template/add">添加模版</Link>
+          <Link href="/class/template">管理模版</Link>
         </div>
         <ul className="resource-calendar-templates">
           {this.state.templates.map((item, index) => {
