@@ -16,21 +16,16 @@ class Form extends React.Component {
 
 class Row extends React.Component {
   render() {
-    let label, hint;
-    if (this.props.name) {
-      label = (
-        <Label 
-          required={this.props.required} 
-          text={this.props.name} 
-        />
-      );
-    }
+    let hint = null;
     if (this.props.hint) {
       hint = <HintText text={this.props.hint} />;
     }
     return (
       <div className="form-row">
-        {label}
+        <Label 
+          required={this.props.required} 
+          text={this.props.name} 
+        />
         <div className="form-row-controls">
           {this.props.children}
         </div>
