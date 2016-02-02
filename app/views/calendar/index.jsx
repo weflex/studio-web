@@ -208,7 +208,8 @@ class WeflexCalendar extends React.Component {
         />
         <DropModal
           ref="newClassModal"
-          contentStyle={{ padding: 10 }}
+          modalStyle={{width: 700}}
+          contentStyle={{padding: 10}}
           onHide={this.handleHideModal.bind(this)}
         >
         {classTempalte}

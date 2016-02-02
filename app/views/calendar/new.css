@@ -1,63 +1,20 @@
-.class-template-loading {
+.class-new-loading {
   text-align: center;
   padding: 30px 0px;
 }
 
-.class-template-loading p {
+.class-new-loading p {
   margin-top: 10px;
   font-size: 14px;
   font-family: monospace;
   color: #555;
 }
 
-.class-template-new-container {
+.class-new-container {
   padding: 20px;
 }
 
-.class-template-new-container h1 {
+.class-new-container h1 {
   font-size: 18px;
   border-bottom: 1px solid #e8e8e8;
-}
-
-.class-template-fieldset {
-  display: block;
-  margin: 5px 0;
-}
-
-.class-template-fieldset > * {
-  display: inline-block;
-}
-
-.class-template-fieldset > label {
-  width: 30%;
-  font-size: 13px;
-}
-
-.class-template-fieldset-center {
-  text-align: center;
-}
-
-.class-template-new-form {
-  margin: 20px 0;
-}
-
-.class-template-new-form input, 
-.class-template-new-form select {
-  display: inline-block;
-  padding: 5px;
-  width: 65%;
-}
-
-.class-template-footer button {
-  padding: 10px;
-  cursor: pointer;
-  font-size: 14px;
-  width: 100%;
-  background-color: #242f40;
-  color: #fff;
-  transition: opacity .3s ease-in-out;
-}
-
-.class-template-footer button:hover {
-  opacity: 0.8;
 }

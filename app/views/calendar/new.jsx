@@ -1,9 +1,16 @@
 "use strict";
 
 import React from 'react';
+import { ClipLoader } from 'halogen';
 import {
-  BeatLoader
-} from 'halogen';
+  Form,
+  Row,
+  TextInput,
+  TextButton,
+  Label,
+  HintText,
+  OptionsPicker
+} from '../../components/form';
 import './new.css';
 const client = require('@weflex/gian').getClient('dev');
 
@@ -11,21 +18,18 @@ class NewClassTemplate extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      venues: [],
       trainers: [],
       loading: true,
+      formData: {}
     };
-
     this.newClass = {}
     this.isModalShow = true;
   }
 
   async componentDidMount() {
-    const venues = await client.venue.list();
     const trainers = await client.trainer.list();
     if (this.isModalShow) {
       this.setState({
-        venues,
         trainers,
         loading: false
       });
@@ -41,64 +45,68 @@ class NewClassTemplate extends React.Component {
     if (this.state.loading) {
       return (
         <div className="class-template-loading">
-          <BeatLoader color="#777" />
+          <ClipLoader color="#777" />
           <p>正在载入资源</p>
         </div>
       );
     }
     return (
-      <div className="class-template-new-container">
-        <h1>新建课程</h1>
-        <div className="class-template-new-form">
-          <div className="class-template-fieldset">
-            <label>课程名</label>
-            <input type="text" />
-          </div>
-          <div className="class-template-fieldset">
-            <label>定价</label>
-            <input type="text" />
-          </div>
-          <div className="class-template-fieldset">
-            <label>选择工作室</label>
-            <select>
-              {this.state.venues.map((venue, index) => {
-                return <option key={index}>{venue.name}</option>;
+      <div className="class-new-container">
+        <h1>创建课程</h1>
+        <Form className="class-new-form">
+          <Row name="课程名" required={true}>
+            <TextInput
+              bindStateCtx={this} 
+              bindStateName="formData.name" 
+            />
+          </Row>
+          <Row name="价格" required={true}>
+            <TextInput 
+              bindStateCtx={this} 
+              bindStateName="formData.price"
+              bindStateType={Number}
+            />
+          </Row>
+          <Row name="选择教练" required={true}>
+            <OptionsPicker
+              bindStateCtx={this}
+              bindStateName="formData.trainerId"
+              options={this.state.trainers.map(item => {
+                return {text: item.fullname.first, value: item.id};
               })}
-            </select>
-          </div>
-          <div className="class-template-fieldset">
-            <label>选择教练</label>
-            <select>
-              {this.state.trainers.map((trainer, index) => {
-                return <option key={index}>{trainer.fullname.first}</option>;
-              })}
-            </select>
-          </div>
-          <div className="class-template-fieldset">
-            <label>开始时间</label>
-            <input 
-              type="text" 
-              defaultValue={this.props.from} 
             />
-          </div>
-          <div className="class-template-fieldset">
-            <label>结束时间</label>
-            <input
-              type="text"
-              defaultValue={this.props.to}
+          </Row>
+          <Row name="课程描述" required={true}>
+            <TextInput
+              multiline={true}
+              bindStateCtx={this}
+              bindStateName="formData.description"
             />
-          </div>
-          <div className="class-template-fieldset">
-            <label>日期</label>
-            <input 
-              type="text"
-              defaultValue={this.props.date}
+          </Row>
+          <Row name="上课时间" required={true}>
+            <TextInput
+              flex={0.4}
+              bindStateCtx={this}
+              bindStateName="formData.date"
             />
-          </div>
-        </div>
-        <div className="class-template-footer">
-          <button onClick={this.onCreateClass.bind(this)}>创建课程</button>
-        </div>
+            <TextInput
+              flex={0.3}
+              bindStateCtx={this}
+              bindStateName="formData.from"
+            />
+            <TextInput
+              flex={0.3}
+              bindStateCtx={this}
+              bindStateName="formData.to"
+            />
+          </Row>
+          <Row>
+            <TextButton text="确认添加"
+              onClick={this.onCreateClass.bind(this)} 
+              disabled={this.disabled}
+            />
+          </Row>
+        </Form>
       </div>
     );
   }
