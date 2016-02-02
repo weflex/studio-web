@@ -88,6 +88,7 @@ class ClassTemplateList extends React.Component {
     return (
       <div>
         <ListView
+          loadingHint="正在加载课程模版资源"
           dataSource={async () => {
             return await client.classTemplate.list({
               include: ['venue', 'trainer']

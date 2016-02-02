@@ -59,7 +59,9 @@ class NavBar extends React.Component {
     this.state = {
       user: {
         nickname: '未登陆',
-        avatarUrl: 'http://wx.qlogo.cn/mmopen/ajNVdqHZLLDfNbJqbWG9S38aGHQWa4Y6K7Nl3NOmBsSZId2tFs1Iqz7mjU3q1P9LghSuDE8fMYSqIib8533KTSA/0'
+        avatar: {
+          uri: 'http://wx.qlogo.cn/mmopen/ajNVdqHZLLDfNbJqbWG9S38aGHQWa4Y6K7Nl3NOmBsSZId2tFs1Iqz7mjU3q1P9LghSuDE8fMYSqIib8533KTSA/0'
+        }
       },
       venue: {
         name: '加载中...'
@@ -69,7 +71,7 @@ class NavBar extends React.Component {
   async componentWillMount () {
     const user = await client.user.getCurrent();
     const venue = await client.org.getSelectedVenue();
-    console.log(user, venue);
+    console.log(user);
     this.setState({user, venue});
   }
   render () {
@@ -78,7 +80,7 @@ class NavBar extends React.Component {
         <li className="stats">
           <div className="studio-name">{this.state.venue.name}</div>
           <div className="useravatar">
-            <img src={this.state.user.avatarUrl} />
+            <img src={this.state.user.avatar.uri} />
           </div>
           <div className="username">
             <span>

@@ -23,6 +23,11 @@
   margin-top: 20%;
 }
 
+.list-table .loader p {
+  font-size: 12px;
+  font-family: 'PingFang SC', sans-serif;
+}
+
 /**
  * Table
  */

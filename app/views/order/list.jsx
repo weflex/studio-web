@@ -89,6 +89,7 @@ class OrderList extends React.Component {
   render() {
     return (
       <ListView
+        loadingHint="正在加载订单信息"
         dataSource={async () => {
           return await client.order.list({
             include: ['user']

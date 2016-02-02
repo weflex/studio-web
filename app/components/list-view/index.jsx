@@ -42,6 +42,7 @@ class ListView extends React.Component {
     if (this.state.loading) {
       contents = (<div className="loader">
         <ClipLoader color="#242f40" size="14px" />
+        <p>{this.props.loadingHint}</p>
       </div>);
     } else {
       contents = listData.map((item, index) => {

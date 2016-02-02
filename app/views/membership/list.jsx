@@ -53,7 +53,7 @@ class OrderList extends React.Component {
         <div className="list-view-header">会员信息</div>
         <div className="list-view-content">
           <div className="list-view-fieldset list-view-fieldset-right">
-            <img className="list-view-avatar" src={data.user.avatarUrl} />
+            <img className="list-view-avatar" src={data.user.avatar.uri} />
           </div>
           <div className="list-view-fieldset">
             <label>姓名</label>
@@ -90,6 +90,7 @@ class OrderList extends React.Component {
     return (
       <div>
         <ListView
+          loadingHint="正在加载会员信息"
           dataSource={async () => {
             return await client.membership.list({
               include: ['user', 'venue']
