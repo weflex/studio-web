@@ -45,4 +45,9 @@
 .resource-calendar-template-hint .hint-text {
   font-size: 12px;
   font-family: 'PingFang SC', sans-serif;
+  font-weight: 100;
+}
+
+.resource-calendar-template-hint .icon-copy {
+  font-size: 18px;
 }
