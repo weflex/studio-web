@@ -3,7 +3,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ClassCard from './card';
 import Calendar from './calendar';
-import { Resource } from './components/resource';
 import { WeekPicker } from './components/week-picker';
 import { NewClassTemplate } from './new';
 import { DropModal } from 'boron';
@@ -16,6 +15,8 @@ import {
 import '../../layout/font.css';
 import './index.css';
 
+const Template = require('./components/template');
+const ResourcePanel = require('../../components/resource-panel');
 const client = require('@weflex/gian').getClient('dev');
 const moment = require('moment');
 moment.locale('zh-cn');
@@ -51,7 +52,25 @@ class WeflexCalendar extends React.Component {
   }
 
   get resource() {
-    return <Resource calendar={this.refs.calendar} />;
+    const actions = [
+      {
+        title: '添加模板'
+      },
+      {
+        title: '管理模板'
+      }
+    ];
+
+    const getData = async function () {
+      var data = await client.classTemplate.list({
+        include: 'trainer'
+      });
+      return data;
+    };
+
+    return (
+      <ResourcePanel component={Template} context={{actions}} getData={getData} />
+    );
   }
 
   async getClassData() {
