@@ -4,13 +4,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-var ResItem;
-
 class ResourcePanel extends React.Component {
   constructor (props) {
-    ResItem = props.component;
     super(props);
-    //TODO: get other contextual info from props.context;
+    // TODO: (Scott)
+    // get other contextual info from props.context;
     this.getData = props.getData;
     this.state = {
       actions: props.context.actions,
@@ -29,14 +27,16 @@ class ResourcePanel extends React.Component {
     return (
       <div className="resource-panel">
         <div className="resource-panel-actions">
-          {this.state.actions.map((action) => {
-            return <a>{action.title}</a>;
+          {this.state.actions.map((action, index) => {
+            return (
+              <a key={index}>{action.title}</a>
+            );
           })}
         </div>
         <ul className="resource-panel-items">
           {this.state.resources.map((item, index) => {
             return (
-              <ResItem key={index} data={item} />
+              <this.props.component key={index} data={item} />
             );
           })}
         </ul>

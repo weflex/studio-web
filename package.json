@@ -13,7 +13,6 @@
     "material-ui": "^0.14.0",
     "moment": "2.10.6",
     "object-assign": "4.0.1",
-    "qiniu": "6.1.9",
     "qrcode.react": "0.5.2",
     "react": "0.14.3",
     "react-binding-component": "^1.0.1",

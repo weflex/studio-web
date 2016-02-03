@@ -16,9 +16,11 @@ class Template extends React.Component {
   render () {
     return (
       <li key={this.props.key} className="resource-calendar-template">
-        <div>{this.state.name}</div>
-        <div>{'时长一小时'}</div>
-        <div>{this.state.trainer.fullname.first}</div>
+        <div className='resource-calendar-template-name'>{this.state.name}</div>
+        <div className='resource-calendar-template-duration'>{'时长一小时'}</div>
+        <div className='resource-calendar-template-trainer'>
+          {this.state.trainer.fullname.first + ' ' + this.state.trainer.fullname.last}
+        </div>
         <div className="resource-calendar-template-hint">
           <div className="icon-font icon-attach"></div>
           <div className="hint-text">拖动模版创建课程</div>

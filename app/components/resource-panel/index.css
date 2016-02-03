@@ -5,16 +5,23 @@
 }
 
 .resource-panel-actions {
+  height: 30px;
   font-size: 12px;
   font-family: 'PingFang SC', sans-serif;
   color: #4398BF;
-  margin-bottom: 5px;
+  padding: 5px 5px 0 5px;
+  box-sizing: border-box;
 }
 
 .resource-panel-actions a {
-  padding: 0 5px;
   cursor: pointer;
   transition: all .2s ease-in-out;
+  border-radius: 2px;
+  width: 50%;
+  float: left;
+  box-sizing: border-box;
+  text-align: center;
+  padding: 2px;
 }
 
 .resource-panel-actions a:first-child {
@@ -22,8 +29,7 @@
 }
 
 .resource-panel-actions a:hover {
-  color: #999;
-  text-decoration: underline;
+  background-color: #EBEBEB;
 }
 
 .resource-panel-items {

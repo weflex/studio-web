@@ -3,12 +3,24 @@
   display: inline-block;
   background-color: #C0F8FF;
   border: 1px solid rgba(58,132,166,.21);
-  border-radius: 2px;
   box-sizing: border-box;
   margin: 5px 0;
   padding: 10px;
   cursor: pointer;
   width: 100%;
+}
+
+.resource-calendar-template > div {
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.resource-calendar-template-duration,
+.resource-calendar-template-trainer {
+  font-size: 12px;
 }
 
 .resource-calendar-template:hover .resource-calendar-template-hint {
@@ -21,7 +33,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0,0,0,.7);
+  background-color: rgba(37,102,130,0.7);
   color: #fff;
   opacity: 0;
   text-align: center;
