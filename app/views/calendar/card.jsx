@@ -105,8 +105,8 @@ class ClassCard extends React.Component {
     };
     this.state = {
       style: this.style,
-      isResizing: false,
-      isMoving: false,
+      isResizing: this.props.isResizing || false,
+      isMoving: this.props.isMoving || false,
       arrow: 'center',
       position: 'right',
       isPopUpActive: false,
@@ -142,34 +142,34 @@ class ClassCard extends React.Component {
     });
 
     this.moveHammer.on('panstart', (event) => {
+      const calendar = this.props.calendar || this.ctx.calendar;
       if (this.state.isResizing) {
         return;
       }
-
-      const timeToFrom = getTimeDuration(this.props.cardInfo.from, this.ctx.calendar.state.baselineClock);
-      const pointerDay = this.ctx.calendar.state.atCol;
+      const timeToFrom = getTimeDuration(this.props.cardInfo.from, calendar.state.baselineClock);
+      const pointerDay = calendar.state.atCol;
       this.setState({
         timeToFrom,
         isMoving: true,
         fromDay: pointerDay,
       });
-      this.lastScrollOffset = this.ctx.calendar.state.scrollTop;
+      this.lastScrollOffset = calendar.state.scrollTop;
     });
 
     this.moveHammer.on('pan', (event) => {
+      const calendar = this.props.calendar || this.ctx.calendar;
       if (this.state.isResizing) {
         return;
       }
-
-      const atCol = this.ctx.calendar.state.atCol;
-      const col = this.ctx.calendar.colList[atCol];
+      const atCol = calendar.state.atCol;
+      const col = calendar.colList[atCol];
       const height = this.style.height;
       const width = col.right - col.left;
       const timeOffset = -this.state.timeToFrom;
-      const newHourTime = addTimeByMinute(this.ctx.calendar.state.baselineClock, timeOffset);
+      const newHourTime = addTimeByMinute(calendar.state.baselineClock, timeOffset);
       const marginLeft = this.style.marginLeft + event.deltaX;
       const marginTop = this.style.marginTop + event.deltaY +
-                        this.ctx.calendar.state.scrollTop -
+                        calendar.state.scrollTop -
                         this.lastScrollOffset;
 
       const style = {
@@ -185,10 +185,11 @@ class ClassCard extends React.Component {
     });
 
     this.moveHammer.on('panend', (event) => {
+      const calendar = this.props.calendar || this.ctx.calendar;
       if (this.state.isResizing) {
         return;
       }
-      const pointerDay = this.ctx.calendar.state.atCol;
+      const pointerDay = calendar.state.atCol;
       const toDay = moment(this.props.cardInfo.date)
                     .add(pointerDay - this.state.fromDay, 'day')
                     .format('YYYY-MM-DD');
@@ -213,6 +214,9 @@ class ClassCard extends React.Component {
         card.to = newToHour;
         card.date = getDateBySplit(card.from, toDay);
       });
+      if (typeof this.props.updateCard !== 'function') {
+        throw new TypeError('updateCard is REQUIRED');
+      }
       this.props.updateCard(newCard);
     });
   }
@@ -265,7 +269,8 @@ class ClassCard extends React.Component {
       if (direction === 'bottom') {
         height = this.style.height + event.deltaY;
       }
-      let time = this.ctx.calendar.state.baselineClock;
+      const calendar = this.props.calendar || this.ctx.calendar;
+      let time = calendar.state.baselineClock;
       const isOverDrag = (height <= this.cellHeight);
 
       if (isOverDrag) {
@@ -323,11 +328,17 @@ class ClassCard extends React.Component {
   handleMouseDown(event) {
     event.preventDefault();
     this.isMouseDown = true;
+    if (typeof this.props.onMouseDown === 'function') {
+      this.props.onMouseDown(event);
+    }
   }
 
   handleMouseUp(event) {
     event.preventDefault();
     this.isMouseDown = false;
+    if (typeof this.props.onMouseUp === 'function') {
+      this.props.onMouseUp(event);
+    }
   }
 
   componentDidMount() {
@@ -341,22 +352,47 @@ class ClassCard extends React.Component {
   }
 
   render() {
-    const {id, from, to, date, template, trainer, orders} = this.props.cardInfo;
+    const {
+      id, 
+      from, 
+      to, 
+      date, 
+      template, 
+      trainer, 
+      orders
+    } = this.props.cardInfo;
     const duration = `${getFormatTime(from)} - ${getFormatTime(to)}`;
     const dayOfYear = moment(date).format('MM[月]DD[日]');
     const dayOfWeek = moment(date).format('ddd');
     const trainerName = `${trainer.fullname.first} ${trainer.fullname.last}`;
+    
     let className = 'class-card';
+    if (this.props.className) {
+      className += ' ' + this.props.className;
+    }
     if (this.state.isResizing) {
       className += ' resized';
     } else if (this.state.isMoving) {
       className += ' moved';
     }
 
+    let style = Object.assign({}, 
+      this.state.style, this.props.style);
+
+    let stats = null;
+    if (orders && orders.length > 0) {
+      stats = (
+        <div className="class-stats">
+          <span className="class-stats-paid">10</span>
+          <span className="class-stats-cancel">2</span>
+          <span className="class-stats-checkin">5</span>
+        </div>
+      );
+    }
     return (
       <div
         className={className}
-        style={this.state.style}
+        style={style}
         id={`class_${id}`}
         onMouseLeave={this.hidePopUp.bind(this)}
         onClick={this.showPopUp.bind(this)}
@@ -367,14 +403,8 @@ class ClassCard extends React.Component {
         <div className="class-name">
           {template.name}
         </div>
-        <div className="class-duration" >
-          {duration}
-        </div>
-        <div className="class-stats">
-          <span className="class-stats-paid">10</span>
-          <span className="class-stats-cancel">2</span>
-          <span className="class-stats-checkin">5</span>
-        </div>
+        <div className="class-duration">{duration}</div>
+        {stats}
         <div className="bottom-dragger" ref="bottomDragger"></div>
         <PopUp
           style={this.popUpStyle}

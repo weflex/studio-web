@@ -1,5 +1,7 @@
-'use strict';
-const React = require('react');
+"use strict";
+
+import React from 'react';
+
 const events = {};
 
 export class SearchInput extends React.Component {

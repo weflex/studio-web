@@ -179,7 +179,7 @@
   height: 100%;
 }
 
-.schedule-table .class-card {
+.class-card {
   position: relative;
   text-align: left;
   background-color: rgba(254,248,217,.5);
@@ -193,14 +193,14 @@
   box-sizing: border-box;
 }
 
-.schedule-table .class-card span {
+.class-card span {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
 }
 
-.schedule-table .class-card .bottom-dragger {
+.class-card .bottom-dragger {
   width: 100%;
   display: inline-block;
   position: absolute;
@@ -212,7 +212,7 @@
   z-index: 10;
 }
 
-.schedule-table .class-card .top-dragger {
+.class-card .top-dragger {
   width: 100%;
   display: inline-block;
   position: absolute;
@@ -224,25 +224,25 @@
   z-index: 10;
 }
 
-.schedule-table .class-card:not(.resized):not(.moved):hover {
+.class-card:not(.resized):not(.moved):hover {
   background-color: rgba(254,248,217,1);
 }
 
-.schedule-table .class-card .class-name {
+.class-card .class-name {
   font-size: 14px;
   color: #D0021B;
 }
 
-.schedule-table .class-card .class-during {
+.class-card .class-during {
   font-size: 12px;
   color: #FA021F;
 }
 
-.schedule-table .class-card .class-stats {
+.class-card .class-stats {
   margin-top: 5px;
 }
 
-.schedule-table .class-card .class-stats > span {
+.class-card .class-stats > span {
   display: inline-block;
   height: 16px;
   width: 16px;
@@ -256,25 +256,25 @@
   box-sizing: border-box;
 }
 
-.schedule-table .class-card .class-stats-paid {
+.class-card .class-stats-paid {
   background-color: #80C7E8;
 }
 
-.schedule-table .class-card .class-stats-cancel {
+.class-card .class-stats-cancel {
   background-color: #FF8AC2;
 }
 
-.schedule-table .class-card .class-stats-checkin {
+.class-card .class-stats-checkin {
   background-color: #6ED4A4;
 }
 
-.schedule-table .create-card {
+.create-card {
   background: rgba(12, 0, 204, 0.26);
   position: absolute;
   opacity: 0;
 }
 
-.schedule-table .create-card-shown {
+.create-card-shown {
   transition-property: top, opacity;
   transition-duration: 0.3s;
   transition-timing-function: ease-in-out;

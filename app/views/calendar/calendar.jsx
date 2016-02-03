@@ -143,7 +143,6 @@ class Calendar extends React.Component {
       }
     };
     this.createCardTop = 0;
-
   }
 
   renderCards(cardsInfo, index) {

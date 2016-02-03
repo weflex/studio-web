@@ -51,7 +51,12 @@ class WeflexCalendar extends React.Component {
   }
 
   get resource() {
-    return <Resource calendar={this.refs.calendar} />;
+    return (
+      <Resource 
+        calendar={this.refs.calendar}
+        onRelease={this.updateClasses.bind(this)}
+      />
+    );
   }
 
   async getClassData() {

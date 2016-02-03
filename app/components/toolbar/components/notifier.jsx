@@ -1,5 +1,6 @@
-'use strict';
-const React = require('react');
+"use strict";
+
+import React from 'react';
 
 export class Notifier extends React.Component {
   render () {
