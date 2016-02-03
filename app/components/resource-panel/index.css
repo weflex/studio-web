@@ -1,0 +1,35 @@
+.resource-panel {
+  width: 140px;
+  height: 100%;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+.resource-panel-actions {
+  font-size: 12px;
+  font-family: 'PingFang SC', sans-serif;
+  color: #4398BF;
+  margin-bottom: 5px;
+}
+
+.resource-panel-actions a {
+  padding: 0 5px;
+  cursor: pointer;
+  transition: all .2s ease-in-out;
+}
+
+.resource-panel-actions a:first-child {
+  border-right: 1px solid #EBEBEB;
+}
+
+.resource-panel-actions a:hover {
+  color: #999;
+  text-decoration: underline;
+}
+
+.resource-panel-items {
+  color: #1E7299;
+  background-color: #fff;
+  font-size: 14px;
+  font-family: 'PingFang SC', sans-serif;
+  padding: 10px;
+}

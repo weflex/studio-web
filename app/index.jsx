@@ -109,8 +109,6 @@ class App extends React.Component {
           handler={createViewWithBars(require('./views/class-package/list'))} />
         <Location path="/class/package/add"
           handler={createViewWithBars(require('./views/class-package/detail'))} />
-        <Location path="/trainer"
-          handler={createViewWithBars(require('./views/trainer/list'))} />
         <Location path="/membership"
           handler={createViewWithBars(require('./views/membership/list'))} />
         <Location path="/venue/settings"
