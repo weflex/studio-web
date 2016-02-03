@@ -1,0 +1,41 @@
+.resource-panel {
+  width: 140px;
+  height: 100%;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+.resource-panel-actions {
+  height: 30px;
+  font-size: 12px;
+  font-family: 'PingFang SC', sans-serif;
+  color: #4398BF;
+  padding: 5px 5px 0 5px;
+  box-sizing: border-box;
+}
+
+.resource-panel-actions a {
+  cursor: pointer;
+  transition: all .2s ease-in-out;
+  border-radius: 2px;
+  width: 50%;
+  float: left;
+  box-sizing: border-box;
+  text-align: center;
+  padding: 2px;
+}
+
+.resource-panel-actions a:first-child {
+  border-right: 1px solid #EBEBEB;
+}
+
+.resource-panel-actions a:hover {
+  background-color: #EBEBEB;
+}
+
+.resource-panel-items {
+  color: #1E7299;
+  background-color: #fff;
+  font-size: 14px;
+  font-family: 'PingFang SC', sans-serif;
+  padding: 10px;
+}
