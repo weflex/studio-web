@@ -70,7 +70,13 @@ class WeflexCalendar extends React.Component {
 
     return (
       <ResourcePanel component={Template} 
-        context={{actions}} getData={getData} />
+        context={{
+          actions,
+          calendar: this.refs.calendar,
+          onRelease: this.updateClasses.bind(this)
+        }}
+        getData={getData}
+      />
     );
   }
 

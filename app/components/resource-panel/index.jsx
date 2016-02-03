@@ -37,7 +37,11 @@ class ResourcePanel extends React.Component {
         <ul className="resource-panel-items">
           {this.state.resources.map((item, index) => {
             return (
-              <this.props.component key={index} data={item} />
+              <this.props.component 
+                key={index} 
+                data={item} 
+                {...this.props.context} 
+              />
             );
           })}
         </ul>
