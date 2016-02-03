@@ -33,6 +33,15 @@
   background-color: #EBEBEB;
 }
 
+.resource-panel-loading {
+  padding: 20px 0;
+  text-align: center;
+}
+
+.resource-panel-loading p {
+  font-size: 12px;
+}
+
 .resource-panel-items {
   color: #1E7299;
   background-color: #fff;

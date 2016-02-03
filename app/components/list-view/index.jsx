@@ -1,12 +1,9 @@
 "use strict";
-require('./index.css');
 
+import _ from 'lodash';
 import React from 'react';
-import {
-  ClipLoader
-} from 'halogen';
-
-const _ = require('lodash');
+import { ClipLoader } from 'halogen';
+import './index.css';
 
 class ListView extends React.Component {
   constructor(props) {
