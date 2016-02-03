@@ -54,22 +54,23 @@ class WeflexCalendar extends React.Component {
   get resource() {
     const actions = [
       {
-        title: '添加模板'
+        title: '添加模板',
+        path: '/class/template/add'
       },
       {
-        title: '管理模板'
+        title: '管理模板',
+        path: '/class/template'
       }
     ];
-
-    const getData = async function () {
-      var data = await client.classTemplate.list({
+    const getData = async () => {
+      return await client.classTemplate.list({
         include: 'trainer'
       });
-      return data;
     };
 
     return (
-      <ResourcePanel component={Template} context={{actions}} getData={getData} />
+      <ResourcePanel component={Template} 
+        context={{actions}} getData={getData} />
     );
   }
 

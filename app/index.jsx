@@ -24,7 +24,6 @@ function createViewWithBars (component) {
         page: null,
         resource: null,
         // resource states
-        width: 100,
         isResourceShown: false
       };
     }
@@ -38,11 +37,11 @@ function createViewWithBars (component) {
     render() {
       const activity = React.createElement(component, this.pageProps);
       const activityStyle = {
-        width: this.state.width + '%'
+        width: this.state.isResourceShown ? 'calc(100% - 140px)' : '100%'
       };
       const resourceStyle = {
         display: this.state.isResourceShown ? 'inline-block' : 'none',
-        width: (100 - this.state.width) + '%'
+        width: this.state.isResourceShown ? '140px' : '0px'
       };
       return (
         <div>
@@ -62,12 +61,10 @@ function createViewWithBars (component) {
     toggleResource() {
       if (!this.state.isResourceShown) {
         this.setState({
-          width: 85,
           isResourceShown: true
         });
       } else {
         this.setState({
-          width: 100,
           isResourceShown: false
         });
       }

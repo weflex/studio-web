@@ -2,6 +2,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Link } from 'react-router-component';
 import './index.css';
 
 class ResourcePanel extends React.Component {
@@ -29,7 +30,7 @@ class ResourcePanel extends React.Component {
         <div className="resource-panel-actions">
           {this.state.actions.map((action, index) => {
             return (
-              <a key={index}>{action.title}</a>
+              <Link key={index} href={action.path}>{action.title}</Link>
             );
           })}
         </div>
