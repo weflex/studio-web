@@ -159,6 +159,10 @@ class ClassCard extends React.Component {
         fromDay: this.props.isEmptyFrom ? 1 : pointerDay,
         lastScrollOffset: calendar.state.scrollTop,
       });
+
+      if (typeof this.props.onPanStart === 'function') {
+        this.props.onPanStart(event);
+      }
     });
 
     this.moveHammer.on('pan', (event) => {
@@ -224,10 +228,10 @@ class ClassCard extends React.Component {
         card.to = newToHour;
         card.date = getDateBySplit(card.from, toDay);
       });
-      if (typeof this.props.updateCard !== 'function') {
-        throw new TypeError('updateCard is REQUIRED');
+
+      if (typeof this.props.onPanEnd === 'function') {
+        this.props.onPanEnd(event, newCard);
       }
-      this.props.updateCard(newCard);
     });
   }
 

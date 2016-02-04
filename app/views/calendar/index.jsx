@@ -140,12 +140,12 @@ class WeflexCalendar extends React.Component {
   }
 
   getCardTemplate() {
-    const updateCard = this.updateClasses.bind(this);
     const ctx = {};
     ctx.calendar = this.refs.calendar;
     ctx.cards = [];
     ctx.calendar.ctx = ctx;
-
+    
+    const updateClasses = this.updateClasses.bind(this);
     this.cardTemplate = class CardTemplate extends React.Component {
       componentDidMount() {
         this.refs.classCard.ctx = ctx;
@@ -158,7 +158,9 @@ class WeflexCalendar extends React.Component {
           <ClassCard
             {...props}
             ref="classCard"
-            updateCard={updateCard}
+            onPanEnd={(event, data) => {
+              updateClasses(data);
+            }}
           />
         );
       }

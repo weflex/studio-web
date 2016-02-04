@@ -11,17 +11,12 @@ class Template extends React.Component {
       showCopyCard: false
     };
   }
-  onMouseDown(event) {
+  onPanStart(event) {
     this.setState({
       showCopyCard: true
     });
   }
-  onMouseUp(event) {
-    this.setState({
-      showCopyCard: false
-    });
-  }
-  onUpdateCard(data) {
+  onPanEnd(event, data) {
     this.setState({
       showCopyCard: false
     });
@@ -66,9 +61,8 @@ class Template extends React.Component {
           calendar={this.props.calendar}
           cardInfo={data}
           isEmptyFrom={true}
-          onMouseDown={this.onMouseDown.bind(this)}
-          onMouseUp={this.onMouseUp.bind(this)}
-          updateCard={this.onUpdateCard.bind(this)}
+          onPanStart={this.onPanStart.bind(this)}
+          onPanEnd={this.onPanEnd.bind(this)}
         />
       </li>
     );
