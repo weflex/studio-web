@@ -22,8 +22,8 @@ electron_mirror = \
 	https://npm.taobao.org/mirrors/electron
 
 # build dependencies
-PATH += '/usr/local/bin'
-PATH += $(shell pwd)'/node_modules/.bin'
+PATH := /usr/local/bin:$(PATH)
+PATH := $(shell pwd)/node_modules/.bin:$(PATH)
 
 electron  = '/usr/local/bin/electron-packager'
 
