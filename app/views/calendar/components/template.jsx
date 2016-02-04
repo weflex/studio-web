@@ -29,7 +29,7 @@ class Template extends React.Component {
   }
   render() {
     let data = {
-      id: null,
+      id: Date.now(),
       date: '2016-02-01',
       from: { hour: 0, minute: 0 },
       to: { hour: 1, minute: 30 },

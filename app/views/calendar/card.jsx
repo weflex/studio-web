@@ -313,6 +313,9 @@ class ClassCard extends React.Component {
   }
 
   showPopUp(e) {
+    if (this.props.isEmptyFrom) {
+      return;
+    }
     const card = ReactDOM.findDOMNode(this.refs.card);
     const clientRect = card.getBoundingClientRect();
     const maxHeight = window.innerHeight / 2;
