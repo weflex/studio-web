@@ -1,24 +1,30 @@
 # source files
-sources  = $(shell find app -name '*.js*')
-styles   = $(shell find app -name '*.css')
-assets   = \
+sources = $(shell find app -name '*.js*')
+styles  = $(shell find app -name '*.css')
+assets  = \
 	dist/favicon.ico \
 	dist/fonts/ \
 	dist/apple-touch-icon.png
+
 entraces = \
 	dist/index.html \
 	dist/login/index.html
-dirs    = dist dist/login
+
+dirs    = \
+	dist \
+	dist/login
+
 outputs = \
 	dist/app.js \
 	dist/login/index.js
+
 electron_mirror = \
 	https://npm.taobao.org/mirrors/electron
 
 # build dependencies
-node      = '/usr/local/bin/node'
-npm       = '/usr/local/bin/npm'
-webpack   = 'node_modules/.bin/webpack'
+PATH += '/usr/local/bin'
+PATH += $(shell pwd)'/node_modules/.bin'
+
 electron  = '/usr/local/bin/electron-packager'
 
 # trigger static build
@@ -29,27 +35,18 @@ heroku: build dist/Makefile $(entraces)
 	@make -C dist $@
 
 # start a server at localhot:8080
-serve: dist/Makefile $(entraces)
-	@make -C dist $@
+serve: dist/server.mk $(entraces)
+	@make -C dist -f server.mk $@
 
 # start a server and watch changes on file-system
 watch: serve build
-	$(webpack) --watch
+	@webpack --watch
 
 # build for electron
-electronprebuild: clean
 
-electron: build
-	cp -r ./build/electron/ ./dist/
-	cd ./dist && npm install
-	ELECTRON_MIRROR=$(electron_mirror) $(electron) \
-		./dist studio \
-		--out dist-electron \
-		--icon apple-touch-icon.png \
-		--platform=darwin \
-		--arch=x64 \
-		--version=0.36.7 \
-		--overwrite
+electron: dist/electron.mk
+	@make build
+	@make -C dist -f electron.mk
 
 # drop static build
 clean: dist
@@ -63,17 +60,21 @@ purge: node_modules clean
 $(assets): $(patsubst dist/%,app/%,$(assets)) $(dirs)
 	@cp -R $(patsubst dist/%,app/%,$@) $@
 
-dist/Makefile: build/server/Makefile dist
+dist/server.mk: build/server/Makefile dist
+	@cp $< $@
+
+dist/electron.mk: build/electron/Makefile clean
+	@make dist
 	@cp $< $@
 
 dist/%.html: build/server/%.html $(dirs)
 	@cp $< $@
 
 $(outputs): $(sources) $(styles) node_modules $(dirs)
-	$(webpack) -p
+	@webpack -p
 
 node_modules: package.json
-	$(npm) install
+	@npm install
 
 $(dirs):
 	@mkdir -p $@

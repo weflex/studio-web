@@ -13,16 +13,10 @@ heroku: Procfile package.json server.js
 node_modules: package.json
 	$(npm) install
 
-Procfile: ../build/server/Procfile
-	@cp $< $@
-
-package.json: ../build/server/package.json
-	@cp $< $@
-
-server.js: ../build/server/server.js
-	@cp $< $@
-
 purge: node_modules
 	@rm -rf $<
+
+%: ../build/server/%
+	@cp $< $@
 
 .PHONY: serve kill purge
