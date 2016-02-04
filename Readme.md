@@ -10,6 +10,17 @@ The desktop(HD) application for Studio based on the following stacks:
 
 ## Build
 
+Studio-desktop is able to build and release for the following platforms:
+
+- Native application
+  - [x] Mac OSX
+  - [ ] Windows
+  - [ ] Linux
+
+- Browser SPA(Single Page Application)
+  - [x] latest Chrome
+  - [ ] latest safri
+
 ### Build Dependencies
 
 * NodeJS (>= 5.0.0) See [Official Repo](https://nodejs.org/en/download/)
@@ -34,10 +45,17 @@ Currently we only support MacOS
 
 ### Web 
 
-To deploy to [Heroku Endpoint](http://weflex-admin.herokuapp.com/).
+```sh
+$ make serve
+```
+
+We setup a `Procfile` to be compatible with Heroku:
+
+```
+$ make heroku
+```
 
 > Note: because we are still using http in API endpoint, so http is required to visit Heroku.
-
 
 ## Development
 
