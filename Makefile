@@ -4,7 +4,7 @@ styles   = $(shell find app -name '*.css')
 assets   = \
 	dist/index.html \
 	dist/favicon.ico \
-	dist/fonts \
+	dist/fonts/ \
 	dist/login/index.html \
 	dist/apple-touch-icon.png
 dirs    = \
@@ -45,7 +45,7 @@ purge: node_modules clean
 	@make -C server $@
 
 $(assets): $(patsubst dist/%,app/%,$(assets)) $(dirs)
-	@cp -r $(patsubst dist/%,app/%,$@) $@
+	@cp -R $(patsubst dist/%,app/%,$@) $@
 
 dist/Makefile: server/Makefile dist
 	@cp $< $@
