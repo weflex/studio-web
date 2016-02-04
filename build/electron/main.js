@@ -28,7 +28,7 @@ app.on('ready', function() {
     var done = finalize(req, res);
     if (!/\.\w+(\?.*)?$/.test(req.url)) { // if url is not a file path
       if (/^\/login(\/.*)?/.test(req.url)) { // redirect to /login/index.html
-        req.url = '/login.html';
+        req.url = '/login/index.html';
       } else {
         req.url = '/index.html';
       }
