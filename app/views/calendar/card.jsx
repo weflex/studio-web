@@ -156,10 +156,15 @@ class ClassCard extends React.Component {
     });
 
     this.moveHammer.on('pan', (event) => {
-      const calendar = this.props.calendar || this.ctx.calendar;
       if (this.state.isResizing) {
         return;
       }
+      const calendar = this.props.calendar || this.ctx.calendar;
+      // FIXME(Yorkie): Call setBaseline when doing pan on card
+      if (typeof calendar.setBaseline === 'function') {
+        calendar.setBaseline.call(calendar, event.srcEvent);
+      }
+
       const atCol = calendar.state.atCol;
       const col = calendar.colList[atCol];
       const height = this.style.height;
