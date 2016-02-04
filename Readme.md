@@ -1,11 +1,10 @@
 # Studio-Desktop
 
-The desktop(HD) application for Studio based on Web and the following stacks:
+The desktop(HD) application for Studio based on the following stacks:
 
-- Electron
 - React
-- Webpack and Makefile to build apps
-- Heroku to deploy for demo
+- Electron
+- Webpack, Makefile
 
 ![v1.0](./history/v1.0.png)
 
