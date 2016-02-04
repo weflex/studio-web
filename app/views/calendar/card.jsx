@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import moment from 'moment';
-import PopUp from '@weflex/react-portal-tooltip';
+import PopUp from 'react-portal-tooltip';
 import Hammer from 'hammerjs';
+import moment from 'moment';
 import {
   getRoundTime,
   getFormatTime,
@@ -14,7 +14,7 @@ import {
   addTimeByMinute,
   getGridOffsetByTime,
   transferToPercentage,
-} from './util.js'
+} from './util'
 
 moment.locale('zh-cn');
 
@@ -25,7 +25,6 @@ class OrderInfo extends React.Component {
       orders: this.props.orders,
       option: 'all',
     };
-
     this.options = {
       'paid': '已付款',
       'checkin': '签到',
@@ -96,7 +95,8 @@ class ClassCard extends React.Component {
   constructor(props) {
     super(props);
     const cellHeight = getCellHeight();
-    const height = getGridHeight(this.props.cardInfo.from, this.props.cardInfo.to, cellHeight);
+    const height = getGridHeight(
+      this.props.cardInfo.from, this.props.cardInfo.to, cellHeight);
     const top = getGridOffsetByTime(this.props.cardInfo.from, cellHeight);
     this.style = {
       height: height,
@@ -113,18 +113,17 @@ class ClassCard extends React.Component {
     };
     this.popUpStyle = {
       style: {
-        'zIndex': '200',
-        'padding': '10px',
-        'minWidth': '200px',
-        'minHeight': '220px',
-        'background': '#f7f7f7',
-        'transition': 'all .1s ease-out'
+        zIndex: '200',
+        padding: '10px',
+        minWidth: '200px',
+        minHeight: '220px',
+        background: '#f7f7f7',
+        transition: 'all .1s ease-out'
       },
       arrowStyle: {
-        'color': '#f7f7f7'
+        color: '#f7f7f7'
       }
     };
-
     this.cellHeight = cellHeight;
     this.lastScrollOffset = 0;
   }
@@ -143,7 +142,7 @@ class ClassCard extends React.Component {
 
     this.moveHammer.on('panstart', (event) => {
       const calendar = this.props.calendar || this.ctx.calendar;
-      if (this.state.isResizing) {
+      if (this.state.isResizing || this.state.isMoving) {
         return;
       }
       const timeToFrom = getTimeDuration(this.props.cardInfo.from, calendar.state.baselineClock);
@@ -293,7 +292,12 @@ class ClassCard extends React.Component {
         }
         card.date = getDateBySplit(card.from, this.props.cardInfo.date);
       });
+      
       this.props.updateCard(newCard);
+      this.setState({
+        isMoving: false,
+        isResizing: false
+      });
     });
   }
 

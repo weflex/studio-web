@@ -8,8 +8,8 @@ function dir (subpath) {
 
 module.exports = {
   entry: {
-    "bundle.js": dir('app/index.jsx'),
-    "login/index.js": dir('app/login/index.jsx')
+    "app.js": dir('app/index.jsx'),
+    "login.js": dir('app/login/index.jsx')
   },
   output: {
     path: dir('dist'),

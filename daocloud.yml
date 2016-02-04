@@ -1,4 +1,0 @@
-image: daocloud/ci-node:0.12
-
-script:
-  - echo "Place-holder for testing scripts"

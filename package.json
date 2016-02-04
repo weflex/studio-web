@@ -1,10 +1,10 @@
 {
-  "name": "studio",
+  "name": "@weflex/studio-desktop",
   "version": "2.0.0",
+  "private": true,
   "dependencies": {
     "@weflex/gian": "1.16.10",
     "@weflex/passport.js": "1.2.0",
-    "@weflex/react-portal-tooltip": "^1.0.1",
     "babel-polyfill": "6.3.14",
     "boron": "^0.2.3",
     "halogen": "^0.1.10",
@@ -17,6 +17,7 @@
     "react": "0.14.3",
     "react-binding-component": "^1.0.1",
     "react-dom": "0.14.3",
+    "react-portal-tooltip": "1.0.3",
     "react-router-component": "0.28.0",
     "react-touchable-tabular": "^1.2.5",
     "scroller": "0.0.3",
@@ -43,7 +44,7 @@
   },
   "scripts": {
     "test": "make test",
-    "build": "node_modules/.bin/gulp",
-    "start": "node server.js"
+    "start": "node server.js",
+    "electron": "ELECTRON_MIRROR=https://npm.taobao.org/mirrors/electron electron-packager ./dist studio  --platform=darwin --arch=x64 --version=0.36.7 --overwrite"
   }
 }

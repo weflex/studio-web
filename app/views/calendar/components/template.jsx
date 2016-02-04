@@ -56,7 +56,7 @@ class Template extends React.Component {
         <div>{'时长1小时'}</div>
         <div>{this.props.data.trainer.fullname.first}</div>
         <div className="resource-calendar-template-hint">
-          <div className="icon-font icon-attach"></div>
+          <div className="icon-font icon-copy"></div>
           <div className="hint-text">拖动模版创建课程</div>
         </div>
         <ClassCard
