@@ -308,11 +308,14 @@ class ClassCard extends React.Component {
         card.date = getDateBySplit(card.from, this.props.cardInfo.date);
       });
       
-      this.props.updateCard(newCard);
       this.setState({
         isMoving: false,
         isResizing: false
       });
+
+      if (typeof this.props.onPanEnd === 'function') {
+        this.props.onPanEnd(event, newCard);
+      }
     });
   }
 
