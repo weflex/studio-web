@@ -145,7 +145,13 @@ class ClassCard extends React.Component {
       if (this.state.isResizing || this.state.isMoving) {
         return;
       }
-      const timeToFrom = getTimeDuration(this.props.cardInfo.from, calendar.state.baselineClock);
+      let timeToFrom;
+      if (this.props.isEmptyFrom) {
+        timeToFrom = event.srcEvent.layerY;
+      } else {
+        timeToFrom = getTimeDuration(this.props.cardInfo.from, calendar.state.baselineClock);
+      }
+
       const pointerDay = calendar.state.atCol;
       this.setState({
         timeToFrom,
