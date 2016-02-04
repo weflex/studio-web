@@ -110,6 +110,7 @@ class ClassCard extends React.Component {
       arrow: 'center',
       position: 'right',
       isPopUpActive: false,
+      lastScrollOffset: 0
     };
     this.popUpStyle = {
       style: {
@@ -125,7 +126,6 @@ class ClassCard extends React.Component {
       }
     };
     this.cellHeight = cellHeight;
-    this.lastScrollOffset = 0;
   }
 
   isCardDragging() {
@@ -142,7 +142,7 @@ class ClassCard extends React.Component {
 
     this.moveHammer.on('panstart', (event) => {
       const calendar = this.props.calendar || this.ctx.calendar;
-      if (this.state.isResizing || this.state.isMoving) {
+      if (this.state.isResizing) {
         return;
       }
       let timeToFrom;
@@ -157,8 +157,8 @@ class ClassCard extends React.Component {
         timeToFrom,
         isMoving: true,
         fromDay: this.props.isEmptyFrom ? 1 : pointerDay,
+        lastScrollOffset: calendar.state.scrollTop,
       });
-      this.lastScrollOffset = calendar.state.scrollTop;
     });
 
     this.moveHammer.on('pan', (event) => {
@@ -180,7 +180,7 @@ class ClassCard extends React.Component {
       const marginLeft = this.style.marginLeft + event.deltaX;
       const marginTop = this.style.marginTop + event.deltaY +
                         calendar.state.scrollTop -
-                        this.lastScrollOffset;
+                        this.state.lastScrollOffset;
 
       const style = {
         marginTop,
