@@ -2,6 +2,7 @@
 
 import React from 'react';
 import ClassCard from '../card';
+import { client } from '../../../api';
 import './template.css';
 
 class Template extends React.Component {
@@ -17,6 +18,16 @@ class Template extends React.Component {
     });
   }
   onPanEnd(event, data) {
+    // TODO(Yorkie): this will move to calendar.updateClasses
+    client.class.create({
+      date: data.date,
+      from: data.from,
+      to: data.to,
+      // TODO(Yorkie): will remove
+      spots: {},
+      templateId: data.template.id,
+      trainerId: data.trainer.id,
+    });
     this.setState({
       showCopyCard: false
     });
