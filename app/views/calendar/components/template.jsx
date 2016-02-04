@@ -30,6 +30,7 @@ class Template extends React.Component {
   render() {
     let data = {
       id: null,
+      date: '2016-02-01',
       from: { hour: 0, minute: 0 },
       to: { hour: 1, minute: 30 },
       template: this.props.data,
@@ -62,8 +63,9 @@ class Template extends React.Component {
         <ClassCard
           className="class-copy-card"
           style={cardStyle}
-          cardInfo={data}
           calendar={this.props.calendar}
+          cardInfo={data}
+          isEmptyFrom={true}
           onMouseDown={this.onMouseDown.bind(this)}
           onMouseUp={this.onMouseUp.bind(this)}
           updateCard={this.onUpdateCard.bind(this)}

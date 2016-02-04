@@ -150,7 +150,7 @@ class ClassCard extends React.Component {
       this.setState({
         timeToFrom,
         isMoving: true,
-        fromDay: pointerDay,
+        fromDay: this.props.isEmptyFrom ? 1 : pointerDay,
       });
       this.lastScrollOffset = calendar.state.scrollTop;
     });
