@@ -5,10 +5,13 @@ assets   = \
 	dist/favicon.ico \
 	dist/fonts/ \
 	dist/apple-touch-icon.png
-dirs    = dist
+entraces = \
+	dist/index.html \
+	dist/login/index.html
+dirs    = dist dist/login
 outputs = \
 	dist/app.js \
-	dist/login.js
+	dist/login/index.js
 electron_mirror = \
 	https://npm.taobao.org/mirrors/electron
 
@@ -19,14 +22,14 @@ webpack   = 'node_modules/.bin/webpack'
 electron  = '/usr/local/bin/electron-packager'
 
 # trigger static build
-build: $(outputs) dist/login.js $(assets) node_modules
+build: $(outputs) $(assets) node_modules
 
 # generate files required for heroku branch
-heroku: build dist/Makefile
+heroku: build dist/Makefile $(entraces)
 	@make -C dist $@
 
 # start a server at localhot:8080
-serve: dist/Makefile
+serve: dist/Makefile $(entraces)
 	@make -C dist $@
 
 # start a server and watch changes on file-system
@@ -34,8 +37,7 @@ watch: serve build
 	$(webpack) --watch
 
 # build for electron
-electronprebuild:
-	rm -rf ./dist
+electronprebuild: clean
 
 electron: build
 	cp -r ./build/electron/ ./dist/
@@ -64,7 +66,10 @@ $(assets): $(patsubst dist/%,app/%,$(assets)) $(dirs)
 dist/Makefile: build/server/Makefile dist
 	@cp $< $@
 
-$(outputs): $(sources) $(styles) node_modules dist
+dist/%.html: build/server/%.html $(dirs)
+	@cp $< $@
+
+$(outputs): $(sources) $(styles) node_modules $(dirs)
 	$(webpack) -p
 
 node_modules: package.json
