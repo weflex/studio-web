@@ -2,6 +2,10 @@
   width: 150px;
   height: 100%;
   background-color: #242f40;
+  background-image: url(./bg.png);
+  background-repeat: repeat-x;
+  background-size: 70px;
+  background-position: 5px 0;
   float: left;
   position: absolute;
   color: #fafafa;
@@ -52,6 +56,7 @@
 .navbar .studio-name .text {
   font-family: 'Open Sans Semibold', sans-serif;
   padding-right: 3px;
+  padding-left: 10px;
 }
 .navbar .studio-name .icon-font {
   font-size: 9px;
@@ -70,6 +75,8 @@
   width: 60px;
   border-radius: 30px;
   cursor: pointer;
+  background-color: #242f40;
+  margin: -5px;
   transition: opacity .2s ease-in-out;
 }
 .navbar .useravatar img:hover {

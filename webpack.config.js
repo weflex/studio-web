@@ -8,12 +8,12 @@ function dir (subpath) {
 
 module.exports = {
   entry: {
-    "app.js": dir('app/index.jsx'),
-    "login/index.js": dir('app/login/index.jsx')
+    'app.js': dir('app/index.jsx'),
+    'login/index.js': dir('app/login/index.jsx')
   },
   output: {
     path: dir('dist'),
-    filename: "[name]"
+    filename: '[name]'
   },
   resolve: {
     extensions: ['', '.jsx', '.js']
@@ -39,6 +39,14 @@ module.exports = {
       {
         test: /\.css$/,
         loader: 'style-loader!css-loader'
+      },
+      {
+        test: /\.(jpg|png)$/,
+        loader: 'file-loader',
+        query: {
+          name: 'images/[1]',
+          regExp: 'app\/(.*)'
+        }
       }
     ]
   },

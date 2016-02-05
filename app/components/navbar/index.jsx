@@ -5,8 +5,8 @@ const Link = require('react-router-component').Link;
 const gian = require('@weflex/gian');
 const client = require('@weflex/gian').getClient('dev');
 
-require('./index.css');
-require('../../layout/font.css');
+import './index.css';
+import '../../layout/font.css';
 
 class NavItem extends React.Component {
   get iconfont () {
