@@ -17,12 +17,12 @@
   text-align: center;
   display: block;
 }
-.navbar li {
+.navbar > li {
   position: relative;
   width: 100%;
   transition: all .3s ease-in-out;
 }
-.navbar li > .active-marker {
+.navbar > li > .active-marker {
   height: 100%;
   width: 3px;
   background-color: #00E4FF;
@@ -30,19 +30,51 @@
   top: 0;
   left: 0;
 }
-.navbar li > a {
+.navbar > li > a {
   box-sizing: border-box;
   padding: 10px 0;
 }
-.navbar li.navitem:hover {
+.navbar > li.navitem:hover {
   background-color: rgba(255, 255, 255, 0.15);
 }
-.navbar li.navitem.active {
+.navbar > li.navitem.active {
   background-color: rgba(255, 255, 255, 0.10);
 }
-.navbar li:first-child {
+.navbar > li:first-child {
   padding-top: 15px;
 }
+
+.navbar .studio-org-panel {
+  position: absolute;
+  top: 0;
+  left: 150px;
+  width: 120px;
+  z-index: 100;
+  box-sizing: border-box;
+  transition: all .2s ease-in-out;
+}
+.navbar .studio-org-panel:not(.active) {
+  left: 0px;
+  opacity: 0;
+  display: none;
+}
+.navbar .studio-org-panel > li {
+  display: block;
+  background-color: rgba(36,47,64,.9);
+  padding: 5px 10px;
+  text-align: left;
+  cursor: pointer;
+  transition: all .2s ease-in-out;
+}
+.navbar .studio-org-panel > li:hover,
+.navbar .studio-org-panel > li.active {
+  background-color: rgba(36,47,64,1);
+}
+.navbar .studio-org-panel span {
+  font-size: 11px;
+  font-family: 'PingFang SC', 'Open Sans', sans-serif;
+}
+
 .navbar .studio-name,
 .navbar .username {
   width: 100%;

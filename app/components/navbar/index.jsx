@@ -65,22 +65,61 @@ class NavBar extends React.Component {
       },
       venue: {
         name: '加载中...'
-      }
+      },
+      venues: [],
+      showOrgPanel: false,
     };
   }
   async componentWillMount () {
     const user = await client.user.getCurrent();
     const venue = await client.org.getSelectedVenue();
-    console.log(user);
-    this.setState({user, venue});
+    this.setState({
+      user, 
+      venue,
+      venues: client.org.venues
+    });
+  }
+  onMouseOver () {
+    this.setState({
+      showOrgPanel: true
+    });
+  }
+  onMouseLeave () {
+    this.setState({
+      showOrgPanel: false
+    });
+  }
+  selectVenue (venue) {
+    client.org.selectVenue(venue.id);
+    location.reload();
   }
   render () {
+    let orgPanelClassName = 'studio-org-panel ';
+    if (this.state.showOrgPanel) {
+      orgPanelClassName += 'active';
+    }
     return (
       <ul className="navbar">
         <li className="stats">
-          <div className="studio-name">
+          <div className="studio-name" 
+            onMouseOver={this.onMouseOver.bind(this)}
+            onMouseLeave={this.onMouseLeave.bind(this)}>
             <span className="text">{this.state.venue.name}</span>
             <span className="icon-font icon-down-open"></span>
+            <ul className={orgPanelClassName}>
+              {this.state.venues.map((item, index) => {
+                let isActive;
+                if (item.id === this.state.venue.id) {
+                  isActive = 'active';
+                }
+                return (
+                  <li key={index} className={isActive}
+                    onClick={this.selectVenue.bind(null, item)}>
+                    <span>{item.name}</span>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
           <div className="useravatar">
             <img src={this.state.user.avatar.uri} />
