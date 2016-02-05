@@ -40,7 +40,7 @@ serve: dist/server.mk $(entraces)
 
 # start a server and watch changes on file-system
 watch: serve build
-	@PATH=(PATH) webpack --watch
+	@PATH=$(PATH) webpack --watch
 
 # build for electron
 electron: dist/electron.mk
