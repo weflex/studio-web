@@ -70,7 +70,7 @@ dist/%.html: build/server/%.html $(dirs)
 	@cp $< $@
 
 $(outputs): $(sources) $(styles) node_modules $(dirs)
-	@webpack -p
+	PATH=$(PATH) webpack -p
 
 node_modules: package.json
 	@npm install
