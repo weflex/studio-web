@@ -108,14 +108,22 @@ class NavBar extends React.Component {
             <span className="icon-font icon-down-open"></span>
             <ul className={orgPanelClassName}>
               {this.state.venues.map((item, index) => {
-                let isActive;
+                let isActive, badge;
                 if (item.id === this.state.venue.id) {
                   isActive = 'active';
+                }
+                if (item.notifications && item.notifications.length) {
+                  badge = (
+                    <span className="badge">
+                      {item.notifications.length}
+                    </span>
+                  );
                 }
                 return (
                   <li key={index} className={isActive}
                     onClick={this.selectVenue.bind(null, item)}>
                     <span>{item.name}</span>
+                    {badge}
                   </li>
                 );
               })}
