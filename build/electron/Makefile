@@ -9,14 +9,13 @@ electron = '/usr/local/bin/electron-packager'
 platform ?= 'darwin'
 arch     ?= 'x64'
 
-PATH += '/usr/local/bin'
+export PATH += '/usr/local/bin'
 
 ELECTRON_MIRROR = https://npm.taobao.org/mirrors/electron
 
 
 build: $(assets) node_modules
 	$(electron) . studio \
-	  --icon favicon.ico \
 	  --platform=$(platform) \
 	  --arch=$(arch) \
 	  --version=0.36.7 \
