@@ -405,12 +405,23 @@ class Calendar extends React.Component {
     });
   }
 
-  componentDidMount() {
-    const table = this.refs.table.getBoundingClientRect();
-    const tableHeight = window.innerHeight - table.top;
-    this.table = table;
-    this.createCard();
+  setTableHeight() {
+    this.table = this.refs.table.getBoundingClientRect();
+    const tableHeight = window.innerHeight - this.table.top;
     this.setState({ tableHeight });
+  }
+
+  componentDidMount() {
+    this.createCard();
+    this.setTableHeight();
+    window.onresize = () => {
+      this.setTableHeight();
+      console.log(123);
+    };
+  }
+
+  componentWillUnmount() {
+    window.onresize = null;   
   }
 
   componentWillReceiveProps(nextProps) {
