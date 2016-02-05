@@ -90,7 +90,11 @@ class ClassTemplateList extends React.Component {
         <ListView
           loadingHint="正在加载课程模版资源"
           dataSource={async () => {
+            let venue = await client.org.getSelectedVenue();
             return await client.classTemplate.list({
+              where: {
+                venueId: venue.id
+              },
               include: ['venue', 'trainer']
             });
           }}

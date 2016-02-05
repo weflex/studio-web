@@ -64,7 +64,10 @@ class WeflexCalendar extends React.Component {
     ];
     const getData = async () => {
       return await client.classTemplate.list({
-        include: 'trainer'
+        include: 'trainer',
+        where: {
+          venueId: (await client.org.getSelectedVenue()).id
+        }
       });
     };
 
