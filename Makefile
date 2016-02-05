@@ -40,12 +40,20 @@ serve: dist/server.mk $(entraces)
 
 # start a server and watch changes on file-system
 watch: serve build
-	PATH=$(PATH) webpack --watch
+	@PATH=(PATH) webpack --watch
 
 # build for electron
 electron: dist/electron.mk
 	@make build
 	@make -C dist -f electron.mk
+
+electron-win32: dist/electron.mk
+	@make build
+	@make -C dist -f electron.mk platform=win32 arch=ia32
+
+electron-win64: dist/electron.mk
+	@make build
+	@make -C dist -f electron.mk platform=win32 arch=x64
 
 # drop static build
 clean: dist
@@ -70,7 +78,7 @@ dist/%.html: build/server/%.html $(dirs)
 	@cp $< $@
 
 $(outputs): $(sources) $(styles) node_modules $(dirs)
-	PATH=$(PATH) webpack -p
+	@PATH=$(PATH) webpack -p
 
 node_modules: package.json
 	@npm install

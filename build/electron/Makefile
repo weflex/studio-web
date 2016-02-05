@@ -6,16 +6,18 @@ assets  = \
 
 electron = '/usr/local/bin/electron-packager'
 
-PATH += '/usr/local/bin'
+platform ?= 'darwin'
+arch     ?= 'x64'
+
+export PATH += '/usr/local/bin'
 
 ELECTRON_MIRROR = https://npm.taobao.org/mirrors/electron
 
 
 build: $(assets) node_modules
 	$(electron) . studio \
-	  --icon apple-touch-icon \
-	  --platform=darwin \
-	  --arch=x64 \
+	  --platform=$(platform) \
+	  --arch=$(arch) \
 	  --version=0.36.7 \
 	  --overwrite
 
