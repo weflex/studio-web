@@ -78,7 +78,10 @@ class NavBar extends React.Component {
     return (
       <ul className="navbar">
         <li className="stats">
-          <div className="studio-name">{this.state.venue.name}</div>
+          <div className="studio-name">
+            <span className="text">{this.state.venue.name}</span>
+            <span className="icon-font icon-down-open"></span>
+          </div>
           <div className="useravatar">
             <img src={this.state.user.avatar.uri} />
           </div>

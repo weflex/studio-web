@@ -46,6 +46,20 @@
   font-size: 12px;
   font-family: 'PingFang SC', 'Open Sans', sans-serif;
 }
+.navbar .studio-name {
+  cursor: pointer;
+}
+.navbar .studio-name .text {
+  font-family: 'Open Sans Semibold', sans-serif;
+  padding-right: 3px;
+}
+.navbar .studio-name .icon-font {
+  font-size: 9px;
+  transition: all .2s ease-in-out;
+}
+.navbar .studio-name:hover .icon-font {
+  transform: rotate(-90deg) translateX(5px) translateY(-5px);
+}
 .navbar .useravatar {
   text-align: center;
   margin-top: 10px;
