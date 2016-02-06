@@ -14,7 +14,7 @@ Studio-desktop is able to build and release for the following platforms:
 
 - Native application
   - [x] Mac OSX
-  - [ ] Windows
+  - [x] Windows
   - [ ] Linux
 
 - Browser SPA(Single Page Application)
