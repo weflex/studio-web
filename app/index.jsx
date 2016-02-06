@@ -3,13 +3,13 @@
 import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Location, Locations } from 'react-router-component';
+import { 
+  Location, 
+  Locations 
+} from 'react-router-component';
 import { LaunchScreen } from './views/launcher';
-
-const NavBar = require('./components/navbar');
-const ToolBar = require('./components/toolbar');
-const Order = require('./views/order');
-
+import NavBar from './components/navbar';
+import ToolBar from './components/toolbar';
 import './layout/root.css';
 import './index.css';
 
@@ -79,6 +79,11 @@ class App extends React.Component {
       pending: true
     };
   }
+  componentWillMount() {
+    if (window.location.pathname === '/') {
+      window.location.pathname = '/calendar';
+    }
+  }
   onLauncherFinish() {
     this.setState({pending: false});
   }
@@ -90,13 +95,8 @@ class App extends React.Component {
         />
       );
     }
-    const OrderListView = createViewWithBars(Order.List);
     return (
       <Locations>
-        <Location path="/"
-          handler={OrderListView} />
-        <Location path="/order"
-          handler={OrderListView} />
         <Location path="/calendar"
           handler={createViewWithBars(require('./views/calendar'))} />
         <Location path="/class/template" 
@@ -107,6 +107,8 @@ class App extends React.Component {
           handler={createViewWithBars(require('./views/class-package/list'))} />
         <Location path="/class/package/add"
           handler={createViewWithBars(require('./views/class-package/detail'))} />
+        <Location path="/order"
+          handler={createViewWithBars(require('./views/order'))} />
         <Location path="/membership"
           handler={createViewWithBars(require('./views/membership/list'))} />
         <Location path="/venue/settings"
