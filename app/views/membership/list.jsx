@@ -1,13 +1,13 @@
 "use strict";
 
 import React from 'react';
+import moment from 'moment';
 import ListView from '../../components/list-view';
 import QRCode from 'qrcode.react';
 import { DropModal } from 'boron';
 import { SearchInput } from '../../components/toolbar/components/search';
+import { client } from '../../api';
 
-const moment = require('moment');
-const client = require('@weflex/gian').getClient('dev');
 moment.locale('zh-cn');
 
 class OrderList extends React.Component {

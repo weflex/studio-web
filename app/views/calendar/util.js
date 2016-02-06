@@ -1,3 +1,5 @@
+"use strict";
+
 import moment from 'moment';
 const CELL_HEIGHT = 50;
 

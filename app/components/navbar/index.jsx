@@ -1,9 +1,8 @@
 "use strict";
 
-const React = require('react');
-const Link = require('react-router-component').Link;
-const gian = require('@weflex/gian');
-const client = require('@weflex/gian').getClient('dev');
+import React from 'react';
+import { Link } from 'react-router-component';
+import { client } from '../../api';
 
 import './index.css';
 import '../../layout/font.css';

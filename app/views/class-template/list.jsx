@@ -5,8 +5,8 @@ import ListView from '../../components/list-view';
 import moment from 'moment';
 import { DropModal } from 'boron';
 import { SearchInput } from '../../components/toolbar/components/search';
+import { client } from '../../api';
 
-const client = require('@weflex/gian').getClient('dev');
 moment.locale('zh-cn');
 
 class ClassTemplateList extends React.Component {

@@ -6,8 +6,9 @@ import {
   SearchInput
 } from '../../components/toolbar/components/search';
 
-const moment = require('moment');
-const client = require('@weflex/gian').getClient('dev');
+import moment from 'moment';
+import { client } from '../../api';
+
 moment.locale('zh-cn');
 
 class OrderList extends React.Component {

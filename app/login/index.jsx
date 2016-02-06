@@ -5,11 +5,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import QRCode from 'qrcode.react';
 import { WeChatProvider } from '@weflex/passport.js';
+import { client } from '../api';
 import './index.css';
 
-const client = require('@weflex/gian').getClient('dev', {
-  onAuthFail: () => {}
-});
 const wechat = new WeChatProvider({
   appid: 'wx1ba55acac2fd5884',
   secret: '57cb056bcfe74dba0920237345c08c62',

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { ClipLoader } from 'halogen';
+import { client } from '../../api';
 import {
   Form,
   Row,
@@ -12,7 +13,6 @@ import {
   OptionsPicker
 } from '../../components/form';
 import './new.css';
-const client = require('@weflex/gian').getClient('dev');
 
 class NewClassTemplate extends React.Component {
   constructor(props) {
