@@ -41,7 +41,7 @@ $ make
 $ make electron
 ```
 
-Currently we only support MacOS
+Currently we only support MacOS and Windows.
 
 ### Web 
 
