@@ -1,6 +1,6 @@
-.venue-settings-container {
+.settings-detail {
   padding: 10px;
 }
-.venue-settings-form {
+.settings-detail > .form {
   width: 80%;
 }

@@ -8,6 +8,9 @@ class SettingsIndex extends React.Component {
   constructor(props) {
     super(props);
   }
+  get title() {
+    return '场馆设置';
+  }
   settings() {
     return [
       {

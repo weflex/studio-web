@@ -39,8 +39,8 @@ class Venue extends React.Component {
   }
   render() {
     return (
-      <div className="venue-settings-container">
-        <Form className="venue-settings-form">
+      <div className="settings-detail settings-venue">
+        <Form>
           <Row name="场馆名" required={true}>
             <TextInput 
               bindStateCtx={this}

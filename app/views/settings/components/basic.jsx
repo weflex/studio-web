@@ -39,7 +39,15 @@ class Venue extends React.Component {
   }
   render() {
     return (
-      <div>基本信息</div>
+      <div className="settings-detail settings-basic">
+        <Form>
+          <Row name="组织名称" required={true}>
+            <TextInput 
+              bindStateCtx={this}
+              bindStateName="data.name" />
+          </Row>
+        </Form>
+      </div>
     );
   }
 }
