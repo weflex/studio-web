@@ -22,36 +22,25 @@ class MasterDetail extends React.Component {
   async componentWillMount() {
     let masterSource = await this.props.masterSource();
     let pathname = this.state.pathname;
-    let selected = this.getSelected(masterSource);
     if (!pathname) {
       pathname = window.location.pathname;
     }
     this.setState({
       pathname,
-      selected,
       masterSource,
       loading: false
     });
   }
-  componentDidUpdate(prevProps, prevState) {
-    let selected = this.getSelected();
-    if (selected !== prevState.selected) {
-      this.setState({selected});
-    }
-  }
-  getSelected(masterSource: Object) {
-    masterSource = masterSource || this.state.masterSource;
-    let winPathname = window.location.pathname;
-    let basePathname = winPathname.replace(this.state.pathname, '');
+  getSelected(id) {
+    let source = this.state.masterSource;
     let selected = 0;
-    for (let index in masterSource) {
-      let source = masterSource[index];
-      if (source.pathname === basePathname) {
+    for (let index in source) {
+      if (source[index].id === id) {
         selected = index;
         break;
       }
     }
-    return selected;
+    return parseInt(selected);
   }
   render() {
     let className = 'master-detail';
@@ -61,11 +50,19 @@ class MasterDetail extends React.Component {
     return (
       <div className={className}>
         {this.renderMaster()}
-        {this.renderDetail()}
+        <div className="detail">
+          <Locations contextual>
+            <Location path="/" handler={this.renderDetail.bind(this)} />
+            <Location path="/:id" handler={this.renderDetail.bind(this)} />
+          </Locations>
+        </div>
       </div>
     );
   }
   renderMaster() {
+    let pathname = this.state.pathname;
+    const id = window.location.pathname.replace(pathname, '').replace(/\//g, '');
+    const selected = this.getSelected(id);
     const config = this.props.masterConfig || {
       title: 'title',
       section: null
@@ -81,12 +78,16 @@ class MasterDetail extends React.Component {
           let className = 'master-item';
           // FIXME(Yorkie): weird problem, the state.selected has been
           // converted to string
-          if (parseInt(this.state.selected) === index) {
+          if (parseInt(selected) === index) {
             className += ' active';
+          }
+          let href = this.state.pathname + '/' + item.id;
+          if (!href.startsWith('/')) {
+            href = '/' + href;
           }
           return (
             <li key={index} className={className}>
-              <Link href={this.state.pathname + item.pathname}>
+              <Link href={href}>
                 {header}
                 {section}
               </Link>
@@ -96,15 +97,36 @@ class MasterDetail extends React.Component {
       </ul>
     );
   }
-  renderDetail() {
-    let selected = this.state.selected;
-    let detail = this.state.masterSource[selected];
-    if (!detail || !detail.component) {
+  renderDetail(props, states) {
+    const config = this.props.masterConfig || {};
+    const source = this.state.masterSource;
+    let selected;
+    if (props.id) {
+      selected = this.getSelected(props.id);
+    } else {
+      selected = 0;
+    }
+    const detail = source[selected];
+    if (!detail) {
+      return <section className="detail"></section>;
+    }
+    let component;
+    if (config.detail && config.detail.component) {
+      component = config.detail.component;
+    } else {
+      component = detail.component;
+    }
+    if (!component) {
       return <section className="detail"></section>;
     }
     return (
       <section className="detail">
-        <detail.component {...detail.props} />
+        {React.createElement(
+          component,
+          {
+            data: detail
+          }
+        )}
       </section>
     );
   }

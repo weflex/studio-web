@@ -13,7 +13,6 @@
   width: 152px;
   border-right: 1px solid #ebebeb;
   box-shadow: 0 1px 4px 0 #ebebeb;
-  padding-top: 10px;
 }
 
 .master-detail .detail {
@@ -22,11 +21,8 @@
 }
 
 .master-detail .master-item {
-  height: 40px;
-  line-height: 40px;
-  vertical-align: middle;
-  padding-left: 10px;
   cursor: pointer;
+  padding: 10px;
   box-sizing: border-box;
   transition: all .2s ease-in-out;
 }
@@ -49,4 +45,20 @@
 
 .master-detail .master-item.active > a {
   color: #fff;
+}
+
+.master-detail .master-item header {
+  line-height: 30px;
+  height: 30px;
+  vertical-align: middle;
+}
+
+.master-detail .master-item section {
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.master-detail .master-item section > div {
+  font-size: 12px;
+  padding: 2px 0;
 }
