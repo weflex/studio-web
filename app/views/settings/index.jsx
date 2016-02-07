@@ -30,7 +30,7 @@ class SettingsIndex extends React.Component {
   render() {
     return (
       <MasterDetail
-        pathname="/venue"
+        pathname="/settings"
         className="settings"
         masterSource={this.settings}
       />
