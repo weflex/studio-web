@@ -14,18 +14,18 @@ class SettingsIndex extends React.Component {
   settings() {
     return [
       {
+        id: 'basic',
         title: '基本信息',
-        pathname: '/basic',
         component: require('./components/basic')
       },
       {
+        id: 'venue',
         title: '门店信息',
-        pathname: '/venue',
         component: require('./components/venue')
       },
       {
+        id: 'team',
         title: '团队设置',
-        pathname: '/team',
         component: require('./components/team')
       }
     ];

@@ -14,41 +14,45 @@ import {
 } from '../../components/form';
 import './detail.css';
 
-class NewClassTemplate extends React.Component {
+class Detail extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       venues: [],
       trainers: [],
-      loading: true
+      loading: true,
+      data: this.props.data || {
+        name: null,
+        price: null,
+        trainerId: null
+      }
     };
   }
   async componentDidMount() {
     this.setState({
-      formData: {
-        name: null,
-        price: null,
-        trainerId: null
-      },
       trainers: await client.trainer.list(),
       loading: false
     });
   }
   get title() {
-    return '添加新的课程模版';
+    if (this.props.data) {
+      return '添加新的课程模版';
+    } else {
+      return this.props.data.name;
+    }
   }
   get disabled() {
-    if (!this.state.formData.name ||
-      !this.state.formData.price ||
-      !this.state.formData.trainerId || 
-      !this.state.formData.description) {
+    if (!this.state.data.name ||
+      !this.state.data.price ||
+      !this.state.data.trainerId || 
+      !this.state.data.description) {
       return true;
     } else {
       return false;
     }
   }
   async onsubmit() {
-    await client.classTemplate.create(this.state.formData);
+    await client.classTemplate.upsert(this.state.data);
   }
   render() {
     if (this.state.loading) {
@@ -73,20 +77,23 @@ class NewClassTemplate extends React.Component {
           <Row name="课程名" required={true}>
             <TextInput
               bindStateCtx={this} 
-              bindStateName="formData.name" 
+              bindStateName="data.name" 
+              bindStateValue={this.state.data.name}
             />
           </Row>
           <Row name="价格" required={true}>
             <TextInput 
               bindStateCtx={this} 
-              bindStateName="formData.price"
+              bindStateName="data.price"
               bindStateType={Number}
+              bindStateValue={this.state.data.price}
             />
           </Row>
           <Row name="选择教练" required={true}>
             <OptionsPicker
               bindStateCtx={this}
-              bindStateName="formData.trainerId"
+              bindStateName="data.trainerId"
+              bindStateValue={this.state.data.trainerId}
               options={trainerOptions}
             />
           </Row>
@@ -94,11 +101,12 @@ class NewClassTemplate extends React.Component {
             <TextInput
               multiline={true}
               bindStateCtx={this}
-              bindStateName="formData.description"
+              bindStateName="data.description"
+              bindStateValue={this.state.data.description}
             />
           </Row>
           <Row>
-            <TextButton text="确认添加"
+            <TextButton text={this.props.data ? '保存修改' : '确认添加'}
               onClick={this.onsubmit.bind(this)} 
               disabled={this.disabled}
             />
@@ -109,4 +117,4 @@ class NewClassTemplate extends React.Component {
   }
 }
 
-module.exports = NewClassTemplate;
+module.exports = Detail;
