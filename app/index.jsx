@@ -99,10 +99,10 @@ class App extends React.Component {
       <Locations>
         <Location path="/calendar"
           handler={createViewWithBars(require('./views/calendar'))} />
-        <Location path="/class/template" 
-          handler={createViewWithBars(require('./views/class-template/list'))} />
         <Location path="/class/template/add"
           handler={createViewWithBars(require('./views/class-template/detail'))} />
+        <Location path="/class/template(/*)"
+          handler={createViewWithBars(require('./views/class-template/list'))} />
         <Location path="/class/package"
           handler={createViewWithBars(require('./views/class-package/list'))} />
         <Location path="/class/package/add"
@@ -111,7 +111,7 @@ class App extends React.Component {
           handler={createViewWithBars(require('./views/order/list'))} />
         <Location path="/membership"
           handler={createViewWithBars(require('./views/membership/list'))} />
-        <Location path="/settings*"
+        <Location path="/settings(/*)"
           handler={createViewWithBars(require('./views/settings/index'))} />
       </Locations>
     );
