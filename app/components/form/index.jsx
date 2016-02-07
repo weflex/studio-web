@@ -52,9 +52,9 @@ class TextInput extends BindingComponent {
       return (
         <textarea className={className.join(' ')} 
           style={styles}
+          value={this.props.bindStateValue}
           placeholder={this.props.placeholder}
           onChange={this.onChange.bind(this)}>
-          {this.bindStateValue}
         </textarea>
       );
     } else {
@@ -62,7 +62,7 @@ class TextInput extends BindingComponent {
         <input type="text"
           className={className.join(' ')}
           style={styles}
-          value={this.bindStateValue}
+          value={this.props.bindStateValue}
           onChange={this.onChange.bind(this)}
           placeholder={this.props.placeholder}
         />
@@ -124,7 +124,7 @@ class OptionsPicker extends BindingComponent {
     return (
       <select className="form-select" 
         style={styles}
-        value={this.bindStateValue}
+        value={this.props.bindStateValue}
         onChange={this.onChange.bind(this)}>
         {(this.props.options || []).map((item, index) => {
           return <option key={index} value={item.value}>{item.text}</option>;
