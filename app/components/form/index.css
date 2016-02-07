@@ -17,6 +17,8 @@
 .form-row > label {
   width: 10%;
   font-size: 12px;
+  font-family: 'PingFang SC', 'Open Sans', sans-serif;
+  color: #696969;
 }
 
 .form-row > label .label-text {
@@ -64,7 +66,7 @@
 }
 
 .form-input:focus {
-  border: 1px solid #333;
+  border: 1px solid #70CCA1;
 }
 
 /* TextButton */
