@@ -1,7 +1,6 @@
 "use strict"
 
 import React from 'react';
-// import { BaiduMap } from './map';
 import {
   Form,
   Row,
@@ -10,11 +9,10 @@ import {
   Label,
   HintText,
   OptionsPicker
-} from '../../components/form';
-import { client } from '../../api';
-import './settings.css';
+} from '../../../components/form';
+import { client } from '../../../api';
 
-class Settings extends React.Component {
+class Venue extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -68,4 +66,4 @@ class Settings extends React.Component {
   }
 }
 
-module.exports = Settings;
+module.exports = Venue;

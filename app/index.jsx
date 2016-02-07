@@ -108,11 +108,11 @@ class App extends React.Component {
         <Location path="/class/package/add"
           handler={createViewWithBars(require('./views/class-package/detail'))} />
         <Location path="/order"
-          handler={createViewWithBars(require('./views/order'))} />
+          handler={createViewWithBars(require('./views/order/list'))} />
         <Location path="/membership"
           handler={createViewWithBars(require('./views/membership/list'))} />
-        <Location path="/venue/settings"
-          handler={createViewWithBars(require('./views/venue/settings'))} />
+        <Location path="/venue*"
+          handler={createViewWithBars(require('./views/venue/index'))} />
       </Locations>
     );
   }
