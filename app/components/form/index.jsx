@@ -17,14 +17,20 @@ class Form extends React.Component {
 class Row extends React.Component {
   render() {
     let hint = null;
+    let labelOverStyle;
     if (this.props.hint) {
       hint = <HintText text={this.props.hint} />;
+    } else {
+      labelOverStyle = {
+        width: '20%'
+      };
     }
     return (
       <div className="form-row">
-        <Label 
+        <Label
           required={this.props.required} 
           text={this.props.name} 
+          style={labelOverStyle}
         />
         <div className="form-row-controls">
           {this.props.children}
@@ -59,7 +65,8 @@ class TextInput extends BindingComponent {
       );
     } else {
       return (
-        <input type="text"
+        <input
+          type={this.props.password ? 'password' : 'text'}
           className={className.join(' ')}
           style={styles}
           value={this.props.bindStateValue}
@@ -141,7 +148,7 @@ class Label extends React.Component {
       className = 'required';
     }
     return (
-      <label className={className}>
+      <label className={className} style={this.props.style}>
         <span className="label-text">{this.props.text}</span>
       </label>
     );
@@ -151,7 +158,7 @@ class Label extends React.Component {
 class HintText extends React.Component {
   render() {
     return (
-      <div className="form-row-hint">
+      <div className="form-row-hint" style={this.props.style}>
         {this.props.text.split('\\n').map((line, index) => {
           return <p key={index}>{line}</p>;
         })}
