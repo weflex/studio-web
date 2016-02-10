@@ -277,22 +277,42 @@ class Calendar extends React.Component {
       marginTop: top
     };
     const timeString = getFormatTime(time);
-
     if (top > 0) {
       return (
-        <div className="baseline-wrap" >
-          <div className="baseline-clock" style={style}>
-            <span className="baseline-clock-base">
-              {timeString}
-            </span>
-            <span className="baseline-clock-triangle"></span>
-          </div>
-          <div className="baseline" style={style}>
-          </div>
+        <div className="baseline-wrap">
+          <div className="baseline hidden" style={style}></div>
         </div>
       );
     }
-    return ;
+    return;
+  }
+
+  /**
+   * Current Line is for showing what's the time now
+   */
+  getCurrentLine() {
+    const now = new Date();
+    const time = {
+      hour: now.getHours(),
+      minute: now.getMinutes()
+    };
+    const style = {marginTop: 0};
+    if (this.rowList.length === 0) {
+      return;
+    }
+    const rowHeight = this.rowList[0].height;
+    style.marginTop = time.hour * rowHeight + (time.minute / 60) * rowHeight;
+    return (
+      <div className="baseline-wrap">
+        <div className="baseline-clock" style={style}>
+          <span className="baseline-clock-base">
+            {getFormatTime(time)}
+          </span>
+          <span className="baseline-clock-triangle"></span>
+        </div>
+        <div className="baseline" style={style}></div>
+      </div>
+    );
   }
 
   handleScroll(e) {
@@ -416,7 +436,6 @@ class Calendar extends React.Component {
     this.setTableHeight();
     window.onresize = () => {
       this.setTableHeight();
-      console.log(123);
     };
   }
 
@@ -442,6 +461,7 @@ class Calendar extends React.Component {
   render() {
     const tableBody = this.getTableBody();
     const baseline = this.getBaseLine(this.state.baselineClock, this.state.baselineTop);
+    const currline = this.getCurrentLine();
     const createCard = this.getCreateCard();
     return (
       <div className="calendar" ref="calendar">
@@ -457,6 +477,7 @@ class Calendar extends React.Component {
           onScroll={this.handleScroll.bind(this)}>
           {tableBody}
           {baseline}
+          {currline}
           {createCard}
         </div>
       </div>

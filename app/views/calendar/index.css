@@ -170,6 +170,11 @@
   cursor: crosshair;
 }
 
+/* we hide the active line */
+.schedule-table .baseline.hidden {
+  opacity: 0;
+}
+
 .schedule-table .cards {
   position: absolute;
   z-index: 1;
