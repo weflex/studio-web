@@ -2,6 +2,7 @@
 
 import React from 'react';
 import ClassCard from '../card';
+import moment from 'moment';
 import { client } from '../../../api';
 import './template.css';
 
@@ -36,9 +37,9 @@ class Template extends React.Component {
   render() {
     let data = {
       id: Date.now(),
-      date: '2016-02-01',
+      date: moment().startOf('isoWeek').toDate(),
       from: { hour: 0, minute: 0 },
-      to: { hour: 1, minute: 30 },
+      to: { hour: 2, minute: 0 },
       template: this.props.data,
       trainer: this.props.data.trainer,
       orders: []
