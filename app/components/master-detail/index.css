@@ -11,6 +11,10 @@
 
 .master-detail .master {
   width: 152px;
+  border-right-color: rgba(0,0,0,0);
+}
+
+.master-detail .master:not(.master-without-border) {
   border-right: 1px solid #ebebeb;
   box-shadow: 0 1px 4px 0 #ebebeb;
 }

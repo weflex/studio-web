@@ -61,7 +61,7 @@ class MasterDetail extends React.Component {
     }
     return (
       <div className={className}>
-        {this.renderMaster(masterWidth)}
+        {this.renderMaster(masterWidth, this.props.hideBorder)}
         <div className="detail" style={{ width: detailWidth }}>
           <Locations contextual>
             <Location path="/" handler={this.renderDetail.bind(this)} />
@@ -71,7 +71,7 @@ class MasterDetail extends React.Component {
       </div>
     );
   }
-  renderMaster(width) {
+  renderMaster(width, hideBorder) {
     let pathname = this.state.pathname;
     const id = window.location.pathname.replace(pathname, '').replace(/\//g, '');
     const selected = this.getSelected(id);
@@ -79,12 +79,16 @@ class MasterDetail extends React.Component {
       title: 'title',
       section: null
     };
+    let className = 'master';
     let style;
     if (width) {
       style = { width };
     }
+    if (hideBorder) {
+      className += ' master-without-border';
+    }
     return (
-      <ul className="master" style={style}>
+      <ul className={className} style={style}>
         {this.state.masterSource.map((item, index) => {
           let header = <header>{item[config.title]}</header>;
           let section = null;
