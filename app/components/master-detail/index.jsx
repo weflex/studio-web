@@ -8,6 +8,12 @@ import {
 } from 'react-router-component';
 import './index.css';
 
+/**
+ * MsterDetail
+ * props:
+ *  masterWidth {Number} specify the width of master
+ */
+
 class MasterDetail extends React.Component {
   constructor(props) {
     super(props);
@@ -47,10 +53,16 @@ class MasterDetail extends React.Component {
     if (this.props.className) {
       className += (' ' + this.props.className);
     }
+    let masterWidth;
+    let detailWidth;
+    if (this.props.masterWidth) {
+      masterWidth = this.props.masterWidth;
+      detailWidth = `calc(100% - ${masterWidth + 1}px)`;
+    }
     return (
       <div className={className}>
-        {this.renderMaster()}
-        <div className="detail">
+        {this.renderMaster(masterWidth)}
+        <div className="detail" style={{ width: detailWidth }}>
           <Locations contextual>
             <Location path="/" handler={this.renderDetail.bind(this)} />
             <Location path="/:id" handler={this.renderDetail.bind(this)} />
@@ -59,7 +71,7 @@ class MasterDetail extends React.Component {
       </div>
     );
   }
-  renderMaster() {
+  renderMaster(width) {
     let pathname = this.state.pathname;
     const id = window.location.pathname.replace(pathname, '').replace(/\//g, '');
     const selected = this.getSelected(id);
@@ -67,8 +79,12 @@ class MasterDetail extends React.Component {
       title: 'title',
       section: null
     };
+    let style;
+    if (width) {
+      style = { width };
+    }
     return (
-      <ul className="master">
+      <ul className="master" style={style}>
         {this.state.masterSource.map((item, index) => {
           let header = <header>{item[config.title]}</header>;
           let section = null;
