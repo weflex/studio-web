@@ -291,10 +291,10 @@ class Calendar extends React.Component {
    * Current Line is for showing what's the time now
    */
   getCurrentLine() {
-    const now = new Date();
+    const now = this.state.currentDate;
     const time = {
-      hour: now.getHours(),
-      minute: now.getMinutes()
+      hour: now.hours(),
+      minute: now.minutes()
     };
     const style = {marginTop: 0};
     if (this.rowList.length === 0) {
@@ -431,9 +431,23 @@ class Calendar extends React.Component {
     this.setState({ tableHeight });
   }
 
+  setScrollTop() {
+    const hour = this.state.currentDate.hours();
+    if (this.rowList.length > 0) {
+      let rowHeight = this.rowList[0].height;
+      // FIXME(Yorkie): 15px will let user see the complete top time string.
+      let scrollTop = (hour - 2) * rowHeight - 15;
+      if (scrollTop > 0) {
+        this.setState({ scrollTop });
+        this.refs.table.scrollTop = scrollTop;
+      }
+    }
+  }
+
   componentDidMount() {
     this.createCard();
     this.setTableHeight();
+    this.setScrollTop();
     window.onresize = () => {
       this.setTableHeight();
     };
