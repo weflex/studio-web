@@ -36,9 +36,9 @@ class Detail extends React.Component {
   }
   get title() {
     if (this.props.data) {
-      return '添加新的课程模版';
-    } else {
       return this.props.data.name;
+    } else {
+      return '添加新的课程模版';
     }
   }
   get disabled() {
