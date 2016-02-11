@@ -47,13 +47,25 @@ class Venue extends React.Component {
               bindStateName="data.name"
             />
           </Row>
+          <Row name="联系电话" required={true}>
+            <TextInput
+              bindStateCtx={this}
+              bindStateName="data.phone"
+            />
+          </Row>
           <Row name="地址" required={true}>
             <TextInput
               bindStateCtx={this}
               bindStateName="data.address"
             />
           </Row>
-          <Row name="场馆描述">
+          <Row name="店长" required={true}>
+            <TextInput
+              bindStateCtx={this}
+              bindStateName="data.address"
+            />
+          </Row>
+          <Row name="场景图片">
             <TextInput
               multiline={true}
               bindStateCtx={this}
