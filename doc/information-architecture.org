@@ -1,0 +1,79 @@
+#+TITLE:    Information Architecture of Studio Web App
+#+AUTHOR:   Scott Wang
+#+LANGUAGE: en
+#+STARTUP:  indent align
+
+
+* Status of This Document
+
+This document is Draft version ~1~.
+
+/If you have any question while reading this document, you may leave me a comment, if you have any suggestion or modification for this document, feel free to make me a pull request./
+
+
+* Settings
+
+*Settings* is where user checks or updates setting options about his
+organization, venues or teams.
+
+The whole *settings* are divided into sections: [[Organization]], [[Venues]]
+and [[Team]].
+
+
+** Organization
+*** Organization Name
+*** Banner Image
+*** Manager
+
+
+** Venues
+*** Actions
+**** Add Venue
+**** Suspend Venue
+*** Venues
+For *every venue*, subsequent information is listed:
+**** Venue Name
+**** Phone
+**** Address and Location
+***** City
+***** Address
+***** Location
+Location is a refered value based on [[Address]]
+**** Manager
+**** Photos
+
+
+** Team
+*** Actions
+**** Invite Staff
+**** Suspend Staff Account
+*** Staffs
+For *every staff in the team*, subsequent information is listed:
+**** Staff Name
+**** Position
+***** Venue
+Could be =All= or specific name of a venue.
+***** Role
+Role's value should be one of =Manager=, =Staff=, =Trainer= or
+=Manager+Trainer=.
+
+Both =Trainer= and =Manager+Trainer= will appear as =Trainer= when
+adding classes or class-templates.
+
+=Manager= and =Manager+Trainer= have manager-level privilege to
+accesss and update venue information.
+**** Description
+
+
+** Billing
+*** Actions
+**** Apply for Invoice
+*** Subscriptions
+For *every subscriptions made by this account*, subsequent information
+is listed:
+**** Transaction ID
+**** Venue
+For which venue this subscription has been made.
+**** Expiration Date
+**** Status
+Payment status. Should be one of =Success=, =Failed= or =Pending=.
