@@ -24,19 +24,6 @@ class Venue extends React.Component {
       data: await client.org.getSelectedVenue()
     });
   }
-  get title() {
-    return '场馆设置';
-  }
-  get actions() {
-    return [
-      {
-        title: '管理场馆'
-      },
-      {
-        title: '邀请教练'
-      }
-    ]
-  }
   render() {
     return (
       <div className="settings-detail settings-team">
