@@ -210,12 +210,10 @@ class WeflexCalendar extends React.Component {
 
   async updateClasses(newClass) {
     // upsert the class to remote server
-    await client.class.upsert(_.clone(newClass));
-    // if .id is not set -> it's new, otherwise update
-    if (typeof newClass.id !== 'string') {
-      newClass.id = Date.now();
-    }
-    this.state.allClass.set(newClass.id, newClass);
+    // NOTE(Yorkie): DONT REMOVE THE CLONE, BECAUSE
+    // GIAN WILL REMOVE `.id` that will change the id.
+    const res = await client.class.upsert(newClass);
+    this.state.allClass.set(res.id, newClass);
 
     // compute the schedule object out from classes.
     const schedule = this.getSchedule(this.state.allClass);
