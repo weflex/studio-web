@@ -213,7 +213,8 @@ class WeflexCalendar extends React.Component {
     // NOTE(Yorkie): DONT REMOVE THE CLONE, BECAUSE
     // GIAN WILL REMOVE `.id` that will change the id.
     const res = await client.class.upsert(newClass);
-    this.state.allClass.set(res.id, newClass);
+    newClass.id = res.id;
+    this.state.allClass.set(newClass.id, newClass);
 
     // compute the schedule object out from classes.
     const schedule = this.getSchedule(this.state.allClass);
