@@ -34,20 +34,18 @@ function getRoundTime(time) {
 
 function getFormatTime(time) {
   let hour, minute;
-
   if (time.minute < 10) {
-     minute = '0' + time.minute;
+    minute = '0' + time.minute;
   } else {
-     minute = time.minute;
+    minute = time.minute;
   }
 
   if (time.hour < 10) {
-     hour = '0' + time.hour;
+    hour = '0' + time.hour;
   } else {
-     hour = time.hour;
+    hour = time.hour;
   }
-
-  return `${hour}:${minute}`;
+  return hour + ':' + minute;
 }
 
 function getWeek(date, format) {
