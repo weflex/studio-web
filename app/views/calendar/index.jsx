@@ -1,4 +1,5 @@
 "use strict";
+import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ClassCard from './card';
@@ -207,8 +208,16 @@ class WeflexCalendar extends React.Component {
     this.refs.newClassModal.show();
   }
 
-  updateClasses(newClass) {
+  async updateClasses(newClass) {
+    // upsert the class to remote server
+    await client.class.upsert(_.clone(newClass));
+    // if .id is not set -> it's new, otherwise update
+    if (typeof newClass.id !== 'string') {
+      newClass.id = Date.now();
+    }
     this.state.allClass.set(newClass.id, newClass);
+
+    // compute the schedule object out from classes.
     const schedule = this.getSchedule(this.state.allClass);
     this.setState({ schedule });
   }

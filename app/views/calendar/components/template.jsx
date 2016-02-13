@@ -19,25 +19,13 @@ class Template extends React.Component {
     });
   }
   onPanEnd(event, data) {
-    // TODO(Yorkie): this will move to calendar.updateClasses
-    client.class.create({
-      date: data.date,
-      from: data.from,
-      to: data.to,
-      // TODO(Yorkie): will remove
-      spots: {},
-      templateId: data.template.id,
-      trainerId: data.trainer.id,
-    });
-    this.setState({
-      showCopyCard: false
-    });
+    this.setState({showCopyCard: false});
     this.props.onRelease(data);
   }
   render() {
     const template = this.props.data;
     const data = {
-      id: Date.now(),
+      id: null,
       date: moment().startOf('isoWeek').toDate(),
       from: {
         hour: 0, minute: 0
