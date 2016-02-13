@@ -41,6 +41,14 @@ class Detail extends React.Component {
       return '添加新的课程模版';
     }
   }
+  get actions() {
+    return [
+      {
+        title: '返回',
+        path: '/class/template'
+      }
+    ];
+  }
   get disabled() {
     if (!this.state.data.name ||
       !this.state.data.price ||
