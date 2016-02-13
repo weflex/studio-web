@@ -15,10 +15,25 @@ import {
   getGridOffsetByTime,
   transferToPercentage,
 } from './util'
-
 moment.locale('zh-cn');
 
+/**
+ * The `OrderInfo` is used for showing the order of every class
+ * at calendar.
+ *
+ * @class OrderInfo
+ */
 class OrderInfo extends React.Component {
+
+  /**
+   * To initialize an OrderInfo, the constructor function
+   * does set the following states:
+   * 
+   * - orders
+   * - option
+   *
+   * @constructor
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -32,6 +47,11 @@ class OrderInfo extends React.Component {
     };
   }
 
+  /**
+   * @method selectOption
+   * @private
+   * @param {Object} option
+   */
   selectOption(option) {
     return () => {
       if (option === this.state.option) {
@@ -48,10 +68,19 @@ class OrderInfo extends React.Component {
     }
   }
 
+  /**
+   * @method getStatusLabel
+   * @private
+   * @param {String} status
+   */
   getStatusLabel(status) {
     return <div className={`label-${status}`}></div>
   }
 
+  /**
+   * @method render
+   * @return {Element}
+   */
   render() {
     const ordersInfo = this.state.orders.map((order) => {
       const label = this.getStatusLabel(order.status);
@@ -91,27 +120,52 @@ class OrderInfo extends React.Component {
   }
 }
 
+/**
+ * The `ClassCard` class is for standing a card for class,
+ * this class does handle with the move, create and position about
+ * this card
+ *
+ * @class ClassCard
+ */
 class ClassCard extends React.Component {
+
+  /**
+   * The constructor of `ClassCard` does define the following state:
+   *
+   * - style
+   * - isResizing
+   * - isMoving
+   * - arrow: default value is 'center'
+   * - position: default value is 'right'
+   * - isPopUpActive: default value is false
+   * - lastScrollOffset
+   *
+   * @constructor
+   */
   constructor(props) {
     super(props);
+    // Get the cell height
     const cellHeight = getCellHeight();
+    // Compute the grid height by from and to
     const height = getGridHeight(
-      this.props.cardInfo.from, this.props.cardInfo.to, cellHeight);
-    const top = getGridOffsetByTime(this.props.cardInfo.from, cellHeight);
+      this.props.cardInfo.from, 
+      this.props.cardInfo.to, 
+      cellHeight);
+    // Get the topPostion by from and cell height
+    const topPostion = getGridOffsetByTime(
+      this.props.cardInfo.from, 
+      cellHeight);
+
+    // Set the style
     this.style = {
       height: height,
-      marginTop: top,
+      marginTop: topPostion,
       marginLeft: 0,
     };
-    this.state = {
-      style: this.style,
-      isResizing: this.props.isResizing || false,
-      isMoving: this.props.isMoving || false,
-      arrow: 'center',
-      position: 'right',
-      isPopUpActive: false,
-      lastScrollOffset: 0
-    };
+
+    // Attach the cellHeight to instance for later uses
+    this.cellHeight = cellHeight;
+    // The `popUpStyle` of the instance is cover the style of popup component
     this.popUpStyle = {
       style: {
         zIndex: '200',
@@ -125,17 +179,40 @@ class ClassCard extends React.Component {
         color: '#f7f7f7'
       }
     };
-    this.cellHeight = cellHeight;
+    this.state = {
+      style: this.style,
+      isResizing: this.props.isResizing || false,
+      isMoving: this.props.isMoving || false,
+      arrow: 'center',
+      position: 'right',
+      isPopUpActive: false,
+      lastScrollOffset: 0
+    };
   }
 
+  // TODO(Yorkie): use getter
+  /**
+   * @method isCardDragging
+   * @return {Boolean} return if the card is dragging.
+   */
   isCardDragging() {
     return this.isMouseDown;
   }
 
+  /**
+   * @method createMoveHandler
+   * @param {Function} handler
+   */
   createMoveHanler(handler) {
+    if (!this.moveHammer) {
+      delete this.moveHammer;
+    }
     this.moveHammer = new Hammer.Manager(handler);
     this.moveHammer.add(new Hammer.Pan());
-    const classDuration = getTimeDuration(this.props.cardInfo.from, this.props.cardInfo.to);
+
+    // Get the duration of class by from and to
+    const cardInfo = this.props.cardInfo;
+    const classDuration = getTimeDuration(cardInfo.from, cardInfo.to);
     this.moveHammer.get('pan').set({
       threshold: 0,
     });
@@ -149,7 +226,7 @@ class ClassCard extends React.Component {
       if (this.props.isEmptyFrom) {
         timeToFrom = event.srcEvent.layerY;
       } else {
-        timeToFrom = getTimeDuration(this.props.cardInfo.from, calendar.state.baselineClock);
+        timeToFrom = getTimeDuration(cardInfo.from, calendar.state.baselineClock);
       }
 
       const pointerDay = calendar.state.atCol;
@@ -235,13 +312,26 @@ class ClassCard extends React.Component {
     });
   }
 
+  /**
+   * @method getNewCard
+   * @param {Function} callback
+   * @param {Date} newTime
+   * @param {Date} date
+   * @return {Object} return the new generated card information
+   */
   getNewCard(callback, newTime, date) {
     const newCard = Object.assign({}, this.props.cardInfo);
     callback.call(this, newCard);
     return newCard;
   }
 
+  /**
+   * @method createResizeHanler
+   * @param {Function} handler
+   * @param {String} direction
+   */
   createResizeHanler(handler, direction) {
+    // TODO(Yorkie): keep consistence with `moveHammer`.
     const resizeHammer = new Hammer(handler);
     resizeHammer.get('pan').set({
       direction: Hammer.DIRECTION_VERTICAL,
@@ -319,6 +409,11 @@ class ClassCard extends React.Component {
     });
   }
 
+  /**
+   * Open the popup
+   *
+   * @method showPopUp
+   */
   showPopUp(e) {
     if (this.props.isEmptyFrom) {
       return;
@@ -346,10 +441,18 @@ class ClassCard extends React.Component {
     this.setState(newState);
   }
 
+  /**
+   * Hide the popup
+   * @method hidePopUp
+   */
   hidePopUp() {
     this.setState({ isPopUpActive: false });
   }
 
+  // TODO(Yorkie): rename to onMouseDown
+  /**
+   * @method handlerMouseDown
+   */
   handleMouseDown(event) {
     event.preventDefault();
     this.isMouseDown = true;
@@ -358,6 +461,10 @@ class ClassCard extends React.Component {
     }
   }
 
+  // TODO(Yorkie): rename to onMouseUp
+  /**
+   * @method handleMouseUp
+   */
   handleMouseUp(event) {
     event.preventDefault();
     this.isMouseDown = false;
@@ -366,6 +473,12 @@ class ClassCard extends React.Component {
     }
   }
 
+  /**
+   * This is the delegate of this component when component 
+   * did finish mountation.
+   *
+   * @method componentDidMount
+   */
   componentDidMount() {
     const card = this.refs.card;
     const topDragger = this.refs.topDragger;
@@ -376,6 +489,9 @@ class ClassCard extends React.Component {
     this.createResizeHanler(bottomDragger, 'bottom');
   }
 
+  /**
+   * @method render
+   */
   render() {
     const {
       id, 
