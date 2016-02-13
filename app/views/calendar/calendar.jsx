@@ -52,26 +52,25 @@ class TableHeader extends React.Component {
 }
 
 class Cards extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
-    let cards = this.props.cardsInfo.map((card, index) => {
-      return (
-        <this.props.cardTemplate
-          key={index}
-          cardInfo={card}
-        />
-      );
-    });
-
+    let zIndex = 0;
+    if (this.props.day) {
+      zIndex = (7 - this.props.day) * 24;
+    }
+    if (this.props.hour) {
+      zIndex = zIndex + (24 - this.props.hour);
+    }
     return (
       <div
+        ref="cards"
         className="cards"
-        ref='cards'
+        style={{zIndex}}
         onClick={this.handleClick}>
-        {cards}
+        {this.props.cardsInfo.map((card, index) => {
+          return (
+            <this.props.cardTemplate key={index} cardInfo={card} />
+          );
+        })}
       </div>
     );
   }
@@ -145,13 +144,20 @@ class Calendar extends React.Component {
     this.createCardTop = 0;
   }
 
-  renderCards(cardsInfo, index) {
+  renderCards(cardsInfo, hourIndex, dayIndex) {
+    let refRow = c => {
+      if (c) {
+        this.rowList[hourIndex] = c.getBoundingClientRect();
+      }
+    };
     return (
       <li
-        key={index}
+        key={dayIndex + '_' + hourIndex}
         style={{height: this.state.cellHeight}}
-        ref={c => {if (c) {this.rowList[index] = c.getBoundingClientRect()}}}>
+        ref={refRow}>
         <Cards
+          hour={hourIndex}
+          day={dayIndex}
           cardsInfo={cardsInfo} 
           cardTemplate={this.props.cardTemplate}
         />
@@ -159,12 +165,12 @@ class Calendar extends React.Component {
     );
   }
 
-  getCards(daySchedule, hourIndex) {
+  getCards(daySchedule, hourIndex, dayIndex) {
     let style = {height: this.state.cellHeight};
     if (daySchedule) {
       let cardsInfo = daySchedule.get(hourIndex);
       if (cardsInfo) {
-        return this.renderCards(cardsInfo, hourIndex);
+        return this.renderCards(cardsInfo, hourIndex, dayIndex);
       }
     }
 
@@ -205,7 +211,7 @@ class Calendar extends React.Component {
   getTableColumn(weekSchedule, dayIndex) {
     let daySchedule = weekSchedule.get(dayIndex);
     let col = getRange(0, DAYHOUR - 1).map((value, hourIndex) => {
-      return this.getCards(daySchedule, hourIndex);
+      return this.getCards(daySchedule, hourIndex, dayIndex);
     });
 
     return (

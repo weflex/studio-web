@@ -135,6 +135,7 @@ class ClassCard extends React.Component {
    * - style
    * - isResizing
    * - isMoving
+   * - isEditing
    * - arrow: default value is 'center'
    * - position: default value is 'right'
    * - isPopUpActive: default value is false
@@ -183,6 +184,7 @@ class ClassCard extends React.Component {
       style: this.style,
       isResizing: this.props.isResizing || false,
       isMoving: this.props.isMoving || false,
+      isEditing: this.props.isEditing || true,
       arrow: 'center',
       position: 'right',
       isPopUpActive: false,
@@ -381,7 +383,7 @@ class ClassCard extends React.Component {
         time = this.state.stickBorderTime;
       }
       const newTime = getRoundTime(time);
-      const newCard = this.getNewCard(function (card) {
+      const newCard = this.getNewCard((card) => {
         if (direction === 'bottom') {
           card.to = newTime;
           if (isOverDrag) {
@@ -541,12 +543,11 @@ class ClassCard extends React.Component {
         onMouseUp={this.handleMouseUp.bind(this)}
         ref="card">
         <div className="top-dragger" ref="topDragger"></div>
-        <div className="class-name">
-          {template.name}
-        </div>
+        <div className="class-name">{template.name}</div>
         <div className="class-duration">{duration}</div>
         {stats}
         <div className="bottom-dragger" ref="bottomDragger"></div>
+        <div className="class-button-del"></div>
         <PopUp
           style={this.popUpStyle}
           active={this.state.isPopUpActive}
