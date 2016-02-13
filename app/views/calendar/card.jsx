@@ -184,7 +184,6 @@ class ClassCard extends React.Component {
       style: this.style,
       isResizing: this.props.isResizing || false,
       isMoving: this.props.isMoving || false,
-      isEditing: this.props.isEditing || true,
       arrow: 'center',
       position: 'right',
       isPopUpActive: false,
@@ -504,6 +503,7 @@ class ClassCard extends React.Component {
       trainer, 
       orders
     } = this.props.cardInfo;
+    const calendar = this.props.calendar;
     const duration = `${getFormatTime(from)} - ${getFormatTime(to)}`;
     const dayOfYear = moment(date).format('MM[月]DD[日]');
     const dayOfWeek = moment(date).format('ddd');
@@ -522,12 +522,18 @@ class ClassCard extends React.Component {
     let style = Object.assign({}, 
       this.state.style, this.props.style);
 
-    let onHide;
-    if (this.props.onHide) {
-      onHide = (event) => {
-        // TODO(Yorkie): hide at UI
-        this.props.onHide.call(this, event, id);
-      };
+    let hideButton;
+    if (calendar && calendar.state.isEditing) {
+      let onHide;
+      if (this.props.onHide) {
+        onHide = (event) => {
+          // TODO(Yorkie): hide at UI
+          this.props.onHide.call(this, event, id);
+        };
+      }
+      hideButton = (
+        <div className="class-button-close" onClick={onHide}></div>
+      );
     }
 
     let stats = null;
@@ -555,7 +561,7 @@ class ClassCard extends React.Component {
         <div className="class-duration">{duration}</div>
         {stats}
         <div className="bottom-dragger" ref="bottomDragger"></div>
-        <div className="class-button-close" onClick={onHide}></div>
+        {hideButton}
         <PopUp
           style={this.popUpStyle}
           active={this.state.isPopUpActive}

@@ -25,6 +25,7 @@ moment.locale('zh-cn');
 class WeflexCalendar extends React.Component {
   constructor(props) {
     super(props);
+    this.cards = [];
     this.state = {
       schedule: new Map(),
       allClass: new Map(),
@@ -42,7 +43,10 @@ class WeflexCalendar extends React.Component {
       {
         title: '管理课程',
         onClick: () => {
-          console.log('start to manage classes');
+          // FIXME(Yorkie): move the below code to calendar?
+          const calendar = this.refs.calendar;
+          const isEditing = !calendar.state.isEditing;
+          calendar.setState({isEditing});
         }
       },
       {
@@ -144,26 +148,31 @@ class WeflexCalendar extends React.Component {
   }
 
   getCardTemplate() {
-    const ctx = {};
-    ctx.calendar = this.refs.calendar;
-    ctx.cards = [];
+    let self = this;
+    let ctx = {
+      cards: [],
+      calendar: self.refs.calendar
+    };
     ctx.calendar.ctx = ctx;
     
-    const updateClasses = this.updateClasses.bind(this);
-    const deleteClassById = this.deleteClassById.bind(this);
+    const updateClasses = self.updateClasses.bind(self);
+    const deleteClassById = self.deleteClassById.bind(self);
 
-    this.cardTemplate = class CardTemplate extends React.Component {
+    self.cardTemplate = class CardTemplate extends React.Component {
       componentDidMount() {
         this.refs.classCard.ctx = ctx;
-        ctx.cards.push(this.refs.classCard);
+        // push card to self.cards
+        self.cards.push(this.refs.classCard);
+        // reference self.cards to ctx.cards
+        ctx.cards = self.cards;
       }
-
       render() {
         const props = Object.assign({}, this.props);
         return (
           <ClassCard
             {...props}
             ref="classCard"
+            calendar={self.refs.calendar}
             onHide={(event, id) => {
               deleteClassById(id);
             }}
