@@ -70,7 +70,8 @@ header {
   color: #fff;
 }
 
-.userpass-container {
+.userpass-container,
+.smscode-container {
   width: 300px;
 }
 

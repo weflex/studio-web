@@ -60,6 +60,38 @@ class Login extends React.Component {
           }
         },
         {
+          id: 'smscode',
+          hint: '使用短信登陆',
+          view: () => {
+            return (
+              <Form className="smscode-container">
+                <Row name="手机号" required={true}>
+                  <TextInput
+                    bindStateCtx={this}
+                    bindStateName="data.phone"
+                  />
+                </Row>
+                <Row name="验证码" required={true}>
+                  <TextInput
+                    bindStateCtx={this}
+                    bindStateName="data.smscode"
+                  />
+                </Row>
+                <Row>
+                  <TextButton text="发送验证码"
+                    disabled={false}
+                    onClick={this.onSmsCodeRequestSent.bind(this)}
+                  />
+                  <TextButton text="登陆"
+                    disabled={this.canLogin}
+                    onClick={this.onSmsCodeLogin.bind(this)}
+                  />
+                </Row>
+              </Form>
+            );
+          }
+        },
+        {
           id: 'qrcode',
           hint: '使用二维码',
           view: () => {
@@ -99,6 +131,12 @@ class Login extends React.Component {
     await client.user.login(
       data.username, data.password);
     window.location.href = '/calendar';
+  }
+  async onSmsCodeRequestSent() {
+    
+  }
+  async onSmsCodeLogin() {
+    // TODO(Yorkie)
   }
   renderSelectButton(select, index) {
     let className;
