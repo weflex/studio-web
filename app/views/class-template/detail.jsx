@@ -97,6 +97,14 @@ class Detail extends React.Component {
               bindStateValue={this.state.data.price}
             />
           </Row>
+          <Row name="课程时长" required={true}>
+            <TextInput
+              bindStateCtx={this}
+              bindStateName="data.during"
+              bindStateType={Number}
+              bindStateValue={this.state.data.during}
+            />
+          </Row>
           <Row name="选择教练" required={true}>
             <OptionsPicker
               bindStateCtx={this}

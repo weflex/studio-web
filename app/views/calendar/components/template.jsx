@@ -35,13 +35,19 @@ class Template extends React.Component {
     this.props.onRelease(data);
   }
   render() {
-    let data = {
+    const template = this.props.data;
+    const data = {
       id: Date.now(),
       date: moment().startOf('isoWeek').toDate(),
-      from: { hour: 0, minute: 0 },
-      to: { hour: 2, minute: 0 },
-      template: this.props.data,
-      trainer: this.props.data.trainer,
+      from: {
+        hour: 0, minute: 0
+      },
+      to: {
+        hour: parseInt(template.during / 60),
+        minute: parseInt(template.during % 60)
+      },
+      template: template,
+      trainer: template.trainer,
       orders: []
     };
     let cardStyle;
@@ -60,9 +66,12 @@ class Template extends React.Component {
     }
     return (
       <li className="resource-calendar-template">
-        <div>{this.props.data.name}</div>
-        <div>{'时长1小时'}</div>
-        <div>{this.props.data.trainer.fullname.first}</div>
+        <div>{template.name}</div>
+        <div>{template.during}分钟</div>
+        <div>
+          {template.trainer.fullname.first} 
+          {template.trainer.fullname.last}
+        </div>
         <div className="resource-calendar-template-hint">
           <div className="icon-font icon-copy"></div>
           <div className="hint-text">拖动模版创建课程</div>
