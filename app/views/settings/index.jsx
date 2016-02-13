@@ -25,7 +25,7 @@ class SettingsIndex extends React.Component {
       },
       {
         id: 'team',
-        title: '团队设置',
+        title: '团队',
         component: require('./components/team')
       }
     ];
