@@ -275,7 +275,7 @@
   background-color: #6ED4A4;
 }
 
-.class-card .class-button-del {
+.class-card .class-button-close {
   position: absolute;
   background-color: #FF8AC2;
   height: 16px;
@@ -285,7 +285,7 @@
   border-radius: 8px;
 }
 
-.class-card .class-button-del:before {
+.class-card .class-button-close:before {
   content: 'x';
   color: #fff;
   font-weight: 500;

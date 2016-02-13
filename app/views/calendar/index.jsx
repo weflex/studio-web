@@ -150,6 +150,8 @@ class WeflexCalendar extends React.Component {
     ctx.calendar.ctx = ctx;
     
     const updateClasses = this.updateClasses.bind(this);
+    const deleteClassById = this.deleteClassById.bind(this);
+
     this.cardTemplate = class CardTemplate extends React.Component {
       componentDidMount() {
         this.refs.classCard.ctx = ctx;
@@ -162,6 +164,9 @@ class WeflexCalendar extends React.Component {
           <ClassCard
             {...props}
             ref="classCard"
+            onHide={(event, id) => {
+              deleteClassById(id);
+            }}
             onPanEnd={(event, data) => {
               updateClasses(data);
             }}
@@ -215,6 +220,17 @@ class WeflexCalendar extends React.Component {
     const res = await client.class.upsert(newClass);
     newClass.id = res.id;
     this.state.allClass.set(newClass.id, newClass);
+
+    // compute the schedule object out from classes.
+    const schedule = this.getSchedule(this.state.allClass);
+    this.setState({ schedule });
+  }
+
+  async deleteClassById(id) {
+    // delete async
+    client.class.delete(id);
+    // delete in UI
+    this.state.allClass.delete(id);
 
     // compute the schedule object out from classes.
     const schedule = this.getSchedule(this.state.allClass);

@@ -522,6 +522,14 @@ class ClassCard extends React.Component {
     let style = Object.assign({}, 
       this.state.style, this.props.style);
 
+    let onHide;
+    if (this.props.onHide) {
+      onHide = (event) => {
+        // TODO(Yorkie): hide at UI
+        this.props.onHide.call(this, event, id);
+      };
+    }
+
     let stats = null;
     if (orders && orders.length > 0) {
       stats = (
@@ -547,7 +555,7 @@ class ClassCard extends React.Component {
         <div className="class-duration">{duration}</div>
         {stats}
         <div className="bottom-dragger" ref="bottomDragger"></div>
-        <div className="class-button-del"></div>
+        <div className="class-button-close" onClick={onHide}></div>
         <PopUp
           style={this.popUpStyle}
           active={this.state.isPopUpActive}
