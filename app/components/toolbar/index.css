@@ -43,22 +43,27 @@
   font-family: 'PingFang SC', sans-serif;
   background-color: #fff;
   cursor: pointer;
-  color: #7e7e7e;
-  border: 1px solid #EBEBEB;
+  border: 1px solid #ebebeb;
   border-radius: 4px;
   padding: 4px 10px;
   margin: 0px 5px;
-  transition: all .3s ease-in-out;
 }
+
 .toolbar .action-button:hover {
-  color: #fff;
   border-color: #70CCA1;
   background-color: #70CCA1;
 }
 
-.toolbar a {
+.toolbar .action-button,
+.toolbar .action-button a {
   text-decoration: none;
   color: #242f40;
+  transition: all .2s ease-in-out;
+}
+
+.toolbar .action-button:hover,
+.toolbar .action-button:hover a {
+  color: #fff;
 }
 
 .toolbar .searchbox {
@@ -79,6 +84,7 @@
   top: 2px;
   left: 0;
 }
+
 .toolbar .search input {
   height: 28px;
   width: 100px;
@@ -91,6 +97,7 @@
   border: 1px solid #d8d8d8;
   transition: all .2s ease-in-out;
 }
+
 .toolbar .search input:focus {
   border: 1px solid #00cfe6;
   width: 200px;
