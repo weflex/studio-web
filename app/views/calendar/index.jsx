@@ -56,7 +56,7 @@ class WeflexCalendar extends React.Component {
         onClick: (ctx) => {
           const calendar = this.refs.calendar;
           calendar.setState({isEditing: false});
-          ctx.resource.show();
+          ctx.resource.toggle();
         }
       }
     ];

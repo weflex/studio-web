@@ -10,22 +10,24 @@ class Action extends React.Component {
       toggled: this.props.toggled || false,
     };
   }
-  get onClick() {
+  createOnClickHandler(actions) {
     let handler;
-    const sharedContext = this.props.sharedContext;
-    switch (this.props.onClick) {
-      case 'resource.show':
-      case 'resource.hide':
-      case 'resource.toggle':
-        handler = sharedContext.resource.toggle;
-      default:
-        handler = this.props.onClick;
+    if (actions.sharedCtx) {
+      switch (this.props.onClick) {
+        case 'resource.show':
+        case 'resource.hide':
+        case 'resource.toggle':
+          handler = actions.sharedCtx.resource.toggle;
+        default:
+          handler = this.props.onClick;
+      }
     }
     return (event) => {
+      actions.closeAll.call(actions);
       let toggled = !this.state.toggled;
       this.setState({toggled});
       if (typeof handler === 'function') {
-        handler(sharedContext);
+        handler(actions.sharedCtx);
       }
     };
   }
@@ -53,7 +55,7 @@ class Action extends React.Component {
       <span className={className}
         key={this.props.index}
         style={this.props.style}
-        onClick={this.onClick}
+        onClick={this.createOnClickHandler(this.props.parent)}
       >{link}</span>
     );
   }
@@ -71,23 +73,11 @@ export class Actions extends React.Component {
       ],
       activity: null
     };
-  }
-  updateActions(actions) {
-    if (Array.isArray(actions)) {
-      this.setState({ actions });
-    }
-  }
-  setActivity(activity) {
-    this.setState({
-      activity
-    });
-  }
-  render() {
     /**
      * `sharedCtx` is used for sharing state between action buttons 
      * in one page lifecycle.
      */
-    let sharedCtx = {
+    this.sharedCtx = {
 
       /**
        * @property {Object} resource - the resource panel utils
@@ -106,7 +96,7 @@ export class Actions extends React.Component {
         toggle: () => {
           const activity = this.state.activity;
           activity.toggleResource.call(activity);
-          sharedCtx.resource.shown = !sharedCtx.resource.shown;
+          this.sharedCtx.resource.shown = !this.sharedCtx.resource.shown;
         },
 
         /**
@@ -114,8 +104,8 @@ export class Actions extends React.Component {
          * @method resource.hide
          */
         hide: () => {
-          if (sharedCtx.resource.shown) {
-            sharedCtx.resource.toggle();
+          if (this.sharedCtx.resource.shown) {
+            this.sharedCtx.resource.toggle();
           }
         },
 
@@ -124,20 +114,54 @@ export class Actions extends React.Component {
          * @method resource.show
          */
         show: () => {
-          if (!sharedCtx.resource.shown) {
-            sharedCtx.resource.toggle();
+          if (!this.sharedCtx.resource.shown) {
+            this.sharedCtx.resource.toggle();
           }
         }
       },
+      /**
+       * save all actions here
+       * @property {Array} actions
+       */
+      actions: [],
     };
+  }
+
+  updateActions(actions) {
+    if (Array.isArray(actions)) {
+      this.setState({ actions });
+    }
+  }
+
+  setActivity(activity) {
+    this.setState({
+      activity
+    });
+  }
+
+  addActionRef(actionNode) {
+    if (actionNode) {
+      this.sharedCtx.actions.push(actionNode);
+    }
+  }
+
+  closeAll() {
+    this.sharedCtx.actions.forEach((action) => {
+      action.setState({toggled: false});
+    });
+  }
+
+  render() {
+    this.sharedCtx.actions = [];
     return (
       <div className="actions">
         {this.state.actions.map((action, index) => {
-          console.log(action, index);
           return (
-            <Action key={index} 
-              sharedContext={sharedCtx} 
-              {...action} 
+            <Action 
+              key={index}
+              ref={this.addActionRef.bind(this)}
+              parent={this}
+              {...action}
             />
           );
         })}
