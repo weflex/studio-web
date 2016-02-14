@@ -416,7 +416,10 @@ class ClassCard extends React.Component {
    * @method showPopUp
    */
   showPopUp(e) {
-    if (this.props.isEmptyFrom) {
+    const calendar = this.props.calendar;
+    if (this.props.isEmptyFrom || 
+      (calendar && calendar.state.isEditing)) {
+      // don't show popup when in editing
       return;
     }
     const card = ReactDOM.findDOMNode(this.refs.card);
@@ -450,11 +453,10 @@ class ClassCard extends React.Component {
     this.setState({ isPopUpActive: false });
   }
 
-  // TODO(Yorkie): rename to onMouseDown
   /**
-   * @method handlerMouseDown
+   * @method onMouseDown
    */
-  handleMouseDown(event) {
+  onMouseDown(event) {
     event.preventDefault();
     this.isMouseDown = true;
     if (typeof this.props.onMouseDown === 'function') {
@@ -462,11 +464,10 @@ class ClassCard extends React.Component {
     }
   }
 
-  // TODO(Yorkie): rename to onMouseUp
   /**
-   * @method handleMouseUp
+   * @method onMouseUp
    */
-  handleMouseUp(event) {
+  onMouseUp(event) {
     event.preventDefault();
     this.isMouseDown = false;
     if (typeof this.props.onMouseUp === 'function') {
@@ -509,7 +510,12 @@ class ClassCard extends React.Component {
     const dayOfWeek = moment(date).format('ddd');
     const trainerName = `${trainer.fullname.first} ${trainer.fullname.last}`;
     
+    let hideButton;
+    let onClickThis = this.showPopUp.bind(this);
     let className = 'class-card';
+    let style = Object.assign({}, 
+      this.state.style, this.props.style);
+
     if (this.props.className) {
       className += ' ' + this.props.className;
     }
@@ -519,17 +525,15 @@ class ClassCard extends React.Component {
       className += ' moved';
     }
 
-    let style = Object.assign({}, 
-      this.state.style, this.props.style);
-
-    let hideButton;
     if (calendar && calendar.state.isEditing) {
       let onHide;
+      className += ' animated infinite shake';
       if (this.props.onHide) {
         onHide = (event) => {
           // TODO(Yorkie): hide at UI
           this.props.onHide.call(this, event, id);
         };
+        onClickThis = onHide;
       }
       hideButton = (
         <div className="class-button-close" onClick={onHide}></div>
@@ -552,9 +556,9 @@ class ClassCard extends React.Component {
         style={style}
         id={`class_${id}`}
         onMouseLeave={this.hidePopUp.bind(this)}
-        onClick={this.showPopUp.bind(this)}
-        onMouseDown={this.handleMouseDown.bind(this)}
-        onMouseUp={this.handleMouseUp.bind(this)}
+        onClick={onClickThis}
+        onMouseDown={this.onMouseDown.bind(this)}
+        onMouseUp={this.onMouseUp.bind(this)}
         ref="card">
         <div className="top-dragger" ref="topDragger"></div>
         <div className="class-name">{template.name}</div>
