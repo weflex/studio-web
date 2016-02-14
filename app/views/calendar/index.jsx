@@ -31,7 +31,6 @@ class WeflexCalendar extends React.Component {
       allClass: new Map(),
     };
   }
-
   get title() {
     return (
       <WeekPicker calendar={this.refs.calendar} />
@@ -42,7 +41,9 @@ class WeflexCalendar extends React.Component {
     return [
       {
         title: '管理课程',
-        onClick: () => {
+        onClick: (ctx) => {
+          // hide the resource firstly.
+          ctx.resource.hide();
           // FIXME(Yorkie): move the below code to calendar?
           const calendar = this.refs.calendar;
           const isEditing = !calendar.state.isEditing;
@@ -51,7 +52,11 @@ class WeflexCalendar extends React.Component {
       },
       {
         title: '添加课程',
-        onClick: 'resource.show'
+        onClick: (ctx) => {
+          const calendar = this.refs.calendar;
+          calendar.setState({isEditing: false});
+          ctx.resource.show();
+        }
       }
     ];
   }
