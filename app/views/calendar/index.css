@@ -299,15 +299,10 @@
 }
 
 .create-card {
-  background: rgba(12, 0, 204, 0.26);
   position: absolute;
   opacity: 0;
-}
-
-.create-card-shown {
-  transition-property: top, opacity;
-  transition-duration: 0.3s;
-  transition-timing-function: ease-in-out;
+  background: rgba(12,0,204,0.26);
+  border: 1px solid rgba(12,0,204,0.40);
 }
 
 .ToolTipPortal .class-date {
