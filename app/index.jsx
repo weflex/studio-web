@@ -10,7 +10,9 @@ import {
 import { LaunchScreen } from './views/launcher';
 import NavBar from './components/navbar';
 import ToolBar from './components/toolbar';
+
 import './layout/root.css';
+import './layout/keyframes.css';
 import './index.css';
 
 function createViewWithBars (component) {
