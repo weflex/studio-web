@@ -12,9 +12,6 @@ import { client } from '../../api';
 moment.locale('zh-cn');
 
 class List extends React.Component {
-  constructor(props) {
-    super(props);
-  }
   get title() {
     return '用户管理';
   }

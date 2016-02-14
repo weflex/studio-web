@@ -1,0 +1,15 @@
+.order-detail-container {
+  padding: 10px;
+}
+
+.order-detail-row > div {
+  display: inline-block;
+  font-size: 12px;
+  font-family: 'PingFang SC', 'Open Sans', sans-serif;
+  color: #7e7e7e;
+  padding: 5px 0;
+}
+
+.order-detail-head {
+  width: 100px;
+}
