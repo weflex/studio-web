@@ -11,9 +11,6 @@ import moment from 'moment';
 moment.locale('zh-cn');
 
 class List extends React.Component {
-  constructor(props) {
-    super(props);
-  }
   get title() {
     return '课程模版';
   }
@@ -30,14 +27,14 @@ class List extends React.Component {
       title: 'name',
       section: (item) => {
         return [
-          <div key={0}>时长1小时</div>,
+          <div key={0}>{item.during}分钟</div>,
           <div key={1}>{item.trainer.fullname.first}</div>
         ];
       },
       detail: {
         component: Detail
       }
-    }
+    };
   }
   async source() {
     let venue = await client.org.getSelectedVenue();

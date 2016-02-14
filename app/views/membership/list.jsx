@@ -2,40 +2,21 @@
 
 import React from 'react';
 import moment from 'moment';
+import MasterDetail from '../../components/master-detail';
 import ListView from '../../components/list-view';
+import Detail from './detail';
 import QRCode from 'qrcode.react';
 import { DropModal } from 'boron';
 import { SearchInput } from '../../components/toolbar/components/search';
 import { client } from '../../api';
-
 moment.locale('zh-cn');
 
-class OrderList extends React.Component {
+class List extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
-    this.rows = [
-      {
-        title: '会员姓名',
-        display: o => o.user.username
-      },
-      {
-        title: '会员电话',
-        display: o => o.user.phone
-      },
-      {
-        title: '加入时间',
-        sortBy: o => o.createdAt,
-        display: o => moment(o.createdAt).format('lll')
-      },
-      {
-        title: '加入场馆',
-        display: o => o.venue.name
-      }
-    ];
   }
   get title() {
-    return '会员管理';
+    return '用户管理';
   }
   get actions() {
     return [
@@ -47,71 +28,43 @@ class OrderList extends React.Component {
       }
     ];
   }
-  renderView(data) {
-    return (
-      <div className="list-view">
-        <div className="list-view-header">会员信息</div>
-        <div className="list-view-content">
-          <div className="list-view-fieldset list-view-fieldset-right">
-            <img className="list-view-avatar" src={data.user.avatar.uri} />
-          </div>
-          <div className="list-view-fieldset">
-            <label>姓名</label>
-            <span>{data.user.nickname}</span>
-          </div>
-          <div className="list-view-fieldset">
-            <label>位置</label>
-            <span>{data.user.city},{data.user.country}</span>
-          </div>
-          <div className="list-view-fieldset">
-            <label>联系电话</label>
-            <span>{data.user.phone}</span>
-          </div>
-          <div className="list-view-blank"></div>
-          <div className="list-view-fieldset">
-            <label>加入场馆</label>
-            <span>{data.venue.name}</span>
-          </div>
-          <div className="list-view-fieldset">
-            <label>场馆地址</label>
-            <span>{data.venue.address}</span>
-          </div>
-          <div className="list-view-fieldset">
-            <label>加入时间</label>
-            <span>{moment(data.createdAt).calendar()}</span>
-          </div>
-        </div>
-        <div className="list-view-footer">
-        </div>
-      </div>
-    );
+  get config() {
+    return {
+      title: 'title',
+      section: (item) => {
+        return [
+          <div key={0}>{item.user.phone}</div>,
+          <div key={1}>{item.package.name}</div>
+        ];
+      },
+      detail: {
+        component: Detail
+      }
+    };
+  }
+  async source() {
+    let venue = await client.org.getSelectedVenue();
+    let list = await client.membership.list({
+      where: {
+        venueId: venue.id
+      },
+      include: ['user', 'package']
+    });
+    return (list || []).map((item) => {
+      item.title = item.user.nickname;
+      return item;
+    });
   }
   render() {
     return (
-      <div>
-        <ListView
-          loadingHint="正在加载会员信息"
-          dataSource={async () => {
-            return await client.membership.list({
-              include: ['user', 'venue']
-            });
-          }}
-          renderView={this.renderView}
-          rows={this.rows} 
-        />
-        <DropModal ref="inviteNewMemberModal" contentStyle={{
-          padding: 10,
-          textAlign: 'center'
-        }}>
-          <h2>邀请新会员</h2>
-          <div style={{margin: 20}}>
-            <QRCode value="weflex://join" size={150} />
-            <p>使用WeFlex扫码加入</p>
-          </div>
-        </DropModal>
-      </div>
+      <MasterDetail 
+        pathname="membership"
+        className="membership"
+        masterSource={this.source}
+        masterConfig={this.config}
+      />
     );
   }
 }
 
-module.exports = OrderList;
+module.exports = List;

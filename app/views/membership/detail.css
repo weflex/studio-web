@@ -1,0 +1,52 @@
+/**
+ * Package Card
+ * TODO(Yorkie): will move this to be shared
+ */
+.package-card {
+  position: relative;
+  width: 260px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.package-card-avatar {
+  position: absolute;
+  right: 30px;
+  top: 30px;
+  height: 50px;
+  width: 50px;
+  border-radius: 25px;
+  text-align: center;
+}
+
+.package-card-avatar img {
+  height: 50px;
+  width: 50px;
+  border-radius: 25px;
+}
+
+.package-card-row,
+.package-card-avatar {
+  font-size: 12px;
+  font-family: 'PingFang SC', 'Open Sans', sans-serif;
+  color: #7e7e7e;
+  padding: 5px 0;
+}
+
+.package-card-row > div {
+  display: inline-block;
+}
+
+.package-card-head {
+  width: 60px;
+}
+
+/**
+ * membership styles
+ */
+.membership-detail-container {
+  padding: 10px;
+  box-sizing: border-box;
+}
