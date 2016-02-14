@@ -49,6 +49,7 @@
   margin: 0px 5px;
 }
 
+.toolbar .action-button.toggled,
 .toolbar .action-button:hover {
   border-color: #70CCA1;
   background-color: #70CCA1;
@@ -62,7 +63,9 @@
 }
 
 .toolbar .action-button:hover,
-.toolbar .action-button:hover a {
+.toolbar .action-button:hover a,
+.toolbar .action-button.toggled,
+.toolbar .action-button.toggled a {
   color: #fff;
 }
 

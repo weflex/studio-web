@@ -41,7 +41,8 @@ class WeflexCalendar extends React.Component {
     return [
       {
         title: '管理课程',
-        onClick: (ctx) => {
+        toggledTitle: '完成',
+        onClick: (ctx, action) => {
           // hide the resource firstly.
           ctx.resource.hide();
           // FIXME(Yorkie): move the below code to calendar?
@@ -109,6 +110,10 @@ class WeflexCalendar extends React.Component {
   componentDidMount() {
     this.getClassData();
     this.getCardTemplate();
+  }
+
+  componentWillUnmount() {
+    console.log('unmount');
   }
 
   componentWillUpdate(nextProps, nextState) {

@@ -3,6 +3,62 @@
 import React from 'react';
 import { Link } from 'react-router-component';
 
+class Action extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      toggled: this.props.toggled || false,
+    };
+  }
+  get onClick() {
+    let handler;
+    const sharedContext = this.props.sharedContext;
+    switch (this.props.onClick) {
+      case 'resource.show':
+      case 'resource.hide':
+      case 'resource.toggle':
+        handler = sharedContext.resource.toggle;
+      default:
+        handler = this.props.onClick;
+    }
+    return (event) => {
+      let toggled = !this.state.toggled;
+      this.setState({toggled});
+      if (typeof handler === 'function') {
+        handler(sharedContext);
+      }
+    };
+  }
+  render() {
+    let className = 'action-button';
+    let title = this.props.title;
+    let link;
+    if (this.state.toggled) {
+      className += ' toggled';
+      if (this.props.toggledTitle) {
+        title = this.props.toggledTitle;
+      }
+    }
+    if (this.state.toggled && this.props.toggledTitle) {
+      title = this.props.toggledTitle;
+    } else {
+      title = this.props.title;
+    }
+    if (typeof this.props.path !== 'string') {
+      link = title;
+    } else {
+      link = <Link href={this.props.path}>{title}</Link>;
+    }
+    return (
+      <span className={className}
+        key={this.props.index}
+        style={this.props.style}
+        onClick={this.onClick}
+      >{link}</span>
+    );
+  }
+}
+
 export class Actions extends React.Component {
   constructor(props) {
     super(props);
@@ -77,27 +133,12 @@ export class Actions extends React.Component {
     return (
       <div className="actions">
         {this.state.actions.map((action, index) => {
-          const link = typeof action.path !== 'string' ? action.title :
-            <Link href={action.path}>{action.title}</Link>;
-          // handle the shorthands for string onclick
-          switch (action.onClick) {
-            case 'resource.show':
-            case 'resource.hide':
-            case 'resource.toggle':
-              action.onClick = sharedCtx.resource.toggle;
-              break;
-            default:
-              // if not a String and be a function, bind the sharedCtx
-              if (typeof action.onClick === 'function') {
-                action.onClick = action.onClick.bind(null, sharedCtx);
-              }
-          }
+          console.log(action, index);
           return (
-            <span className="action-button"
-              key={index}
-              style={action.style}
-              onClick={action.onClick}
-            >{link}</span>
+            <Action key={index} 
+              sharedContext={sharedCtx} 
+              {...action} 
+            />
           );
         })}
       </div>
