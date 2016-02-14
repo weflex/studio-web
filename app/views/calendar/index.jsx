@@ -112,10 +112,6 @@ class WeflexCalendar extends React.Component {
     this.getCardTemplate();
   }
 
-  componentWillUnmount() {
-    console.log('unmount');
-  }
-
   componentWillUpdate(nextProps, nextState) {
     this.getCardTemplate();
   }
