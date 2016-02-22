@@ -41,6 +41,22 @@ class Venue extends React.Component {
       }
     ]
   }
+  checkBanner(file) {
+    console.log(file.type);
+    if (file.type !== 'image/png' &&
+      file.type !== 'image/jpg' &&
+      file.type !== 'image/jpeg' &&
+      file.type !== 'image/gif') {
+      let err = new TypeError('image required');
+      err.displayMessage = '必须选择图片';
+      return err;
+    }
+    if (file.size > 2*1024*1024) {
+      let err = new Error('image size should less than 2M');
+      err.displayMessage = '图片大小必须小于2M'
+    }
+    return null;
+  }
   render() {
     return (
       <div className="settings-detail settings-basic">
@@ -55,7 +71,8 @@ class Venue extends React.Component {
           <Row name="首栏图片" required={true}>
             <FileInput
               bindStateCtx={this}
-              bindStateName="org.banner" 
+              bindStateName="org.banner"
+              checkFile={this.checkBanner.bind(this)}
             />
           </Row>
           <Row name="经理" required={true}>

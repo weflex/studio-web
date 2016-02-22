@@ -81,14 +81,47 @@ class TextInput extends BindingComponent {
 class FileInput extends BindingComponent {
   constructor(props) {
     super(props);
+    this.state = {
+      value: null
+    };
+  }
+  onFileUpload(event) {
+    // stop default behaviors
+    event.stopPropagation();
+    event.preventDefault();
+    let file = event.target.files[0];
+    if (typeof this.props.checkFile === 'function') {
+      let err = this.props.checkFile(file);
+      if (err) {
+        // TODO(Yorkie): extend the alerting way
+        return alert(err.displayMessage || err.message);
+      }
+    }
+    // create reader
+    const reader = new FileReader();
+    reader.onload = this.onFileFinished;
+    reader.readAsBinaryString(file);
+
+    // setup for ui
+    this.setState({
+      value: file.name
+    });
+    // call onChange
+    this.onChange(event);
+  }
+  async onFileFinished(event) {
+    const result = event.target.result;
+    console.log(result);
+    // TODO(Yorkie|Scott): working with qiniu or API...
   }
   render() {
     return (
       <div className="form-file-input">
         <div className="form-btn-group">
           <TextInput
-            bindstateCtx={this.props.bindstateCtx}
-            bindStateName={this.props.bindStateName}
+            bindstateCtx={this}
+            bindStateName="value"
+            bindStateValue={this.state.value}
             placeholder={this.props.placeholder}
             flex={0.8}
           />
@@ -98,7 +131,7 @@ class FileInput extends BindingComponent {
         <input
           type="file"
           value={this.props.bindStateValue}
-          onChange={this.onChange.bind(this)}
+          onChange={this.onFileUpload.bind(this)}
         />
       </div>
     );
