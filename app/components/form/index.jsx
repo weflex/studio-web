@@ -78,6 +78,33 @@ class TextInput extends BindingComponent {
   }
 }
 
+class FileInput extends BindingComponent {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return (
+      <div className="form-file-input">
+        <div className="form-btn-group">
+          <TextInput
+            bindstateCtx={this.props.bindstateCtx}
+            bindStateName={this.props.bindStateName}
+            placeholder={this.props.placeholder}
+            flex={0.8}
+          />
+          <TextButton text="上传"
+            flex={0.2} />
+        </div>
+        <input
+          type="file"
+          value={this.props.bindStateValue}
+          onChange={this.onChange.bind(this)}
+        />
+      </div>
+    );
+  }
+}
+
 class TextButton extends React.Component {
   constructor(props) {
     super(props);
@@ -102,8 +129,13 @@ class TextButton extends React.Component {
     if (disabled) {
       className += ' disabled';
     }
+    let styles = {};
+    if (this.props.flex) {
+      styles.width = 'calc(' + (this.props.flex * 100) + '% - 5px)';
+    }
     return (
       <button className={className}
+        style={styles}
         onClick={this.onClick.bind(this)}
         disabled={disabled}>
         {this.props.text}
@@ -167,46 +199,11 @@ class HintText extends React.Component {
   }
 }
 
-// class PriceControl extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       type: 1,
-//       prices: []
-//     };
-//   }
-//   render() {
-//     return (
-//       <div className="price-control">
-//         <div className="price-select">
-//           <OptionsPicker
-//             stateCtx={this}
-//             stateName="type"
-//             options={[
-//               {text: '1种价格', value: 1},
-//               {text: '2种价格', value: 2},
-//             ]}
-//           />
-//         </div>
-//         <ul className="price-prices">
-//           {_.range(1, Number(this.state.type) + 1).map((item, index) => {
-//             return (
-//               <li key={index}>
-//                 <TextInput flex={0.7} placeholder="价格名称" />
-//                 <TextInput flex={0.3} placeholder="价格" />
-//               </li>
-//             );
-//           })}
-//         </ul>
-//       </div>
-//     )
-//   }
-// }
-
 exports.Form = Form;
 exports.Row = Row;
 exports.Label = Label;
 exports.HintText = HintText;
 exports.TextInput = TextInput;
+exports.FileInput = FileInput;
 exports.TextButton = TextButton;
 exports.OptionsPicker = OptionsPicker;

@@ -5,6 +5,7 @@ import {
   Form,
   Row,
   TextInput,
+  FileInput,
   TextButton,
   Label,
   HintText,
@@ -48,17 +49,20 @@ class Venue extends React.Component {
             <TextInput 
               bindStateCtx={this}
               bindStateName="org.name"
-              bindStateValue={this.state.org.name} />
+              bindStateValue={this.state.org.name} 
+            />
           </Row>
           <Row name="首栏图片" required={true}>
-            <TextInput
+            <FileInput
               bindStateCtx={this}
-              bindStateName="org.banner" />
+              bindStateName="org.banner" 
+            />
           </Row>
           <Row name="经理" required={true}>
             <TextInput
               bindStateCtx={this}
-              bindStateName="org.manager" />
+              bindStateName="org.manager" 
+            />
           </Row>
         </Form>
       </div>

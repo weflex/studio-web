@@ -55,7 +55,7 @@
   border-radius: 4px;
   padding: 5px;
   outline: none;
-  height: 25px;
+  height: 30px;
   margin-right: 5px;
   box-sizing: border-box;
   transition: all .2s ease-in-out;
@@ -65,8 +65,25 @@
   min-height: 150px;
 }
 
-.form-input:focus {
+.form-input:focus,
+.form-file-input:hover .form-input:focus {
   border: 1px solid #70CCA1;
+}
+
+/* FileInput */
+.form-file-input {
+  position: relative;
+}
+
+.form-file-input > input {
+  position: absolute;
+  height: 30px;
+  width: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  z-index: 90;
+  cursor: pointer;
 }
 
 /* TextButton */
@@ -89,9 +106,9 @@
   color: #eee;
   cursor: no-drop;
 }
-.form-btn:not(.disabled):hover {
+.form-btn:not(.disabled):hover,
+.form-file-input:hover .form-btn:not(.disabled) {
   color: #fff;
   border-color: #70CCA1;
   background-color: #70CCA1;
 }
-
