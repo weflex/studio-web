@@ -16,12 +16,15 @@ class Venue extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: {}
+      venue: {},
+      org: {},
     };
   }
   async componentWillMount() {
+    const venue = await client.org.getSelectedVenue();
+    const org = await client.org.get(venue.orgId);
     this.setState({
-      data: await client.org.getSelectedVenue()
+      venue, org
     });
   }
   get title() {
@@ -41,20 +44,21 @@ class Venue extends React.Component {
     return (
       <div className="settings-detail settings-basic">
         <Form>
-          <Row name="组织名称">
+          <Row name="组织名称" required={true}>
             <TextInput 
               bindStateCtx={this}
-              bindStateName="data.name" />
+              bindStateName="org.name"
+              bindStateValue={this.state.org.name} />
           </Row>
-          <Row name="首栏图片">
+          <Row name="首栏图片" required={true}>
             <TextInput
               bindStateCtx={this}
-              bindStateName="data.banner" />
+              bindStateName="org.banner" />
           </Row>
-          <Row name="经理">
+          <Row name="经理" required={true}>
             <TextInput
               bindStateCtx={this}
-              bindStateName="data.manager" />
+              bindStateName="org.manager" />
           </Row>
         </Form>
       </div>
