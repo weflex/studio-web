@@ -72,6 +72,7 @@ class TextInput extends BindingComponent {
           value={this.props.bindStateValue}
           onChange={this.onChange.bind(this)}
           placeholder={this.props.placeholder}
+          disabled={this.props.disabled}
         />
       );
     }

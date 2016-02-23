@@ -18,28 +18,21 @@ class Venue extends React.Component {
     super(props);
     this.state = {
       venue: {},
-      org: {},
+      org: {
+        administrator: {
+          username: '...'
+        }
+      },
     };
   }
   async componentWillMount() {
     const venue = await client.org.getSelectedVenue();
-    const org = await client.org.get(venue.orgId);
+    const org = await client.org.get(venue.orgId, {
+      include: ['administrator']
+    });
     this.setState({
       venue, org
     });
-  }
-  get title() {
-    return '场馆设置';
-  }
-  get actions() {
-    return [
-      {
-        title: '管理场馆'
-      },
-      {
-        title: '邀请教练'
-      }
-    ]
   }
   checkBanner(file) {
     console.log(file.type);
@@ -76,9 +69,11 @@ class Venue extends React.Component {
             />
           </Row>
           <Row name="经理" required={true}>
-            <TextInput
+            <TextInput 
               bindStateCtx={this}
-              bindStateName="org.manager" 
+              bindStateName="org.administrator.username"
+              bindStateValue={this.state.org.administrator.username}
+              disabled={true}
             />
           </Row>
         </Form>
