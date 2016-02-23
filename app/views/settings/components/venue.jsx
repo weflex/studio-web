@@ -17,26 +17,19 @@ class Venue extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      venue: {}
+      venue: {
+        administrator: {
+          username: '...'
+        }
+      }
     };
   }
   async componentWillMount() {
-    this.setState({
-      venue: await client.org.getSelectedVenue()
+    const id = (await client.org.getSelectedVenue()).id;
+    const venue = await client.venue.get(id, {
+      include: ['administrator']
     });
-  }
-  get title() {
-    return '场馆设置';
-  }
-  get actions() {
-    return [
-      {
-        title: '管理场馆'
-      },
-      {
-        title: '邀请教练'
-      }
-    ]
+    this.setState({venue});
   }
   render() {
     return (
@@ -67,12 +60,15 @@ class Venue extends React.Component {
             <TextInput
               bindStateCtx={this}
               bindStateName="venue.address"
+              bindStateValue={this.state.venue.administrator.username}
+              disabled={true}
             />
           </Row>
           <Row name="场景图片">
             <FileInput
               bindStateCtx={this}
               bindStateName="venue.photos"
+              multiple={true}
             />
           </Row>
         </Form>

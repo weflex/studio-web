@@ -78,21 +78,56 @@
 .form-file-input > input {
   position: absolute;
   width: 100%;
+  height: 30px;
   top: 0;
-  bottom: 0;
   left: 0;
   opacity: 0;
   z-index: 90;
   cursor: pointer;
 }
 
-.form-file-preview img {
-  height: 100px;
-  width: calc(100% - 5px);
-  margin: 10px 0 0 0;
+.form-file-preview {
+  overflow-x: scroll;
+  margin-top: 10px;
+}
+
+.form-file-preview > li {
+  position: relative;
+  display: inline-block;
+  margin: 0px 2px;
   border: 1px solid #ebebeb;
   border-radius: 3px;
   box-sizing: border-box;
+}
+
+.form-file-preview:not(.multiple) > li {
+  width: calc(100% - 5px);
+  height: 100px;
+}
+
+.form-file-preview.multiple > li {
+  width: calc(33% - 5px);
+  height: 110px;
+}
+
+.form-file-preview > li > .hover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  cursor: pointer;
+  background-color: rgba(0,0,0,0);
+  transition: all .2s ease-in-out;
+}
+
+.form-file-preview > li > .hover:hover {
+  background-color: rgba(0,0,0,.3);
+}
+
+.form-file-preview > li > img {
+  height: 100%;
+  width: 100%;
 }
 
 /* TextButton */

@@ -84,7 +84,7 @@ class FileInput extends BindingComponent {
     super(props);
     this.state = {
       value: null,
-      dataUrl: null
+      dataUrls: []
     };
   }
   onFileUpload(event) {
@@ -115,19 +115,44 @@ class FileInput extends BindingComponent {
     this.onChange(event);
   }
   async onFileFinished(event) {
-    const result = event.target.result;
-    this.setState({
-      dataUrl: result
-    });
+    const content = event.target.result;
     // TODO(Yorkie|Scott): working with qiniu or API...
+    // update to UIs
+    let dataUrls = this.state.dataUrls;
+    if (!this.props.multiple) {
+      dataUrls = [content];
+    } else {
+      dataUrls.push(content);
+    }
+    this.setState({dataUrls});
+  }
+  preview() {
+    let props = {
+      className: 'form-file-preview'
+    };
+    if (this.props.multiple) {
+      props.className += ' multiple';
+    }
+    return (
+      <ul {...props}>
+        {this.state.dataUrls.map((content, index) => {
+          let onClose = () => {
+            const dataUrls = this.state.dataUrls.filter((content, index_) => {
+              return index !== index_;
+            });
+            this.setState({dataUrls});
+          };
+          return (
+            <li key={index}>
+              <div className="hover" onClick={onClose}></div>
+              <img src={content} />
+            </li>
+          );
+        })}
+      </ul>
+    );
   }
   render() {
-    let previewContent;
-    if (this.state.dataUrl) {
-      previewContent = (
-        <img src={this.state.dataUrl} />
-      );
-    }
     return (
       <div className="form-file-input">
         <div className="form-btn-group">
@@ -141,14 +166,12 @@ class FileInput extends BindingComponent {
           <TextButton text="上传"
             flex={0.2} />
         </div>
-        <div className="form-file-preview">
-          {previewContent}
-        </div>
         <input
           type="file"
           value={this.props.bindStateValue}
           onChange={this.onFileUpload.bind(this)}
         />
+        {this.preview()}
       </div>
     );
   }
