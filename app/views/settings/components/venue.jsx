@@ -5,6 +5,7 @@ import {
   Form,
   Row,
   TextInput,
+  FileInput,
   TextButton,
   Label,
   HintText,
@@ -16,12 +17,12 @@ class Venue extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: {}
+      venue: {}
     };
   }
   async componentWillMount() {
     this.setState({
-      data: await client.org.getSelectedVenue()
+      venue: await client.org.getSelectedVenue()
     });
   }
   get title() {
@@ -44,32 +45,34 @@ class Venue extends React.Component {
           <Row name="场馆名" required={true}>
             <TextInput 
               bindStateCtx={this}
-              bindStateName="data.name"
+              bindStateName="venue.name"
+              bindStateValue={this.state.venue.name}
             />
           </Row>
           <Row name="联系电话" required={true}>
             <TextInput
               bindStateCtx={this}
-              bindStateName="data.phone"
+              bindStateName="venue.phone"
+              bindStateValue={this.state.venue.phone}
             />
           </Row>
           <Row name="地址" required={true}>
             <TextInput
               bindStateCtx={this}
-              bindStateName="data.address"
+              bindStateName="venue.address"
+              bindStateValue={this.state.venue.address}
             />
           </Row>
           <Row name="店长" required={true}>
             <TextInput
               bindStateCtx={this}
-              bindStateName="data.address"
+              bindStateName="venue.address"
             />
           </Row>
           <Row name="场景图片">
-            <TextInput
-              multiline={true}
+            <FileInput
               bindStateCtx={this}
-              bindStateName="data.address"
+              bindStateName="venue.photos"
             />
           </Row>
         </Form>
