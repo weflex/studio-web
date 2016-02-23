@@ -127,6 +127,9 @@ class FileInput extends BindingComponent {
     this.setState({dataUrls});
   }
   preview() {
+    if (!this.state.dataUrls.length) {
+      return null;
+    }
     let props = {
       className: 'form-file-preview'
     };

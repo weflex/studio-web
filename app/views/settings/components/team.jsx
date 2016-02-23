@@ -12,42 +12,42 @@ import {
 } from '../../../components/form';
 import { client } from '../../../api';
 
+let fullname = obj => obj.first + ' ' + obj.last;
+
 class Venue extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: {}
+      trainers: []
     };
   }
   async componentWillMount() {
-    this.setState({
-      data: await client.org.getSelectedVenue()
+    const orgId = (await client.org.getSelectedVenue()).orgId;
+    const trainers = await client.trainer.list({
+      where: { orgId },
+      include: ['user', 'venue']
     });
+    this.setState({trainers});
   }
   render() {
     return (
       <div className="settings-detail settings-team">
-        <Form>
-          <Row name="场馆名" required={true}>
-            <TextInput 
-              bindStateCtx={this}
-              bindStateName="data.name"
-            />
-          </Row>
-          <Row name="地址" required={true}>
-            <TextInput
-              bindStateCtx={this}
-              bindStateName="data.address"
-            />
-          </Row>
-          <Row name="场馆描述">
-            <TextInput
-              multiline={true}
-              bindStateCtx={this}
-              bindStateName="data.address"
-            />
-          </Row>
-        </Form>
+        <header>
+          <h3>教练列表</h3>
+          <TextButton text="邀请新教练" />
+        </header>
+        <ul className="settings-team-trainers">
+          {this.state.trainers.map((trainer, index) => {
+            return (
+              <li key={index}>
+                <img src={trainer.user.avatar.uri} />
+                <span className="username">{fullname(trainer.fullname)}</span>
+                <span className="description">{trainer.description}</span>
+                <span className="venue">{trainer.venue.name}</span>
+              </li>
+            );
+          })}
+        </ul>
       </div>
     );
   }
