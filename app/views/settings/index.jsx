@@ -11,6 +11,9 @@ class SettingsIndex extends React.Component {
   get title() {
     return '场馆设置';
   }
+  get actions() {
+    return [];
+  }
   settings() {
     return [
       {

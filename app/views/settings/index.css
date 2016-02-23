@@ -15,7 +15,12 @@
 
 .settings-team > header {
   font-family: 'PingFang SC', 'OpenSans', sans-serif;
-  padding-bottom: 10px;
+  padding: 10px 0;
+  margin-top: 20px;
+}
+
+.settings-team > header:first-child {
+  margin-top: 0px;
 }
 
 .settings-team > header > * {
