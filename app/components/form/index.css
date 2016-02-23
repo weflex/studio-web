@@ -77,13 +77,22 @@
 
 .form-file-input > input {
   position: absolute;
-  height: 30px;
   width: 100%;
   top: 0;
+  bottom: 0;
   left: 0;
   opacity: 0;
   z-index: 90;
   cursor: pointer;
+}
+
+.form-file-preview img {
+  height: 100px;
+  width: calc(100% - 5px);
+  margin: 10px 0 0 0;
+  border: 1px solid #ebebeb;
+  border-radius: 3px;
+  box-sizing: border-box;
 }
 
 /* TextButton */

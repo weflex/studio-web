@@ -82,7 +82,8 @@ class FileInput extends BindingComponent {
   constructor(props) {
     super(props);
     this.state = {
-      value: null
+      value: null,
+      dataUrl: null
     };
   }
   onFileUpload(event) {
@@ -90,6 +91,9 @@ class FileInput extends BindingComponent {
     event.stopPropagation();
     event.preventDefault();
     let file = event.target.files[0];
+    if (!file) {
+      return;
+    }
     if (typeof this.props.checkFile === 'function') {
       let err = this.props.checkFile(file);
       if (err) {
@@ -99,8 +103,8 @@ class FileInput extends BindingComponent {
     }
     // create reader
     const reader = new FileReader();
-    reader.onload = this.onFileFinished;
-    reader.readAsBinaryString(file);
+    reader.onload = this.onFileFinished.bind(this);
+    reader.readAsDataURL(file);
 
     // setup for ui
     this.setState({
@@ -111,10 +115,18 @@ class FileInput extends BindingComponent {
   }
   async onFileFinished(event) {
     const result = event.target.result;
-    console.log(result);
+    this.setState({
+      dataUrl: result
+    });
     // TODO(Yorkie|Scott): working with qiniu or API...
   }
   render() {
+    let previewContent;
+    if (this.state.dataUrl) {
+      previewContent = (
+        <img src={this.state.dataUrl} />
+      );
+    }
     return (
       <div className="form-file-input">
         <div className="form-btn-group">
@@ -127,6 +139,9 @@ class FileInput extends BindingComponent {
           />
           <TextButton text="上传"
             flex={0.2} />
+        </div>
+        <div className="form-file-preview">
+          {previewContent}
         </div>
         <input
           type="file"
