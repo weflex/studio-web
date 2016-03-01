@@ -3,7 +3,6 @@ sources = $(shell find app -name '*.js*')
 styles  = $(shell find app -name '*.css')
 assets  = \
 	dist/favicon.ico \
-	dist/fonts/ \
 	dist/apple-touch-icon.png
 
 entraces = \

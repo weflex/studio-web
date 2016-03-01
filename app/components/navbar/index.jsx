@@ -5,7 +5,6 @@ import { Link } from 'react-router-component';
 import { client } from '../../api';
 
 import './index.css';
-import '../../layout/font.css';
 
 class NavItem extends React.Component {
   get iconfont () {
@@ -144,9 +143,9 @@ class NavBar extends React.Component {
         <NavItem location="/calendar"         hint="课程日历"  icon="calendar" />
         <NavItem location="/class/template"   hint="课程模板"  icon="star" />
         <NavItem location="/class/package"    hint="卡种管理"  icon="heart" />
-        <NavItem location="/membership"       hint="用户管理"  icon="user" />
+        <NavItem location="/membership"       hint="用户管理"  icon="customer" />
         <NavItem location="/order"            hint="订单管理"  icon="inbox" />
-        <NavItem location="/settings"         hint="场馆设置"  icon="settings" />
+        <NavItem location="/settings"         hint="场馆设置"  icon="setting" />
         <NavItem location="/docs"             hint="帮助文档"  icon="note" />
       </ul>
     );
