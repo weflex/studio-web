@@ -1,0 +1,62 @@
+#+TITLE:   Login And SignUp
+#+AUTHOR:  Scott Wang
+#+STARTUP: align indent
+#+TODO:    DOCUMENT | DONE
+
+* The Problem
+Users should abled, and free as their will to log on to WeFlex Studio
+to start using it. Thus a user may:
+1. Login with an existing account. This should be the most usual case;
+2. Create a new account in an existing organization;
+or he/she's a completely new user, to
+3. Create a new account and studio organization from scratch.
+
+These three cases represent three types of users with each our
+knowledge of them degrades. The less we know about a user, the more
+the information we need to ask him for.
+* The Solution
+** Login
+The first screen a user would see right after he opened WeFlex Studio,
+is the [[Login Screen][Login Screen]].
+
+#+CAPTION: Login Screen
+#+NAME: Login Screen
+[[./Login.png]]
+
+On the [[Login Screen][Login Screen]] user could choose to login with SMS verification
+or with Wechat OAuth. Note that SMS verification is the default login
+method.
+
+If this user belongs to an organization but he hasn't got an account
+for himself, he could tap on the guide below Sign Up button to [[Search Studio][try
+search for the studio he works at]].
+** Search Studio
+At this screen user type in keywords to search for the studio he works
+at so that we can help him setup a connection with that studio and
+[[Request For Invitation][send a request to studio's manager]].
+
+#+CAPTION: Search Studio Screen
+#+NAME: Search Studio Screen
+[[./Find Studio.png]]
+
+[[Search Studio Screen][Screenshot above]] showing a search with multiple matches.
+
+Unfortunately, the studio he works at may not using WeFlex Studio at
+this moment, and he couldn't find any match. At these cases, [[Search Studio Not Found Screen][a text
+hint below the search box]] will guide user to [[Create a Studio][create a account from
+scratch]].
+
+#+CAPTION: Search Studio Not Found Screen
+#+NAME: Search Studio Not Found Screen
+[[./Find Studio Not Found.png]]
+** Request For Invitation
+If the studio this user works at is using WeFlex Studio but he doesn't
+have a account, he will need his admin's permission to have one. Thus
+he will need to send admin a /Request for Invitation/ on [[Request Invitation Screen][request form]].
+His admin will receive a SMS message about his request.
+#+CAPTION: Request Invitation Screen
+#+NAME: Request Invitation Screen
+[[./Send Invitation Request.png]]
+** Create a Studio
+We will reach this topic soon in the next document.
+*** DOCUMENT createing a studio from scratch
