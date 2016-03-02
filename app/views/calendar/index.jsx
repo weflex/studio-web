@@ -13,7 +13,6 @@ import {
   getFormatTime,
 } from './util.js';
 
-import '../../layout/font.css';
 import './index.css';
 
 const Template = require('./components/template');
