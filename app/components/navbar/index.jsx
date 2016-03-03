@@ -1,9 +1,10 @@
 "use strict";
 
+import _ from 'lodash';
+import moment from 'moment';
 import React from 'react';
 import { Link } from 'react-router-component';
 import { client } from '../../api';
-
 import './index.css';
 
 class NavItem extends React.Component {
@@ -61,6 +62,11 @@ class NavBar extends React.Component {
           uri: 'http://wx.qlogo.cn/mmopen/ajNVdqHZLLDfNbJqbWG9S38aGHQWa4Y6K7Nl3NOmBsSZId2tFs1Iqz7mjU3q1P9LghSuDE8fMYSqIib8533KTSA/0'
         }
       },
+      stats: {
+        paid: [],
+        cancel: [],
+        checkin: [],
+      },
       venue: {
         name: '加载中...'
       },
@@ -71,8 +77,22 @@ class NavBar extends React.Component {
   async componentWillMount () {
     const user = await client.user.getCurrent();
     const venue = await client.org.getSelectedVenue();
+    const orders = await client.order.list({
+      where: {
+        createdAt: {
+          gt: moment().startOf('day').format('YYYY-DD-MM HH:mm'),
+          lt: moment().endOf('day').format('YYYY-DD-MM HH:mm'),
+        }
+      }
+    });
+    const stats = _.groupBy(orders, 'status');
     this.setState({
-      user, 
+      user,
+      stats: {
+        paid: stats.paid || [],
+        cancel: stats.cancel || [],
+        checkin: stats.checkin || [],
+      },
       venue,
       venues: client.org.venues
     });
@@ -136,9 +156,9 @@ class NavBar extends React.Component {
             </span>
             <a href="/login">登出</a>
           </div>
-          <DataItem value="8"  hint="今日课程报名" type="signup" />
-          <DataItem value="5"  hint="今日课程取消" type="cancel" />
-          <DataItem value="10" hint="今日课程签到" type="checkin" />
+          <DataItem value={this.state.stats.paid.length} hint="今日课程报名" type="signup" />
+          <DataItem value={this.state.stats.cancel.length} hint="今日课程取消" type="cancel" />
+          <DataItem value={this.state.stats.checkin.length} hint="今日课程签到" type="checkin" />
         </li>
         <NavItem location="/calendar"         hint="课程日历"  icon="calendar" />
         <NavItem location="/class/template"   hint="课程模板"  icon="star" />
