@@ -1,5 +1,6 @@
 "use strict";
 
+import _ from 'lodash';
 import moment from 'moment';
 const CELL_HEIGHT = 50;
 
@@ -7,28 +8,49 @@ function getCardWidth(length) {
   return (1 / length * 100) + '%';
 }
 
-function getRoundTime(time) {
-  const {minute} = time;
-  const newTime = Object.assign({}, time);
-  const res = minute % 10;
-  if (res >= 0 && res <= 2) {
-    newTime.minute = minute - res;
-  } else if (res >= 3 && res <= 7) {
-    newTime.minute = minute - res + 5;
-  } else if (res >= 8) {
-    newTime.minute =  minute - res + 10;
+/**
+ * @method getRoundTime
+ * @param {Object} time - the time date
+ * @param {Number} time.minute - the minute time
+ * @param {Number} time.hour - the hour time
+ * @param {Number} unit - the unit value, should be 5, 10, 15 and etc.
+ */
+function getRoundTime(time, unit) {
+  unit = unit || 10;
+  let newTime = {};
+  // for performance, we move this
+  if (time.hour >= 24) {
+    newTime.hour = 24;
+    newTime.minute = 0;
+    return newTime;
   }
-
-  if (newTime.minute >= 60) {
+  newTime = Object.assign(newTime, time);
+  let coll = [];
+  for (let v = 0; v <= 60; v += unit) {
+    coll.push(v);
+  }
+  coll.push(time.minute);
+  coll.sort((a, b) => a > b);
+  let minuteIdx = coll.indexOf(time.minute);
+  if (minuteIdx === -1) {
+    // TODO(Yorkie): should use assert instead of error throw
+    throw new Error('indexOf should not be -1');
+  }
+  // because indexOf is using positive sequence
+  if (minuteIdx === 0) {
+    minuteIdx = 1;
+  }
+  const distFromLeft = coll[minuteIdx] - coll[minuteIdx - 1];
+  const distFromRight = coll[minuteIdx + 1] - coll[minuteIdx];
+  if (distFromLeft <= distFromRight) {
+    newTime.minute = coll[minuteIdx - 1];
+  } else {
+    newTime.minute = coll[minuteIdx + 1];
+  }
+  if (newTime.minute === 60) {
     newTime.minute = 0;
     newTime.hour += 1;
   }
-
-  if (newTime.hour >= 24) {
-    newTime.hour = 24;
-    newTime.minute = 0;
-  }
-
   return newTime;
 }
 
