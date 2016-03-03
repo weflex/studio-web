@@ -1,3 +1,3 @@
 "use strict";
 
-exports.client = require('@weflex/gian').getClient('dev');
+exports.client = require('@weflex/gian').getClient('staging');
