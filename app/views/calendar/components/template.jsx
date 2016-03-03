@@ -24,9 +24,10 @@ class Template extends React.Component {
   }
   render() {
     const template = this.props.data;
+    const currentDate = this.props.calendar.state.currentDate;
     const data = {
       id: null,
-      date: moment().startOf('isoWeek').toDate(),
+      date: currentDate.startOf('isoWeek').toDate(),
       from: {
         hour: 0, minute: 0
       },
