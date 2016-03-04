@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PopUp from 'react-portal-tooltip';
@@ -187,7 +188,10 @@ class ClassCard extends React.Component {
       arrow: 'center',
       position: 'right',
       isPopUpActive: false,
-      lastScrollOffset: 0
+      lastScrollOffset: 0,
+      date: this.props.cardInfo.date,
+      from: this.props.cardInfo.from,
+      to: this.props.cardInfo.to,
     };
   }
 
@@ -198,6 +202,31 @@ class ClassCard extends React.Component {
    */
   isCardDragging() {
     return this.isMouseDown;
+  }
+
+  /**
+   * @method getSnapToValueOnMoving
+   * @param {Object} time - the time to snap to
+   * @return {Object} return {from: n, to: m}
+   */
+  getSnapToValueOnMoving(time, duration) {
+    let newFromHour = getRoundTime(time);
+    if (newFromHour.hour < 0) {
+      newFromHour.hour = 0;
+      newFromHour.minute = 0;
+    }
+    let newToHour = addTimeByMinute(newFromHour, duration);
+    if (newToHour.hour >= 24 && newToHour.minute >= 0) {
+      newToHour = {
+        hour: 24,
+        minute: 0
+      }
+      newFromHour = addTimeByMinute(newToHour, -duration);
+    }
+    return {
+      from: newFromHour,
+      to: newToHour
+    };
   }
 
   /**
@@ -270,9 +299,19 @@ class ClassCard extends React.Component {
         height,
         width
       };
+
+      const pointerDay = calendar.state.atCol;
+      const toDay = moment(this.props.cardInfo.date)
+        .add(pointerDay - this.state.fromDay, 'day')
+        .format('YYYY-MM-DD');
+      const date = getDateBySplit(from, toDay);
+      const { from, to } = this.getSnapToValueOnMoving(newHourTime, classDuration);
       this.setState({
         newHourTime,
         style,
+        date,
+        from,
+        to,
       });
     });
 
@@ -281,32 +320,11 @@ class ClassCard extends React.Component {
       if (this.state.isResizing) {
         return;
       }
-      const pointerDay = calendar.state.atCol;
-      const toDay = moment(this.props.cardInfo.date)
-                    .add(pointerDay - this.state.fromDay, 'day')
-                    .format('YYYY-MM-DD');
-
-      let newFromHour = getRoundTime(this.state.newHourTime);
-      if (newFromHour.hour < 0) {
-        newFromHour.hour = 0;
-        newFromHour.minute = 0;
-      }
-
-      let newToHour = addTimeByMinute(newFromHour, classDuration);
-      if (newToHour.hour >= 24 && newToHour.minute >= 0) {
-        newToHour = {
-          hour: 24,
-          minute: 0
-        }
-        newFromHour = addTimeByMinute(newToHour, -classDuration);
-      }
-
       const newCard = this.getNewCard((card) => {
-        card.from = newFromHour;
-        card.to = newToHour;
-        card.date = getDateBySplit(card.from, toDay);
+        card.date = this.state.date;
+        card.from = this.state.from;
+        card.to = this.state.to;
       });
-
       if (typeof this.props.onPanEnd === 'function') {
         this.props.onPanEnd(event, newCard);
       }
@@ -344,6 +362,7 @@ class ClassCard extends React.Component {
     });
 
     resizeHammer.on('panup pandown', (event) => {
+      const calendar = this.props.calendar || this.ctx.calendar;
       let marginTop = this.style.marginTop + event.deltaY;
       let height = this.style.height - event.deltaY;
       if (direction === 'bottom') {
@@ -351,59 +370,38 @@ class ClassCard extends React.Component {
         height = this.style.height + event.deltaY;
       }
 
-      let isOverDrag = (height <= this.cellHeight);
+      const isOverDrag = (height <= this.cellHeight);
       if (isOverDrag) {
-        let stickBorderTime = this.props.cardInfo.to;
+        let stickBorderTime = this.state.to;
         if (direction === 'bottom') {
-          stickBorderTime = this.props.cardInfo.from;
+          stickBorderTime = this.state.from;
         }
-        this.setState({ stickBorderTime });
-        return;
+        this.setState({ 
+          stickBorderTime 
+        });
+      } else {
+        const newTime = getRoundTime(calendar.state.baselineClock);
+        const newState = {
+          style: { marginTop, height },
+        };
+        switch (direction) {
+          case 'top': newState.from = newTime; break;
+          case 'bottom': newState.to = newTime; break;
+        }
+        this.setState(newState);
       }
-
-      this.setState({
-        style: {
-          marginTop,
-          height
-        }
-      });
     });
 
     resizeHammer.on('panend', (event) => {
-      let height = this.style.height - event.deltaY;
-      if (direction === 'bottom') {
-        height = this.style.height + event.deltaY;
-      }
-      const calendar = this.props.calendar || this.ctx.calendar;
-      let time = calendar.state.baselineClock;
-      const isOverDrag = (height <= this.cellHeight);
-
-      if (isOverDrag) {
-        time = this.state.stickBorderTime;
-      }
-      const newTime = getRoundTime(time);
       const newCard = this.getNewCard((card) => {
-        if (direction === 'bottom') {
-          card.to = newTime;
-          if (isOverDrag) {
-            card.from = newTime;
-            card.to = addTimeByHour(newTime, 1);
-          }
-        } else if (direction === 'top') {
-          card.from = newTime;
-          if (isOverDrag) {
-            card.to = newTime;
-            card.from = addTimeByHour(newTime, -1);
-          }
-        }
+        card.from = this.state.from;
+        card.to = this.state.to;
         card.date = getDateBySplit(card.from, this.props.cardInfo.date);
       });
-      
       this.setState({
         isMoving: false,
         isResizing: false
       });
-
       if (typeof this.props.onPanEnd === 'function') {
         this.props.onPanEnd(event, newCard);
       }
@@ -495,20 +493,15 @@ class ClassCard extends React.Component {
    * @method render
    */
   render() {
-    const {
-      id, 
-      from, 
-      to, 
-      date, 
-      template, 
-      trainer, 
-      orders
-    } = this.props.cardInfo;
+    const { id, date, template, trainer, orders } = this.props.cardInfo;
+    const { from, to } = this.state;
     const calendar = this.props.calendar;
-    const duration = `${getFormatTime(from)} - ${getFormatTime(to)}`;
+    const duration = '' + moment(this.state.date).format('ddd') +
+      ' ' + getFormatTime(from) + ' - ' + getFormatTime(to);
     const dayOfYear = moment(date).format('MM[月]DD[日]');
     const dayOfWeek = moment(date).format('ddd');
     const trainerName = `${trainer.fullname.first} ${trainer.fullname.last}`;
+    const stats = _.groupBy(orders, 'status');
     
     let hideButton;
     let onClickThis = this.showPopUp.bind(this);
@@ -540,16 +533,6 @@ class ClassCard extends React.Component {
       );
     }
 
-    let stats = null;
-    if (orders && orders.length > 0) {
-      stats = (
-        <div className="class-stats">
-          <span className="class-stats-paid">10</span>
-          <span className="class-stats-cancel">2</span>
-          <span className="class-stats-checkin">5</span>
-        </div>
-      );
-    }
     return (
       <div
         className={className}
@@ -563,7 +546,11 @@ class ClassCard extends React.Component {
         <div className="top-dragger" ref="topDragger"></div>
         <div className="class-name">{template.name}</div>
         <div className="class-duration">{duration}</div>
-        {stats}
+        <div className="class-stats">
+          <span className="class-stats-paid">{(stats.paid || []).length}</span>
+          <span className="class-stats-cancel">{(stats.cancel || []).length}</span>
+          <span className="class-stats-checkin">{(stats.checkin || []).length}</span>
+        </div>
         <div className="bottom-dragger" ref="bottomDragger"></div>
         {hideButton}
         <PopUp
