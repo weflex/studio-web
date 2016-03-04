@@ -1,6 +1,7 @@
 assets  = \
 	index.html \
 	login/index.html \
+	icon.icns \
 	main.js \
 	package.json
 
@@ -18,6 +19,7 @@ build: $(assets) node_modules
 	$(electron) . studio \
 	  --platform=$(platform) \
 	  --arch=$(arch) \
+	  --icon=icon.icns \
 	  --version=0.36.7 \
 	  --overwrite
 
