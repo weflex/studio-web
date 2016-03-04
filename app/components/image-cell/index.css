@@ -1,0 +1,89 @@
+/**
+ * Image Cell Styles
+ */
+
+.image-cell {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  margin-right: 5px;
+  box-sizing: border-box;
+  transition: all .2s ease-in-out;
+  /**
+   * default box
+   */
+  line-height: 100px;
+  height: 100px;
+  width: 100px;
+}
+
+.image-cell-empty {
+  border: 1px dashed #B5BBC3;
+}
+
+.image-cell-empty:hover {
+  border-color: #7D8895;
+}
+
+.image-cell,
+.image-cell canvas {
+  border-radius: 4px;
+}
+
+.image-cell > .react-blur {
+  height: 100%;
+  width: 100%;
+  background-color: #eee;
+  transition: all .2s ease-in-out;
+}
+
+.image-cell .hint {
+  opacity: 0;
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  font-size: 12px;
+  font-family: 'PingFang SC', 'Open Sans', sans-serif;
+  vertical-align: middle;
+  text-align: center;
+  transition: all .2s ease-in-out;
+}
+
+.image-cell:not(.image-cell-empty) .hint {
+  color: #fff;
+  font-weight: 100;
+}
+
+.image-cell-empty .hint {
+  color: #B5BBC3;
+  font-weight: normal;
+}
+
+.image-cell-empty:hover .hint {
+  color: #7D8895;
+}
+
+.image-cell:not(.image-cell-empty):hover .hint,
+.image-cell-empty .hint {
+  opacity: 1;
+  z-index: 1;
+}
+
+/**
+ * file input
+ */
+
+.image-cell .hint input[type="file"] {
+  opacity: 0;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  cursor: pointer;
+}

@@ -18,6 +18,7 @@
     "react-binding-component": "1.0.2",
     "react-dom": "0.14.3",
     "react-portal-tooltip": "1.0.3",
+    "react-qiniu": "0.3.0",
     "react-router-component": "0.28.0",
     "react-touchable-tabular": "^1.2.5",
     "scroller": "0.0.3",
