@@ -3,7 +3,7 @@
 import React from 'react';
 import ClassCard from '../card';
 import moment from 'moment';
-import { DropModal } from 'boron2';
+import { DropModal } from 'boron';
 import { NewClassTemplate } from '../new';
 import { client } from '../../../api';
 import './template.css';
