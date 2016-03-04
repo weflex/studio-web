@@ -192,11 +192,24 @@ class WeflexCalendar extends React.Component {
   }
 
   setCreateClassTemplate(from, to, date) {
+    let timeStringToObject = (timeStr) => {
+      const timeStrObj = timeStr.split(':');
+      return {
+        hour: timeStrObj[0],
+        minute: timeStrObj[1],
+      };
+    }
     const self = this;
     const onCreateClass = this.onCreateClass.bind(this);
     const newClassTemplate = class ClassTemplate extends React.Component {
       render() {
-        const props = {from, to, date};
+        const props = {
+          data: {
+            date,
+            from: timeStringToObject(from),
+            to: timeStringToObject(to),
+          },
+        };
         return (
           <NewClassTemplate
             {...props}

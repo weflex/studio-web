@@ -20,9 +20,10 @@ class NewClassTemplate extends React.Component {
     this.state = {
       trainers: [],
       loading: true,
-      data: Object.assign({}, props.data),
+      data: Object.assign({
+        template: {}
+      }, props.data),
     };
-    console.log(this.state.data);
     this.isModalShow = true;
   }
 
