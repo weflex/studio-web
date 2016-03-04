@@ -20,9 +20,9 @@ class NewClassTemplate extends React.Component {
     this.state = {
       trainers: [],
       loading: true,
-      formData: {}
+      data: Object.assign({}, props.data),
     };
-    this.newClass = {}
+    console.log(this.state.data);
     this.isModalShow = true;
   }
 
@@ -38,7 +38,19 @@ class NewClassTemplate extends React.Component {
 
   onCreateClass() {
     // update class 
-    this.props.onCreateClass(this.newClass);
+    this.props.onCreateClass(this.state.data);
+  }
+
+  get title() {
+    if (this.state.data.template && this.state.data.template.name) {
+      return this.state.data.template.name;
+    } else {
+      return '创建新课程';
+    }
+  }
+
+  formatTime(time) {
+    return time.hour + ':' + time.minute;
   }
 
   render() {
@@ -52,25 +64,26 @@ class NewClassTemplate extends React.Component {
     }
     return (
       <div className="class-new-container">
-        <h1>创建课程</h1>
+        <h1>{this.title}</h1>
         <Form className="class-new-form">
           <Row name="课程名" required={true}>
             <TextInput
               bindStateCtx={this} 
-              bindStateName="formData.name" 
+              bindStateValue={this.state.data.template.name}
+              disabled={true}
             />
           </Row>
           <Row name="价格" required={true}>
             <TextInput 
-              bindStateCtx={this} 
-              bindStateName="formData.price"
-              bindStateType={Number}
+              bindStateCtx={this}
+              bindStateValue={this.state.data.template.price}
+              disabled={true}
             />
           </Row>
           <Row name="选择教练" required={true}>
             <OptionsPicker
               bindStateCtx={this}
-              bindStateName="formData.trainerId"
+              bindStateName="data.trainerId"
               options={this.state.trainers.map(item => {
                 return {text: item.fullname.first, value: item.id};
               })}
@@ -80,30 +93,35 @@ class NewClassTemplate extends React.Component {
             <TextInput
               multiline={true}
               bindStateCtx={this}
-              bindStateName="formData.description"
+              bindStateValue={this.state.data.template.description}
             />
           </Row>
           <Row name="上课时间" required={true}>
             <TextInput
               flex={0.4}
               bindStateCtx={this}
-              bindStateName="formData.date"
+              bindStateName="data.date"
+              bindStateValue={this.state.data.date}
+              placeholder="日期：2017-03-04"
             />
             <TextInput
               flex={0.3}
               bindStateCtx={this}
-              bindStateName="formData.from"
+              bindStateName="data.from"
+              bindStateValue={this.formatTime(this.state.data.from)}
+              placeholder="开始时间"
             />
             <TextInput
               flex={0.3}
               bindStateCtx={this}
-              bindStateName="formData.to"
+              bindStateName="data.to"
+              bindStateValue={this.formatTime(this.state.data.to)}
+              placeholder="结束时间"
             />
           </Row>
           <Row>
             <TextButton text="确认添加"
               onClick={this.onCreateClass.bind(this)} 
-              disabled={this.disabled}
             />
           </Row>
         </Form>

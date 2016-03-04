@@ -563,7 +563,6 @@ class ClassCard extends React.Component {
           <p className="class-title">{template.name}</p>
           <div className="class-date">
             <span>{dayOfYear}</span>
-            <span>{dayOfWeek}</span>
             <span>{duration}</span>
           </div>
           <div className="trainer">{trainerName}</div>

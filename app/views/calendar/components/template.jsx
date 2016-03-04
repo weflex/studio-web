@@ -3,6 +3,8 @@
 import React from 'react';
 import ClassCard from '../card';
 import moment from 'moment';
+import { DropModal } from 'boron2';
+import { NewClassTemplate } from '../new';
 import { client } from '../../../api';
 import './template.css';
 
@@ -10,17 +12,37 @@ class Template extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showCopyCard: false
+      showCopyCard: false,
+      data: null,
     };
   }
   onPanStart(event) {
     this.setState({
-      showCopyCard: true
+      showCopyCard: true,
     });
   }
   onPanEnd(event, data) {
-    this.setState({showCopyCard: false});
-    this.props.onRelease(data);
+    this.setState({
+      showCopyCard: false,
+      data
+    });
+    this.refs.classConfirmModal.show();
+  }
+  get classConfirmation () {
+    if (this.state.data) {
+      let onCreateClass = (data) => {
+        this.refs.classConfirmModal.hide();
+        this.props.onRelease(data);
+      };
+      return (
+        <NewClassTemplate
+          data={this.state.data} 
+          onCreateClass={onCreateClass}
+        />
+      );
+    } else {
+      return null;
+    }
   }
   render() {
     const template = this.props.data;
@@ -76,6 +98,9 @@ class Template extends React.Component {
           onPanStart={this.onPanStart.bind(this)}
           onPanEnd={this.onPanEnd.bind(this)}
         />
+        <DropModal ref="classConfirmModal">
+          {this.classConfirmation}
+        </DropModal>
       </li>
     );
   }

@@ -1,4 +1,5 @@
 "use strict";
+
 import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -6,18 +7,18 @@ import ClassCard from './card';
 import Calendar from './calendar';
 import { WeekPicker } from './components/week-picker';
 import { NewClassTemplate } from './new';
-import { DropModal } from 'boron';
+import { DropModal } from 'boron2';
 import {
   getWeek,
   getCellHeight,
   getFormatTime,
 } from './util.js';
+import { client } from '../../api';
 
 import './index.css';
 
 const Template = require('./components/template');
 const ResourcePanel = require('../../components/resource-panel');
-const client = require('@weflex/gian').getClient('dev');
 const moment = require('moment');
 moment.locale('zh-cn');
 
@@ -192,7 +193,7 @@ class WeflexCalendar extends React.Component {
 
   setCreateClassTemplate(from, to, date) {
     const self = this;
-    const handleCreateClass = this.handleCreateClass.bind(this);
+    const onCreateClass = this.onCreateClass.bind(this);
     const newClassTemplate = class ClassTemplate extends React.Component {
       render() {
         const props = {from, to, date};
@@ -204,7 +205,7 @@ class WeflexCalendar extends React.Component {
                 self.newClassTemplate = node;
               }
             }}
-            onCreateClass={handleCreateClass}
+            onCreateClass={onCreateClass}
           />
         );
       }
@@ -214,7 +215,7 @@ class WeflexCalendar extends React.Component {
     });
   }
 
-  handleCreateClass(newClass) {
+  onCreateClass(newClass) {
     this.refs.newClassModal.hide();
     this.updateClasses(newClass);
     this.refs.calendar.cancelCreateCard();
