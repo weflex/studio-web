@@ -7,7 +7,7 @@ import ClassCard from './card';
 import Calendar from './calendar';
 import { WeekPicker } from './components/week-picker';
 import { NewClassTemplate } from './new';
-import { DropModal } from 'boron2';
+import { DropModal } from 'boron';
 import {
   getWeek,
   getCellHeight,
