@@ -8,6 +8,7 @@
   background-position: 5px 0;
   float: left;
   position: absolute;
+  z-index: 1000;
   color: #fafafa;
 }
 .navbar a {
@@ -45,7 +46,7 @@
   position: absolute;
   top: 0;
   left: 150px;
-  width: 120px;
+  width: 130px;
   z-index: 100;
   box-sizing: border-box;
   transition: all .2s ease-in-out;
@@ -58,7 +59,7 @@
 .navbar .studio-org-panel > li {
   display: block;
   background-color: rgba(36,47,64,.9);
-  padding: 5px 10px;
+  padding: 7px 10px;
   text-align: left;
   cursor: pointer;
   transition: all .2s ease-in-out;
@@ -104,6 +105,10 @@
 }
 .navbar .studio-name .icon-font {
   font-size: 9px;
+  /**
+   * dont remove because `transform` requires the field
+   */
+  display: inline-block;
   transition: all .2s ease-in-out;
 }
 .navbar .studio-name:hover .icon-font {
