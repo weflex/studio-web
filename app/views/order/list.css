@@ -1,0 +1,30 @@
+.master-item .order-item {
+  box-sizing: border-box;
+}
+
+.master-item .order-user span {
+  font-family: 'PingFang SC', 'Open Sans', sans-serif;
+}
+
+.master-item .order-item > div {
+  display: inline-block;
+}
+
+.master-item .order-user {
+  width: 50px;
+}
+
+.master-item .order-user img {
+  width: 40px;
+  height: 40px;
+  border-radius: 2px;
+}
+
+.master-item .order-user span {
+  font-size: 12px;
+}
+
+.master-item .order-simple-info > section {
+  font-size: 12px;
+  font-weight: 100;
+}

@@ -6,6 +6,7 @@ import MasterDetail from '../../components/master-detail';
 import Detail from './detail';
 import moment from 'moment';
 import { client } from '../../api';
+import './list.css';
 moment.locale('zh-cn');
 
 class List extends React.Component {
@@ -18,10 +19,26 @@ class List extends React.Component {
   get config() {
     return {
       title: 'title',
-      section: (item) => {
-        return [
-          <div key={0}>{moment(item.class.date).format('lll')}</div>
-        ];
+      master: (item, index) => {
+        return (
+          <div className="order-item">
+            <div className="order-user">
+              <img src={item.user.avatar.uri} />
+              <span>{item.user.nickname}</span>
+            </div>
+            <div className="order-simple-info">
+              <header>{item.class.template.name}</header>
+              <section>
+                <div className="order-class-duration">
+                  {moment(item.class.date).format('MM[月]DD[日]')}
+                </div>
+                <div className="order-num">
+                  订单号: {item.passcode}
+                </div>
+              </section>
+            </div>
+          </div>
+        )
       },
       detail: {
         component: Detail
@@ -29,16 +46,18 @@ class List extends React.Component {
     };
   }
   async source() {
-    let venue = await client.org.getSelectedVenue();
-    let list = await client.order.list({
+    const venue = await client.org.getSelectedVenue();
+    const list = await client.order.list({
       where: {
         venueId: venue.id
       },
-      include: {
-        class: 'template'
-      }
+      include: [
+        'user',
+        {
+          'class': ['template', 'trainer']
+        }
+      ],
     });
-    console.log(list);
     return (list || []).map((item) => {
       item.title = item.class.template.name;
       return item;
