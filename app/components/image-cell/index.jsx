@@ -20,6 +20,10 @@ class ImageCell extends React.Component {
        * @state {Boolean} isBluring - flag the action
        */
       isBluring: false,
+      /**
+       * @state {Boolean} isSelected - flag if selected
+       */
+      isSelected: props.selected || false,
     };
   }
   
@@ -63,16 +67,32 @@ class ImageCell extends React.Component {
   }
   
   onMouseOver(event) {
+    if (this.props.selectable && this.state.isSelected) {
+      return false;
+    }
     this.blurOrClear.call(this, 15, 3);
   }
   
   onMouseLeave(event) {
+    if (this.props.selectable && this.state.isSelected) {
+      return false;
+    }
     this.blurOrClear.call(this, 0, 5);
   }
 
   onClick(event) {
+    if (this.props.selectable) {
+      if (!this.state.isSelected) {
+        this.blurOrClear.call(this, 0, 5);
+      } else {
+        this.blurOrClear.call(this, 15, 3);
+      }
+      this.setState({
+        isSelected: !this.state.isSelected,
+      });
+    }
     if (typeof this.props.onClick === 'function') {
-      this.props.onClick.call(this, event);
+      this.props.onClick.call(this, event, this.props.src);
     }
   }
 
@@ -132,6 +152,8 @@ class ImageCell extends React.Component {
     let className = 'image-cell';
     let bg = null;
     let text = '点击上传图片';
+    let hint = this.props.hint || text;
+    
     if (this.props.src && this.props.src.uri) {
       bg = <BlurView img={this.props.src.uri} blurRadius={this.state.blurRadius}></BlurView>;
       text = '点击更换图片';
@@ -139,12 +161,20 @@ class ImageCell extends React.Component {
       className += ' image-cell-empty';
     }
 
+    if (this.props.selectable) {
+      className += ' selectable';
+      if (this.state.isSelected) {
+        className += ' selected';
+        hint = '';
+      }
+    }
+
     let fileInput = null;
     if (this.props.type === 'file') {
       fileInput = <input type="file" 
         multiple={this.props.multiple} onChange={this.onTypeFileSelect.bind(this)} />;
     }
-    const hint = this.props.hint || text;
+
     return (
       <div className={className}
         onMouseOver={this.onMouseOver.bind(this)}

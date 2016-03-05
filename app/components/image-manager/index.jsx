@@ -22,8 +22,9 @@ class ImageManager extends React.Component {
       /**
        * @state {String} uptoken - the uptoken is for uploading
        */
-      uptoken: null
+      uptoken: null,
     };
+    this.cells = [];
   }
 
   async componentWillMount() {
@@ -39,7 +40,6 @@ class ImageManager extends React.Component {
       }),
       client.resource.token(venue.id),
     ]);
-    console.log(uptoken);
     this.setState({
       images,
       uptoken,
@@ -48,7 +48,6 @@ class ImageManager extends React.Component {
 
   async onFileDone(event) {
     const content = event.target.result;
-    // console.log(token);
   }
 
   onSelectFiles(files) {
@@ -60,18 +59,59 @@ class ImageManager extends React.Component {
     });
   }
 
+  onRefImageCell(cell) {
+    if (cell) {
+      this.cells.push(cell);
+    }
+  }
+
+  onSelectResource(event, resource) {
+    if (this.state.mode === 'single') {
+      this.cells.forEach((cell) => {
+        cell.setState({ 
+          isSelected: resource.id === cell.props.src.id 
+        });
+      });
+      // TODO(Yorkie): directly choose?
+      // this.onSubmit();
+    }
+  }
+
+  onSubmit() {
+    const srcs = this.cells.filter((cell) => {
+      return cell.state.isSelected;
+    }).map((cell) => {
+      return cell.props.src;
+    });
+    if (typeof this.props.onFinish !== 'function') {
+      console.warn('miss onFinish on initializing component');
+    } else {
+      this.props.onFinish(srcs);
+    }
+  }
+
   render() {
     return (
       <div className="images-manager-container">
         <h3>{this.props.title}</h3>
         <section className="images-manager-body">
           {this.state.images.map((src, index) => {
+            let data = this.props.data || [];
+            if (data && !Array.isArray(this.props.data)) {
+              data = [data];
+            }
+            const selected = !!_.find(data, (item) => {
+              return item.id === src.id;
+            });
             return (
-              <ImageCell 
+              <ImageCell
+                ref={this.onRefImageCell.bind(this)}
                 key={index} 
                 src={src}
                 hint="点击选择"
                 selectable={true}
+                selected={selected}
+                onClick={this.onSelectResource.bind(this)}
               />
             );
           })}
@@ -82,7 +122,7 @@ class ImageManager extends React.Component {
           />
         </section>
         <section className="images-manager-footer">
-          <TextButton text="确认选择" />
+          <TextButton text="确认选择" onClick={this.onSubmit.bind(this)} />
         </section>
       </div>
     );

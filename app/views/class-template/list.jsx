@@ -42,7 +42,12 @@ class List extends React.Component {
       where: {
         venueId: venue.id
       },
-      include: ['venue', 'trainer']
+      include: [
+        'venue', 
+        'trainer', 
+        'cover', 
+        'photos'
+      ]
     });
   }
   render() {

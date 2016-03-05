@@ -1,6 +1,7 @@
 "use strict";
 
 import React from 'react';
+import _ from 'lodash';
 import { DropModal } from 'boron2';
 import { ClipLoader } from 'halogen';
 import ImageCell from '../../components/image-cell';
@@ -75,14 +76,33 @@ class Detail extends React.Component {
     await client.classTemplate.upsert(this.state.data);
   }
   
-  makeOnOpenImageManager(title, mode) {
+  makeOnOpenImageManager(title, mode, onFinish, data) {
     return () => {
       this.setState({
         imageManagerTitle: title,
         imageManagerMode: mode,
+        onImageManagerFinish: onFinish.bind(this),
+        imageManagerData: data,
       });
       this.refs.imageManagerModal.show();
     };
+  }
+
+  onCoverFinish(resources) {
+    this.refs.imageManagerModal.hide();
+    const newData = this.state.data;
+    const res = resources[0];
+    this.state.data.coverId = res.id;
+    this.state.data.cover = res;
+    this.setState({ data: newData });
+  }
+
+  onPhotosFinish(resources) {
+    this.refs.imageManagerModal.hide();
+    const newData = this.state.data;
+    this.state.data.photoIds = _.map(resources, 'id');
+    this.state.data.photos = resources;
+    this.setState({ data: newData });
   }
   
   render() {
@@ -157,24 +177,40 @@ class Detail extends React.Component {
             <div>
               <ImageCell 
                 src={this.state.data.cover}
-                onClick={this.makeOnOpenImageManager.call(this, '选择封面图片', 'single')}
+                onClick={this.makeOnOpenImageManager.call(
+                  this, 
+                  '选择封面图片', 
+                  'single', 
+                  this.onCoverFinish, 
+                  this.state.data.cover)}
               />
             </div>
           </section>
           <section className="photos">
             <h3>图片</h3>
             <div>
-              {(this.state.data.photos || []).map((src) => {
+              {(this.state.data.photos || []).map((src, index) => {
                 return (
                   <ImageCell 
+                    key={index}
                     src={src} 
-                    onClick={this.makeOnOpenImageManager.call(this, '选择课程图片', 'multiple')}
+                    onClick={this.makeOnOpenImageManager.call(
+                      this, 
+                      '选择课程图片', 
+                      'multiple', 
+                      this.onPhotosFinish, 
+                      this.state.data.photos)}
                   />
                 );
               })}
               <ImageCell 
                 description="this is for adding new photo"
-                onClick={this.makeOnOpenImageManager.call(this, '选择课程图片', 'multiple')}
+                onClick={this.makeOnOpenImageManager.call(
+                  this, 
+                  '选择课程图片', 
+                  'multiple', 
+                  this.onPhotosFinish, 
+                  this.state.data.photos)}
               />
             </div>
           </section>
@@ -183,6 +219,8 @@ class Detail extends React.Component {
           <ImageManager 
             title={this.state.imageManagerTitle} 
             mode={this.state.imageManagerMode}
+            onFinish={this.state.onImageManagerFinish}
+            data={this.state.imageManagerData}
           />
         </DropModal>
       </div>

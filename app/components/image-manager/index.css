@@ -14,6 +14,11 @@
   margin-bottom: 5px;
 }
 
+.images-manager-container .image-cell {
+  height: 110px;
+  width: calc(25% - 5px);
+}
+
 .images-manager-footer {
   padding-top: 20px;
   text-align: right;

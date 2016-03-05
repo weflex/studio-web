@@ -58,7 +58,6 @@ var BlurView = React.createClass({
 
     this.height = container.offsetHeight;
     this.width = container.offsetWidth;
-    console.log(this.container);
 
     this.canvas = ReactDOM.findDOMNode(this.refs.canvas);
     this.canvas.height = this.height;
@@ -67,7 +66,7 @@ var BlurView = React.createClass({
     this.img = new Image();
     this.img.crossOrigin = 'Anonymous';
     this.img.onload = () => {
-      stackBlurImage( this.img, this.canvas, blurRadius, this.width, this.height);
+      stackBlurImage(this.img, this.canvas, blurRadius, this.width, this.height);
     };
     this.img.src = this.props.img;
 

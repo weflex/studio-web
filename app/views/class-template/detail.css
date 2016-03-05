@@ -50,6 +50,6 @@
 .class-template-new-preview > .photos .image-cell {
   height: 100px;
   line-height: 100px;
-  width: 28%;
-  margin-right: 5px;
+  width: 32%;
+  margin-right: 1%;
 }
