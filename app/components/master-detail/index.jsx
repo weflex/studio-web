@@ -90,11 +90,21 @@ class MasterDetail extends React.Component {
     return (
       <ul className={className} style={style}>
         {this.state.masterSource.map((item, index) => {
-          let header = <header>{item[config.title]}</header>;
-          let section = null;
-          if (typeof config.section === 'function') {
-            section = <section>{config.section(item)}</section>;
+          let content = null;
+          if (config.master) {
+            content = config.master(item, index);
+          } else {
+            content = [
+              // header
+              <header key="header">{item[config.title]}</header>
+            ];
+            if (typeof config.section === 'function') {
+              content.push(
+                <section key="section">{config.section(item)}</section>
+              );
+            }
           }
+
           let className = 'master-item';
           // FIXME(Yorkie): weird problem, the state.selected has been
           // converted to string
@@ -107,10 +117,7 @@ class MasterDetail extends React.Component {
           }
           return (
             <li key={index} className={className}>
-              <Link href={href}>
-                {header}
-                {section}
-              </Link>
+              <Link href={href}>{content}</Link>
             </li>
           );
         })}
@@ -128,7 +135,7 @@ class MasterDetail extends React.Component {
     }
     const detail = source[selected];
     if (!detail) {
-      return <section className="detail"></section>;
+      return <section className="detail-container"></section>;
     }
     let component;
     if (config.detail && config.detail.component) {
@@ -137,10 +144,10 @@ class MasterDetail extends React.Component {
       component = detail.component;
     }
     if (!component) {
-      return <section className="detail"></section>;
+      return <section className="detail-container"></section>;
     }
     return (
-      <section className="detail">
+      <section className="detail-container">
         {React.createElement(
           component,
           {
