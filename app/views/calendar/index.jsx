@@ -5,6 +5,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ClassCard from './card';
 import Calendar from './calendar';
+import { SearchInput } from '../../components/toolbar/components/search';
 import { WeekPicker } from './components/week-picker';
 import { NewClassTemplate } from './new';
 import { DropModal } from 'boron2';
@@ -14,7 +15,6 @@ import {
   getFormatTime,
 } from './util.js';
 import { client } from '../../api';
-
 import './index.css';
 
 const Template = require('./components/template');
@@ -23,6 +23,7 @@ const moment = require('moment');
 moment.locale('zh-cn');
 
 class WeflexCalendar extends React.Component {
+  
   constructor(props) {
     super(props);
     this.cards = [];
@@ -30,7 +31,25 @@ class WeflexCalendar extends React.Component {
       schedule: new Map(),
       allClass: new Map(),
     };
+    SearchInput.Listen('onChange', this.onSearchInputChange.bind(this));
   }
+
+  onSearchInputChange(text) {
+    let results;
+    if (text === '') {
+      results = this.state.allClass;
+    } else {
+      results = new Map();
+      this.state.allClass.forEach((item) => {
+        if (item.template.name.indexOf(text) !== -1) {
+          results.set(item.id, item);
+        }
+      });
+    }
+    const schedule = this.getSchedule(results);
+    this.setState({ schedule });
+  }
+
   get title() {
     return (
       <WeekPicker calendar={this.refs.calendar} />
