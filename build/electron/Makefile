@@ -1,6 +1,4 @@
 assets  = \
-	index.html \
-	login/index.html \
 	icon.icns \
 	main.js \
 	package.json
@@ -10,10 +8,7 @@ electron = '/usr/local/bin/electron-packager'
 platform ?= 'darwin'
 arch     ?= 'x64'
 
-export PATH += '/usr/local/bin'
-
 ELECTRON_MIRROR = https://npm.taobao.org/mirrors/electron
-
 
 build: $(assets) node_modules
 	$(electron) . studio \
@@ -26,13 +21,7 @@ build: $(assets) node_modules
 node_modules: package.json
 	@npm install
 
-login/%: ../build/electron/login/% login
-	@cp $< $@
-
 %: ../build/electron/%
 	@cp $< $@
-
-login:
-	@mkdir $@
 
 .PHONY: build

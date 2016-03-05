@@ -8,15 +8,10 @@ serve: node_modules server.js
 	@echo ["\033[32mINFO\033[0m"] server is up and running at localhost:8080
 	@echo
 
-heroku: Procfile package.json server.js
-
 node_modules: package.json
 	$(npm) install
-
-purge: node_modules
-	@rm -rf $<
 
 %: ../build/server/%
 	@cp $< $@
 
-.PHONY: serve kill purge
+.PHONY: serve
