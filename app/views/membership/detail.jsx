@@ -9,37 +9,89 @@ import './detail.css';
 class Detail extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      orders: [],
+    };
+  }
+  async componentWillMount() {
+    const orders = await client.order.list({
+      where: {
+        userId: this.props.data.userId,
+      },
+      include: {
+        'class': [
+          'trainer',
+          {
+            'template': 'trainer'
+          }
+        ]
+      },
+    });
+    this.setState({ orders });
   }
   render() {
-    let item = this.props.data;
-    console.log(item);
+    let membership = this.props.data;
     return (
       <div className="membership-detail-container">
-        <div className="package-card">
-          <div className="package-card-row">
-            <div className="package-card-head">名称</div>
-            <div className="package-card-column">{item.package.name}</div>
-          </div>
-          <div className="package-card-row">
-            <div className="package-card-head">分类</div>
-            <div className="package-card-column">{item.package.category}</div>
-          </div>
-          <div className="package-card-row">
-            <div className="package-card-head">过期时间</div>
-            <div className="package-card-column">
-              {moment(item.package.expiredAt).format('YYYY-MM-DD')}
+        <div className="detail-cards-left">
+          <div className="detail-card">
+            <h3>基础信息</h3>
+            <div className="membership-user-avatar">
+              <img src={membership.user.avatar.uri} />
+            </div>
+            <div className="detail-card-row">
+              <label>姓名</label>
+              <span>{membership.user.nickname}</span>
+            </div>
+            <div className="detail-card-row">
+              <label>手机号码</label>
+              <span>{membership.user.phone}</span>
             </div>
           </div>
-          <div className="package-card-row">
-            <div className="package-card-head">开卡时间</div>
-            <div className="package-card-column">
-              {moment(item.createdAt).format('YYYY-MM-DD')}
-            </div>
+          <div className="detail-card">
+            <h3>订课记录</h3>
+            <ul className="membership-orders">
+              {this.state.orders.map((order, index) => {
+                const date = moment(order.class.date).format('MM[月]DD[日]');
+                const title = order.class.template.name;
+                const trainer = order.class.trainer || order.class.template.trainer;
+                return (
+                  <li key={index}>
+                    <a>{membership.user.nickname}</a>
+                    {date}预定了
+                    <a>{trainer.fullname.first} {trainer.fullname.last}</a>
+                    老师的
+                    <a>{title}</a>
+                    课程
+                  </li>
+                );
+              })}
+            </ul>
           </div>
-          <div className="package-card-avatar">
-            <img src={item.user.avatar.uri} />
-            {item.user.nickname}
+        </div>
+        <div className="detail-cards-right">
+          <div className="detail-card">
+            <h3>会卡信息</h3>
+            <div className="detail-card-row">
+              <label>名称</label>
+              <span>{membership.package.name}</span>
+            </div>
+            <div className="detail-card-row">
+              <label>价格</label>
+              <span>{membership.package.price}元</span>
+            </div>
+            <div className="detail-card-row">
+              <label>类别</label>
+              <span>{membership.package.category}</span>
+            </div>
+            <div className="detail-card-row">
+              <label>过期时间</label>
+              <span>{moment(membership.package.expiredAt).format('lll')}</span>
+            </div>
+            <div className="detail-card-row">
+              <label>详情</label>
+              <span>{membership.package.description}</span>
+            </div>
           </div>
         </div>
       </div>
