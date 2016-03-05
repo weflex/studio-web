@@ -1,0 +1,24 @@
+#+TITLE:   Demo Server on demo.getweflex.com
+#+AUTHOR:  Scott Wang
+#+STARTUP: align indent
+
+We have setup a demo server on [[http://demo.getweflex.com][demo.getweflex.com]]. You can deploy to
+it using Git.
+
+First of all, you add it to your git remotes:
+
+#+BEGIN_SRC shell-script
+  git remote add demo root@demo.getweflex.com:studio-desktop.git
+#+END_SRC
+
+Then add all your changes and make a commit. Then push it to
+=demo.getweflex.com=:
+
+#+BEGIN_SRC shell-script
+  git push -f demo
+#+END_SRC
+
+This will trigger hooks setup on =demo.getweflex.com= to execute ~make
+production~.
+
+To examine your push, you can go on to [[http://demo.getweflex.com]].
