@@ -2,7 +2,7 @@
 
 import _ from 'lodash';
 import moment from 'moment';
-const CELL_HEIGHT = 50;
+const CELL_HEIGHT = 80;
 
 function getCardWidth(length) {
   return (1 / length * 100) + '%';
