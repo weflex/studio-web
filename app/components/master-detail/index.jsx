@@ -6,6 +6,7 @@ import {
   Locations,
   Link
 } from 'react-router-component';
+import { SearchInput } from '../toolbar/components/search';
 import './index.css';
 
 /**
@@ -24,6 +25,8 @@ class MasterDetail extends React.Component {
       detail: null,
       loading: true,
     };
+    this.cachedMasterSource = null;
+    SearchInput.Listen('onChange', this.onSearchInputChange.bind(this));
   }
   async componentWillMount() {
     let masterSource = await this.props.masterSource();
@@ -31,11 +34,28 @@ class MasterDetail extends React.Component {
     if (!pathname) {
       pathname = window.location.pathname;
     }
+    this.cachedMasterSource = masterSource;
     this.setState({
       pathname,
       masterSource,
       loading: false
     });
+  }
+  onSearchInputChange(text) {
+    if (text === '') {
+      this.setState({
+        masterSource: this.cachedMasterSource,
+      });
+    } else {
+      this.setState({
+        masterSource: this.cachedMasterSource.filter((item) => {
+          const title = (this.props.masterConfig && this.props.masterConfig.title) || 'title';
+          const keyword = item[title].toLowerCase();
+          console.log(title, keyword);
+          return keyword.indexOf(text.toLowerCase()) !== -1;
+        }),
+      });
+    }
   }
   getSelected(id) {
     let source = this.state.masterSource;
