@@ -38,7 +38,6 @@ class OrderInfo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      orders: this.props.orders,
       option: 'all',
     };
     this.options = {
@@ -83,7 +82,7 @@ class OrderInfo extends React.Component {
    * @return {Element}
    */
   render() {
-    const ordersInfo = this.state.orders.map((order) => {
+    const ordersInfo = this.props.orders.map((order) => {
       const label = this.getStatusLabel(order.status);
       return (
         <li key={`order_${order.id}`}>{label} {order.user.nickname}</li>
@@ -502,7 +501,7 @@ class ClassCard extends React.Component {
     const dayOfWeek = moment(date).format('ddd');
     const trainerName = `${trainer.fullname.first} ${trainer.fullname.last}`;
     const stats = _.groupBy(orders, 'status');
-    
+
     let hideButton;
     let onClickThis = this.showPopUp.bind(this);
     let className = 'class-card';
