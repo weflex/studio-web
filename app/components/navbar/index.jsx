@@ -77,13 +77,17 @@ class NavBar extends React.Component {
   async componentWillMount () {
     const user = await client.user.getCurrent();
     const venue = await client.org.getSelectedVenue();
-    const orders = await client.order.list({
+    // TODO(Yorkie): use views to instead of the hacky way
+    let orders = await client.order.list({
       where: {
-        createdAt: {
-          gt: moment().startOf('day').format('YYYY-DD-MM HH:mm'),
-          lt: moment().endOf('day').format('YYYY-DD-MM HH:mm'),
-        }
-      }
+        venueId: venue.id,
+      },
+      include: 'class'
+    });
+    orders = orders.filter((order) => {
+      const date = +new Date(order.class.date);
+      return +moment().startOf('day').toDate() < date &&
+        +moment().endOf('day').toDate() > date;
     });
     const stats = _.groupBy(orders, 'status');
     this.setState({
