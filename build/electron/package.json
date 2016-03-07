@@ -1,10 +1,42 @@
 {
-  "name": "studio-desktop",
+  "name": "studio-electron",
   "version": "1.0.0",
+  "description": "",
+  "author": "WeFlex <hello@getweflex.com>",
+  "build": {
+    "name": "WeFlex Studio",
+    "platform": "all",
+    "arch": "all",
+    "dir": "./",
+    "app-category-type": "public.app-category.healthcare-fitness",
+    "app-version": "1.0.0",
+    "app-copyright": "Copyright 2016 WeFlex Fitness Ltd.",
+    "overwrite": true,
+    "version": "0.36.9",
+    "icon": "icon.icns"
+  },
+  "installers": {
+    "osx": {
+      "title": "WeFlex Studio",
+      "icon": "icon.icns",
+      "icon-size": 80,
+      "background": "background.png",
+      "contents": [
+        { 
+          "x": 448, 
+          "y": 344, 
+          "type": "link", 
+          "path": "/Applications" 
+        },
+        {
+          "x": 192,
+          "y": 344,
+          "type": "file",
+          "path": "WeFlex Studio-darwin-x64/WeFlex Studio.app"
+        }
+      ]
+    }
+  },
   "main": "main.js",
-  "dependencies": {
-    "finalhandler": "0.4.1",
-    "livereload": "0.4.0",
-    "serve-static": "1.10.0"
-  }
+  "dependencies": {}
 }

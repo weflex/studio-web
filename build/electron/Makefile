@@ -1,22 +1,15 @@
 assets  = \
-	icon.icns \
+	build.js \
 	main.js \
-	package.json
+	menu.js \
+	package.json \
+	icon.icns \
+	background.png \
 
-electron = '/usr/local/bin/electron-packager'
-
-platform ?= 'darwin'
-arch     ?= 'x64'
-
-ELECTRON_MIRROR = https://npm.taobao.org/mirrors/electron
+ELECTRON_MIRROR = "https://npm.taobao.org/mirrors/electron/"
 
 build: $(assets) node_modules
-	$(electron) . studio \
-	  --platform=$(platform) \
-	  --arch=$(arch) \
-	  --icon=icon.icns \
-	  --version=0.36.7 \
-	  --overwrite
+	@ELECTRON_MIRROR=$(ELECTRON_MIRROR) node ./build.js
 
 node_modules: package.json
 	@npm install

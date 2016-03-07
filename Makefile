@@ -17,16 +17,7 @@ serve: dist/server.mk
 
 # build for electron
 electron: dist/electron.mk
-	@make production
 	@make -C dist -f electron.mk
-
-electron-win32: dist/electron.mk
-	@make production
-	@make -C dist -f electron.mk platform=win32 arch=ia32
-
-electron-win64: dist/electron.mk
-	@make production
-	@make -C dist -f electron.mk platform=win32 arch=x64
 
 # drop static build
 clean: $(directories)
