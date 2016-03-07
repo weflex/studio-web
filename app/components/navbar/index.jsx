@@ -170,10 +170,10 @@ class NavBar extends React.Component {
           <DataItem value={this.state.stats.checkin.length} hint="今日课程签到" type="checkin" />
         </li>
         <NavItem location="/calendar"         hint="课程日历"  icon="calendar" />
+        <NavItem location="/order"            hint="订单管理"  icon="inbox" />
         <NavItem location="/class/template"   hint="课程模板"  icon="star" />
         <NavItem location="/class/package"    hint="卡种管理"  icon="heart" />
         <NavItem location="/membership"       hint="用户管理"  icon="customer" />
-        <NavItem location="/order"            hint="订单管理"  icon="inbox" />
         <NavItem location="/settings"         hint="场馆设置"  icon="setting" />
         <NavItem location="/docs"             hint="帮助文档"  icon="note" />
       </ul>
