@@ -3,6 +3,9 @@ body {
   height: 100%;
   overflow: hidden;
 }
+p, span {
+  font-family: 'PingFang SC', 'Open Sans', sans-serif;
+}
 #root-container {
   width: 100%;
   height: 100%;
