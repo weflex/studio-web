@@ -85,6 +85,11 @@ class NavBar extends React.Component {
       include: 'class'
     });
     orders = orders.filter((order) => {
+      if (!order.class) {
+        // if class doesn't have set, it means the class
+        // has been removed already.
+        return false;
+      }
       const date = +new Date(order.class.date);
       return +moment().startOf('day').toDate() < date &&
         +moment().endOf('day').toDate() > date;
