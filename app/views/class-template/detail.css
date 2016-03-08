@@ -25,6 +25,12 @@
   width: 60%;
 }
 
+.class-template-new-form textarea {
+  font-size: 12px;
+  font-family: 'PingFang SC', sans-serif;
+  font-weight: normal;
+}
+
 .class-template-new-preview {
   width: 40%;
 }

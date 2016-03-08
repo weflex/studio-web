@@ -134,18 +134,36 @@ class Detail extends React.Component {
           </Row>
           <Row name="价格" required={true}>
             <TextInput 
+              flex={0.7}
               bindStateCtx={this} 
               bindStateName="data.price"
               bindStateType={Number}
               bindStateValue={this.state.data.price}
             />
+            <OptionsPicker 
+              flex={0.3}
+              disabled={true}
+              bindStateCtx={this}
+              options={[
+                {text: '元'},
+              ]}
+            />
           </Row>
           <Row name="课程时长" required={true}>
             <TextInput
+              flex={0.7}
               bindStateCtx={this}
               bindStateName="data.during"
               bindStateType={Number}
               bindStateValue={this.state.data.during}
+            />
+            <OptionsPicker 
+              flex={0.3}
+              disabled={true}
+              bindStateCtx={this}
+              options={[
+                {text: '分钟'},
+              ]}
             />
           </Row>
           <Row name="选择教练" required={true}>
