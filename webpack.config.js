@@ -51,7 +51,11 @@ module.exports = {
     ]
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': `"${process.env.NODE_ENV || 'dev'}"`,
+      'process.env.GIAN_GATEWAY': `"${process.env.GIAN_GATEWAY || 'staging'}"`,
+    }),
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /zh/),
-    new webpack.optimize.DedupePlugin()
+    new webpack.optimize.DedupePlugin(),
   ]
 };

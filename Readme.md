@@ -64,6 +64,22 @@ $ make watch
 $ curl http://localhost:8080/
 ```
 
+### Change the endpoint of being used by gian.js:
+
+Run local test gateway with the following command:
+
+```sh
+$ GIAN_GATEWAY=test make watch
+```
+
+Run with staging
+
+```sh
+$ GIAN_GATEWAY=staging make watch
+```
+
+The default `GIAN_GATEWAY` is "staging".
+
 ## License
 
 WeFlex Copyright
