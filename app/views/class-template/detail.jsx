@@ -143,7 +143,6 @@ class Detail extends React.Component {
             <OptionsPicker 
               flex={0.3}
               disabled={true}
-              bindStateCtx={this}
               options={[
                 {text: '元'},
               ]}
@@ -160,7 +159,6 @@ class Detail extends React.Component {
             <OptionsPicker 
               flex={0.3}
               disabled={true}
-              bindStateCtx={this}
               options={[
                 {text: '分钟'},
               ]}

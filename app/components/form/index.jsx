@@ -42,9 +42,6 @@ class Row extends React.Component {
 }
 
 class TextInput extends BindingComponent {
-  constructor(props) {
-    super(props);
-  }
   render() {
     let className = ['form-input'];
     let styles = {
@@ -224,7 +221,7 @@ class OptionsPicker extends BindingComponent {
     super(props);
   }
   componentDidMount() {
-    if (!this.bindStateValue) {
+    if (this.bindstateCtx && !this.bindStateValue) {
       this.bindStateValue = this.props.options[0].value;
     }
   }
