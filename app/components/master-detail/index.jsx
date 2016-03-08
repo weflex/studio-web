@@ -10,24 +10,56 @@ import { SearchInput } from '../toolbar/components/search';
 import './index.css';
 
 /**
- * MsterDetail
- * props:
- *  masterWidth {Number} specify the width of master
+ * MasterDetail Component
+ *
+ * @class MasterDetail
  */
-
 class MasterDetail extends React.Component {
+
+  /**
+   * @constructor
+   * @param {Object} props - the props to initialize the component
+   */
   constructor(props) {
     super(props);
     this.state = {
+      /**
+       * @state {Number} selected - the selected item number
+       */
       selected: 0,
+
+      /**
+       * @state {String} pathname - the prefix pathname for master item link
+       */
       pathname: this.props.pathname || '',
+
+      /**
+       * @state {Array} masterSource - the master items source
+       */
       masterSource: [],
+
+      /**
+       * @state {Element|Null} detail - the detail view
+       */
       detail: null,
+
+      /**
+       * @state {Boolean} loading - flag the sync state
+       */
       loading: true,
     };
+    // `cacheMasterSource` is for caching the first data, which can be used at
+    // reseting by search input.
     this.cachedMasterSource = null;
+    // TODO(Yorkie): this should be decoupled from here, currently the master-detail
+    // strongly depends on the `SearchInput`.
     SearchInput.Listen('onChange', this.onSearchInputChange.bind(this));
   }
+
+  /**
+   * @event componentWillMount
+   * @async
+   */
   async componentWillMount() {
     let masterSource = await this.props.masterSource();
     let pathname = this.state.pathname;
@@ -41,6 +73,11 @@ class MasterDetail extends React.Component {
       loading: false
     });
   }
+
+  /**
+   * @event onSearchInputChange
+   * @param {String} text
+   */
   onSearchInputChange(text) {
     if (text === '') {
       this.setState({
@@ -57,6 +94,13 @@ class MasterDetail extends React.Component {
       });
     }
   }
+
+  /**
+   * Get the selected data
+   *
+   * @method getSelected
+   * @param {Number} the selected id or number, corresponding to the state `selected`.
+   */
   getSelected(id) {
     let source = this.state.masterSource;
     let selected = 0;
@@ -68,20 +112,31 @@ class MasterDetail extends React.Component {
     }
     return parseInt(selected);
   }
+
+  /**
+   * @method render
+   */
   render() {
     let className = 'master-detail';
+    /**
+     * @prop {String} className - the className prop inherited from parent
+     */
     if (this.props.className) {
       className += (' ' + this.props.className);
     }
     let masterWidth;
     let detailWidth;
+    /**
+     * @prop {Number} masterWidth - the master width
+     */
     if (this.props.masterWidth) {
       masterWidth = this.props.masterWidth;
+      // master has a 1px `border-right` width.
       detailWidth = `calc(100% - ${masterWidth + 1}px)`;
     }
     return (
       <div className={className}>
-        {this.renderMaster(masterWidth, this.props.hideBorder)}
+        {this.renderMaster(masterWidth)}
         <div className="detail" style={{ width: detailWidth }}>
           <Locations contextual>
             <Location path="/" handler={this.renderDetail.bind(this)} />
@@ -91,21 +146,44 @@ class MasterDetail extends React.Component {
       </div>
     );
   }
-  renderMaster(width, hideBorder) {
+
+  /**
+   * rendering the master view (left)
+   *
+   * @method renderMaster
+   * @param {Number} width - the width of master
+   */
+  renderMaster(width) {
     let pathname = this.state.pathname;
     const id = window.location.pathname.replace(pathname, '').replace(/\//g, '');
     const selected = this.getSelected(id);
+    /**
+     * @prop {Object} masterConfig - the master config
+     */
     const config = this.props.masterConfig || {
       title: 'title',
       section: null
     };
+
+    let theAddButton = null;
     let className = 'master';
     let style;
     if (width) {
-      style = { width };
+      style = { 
+        width,
+      };
     }
-    if (hideBorder) {
+
+    if (config.hideMasterShadow) {
       className += ' master-without-border';
+    }
+    if (config.iterated && config.onClickAdd) {
+      className += ' master-iterator';
+      theAddButton = (
+        <li className="master-item master-item-add">
+          <Link href={config.onClickAdd}>+{config.addButtonText}</Link>
+        </li>
+      );
     }
     return (
       <ul className={className} style={style}>
@@ -124,7 +202,6 @@ class MasterDetail extends React.Component {
               );
             }
           }
-
           let className = 'master-item';
           // FIXME(Yorkie): weird problem, the state.selected has been
           // converted to string
@@ -144,9 +221,18 @@ class MasterDetail extends React.Component {
             </li>
           );
         })}
+        {theAddButton}
       </ul>
     );
   }
+
+  /**
+   * rendering the detail view
+   *
+   * @renderDetail
+   * @param {Object} props - the properties to set on detail
+   * @param {Object} states - the states to set on detail
+   */
   renderDetail(props, states) {
     const config = this.props.masterConfig || {};
     const source = this.state.masterSource;

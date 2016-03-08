@@ -78,6 +78,18 @@
   padding: 2px 0;
 }
 
+.master-detail .master-item-add > a {
+  display: block;
+  text-align: center;
+  padding: 20px 0;
+  color: #DAE2D9;
+  transition: all .2s ease-in-out;
+}
+
+.master-detail .master-item-add > a:hover {
+  color: #696969;
+}
+
 /**
  * detail card
  */
