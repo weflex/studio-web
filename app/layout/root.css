@@ -35,6 +35,7 @@ p, span {
 .main-resource {
   height: 100%;
   vertical-align: top;
+  border-left: 1px solid #DADDE1;
   box-sizing: border-box;
   transition: all .2s ease-in-out;
 }
