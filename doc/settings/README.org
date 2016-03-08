@@ -27,7 +27,7 @@ on the =Phone= input and thus activates the =Get Passcode= button, as
 well as the =Passcode= field. If user leaves =Phone= without any
 modification, then, again, =Get Passcode= button gets greyed out. This
 UI behavior applies also on other pages where phone verification are
-requried.
+required.
 *** Wechat
 User's Wechat Account. When user have not Wechat account connected, it
 shows up a [[QR Code]] for user to scan, so that he can authorize WeFlex
@@ -38,7 +38,7 @@ Studio to use his public data from Wechat.
 [[./Personal Preference Screen Wechat Authed.png]]
 *** Email
 ** Information Completeness
-On the right side of all the inforamtion, there's a progress bar
+On the right side of all the information, there's a progress bar
 showing how many information about himself user have filled in. Each
 information have a score.
 
