@@ -238,6 +238,7 @@ class OptionsPicker extends BindingComponent {
     return (
       <select className="form-select" 
         style={styles}
+        disabled={this.props.disabled}
         value={this.props.bindStateValue}
         onChange={this.onChange.bind(this)}>
         {(this.props.options || []).map((item, index) => {
