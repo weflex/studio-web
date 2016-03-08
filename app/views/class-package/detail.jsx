@@ -73,13 +73,13 @@ class CardDetail extends React.Component {
       <Row name="有效期" required={true} key={2}
         hint="设定该卡的有效期">
         <TextInput 
-          flex={0.5}
+          flex={0.8}
           bindStateCtx={this}
           bindStateType={Number}
           bindStateName="lifetime.value"
         />
         <OptionsPicker 
-          flex={0.5}
+          flex={0.2}
           bindStateCtx={this}
           bindStateName="lifetime.scale"
           options={[
@@ -91,9 +91,18 @@ class CardDetail extends React.Component {
       </Row>,
       <Row name="价格" required={true} hint="课程价格" key={3}>
         <TextInput 
+          flex={0.8}
           bindStateCtx={this}
           bindStateType={Number} 
           bindStateName="price" 
+        />
+        <OptionsPicker 
+          flex={0.2}
+          disabled={true}
+          bindStateCtx={this}
+          options={[
+            {text: '元', value: 'yuan'},
+          ]}
         />
       </Row>,
       <Row name="延期次数" required={true} key={4}
