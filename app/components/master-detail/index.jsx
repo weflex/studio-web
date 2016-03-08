@@ -131,6 +131,9 @@ class MasterDetail extends React.Component {
           if (parseInt(selected) === index) {
             className += ' active';
           }
+          if (content.length === 1) {
+            className += ' hide-bottom-line';
+          }
           let href = this.state.pathname + '/' + item.id;
           if (!href.startsWith('/')) {
             href = '/' + href;
