@@ -151,12 +151,14 @@ class ImageCell extends React.Component {
   render() {
     let className = 'image-cell';
     let bg = null;
-    let text = '点击上传图片';
-    let hint = this.props.hint || text;
+    let hint = this.props.hint || [
+      <span key="icon">+</span>,
+      <span key="text">点击上传图片</span>,
+    ];
     
     if (this.props.src && this.props.src.uri) {
       bg = <BlurView img={this.props.src.uri} blurRadius={this.state.blurRadius}></BlurView>;
-      text = '点击更换图片';
+      hint = '点击更换图片';
     } else {
       className += ' image-cell-empty';
     }
