@@ -33,7 +33,10 @@ class List extends React.Component {
       },
       detail: {
         component: Detail
-      }
+      },
+      iterated: true,
+      onClickAdd: '/class/template/add',
+      addButtonText: '新的课程模版',
     };
   }
   async source() {

@@ -42,7 +42,10 @@ class List extends React.Component {
       },
       detail: {
         component: Detail
-      }
+      },
+      iterated: true,
+      onClickAdd: 'order/add',
+      addButtonText: '添加新订单',
     };
   }
   async source() {

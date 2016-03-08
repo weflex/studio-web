@@ -36,7 +36,10 @@ class List extends React.Component {
       },
       detail: {
         component: Detail
-      }
+      },
+      iterated: true,
+      onClickAdd: 'membership/add',
+      addButtonText: '添加新用户',
     };
   }
   async source() {
