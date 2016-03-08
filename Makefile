@@ -8,7 +8,8 @@ develop: node_modules
 watch: serve
 	@make -f build/develop.mk watch
 
-production: node_modules
+production:
+	@PATH=$(PATH) npm install --no-optional
 	@make -f build/production.mk
 
 # start a server at localhot:8080
