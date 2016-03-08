@@ -298,15 +298,23 @@ class Calendar extends React.Component {
    * Current Line is for showing what's the time now
    */
   getCurrentLine() {
-    const now = this.state.currentDate;
-    const time = {
-      hour: now.hours(),
-      minute: now.minutes()
-    };
-    const style = {marginTop: 0};
-    if (this.rowList.length === 0) {
-      return;
+    const currentDate = this.state.currentDate;
+    if (!this.rowList.length) {
+      return null;
     }
+    // if the currentDate is after the end day of this week
+    // should not show current line
+    if (currentDate.isAfter(moment().endOf('week'))) {
+      return null;
+    }
+    const time = {
+      hour: currentDate.hours(),
+      minute: currentDate.minutes()
+    };
+    const style = {
+      marginTop: 0
+    };
+    // just pick the first item's height
     const rowHeight = this.rowList[0].height;
     style.marginTop = time.hour * rowHeight + (time.minute / 60) * rowHeight;
     return (
