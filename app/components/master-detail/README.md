@@ -36,6 +36,7 @@ The `masterConfig` is as the following structure:
 | `title`             | String          | false     | 'title'   |
 | `section`           | Function        | false     | null      |
 | `iterated`          | Boolean         | false     | undefined |
+| `sortKeys`          | Array           | false     | undefined |
 | `onClickAdd`        | String          | false     | undefined |
 | `addButtonText`     | String          | false     | undefined |
 | `hideMasterShadow`  | Boolean         | false     | false     |

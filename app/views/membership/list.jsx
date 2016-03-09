@@ -38,6 +38,10 @@ class List extends React.Component {
         component: Detail
       },
       iterated: true,
+      sortKeys: [
+        {name: '姓名', key: 'user.nickname'},
+        {name: '卡种', key: 'classPackage.name'},
+      ],
       onClickAdd: 'membership/add',
       addButtonText: '添加新用户',
     };

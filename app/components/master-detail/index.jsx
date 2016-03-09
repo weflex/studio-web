@@ -29,6 +29,11 @@ class MasterDetail extends React.Component {
       selected: 0,
 
       /**
+       * @state {String} sortBy - the sortBy is for saving the current sorting key
+       */
+      sortBy: null,
+
+      /**
        * @state {String} pathname - the prefix pathname for master item link
        */
       pathname: this.props.pathname || '',
@@ -88,11 +93,41 @@ class MasterDetail extends React.Component {
         masterSource: this.cachedMasterSource.filter((item) => {
           const title = (this.props.masterConfig && this.props.masterConfig.title) || 'title';
           const keyword = item[title].toLowerCase();
-          console.log(title, keyword);
           return keyword.indexOf(text.toLowerCase()) !== -1;
         }),
       });
     }
+  }
+
+  /**
+   * @event onSortButtonClick
+   * @param {Event} event
+   */
+  onSortButtonClick(event) {
+    const sortBy = event.target.value;
+    console.log(sortBy);
+    const val = (ctx, exp) => {
+      exp = exp || sortBy;
+      const dotIndex = exp.indexOf('.');
+      if (dotIndex === -1) {
+        return ctx[exp];
+      } else {
+        const firstKey = exp.slice(0, dotIndex);
+        return val(ctx[firstKey], exp.slice(dotIndex + 1));
+      }
+    };
+    const op = (sortBy === this.state.sortBy) ? '>' : '<';
+    this.setState({
+      sortBy,
+      masterSource: this.cachedMasterSource.sort((prev, next) => {
+        let ret;
+        switch (op) {
+          case '<': ret = val(prev) < val(next); break;
+          case '>': ret = val(prev) > val(next); break;
+        }
+        return ret;
+      }),
+    })
   }
 
   /**
@@ -166,6 +201,7 @@ class MasterDetail extends React.Component {
     };
 
     let theAddButton = null;
+    let theSortButton = null;
     let className = 'master';
     let style;
     if (width) {
@@ -177,6 +213,34 @@ class MasterDetail extends React.Component {
     if (config.hideMasterShadow) {
       className += ' master-without-border';
     }
+    if (config.iterated) {
+      className += ' master-iterator';
+      if (config.sortKeys) {
+        theSortButton = (
+          <li className="master-item master-item-sort">
+            <select onChange={this.onSortButtonClick.bind(this)}>
+              {config.sortKeys.map((item, index) => {
+                return (
+                  <option 
+                    key={index} 
+                    value={item.key}>
+                    按{item.name}排序
+                  </option>
+                );
+              })}
+            </select>
+          </li>
+        );
+      }
+      if (config.onClickAdd) {
+        theAddButton = (
+          <li className="master-item master-item-add">
+            <Link href={config.onClickAdd}>+{config.addButtonText}</Link>
+          </li>
+        );
+      }
+    }
+
     if (config.iterated && config.onClickAdd) {
       className += ' master-iterator';
       theAddButton = (
@@ -187,6 +251,7 @@ class MasterDetail extends React.Component {
     }
     return (
       <ul className={className} style={style}>
+        {theSortButton}
         {this.state.masterSource.map((item, index) => {
           let content = null;
           if (config.master) {

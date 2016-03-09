@@ -44,6 +44,11 @@ class List extends React.Component {
         component: Detail
       },
       iterated: true,
+      sortKeys: [
+        {name: '订单时间', key: 'createdAt'},
+        {name: '课程时间', key: 'class.date'},
+        {name: '用户', key: 'user.nickname'},
+      ],
       onClickAdd: 'order/add',
       addButtonText: '添加新订单',
     };

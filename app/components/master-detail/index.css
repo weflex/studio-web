@@ -78,7 +78,23 @@
   padding: 2px 0;
 }
 
-.master-detail .master-item-add > a {
+.master-detail .master-item.master-item-sort {
+  padding: 0;
+}
+
+.master-detail .master-item.master-item-sort > select {
+  width: 100%;
+  height: 30px;
+  font-size: 12px;
+  font-family: 'PingFang SC', 'Open Sans', sans-serif;
+  background-color: transparent;
+  border: 0;
+  outline: none;
+  color: #4A4A4A;
+  cursor: pointer;
+}
+
+.master-detail .master-item.master-item-add > a {
   display: block;
   text-align: center;
   padding: 20px 0;
@@ -86,7 +102,7 @@
   transition: all .2s ease-in-out;
 }
 
-.master-detail .master-item-add > a:hover {
+.master-detail .master-item.master-item-add > a:hover {
   color: #696969;
 }
 
