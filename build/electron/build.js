@@ -11,7 +11,7 @@ packager(config, function(err, appPath) {
   if (err) throw err;
   console.log('Built WeFlex Studio Desktop at:', appPath);
   appdmg({
-    target: 'osx-installer',
+    target: '../dist-electron/WeFlex Studio-OSX-Installer',
     basepath: __dirname,
     specification: installer
   });
