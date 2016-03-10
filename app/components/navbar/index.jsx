@@ -76,7 +76,7 @@ class NavBar extends React.Component {
   }
   async componentWillMount () {
     const user = await client.user.getCurrent();
-    const venue = await client.org.getSelectedVenue();
+    const venue = await client.user.getVenueById();
     // TODO(Yorkie): use views to instead of the hacky way
     let orders = await client.order.list({
       where: {
@@ -103,7 +103,7 @@ class NavBar extends React.Component {
         checkin: stats.checkin || [],
       },
       venue,
-      venues: client.org.venues
+      venues: client.user.venues
     });
   }
   onMouseOver () {

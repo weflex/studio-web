@@ -41,7 +41,6 @@ class LaunchScreen extends React.Component {
     });
     
     let intv2 = setInterval(this.addBarWidth.bind(this), 200);
-    await client.org.getCurrent();
     clearInterval(intv2);
 
     // done

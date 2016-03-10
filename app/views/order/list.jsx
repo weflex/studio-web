@@ -54,7 +54,7 @@ class List extends React.Component {
     };
   }
   async source() {
-    const venue = await client.org.getSelectedVenue();
+    const venue = await client.user.getVenueById();
     const list = await client.order.list({
       where: {
         venueId: venue.id

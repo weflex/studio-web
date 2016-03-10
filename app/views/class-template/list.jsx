@@ -45,7 +45,7 @@ class List extends React.Component {
     };
   }
   async source() {
-    let venue = await client.org.getSelectedVenue();
+    let venue = await client.user.getVenueById();
     return await client.classTemplate.list({
       where: {
         venueId: venue.id

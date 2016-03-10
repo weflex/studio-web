@@ -28,7 +28,7 @@ class ImageManager extends React.Component {
   }
 
   async componentWillMount() {
-    const venue = await client.org.getSelectedVenue();
+    const venue = await client.user.getVenueById();
     const [ 
       images, 
       { 

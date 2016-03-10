@@ -25,7 +25,7 @@ class Venue extends React.Component {
     };
   }
   async componentWillMount() {
-    const id = (await client.org.getSelectedVenue()).id;
+    const id = (await client.user.getVenueById()).id;
     const venue = await client.venue.get(id, {
       include: ['administrator']
     });
