@@ -47,12 +47,24 @@ class List extends React.Component {
     };
   }
   async source() {
-    let venue = await client.user.getVenueById();
-    let list = await client.membership.list({
+    const venue = await client.user.getVenueById();
+    const packages = await client.classPackage.list({
       where: {
         venueId: venue.id
+      }
+    });
+    const list = await client.membership.list({
+      where: {
+        packageId: {
+          inq: packages.map((pkg) => pkg.id),
+        }
       },
-      include: ['user', 'package']
+      include: [
+        {
+          'user': ['avatar']
+        },
+        'package'
+      ]
     });
     return (list || []).map((item) => {
       item.title = item.user.nickname;

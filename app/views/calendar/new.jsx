@@ -28,8 +28,19 @@ class NewClassTemplate extends React.Component {
   }
 
   async componentDidMount() {
-    const trainers = await client.trainer.list();
     if (this.isModalShow) {
+      const venue = await client.user.getVenueById();
+      const members = await client.orgMember.list({
+        where: {
+          venueId: venue.id,
+        },
+        include: ['roles'],
+      });
+      const trainers = members.filter((member) => {
+        return member.roles.filter((role) => {
+          return role.name === 'trainer';
+        });
+      });
       this.setState({
         trainers,
         loading: false

@@ -38,8 +38,20 @@ class Detail extends React.Component {
   }
   
   async componentDidMount() {
+    const venue = await client.user.getVenueById();
+    const members = await client.orgMember.list({
+      where: {
+        venueId: venue.id,
+      },
+      include: ['roles'],
+    });
+    const trainers = members.filter((member) => {
+      return member.roles.filter((role) => {
+        return role.name === 'trainer';
+      });
+    });
     this.setState({
-      trainers: await client.trainer.list(),
+      trainers,
       loading: false
     });
   }
@@ -152,9 +164,9 @@ class Detail extends React.Component {
             <TextInput
               flex={0.7}
               bindStateCtx={this}
-              bindStateName="data.during"
+              bindStateName="data.duration"
               bindStateType={Number}
-              bindStateValue={this.state.data.during}
+              bindStateValue={this.state.data.duration}
             />
             <OptionsPicker 
               flex={0.3}

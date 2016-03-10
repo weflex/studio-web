@@ -55,12 +55,28 @@ class List extends React.Component {
   }
   async source() {
     const venue = await client.user.getVenueById();
-    const list = await client.order.list({
+    const templates = await client.classTemplate.list({
       where: {
         venueId: venue.id
+      }
+    });
+    const classes = await client.class.list({
+      where: {
+        templateId: {
+          inq: templates.map(item => item.id),
+        }
+      }
+    });
+    const list = await client.order.list({
+      where: {
+        classId: {
+          inq: classes.map(item => item.id),
+        }
       },
       include: [
-        'user',
+        {
+          'user': ['avatar']
+        },
         {
           'class': ['template', 'trainer']
         }

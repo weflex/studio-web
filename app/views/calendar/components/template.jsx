@@ -55,8 +55,8 @@ class Template extends React.Component {
         hour: 0, minute: 0
       },
       to: {
-        hour: parseInt(template.during / 60),
-        minute: parseInt(template.during % 60)
+        hour: parseInt(template.duration / 60),
+        minute: parseInt(template.duration % 60)
       },
       spots: {},
       template: template,
@@ -80,7 +80,7 @@ class Template extends React.Component {
     return (
       <li className="resource-calendar-template">
         <div>{template.name}</div>
-        <div>{template.during}分钟</div>
+        <div>{template.duration}分钟</div>
         <div>
           {template.trainer.fullname.first} 
           {template.trainer.fullname.last}

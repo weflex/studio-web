@@ -11,7 +11,7 @@ class ClassPackageList extends React.Component {
     super(props);
     this.state = {
       loading: true,
-      sortKey: 'category',
+      sortKey: 'tags',
       data: [],
     };
   }
@@ -30,8 +30,14 @@ class ClassPackageList extends React.Component {
     ];
   }
   async componentWillMount() {
+    const venue = await client.user.getVenueById();
+    const data = await client.classPackage.list({
+      where: {
+        venueId: venue.id,
+      }
+    });
     this.setState({
-      data: await client.classPackage.list(),
+      data,
       loading: false
     });
   }
@@ -48,7 +54,7 @@ class ClassPackageList extends React.Component {
     return Object.keys(sets).map((name) => {
       return (
         <div className="class-package-grid grid" key={name}>
-          <div className="grid-title">{name}</div>
+          <div className="grid-title">{name || '默认'}</div>
           <ul className="grid-items">
             {sets[name].map((pkg, index) => {
               return (
