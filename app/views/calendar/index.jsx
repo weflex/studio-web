@@ -4,6 +4,7 @@ import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ClassCard from './card';
+import ClassOverview from './class-overview';
 import Calendar from './calendar';
 import { SearchInput } from '../../components/toolbar/components/search';
 import { WeekPicker } from './components/week-picker';
@@ -204,17 +205,21 @@ class WeflexCalendar extends React.Component {
       }
       render() {
         const props = Object.assign({}, this.props);
+        const onHide = (event, id) => {
+          return deleteClassById(id);
+        };
+        const onPanEnd = (event, data) => {
+          return updateClasses(data);
+        };
         return (
           <ClassCard
             {...props}
             ref="classCard"
             calendar={self.refs.calendar}
-            onHide={(event, id) => {
-              deleteClassById(id);
-            }}
-            onPanEnd={(event, data) => {
-              updateClasses(data);
-            }}
+            popupEnabled={true}
+            popupTemplate={ClassOverview}
+            onHide={onHide}
+            onPanEnd={onPanEnd}
           />
         );
       }
@@ -304,12 +309,10 @@ class WeflexCalendar extends React.Component {
 
   render() {
     const cellHeight = getCellHeight();
+    let classTempalte;
     if (this.state.newClassTemplate) {
-      var classTempalte = <this.state.newClassTemplate />;
-    } else {
-      classTempalte = null;
+      classTempalte = <this.state.newClassTemplate />;
     }
-
     return (
       <div>
         <Calendar

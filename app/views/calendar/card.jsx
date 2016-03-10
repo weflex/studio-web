@@ -19,108 +19,6 @@ import {
 moment.locale('zh-cn');
 
 /**
- * The `OrderInfo` is used for showing the order of every class
- * at calendar.
- *
- * @class OrderInfo
- */
-class OrderInfo extends React.Component {
-
-  /**
-   * To initialize an OrderInfo, the constructor function
-   * does set the following states:
-   * 
-   * - orders
-   * - option
-   *
-   * @constructor
-   */
-  constructor(props) {
-    super(props);
-    this.state = {
-      option: 'all',
-    };
-    this.options = {
-      'paid': '已付款',
-      'checkin': '签到',
-      'cancel': '取消',
-    };
-  }
-
-  /**
-   * @method selectOption
-   * @private
-   * @param {Object} option
-   */
-  selectOption(option) {
-    return () => {
-      if (option === this.state.option) {
-        this.setState({
-          option: 'all',
-          orders: this.props.orders
-        });
-      } else {
-        this.setState({
-          option,
-          orders: this.props.orders.filter(o => o.status === option)
-        });
-      }
-    }
-  }
-
-  /**
-   * @method getStatusLabel
-   * @private
-   * @param {String} status
-   */
-  getStatusLabel(status) {
-    return <div className={`label-${status}`}></div>
-  }
-
-  /**
-   * @method render
-   * @return {Element}
-   */
-  render() {
-    const ordersInfo = this.props.orders.map((order) => {
-      const label = this.getStatusLabel(order.status);
-      return (
-        <li key={`order_${order.id}`}>{label} {order.user.nickname}</li>
-      );
-    });
-
-    const selectButtons = [];
-    for (let key in this.options) {
-      let value = this.options[key];
-      let className = `btn-${key}`;
-      if (this.state.option === key) {
-        className += ' selected';
-      }
-
-      selectButtons.push(
-        <li className={className} key={key} onClick={this.selectOption.call(this, key)}>
-          {this.getStatusLabel(key)}
-          <span className={key}>{value}</span>
-        </li>
-      );
-    }
-
-    return (
-      <div className="order-info">
-        <div className="divider"></div>
-        <div className="order-info-users">
-          <p>已登记用户:</p>
-          {ordersInfo}
-        </div>
-        <ul className="order-info-selection">
-          {selectButtons}
-        </ul>
-      </div>
-    );
-  }
-}
-
-/**
  * The `ClassCard` class is for standing a card for class,
  * this class does handle with the move, create and position about
  * this card
@@ -492,14 +390,17 @@ class ClassCard extends React.Component {
    * @method render
    */
   render() {
-    const { id, date, template, trainer, orders } = this.props.cardInfo;
-    const { from, to } = this.state;
+    const { 
+      id, 
+      date,
+      from,
+      to, 
+      template, 
+      orders 
+    } = this.props.cardInfo;
     const calendar = this.props.calendar;
     const duration = '' + moment(this.state.date).format('ddd') +
       ' ' + getFormatTime(from) + ' - ' + getFormatTime(to);
-    const dayOfYear = moment(date).format('MM[月]DD[日]');
-    const dayOfWeek = moment(date).format('ddd');
-    const trainerName = `${trainer.fullname.first} ${trainer.fullname.last}`;
     const stats = _.groupBy(orders, 'status');
 
     let hideButton;
@@ -532,6 +433,21 @@ class ClassCard extends React.Component {
       );
     }
 
+    let popupView = null;
+    if (this.props.popupEnabled) {
+      popupView = (
+        <PopUp
+          style={this.popUpStyle}
+          active={this.state.isPopUpActive}
+          parent={`#class_${id}`}
+          arrow={this.state.arrow}
+          position={this.state.position}
+          transition={0.0}>
+          <this.props.popupTemplate data={this.props.cardInfo} />
+        </PopUp>
+      );
+    }
+
     return (
       <div
         className={className}
@@ -552,22 +468,7 @@ class ClassCard extends React.Component {
         </div>
         <div className="bottom-dragger" ref="bottomDragger"></div>
         {hideButton}
-        <PopUp
-          style={this.popUpStyle}
-          active={this.state.isPopUpActive}
-          parent={`#class_${id}`}
-          arrow={this.state.arrow}
-          position={this.state.position}
-          transition={0.0}>
-          <p className="class-title">{template.name}</p>
-          <div className="class-date">
-            <span>{dayOfYear}</span>
-            <span>{duration}</span>
-          </div>
-          <div className="trainer">{trainerName}</div>
-          <div className="btn-modify-class">修改课程</div>
-          <OrderInfo orders={orders} />
-        </PopUp>
+        {popupView}
       </div>
     );
   }

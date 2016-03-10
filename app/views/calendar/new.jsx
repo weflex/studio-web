@@ -96,6 +96,7 @@ class NewClassTemplate extends React.Component {
             <OptionsPicker
               bindStateCtx={this}
               bindStateName="data.trainerId"
+              bindStateValue={this.state.data.trainerId}
               options={this.state.trainers.map(item => {
                 return {text: item.fullname.first, value: item.id};
               })}
@@ -106,6 +107,7 @@ class NewClassTemplate extends React.Component {
               multiline={true}
               bindStateCtx={this}
               bindStateValue={this.state.data.template.description}
+              disabled={true}
             />
           </Row>
           <Row name="上课时间" required={true}>
@@ -132,7 +134,7 @@ class NewClassTemplate extends React.Component {
             />
           </Row>
           <Row>
-            <TextButton text="确认添加"
+            <TextButton text={this.state.data ? '保存修改' : '确认添加'}
               onClick={this.onCreateClass.bind(this)} 
             />
           </Row>
