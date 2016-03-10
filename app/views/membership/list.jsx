@@ -51,25 +51,28 @@ class List extends React.Component {
     const packages = await client.classPackage.list({
       where: {
         venueId: venue.id
-      }
-    });
-    const list = await client.membership.list({
-      where: {
-        packageId: {
-          inq: packages.map((pkg) => pkg.id),
-        }
       },
       include: [
         {
-          'user': ['avatar']
+          'memberships': [
+            {
+              'user': ['avatar']
+            },
+          ],
         },
-        'package'
-      ]
+      ],
     });
-    return (list || []).map((item) => {
-      item.title = item.user.nickname;
-      return item;
-    });
+    return packages.reduce((memberships, _package) => {
+      (_package.memberships || []).forEach((item) => {
+        const membership = Object.assign({
+          'title': item.user.nickname,
+          'package': _package,
+          'packageId': _package.id,
+        }, item);
+        memberships.push(membership);
+      });
+      return memberships;
+    }, []);
   }
   render() {
     return (

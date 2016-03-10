@@ -6,6 +6,44 @@ import { client } from '../../api';
 import './detail.css';
 
 class Detail extends React.Component {
+  history(logs) {
+    if (!logs.length) {
+      return <div className="order-history-empty">无最近记录</div>
+    } else {
+      return (
+        <ul className="order-logs">
+          {logs.map((log, key) => {
+            const date = moment(log.createdAt);
+            const className = 'order-log order-log-' + log.status;
+            let description;
+            if (log.status === 'cancel') {
+              description = '用户取消了预定';
+            } else if (log.status === 'paid') {
+              description = '用户预定了课程';
+            } else if (log.status === 'checkin') {
+              description = '用户签到了课程';
+            } else {
+              description = '未知操作';
+            }
+            return (
+              <li key={key} className={className}>
+                <span className="order-log-dot"></span>
+                <span className="order-log-date">
+                  {date.format('MM[月]DD[日]')}
+                </span>
+                <span className="order-log-time">
+                  {date.format('hh:mm')}
+                </span>
+                <span className="order-log-description">
+                  {description}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      );
+    }
+  }
   render() {
     const order = this.props.data;
     const { date, from, to, trainer } = order.class;
@@ -75,9 +113,7 @@ class Detail extends React.Component {
           </div>
           <div className="detail-card detail-card-right order-history">
             <h3>订单最近操作</h3>
-            <div className="order-history-timeline">
-              <p>无历史记录</p>
-            </div>
+            {this.history(order.history)}
           </div>
         </div>
       </div>
