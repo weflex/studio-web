@@ -15,17 +15,17 @@ import './layout/root.css';
 import './layout/keyframes.css';
 import './index.css';
 
-function createViewWithBars (component) {
+function createViewWithBars (component, app) {
   return class Page extends React.Component {
     constructor(props) {
       super(props);
       this.pageProps = Object.assign({
-        ref: 'main'
+        ref: 'main',
+        app: app,
       }, props);
       this.state = {
         page: null,
         resource: null,
-        // resource states
         isResourceShown: false
       };
     }
@@ -47,8 +47,8 @@ function createViewWithBars (component) {
       };
       return (
         <div>
-          <NavBar ref="navbar" />
-          <ToolBar ref="toolbar" />
+          <NavBar ref="navbar" app={app} />
+          <ToolBar ref="toolbar" app={app} />
           <div className="main">
             <div className="main-activity" style={activityStyle}>
               {activity}
@@ -77,17 +77,21 @@ function createViewWithBars (component) {
 class App extends React.Component {
   constructor(props) {
     super(props);
+    this.router = null;
     this.state = {
       pending: true
     };
   }
-  componentWillMount() {
-    if (window.location.pathname === '/') {
-      window.location.pathname = '/calendar';
-    }
-  }
   onLauncherFinish() {
     this.setState({pending: false});
+  }
+  setRouter(router) {
+    if (router) {
+      this.router = router;
+      if (window.location.pathname === '/') {
+        this.router.navigate('/calendar');
+      }
+    }
   }
   render() {
     if (this.state.pending) {
@@ -98,23 +102,23 @@ class App extends React.Component {
       );
     }
     return (
-      <Locations>
-        <Location path="/calendar"
-          handler={createViewWithBars(require('./views/calendar'))} />
+      <Locations ref={this.setRouter.bind(this)}>
+        <Location path="/(calendar)"
+          handler={createViewWithBars(require('./views/calendar'), this)} />
         <Location path="/class/template/add"
-          handler={createViewWithBars(require('./views/class-template/detail'))} />
+          handler={createViewWithBars(require('./views/class-template/detail'), this)} />
         <Location path="/class/template(/*)"
-          handler={createViewWithBars(require('./views/class-template/list'))} />
+          handler={createViewWithBars(require('./views/class-template/list'), this)} />
         <Location path="/class/package"
-          handler={createViewWithBars(require('./views/class-package/list'))} />
-        <Location path="/class/package/add"
-          handler={createViewWithBars(require('./views/class-package/detail'))} />
+          handler={createViewWithBars(require('./views/class-package/list'), this)} />
+        <Location path="/class/package/*"
+          handler={createViewWithBars(require('./views/class-package/detail'), this)} />
         <Location path="/order(/*)"
-          handler={createViewWithBars(require('./views/order/list'))} />
+          handler={createViewWithBars(require('./views/order/list'), this)} />
         <Location path="/membership(/*)"
-          handler={createViewWithBars(require('./views/membership/list'))} />
+          handler={createViewWithBars(require('./views/membership/list'), this)} />
         <Location path="/settings(/*)"
-          handler={createViewWithBars(require('./views/settings/index'))} />
+          handler={createViewWithBars(require('./views/settings/index'), this)} />
       </Locations>
     );
   }
