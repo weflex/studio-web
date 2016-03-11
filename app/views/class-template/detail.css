@@ -50,7 +50,7 @@
 
 .class-template-new-preview > .photos {
   width: 100%;
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
 .class-template-new-preview > .photos .image-cell {

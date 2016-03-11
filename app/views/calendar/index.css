@@ -194,6 +194,7 @@
 
 .class-card {
   position: relative;
+  overflow: hidden;
   text-align: left;
   background-color: rgba(254,248,217,.5);
   border: 1px solid rgba(238,64,3,.21);
