@@ -4,6 +4,7 @@ import _ from 'lodash';
 import React from 'react';
 import { client } from '../../api';
 import { ClipLoader } from 'halogen';
+import MembershipCard from '../../components/membership-card';
 import './list.css';
 
 class ClassPackageList extends React.Component {
@@ -21,11 +22,8 @@ class ClassPackageList extends React.Component {
   get actions() {
     return [
       {
-        title: '添加新卡',
+        title: '新增会卡',
         path: '/class/package/add'
-      },
-      {
-        title: '管理会员卡'
       }
     ];
   }
@@ -41,6 +39,12 @@ class ClassPackageList extends React.Component {
       loading: false
     });
   }
+  onClickAddCard() {
+    this.props.app.router.navigate(window.location.pathname + '/add');
+  }
+  onClickCard(data) {
+    this.props.app.router.navigate(window.location.pathname + '/' + data.id, data);
+  }
   renderGrid() {
     if (this.state.loading) {
       return (
@@ -54,17 +58,25 @@ class ClassPackageList extends React.Component {
     return Object.keys(sets).map((name) => {
       return (
         <div className="class-package-grid grid" key={name}>
-          <div className="grid-title">{name || '默认'}</div>
-          <ul className="grid-items">
-            {sets[name].map((pkg, index) => {
+          <fieldset className="grid-title">
+            <legend>
+              <span>{name || '默认'}</span>
+              <span className="grid-title-total">{sets[name].length}</span>
+            </legend>
+          </fieldset>
+          <div className="grid-items">
+            {sets[name].map((data, key) => {
               return (
-                <li key={index} title={pkg.description}>
-                  <div className="class-package-name">{pkg.name}</div>
-                  <div className="class-package-price">￥{pkg.price}</div>
-                </li>
+                <MembershipCard 
+                  className="grid-item" 
+                  data={data} 
+                  key={key}
+                  onClick={this.onClickCard.bind(this, data)}
+                />
               );
             })}
-          </ul>
+            <MembershipCard className="grid-item" onClick={this.onClickAddCard.bind(this)} />
+          </div>
         </div>
       );
     });
@@ -77,13 +89,6 @@ class ClassPackageList extends React.Component {
   render() {
     return (
       <div className="class-package-container">
-        <div className="class-package-actions">
-          <select>
-            <option>按类型排序</option>
-            <option>按名称排序</option>
-            <option>按时间排序</option>
-          </select>
-        </div>
         <div className="class-package-grids">
           {this.renderGrid()}
         </div>

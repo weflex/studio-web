@@ -17,36 +17,61 @@ class CardDetail extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: null,
-      accessType: null,
-      lifetime: {
-        value: null,
-      }
+      id: null,
+      data: {
+        name: null,
+        category: null,
+        accessType: null,
+        lifetime: {
+          value: null,
+        },
+      },
     };
+  }
+  async componentWillMount() {
+    const id = this.props._[0].toLowerCase();
+    let newState = this.state;
+    if (id !== 'add') {
+      newState.data = await client.classPackage.get(id);
+    }
+    newState.id = id;
+    this.setState(newState);
   }
   get title() {
     return '添加新会员卡';
   }
   get actions() {
-    return [];
+    return [
+      {
+        title: '返回会卡管理',
+        path: '/class/package'
+      }
+    ];
   }
   get disabled() {
-    if (!this.state.name) {
+    if (!this.state.data.name) {
       return true;
     }
-    if (!this.state.lifetime.value) {
+    if (!this.state.data.lifetime.value) {
       return true;
     }
-    if (!this.state.price) {
+    if (typeof this.state.data.price !== 'number') {
       return true;
     }
     return false;
   }
-  async onsubmit(event) {
+  async onSubmit(event) {
     try {
-      await client.classPackage.create(this.state);
+      await client.classPackage.upsert(this.state.data);
+      // call navigate will unmount this component, but the onClick doesn't get back,
+      // so use setTimeout to fix this problem.
+      setTimeout(() => {
+        const next = window.location.pathname.replace('/' + this.state.id, '');
+        this.props.app.router.navigate(next);
+      }, 0);
     } catch (err) {
       console.error(err && err.stack);
+      alert(err);
     }
   }
   form() {
@@ -55,7 +80,8 @@ class CardDetail extends React.Component {
         hint="请给您的卡取个简单易懂的名字">
         <TextInput 
           bindStateCtx={this} 
-          bindStateName="name"
+          bindStateName="data.name"
+          bindStateValue={this.state.data.name}
           bindStateType={String}
         />
       </Row>,
@@ -63,7 +89,8 @@ class CardDetail extends React.Component {
         hint="设定该健身卡属于一次性，多次，无限次卡">
         <OptionsPicker
           bindStateCtx={this} 
-          bindStateName="accessType"
+          bindStateName="data.accessType"
+          bindStateValue={this.state.data.accessType}
           options={[
             {text: '多次卡', value: 'multiple'},
             {text: '无限次', value: 'unlimited'}
@@ -76,12 +103,14 @@ class CardDetail extends React.Component {
           flex={0.8}
           bindStateCtx={this}
           bindStateType={Number}
-          bindStateName="lifetime.value"
+          bindStateValue={this.state.data.lifetime.value}
+          bindStateName="data.lifetime.value"
         />
         <OptionsPicker 
           flex={0.2}
           bindStateCtx={this}
-          bindStateName="lifetime.scale"
+          bindStateName="data.lifetime.scale"
+          bindStateValue={this.state.data.lifetime.scale}
           options={[
             {text: '天', value: 'day'},
             {text: '月', value: 'month'},
@@ -94,7 +123,8 @@ class CardDetail extends React.Component {
           flex={0.8}
           bindStateCtx={this}
           bindStateType={Number} 
-          bindStateName="price" 
+          bindStateName="data.price" 
+          bindStateValue={this.state.data.price}
         />
         <OptionsPicker 
           flex={0.2}
@@ -109,7 +139,8 @@ class CardDetail extends React.Component {
         hint="您的会员可能因为各种情况需要延长卡的有效期，您可以在这里设置延长次数">
         <OptionsPicker 
           bindStateCtx={this}
-          bindStateName="extensible"
+          bindStateName="data.extensible"
+          bindStateValue={this.state.data.extensible}
           options={[
             {text: '不能延期', value: 0},
             {text: '可1次', value: 1},
@@ -122,7 +153,8 @@ class CardDetail extends React.Component {
       <Row name="描述" hint="您可以在这里添加更多关于该卡的信息" key={5}>
         <TextInput 
           bindStateCtx={this}
-          bindStateName="description"
+          bindStateName="data.description"
+          bindStateValue={this.state.data.description}
           multiline={true} 
         />
       </Row>,
@@ -130,7 +162,8 @@ class CardDetail extends React.Component {
         hint="您可以为这张卡和其他您创建过的卡整理归类。只支持单选，可以删除预定义的类别">
         <OptionsPicker 
           bindStateCtx={this}
-          bindStateName="category"
+          bindStateName="data.category"
+          bindStateValue={this.state.data.category}
           options={[
             {text: '年卡', value: '年卡'},
             {text: '次卡', value: '次卡'},
@@ -139,7 +172,7 @@ class CardDetail extends React.Component {
       </Row>,
       <Row key={7}>
         <TextButton text="确认添加"
-          onClick={this.onsubmit.bind(this)} 
+          onClick={this.onSubmit.bind(this)} 
           disabled={this.disabled}
         />
       </Row>
@@ -152,7 +185,6 @@ class CardDetail extends React.Component {
           {this.form()}
         </Form>
         <div className="class-package-detail-preview">
-
         </div>
       </div>
     );

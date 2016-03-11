@@ -28,37 +28,28 @@
 .class-package-grid .grid-title {
   font-size: 14px;
   font-family: 'PingFang SC', sans-serif;
-  margin-bottom: 5px;
 }
-.class-package-grid .grid-items li {
+.class-package-grid .grid-title {
+  border: 0;
+  border-top: 1px solid #dddddd;
+  text-align: center;
+  color: #9b9b9b;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+.class-package-grid .grid-title legend {
+  padding: 0 5px;
+}
+.class-package-grid .grid-title-total {
   display: inline-block;
-  position: relative;
-  padding: 10px;
-  margin-right: 10px;
-  height: 80px;
-  width: 150px;
-  background-color: rgba(254,248,217,.5);
-  border: 1px solid rgba(238,64,3,.21);
-  border-radius: 2px;
-  cursor: pointer;
-  box-sizing: border-box;
-  transition: all .2s ease-in-out;
-}
-.class-package-grid .grid-items li:hover {
-  background-color: rgba(254,248,217,1);
-  border-color: rgba(238,64,3,.51);
-  box-shadow: 0 1px 2px 2px #efefef;
-}
-.class-package-grid .class-package-name {
-  font-size: 14px;
-  font-family: 'PingFang SC', sans-serif;
-  color: #D0021B;
-}
-.class-package-grid .class-package-price {
-  font-size: 14px;
+  width: 24px;
+  border: 1px solid #9b9b9b;
+  border-radius: 9px;
+  font-size: 12px;
   font-family: 'Open Sans', sans-serif;
-  color: #FA021F;
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
+  text-align: center;
+  margin-left: 10px;
+}
+.class-package-grid .grid-item {
+  margin-right: 18px;
 }
