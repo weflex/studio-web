@@ -110,7 +110,31 @@
  * detail card
  */
 
-.master-detail .detail-card {
+.detail-cards {
+  padding: 10px;
+  background-color: #F7F7F7;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.detail-cards-left,
+.detail-cards-right {
+  display: inline-block;
+  vertical-align: top;
+  height: calc(100% - 20px);
+}
+
+.detail-cards-left {
+  width: 70%;
+  margin-right: 10px;
+}
+
+.detail-cards-right {
+  width: calc(30% - 10px);
+  float: right;
+}
+
+.detail-card {
   display: block;
   padding: 10px;
   margin-bottom: 10px;
@@ -119,48 +143,31 @@
   box-sizing: border-box;
 }
 
-.master-detail .detail-cards-left,
-.master-detail .detail-cards-right {
-  display: inline-block;
-  vertical-align: top;
-  height: calc(100% - 20px);
-}
-
-.master-detail .detail-cards-left {
-  width: 70%;
-  margin-right: 10px;
-}
-
-.master-detail .detail-cards-right {
-  width: calc(30% - 10px);
-  float: right;
-}
-
-.master-detail .detail-card > h3 {
+.detail-card > h3 {
   font-family: 'PingFang SC', 'Open Sans', sans-serif;
   font-size: 18px;
   font-weight: normal;
   margin-bottom: 5px;
 }
 
-.master-detail .detail-card-row {
+.detail-card-row {
   margin-bottom: 10px;
   font-size: 14px;
   font-weight: normal;
   font-family: 'PingFang SC', 'Open Sans', sans-serif;
 }
 
-.master-detail .detail-card-row > * {
+.detail-card-row > * {
   display: inline-block;
 }
 
-.master-detail .detail-card-row > label {
+.detail-card-row > label {
   color: #4A4A4A;
   width: 90px;
   vertical-align: top;
 }
 
-.master-detail .detail-card-row > span {
+.detail-card-row > span {
   color: #9B9B9B;
   width: calc(100% - 90px);
 }
