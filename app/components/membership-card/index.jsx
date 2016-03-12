@@ -8,12 +8,10 @@ class MembershipCard extends React.Component {
     super(props);
     const height = 149;
     const width = 236;
-    this.defaultColor = '#f0ab51';
     if (this.props.data) {
       this.state = {
         height,
         width,
-        color: this.props.data.color || this.defaultColor,
         path: 'M165.845472,0 L227.99565,0 C232.416331,0 236,3.57268443 236,7.99770351 L236,141.002296 C236,145.419306 232.410871,149 227.99565,149 L74.7409935,149 C81.7669784,130.92177 98.4541553,89.6860279 117.435739,54.7599123 C134.773927,22.8576428 154.983589,6.85502733 165.845472,-4.88498131e-15 Z',
         fillColor: '#ffffff',
         fillOpacity: '0.4',
@@ -25,7 +23,7 @@ class MembershipCard extends React.Component {
   onMouseOver() {
     if (this.props.data) {
       this.setState({
-        color: '#383838',
+        color: '#777777',
         fillOpacity: '0.1'
       });
     }
@@ -33,7 +31,7 @@ class MembershipCard extends React.Component {
   onMouseLeave() {
     if (this.props.data) {
       this.setState({
-        color: this.props.data.color || this.defaultColor,
+        color: this.props.data.color,
         fillOpacity: '0.4'
       });
     }
@@ -50,7 +48,7 @@ class MembershipCard extends React.Component {
               <g transform="translate(201.000000, 0.000000)">
                 <g transform="translate(397.000000, 10.000000)">
                   <g transform="translate(15.000000, 80.000000)">
-                    <rect fill={this.state.color} x="0" y="0" rx="8"
+                    <rect fill={this.props.data.color} x="0" y="0" rx="8"
                       width={this.state.width} 
                       height={this.state.height}
                     />
