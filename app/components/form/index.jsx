@@ -27,15 +27,17 @@ class Row extends React.Component {
     }
     return (
       <div className="form-row">
-        <Label
-          required={this.props.required} 
-          text={this.props.name} 
-          style={labelOverStyle}
-        />
+        <div className="form-row-label">
+          <Label
+            required={this.props.required} 
+            text={this.props.name} 
+            style={labelOverStyle}
+          />
+          {hint}
+        </div>
         <div className="form-row-controls">
           {this.props.children}
         </div>
-        {hint}
       </div>
     );
   }
@@ -217,11 +219,8 @@ class TextButton extends React.Component {
 }
 
 class OptionsPicker extends BindingComponent {
-  constructor(props) {
-    super(props);
-  }
   componentDidMount() {
-    if (this.bindstateCtx && !this.bindStateValue) {
+    if (this.props.bindStateCtx && !this.bindStateValue) {
       this.bindStateValue = this.props.options[0].value;
     }
   }
@@ -242,6 +241,44 @@ class OptionsPicker extends BindingComponent {
           return <option key={index} value={item.value}>{item.text}</option>;
         })}
       </select>
+    );
+  }
+}
+
+class ColorPicker extends BindingComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      colors: this.props.colors || [
+        '#ff8ac2',
+        '#6ed4a4',
+        '#00e4ff',
+        '#283547',
+        '#f0ab51',
+      ],
+    };
+  }
+  onSelect(color) {
+    this.onChange({
+      target: {
+        value: color
+      }
+    });
+  }
+  render() {
+    const selected = this.props.bindStateValue || this.state.colors[0];
+    return (
+      <ul className="form-color-picker">
+        {this.state.colors.map((color) => {
+          return (
+            <li key={color} 
+              className={(selected === color ? 'selected' : '')}
+              onClick={this.onSelect.bind(this, color)}>
+              <div style={{backgroundColor: color}}></div>
+            </li>
+          );
+        })}
+      </ul>
     );
   }
 }
@@ -280,3 +317,4 @@ exports.TextInput = TextInput;
 exports.FileInput = FileInput;
 exports.TextButton = TextButton;
 exports.OptionsPicker = OptionsPicker;
+exports.ColorPicker = ColorPicker;
