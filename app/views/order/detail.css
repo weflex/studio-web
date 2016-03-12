@@ -1,8 +1,3 @@
-.order-detail-container {
-  padding: 10px;
-  background-color: #F7F7F7;
-}
-
 .detail .order-user {
   padding-bottom: 5px;
   margin-bottom: 10px;
@@ -20,14 +15,14 @@
   width: 100%;
 }
 
-.detail .order-payment > fieldset {
+.detail .order-payment fieldset {
   border: 0;
   border-top: 1px solid #E8E8E8;
   text-align: center;
   margin: 10px 0;
 }
 
-.detail .order-payment > fieldset legend {
+.detail .order-payment fieldset legend {
   font-size: 12px;
   color: #9B9B9B;
   padding: 0 5px;
@@ -40,13 +35,6 @@
   font-family: 'PingFang SC', 'Open Sans', sans-serif;
   font-weight: normal;
   margin: 10px 0;
-}
-
-.detail .order-class-package {
-  height: 149px;
-  width: 100%;
-  border-radius: 5px;
-  background-color: #E1E2E3;
 }
 
 /**

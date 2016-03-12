@@ -9,8 +9,10 @@ import {
   TextButton,
   Label,
   HintText,
-  OptionsPicker
+  OptionsPicker,
+  ColorPicker,
 } from '../../components/form';
+import MembershipCard from '../../components/membership-card';
 import './detail.css';
 
 class CardDetail extends React.Component {
@@ -41,12 +43,23 @@ class CardDetail extends React.Component {
     return '添加新会员卡';
   }
   get actions() {
-    return [
+    let buttons = [
       {
-        title: '返回会卡管理',
+        title: '返回',
         path: '/class/package'
       }
     ];
+    if (this.props._[0].toLowerCase() !== 'add') {
+      buttons.push({
+        title: '删除该卡',
+        onClick: this.onDelete.bind(this)
+      });
+    }
+    buttons.push({
+      title: '确认保存',
+      onClick: this.onSubmit.bind(this)
+    });
+    return buttons;
   }
   get disabled() {
     if (!this.state.data.name) {
@@ -60,23 +73,49 @@ class CardDetail extends React.Component {
     }
     return false;
   }
+  gotoListPage() {
+    // call navigate will unmount this component, but the onClick doesn't get back,
+    // so use setTimeout to fix this problem.
+    setTimeout(() => {
+      const next = window.location.pathname.replace('/' + this.state.id, '');
+      this.props.app.router.navigate(next);
+    }, 0);
+  }
+  async onDelete(event) {
+    await client.classPackage.delete(this.state.id);
+    this.gotoListPage();
+  }
   async onSubmit(event) {
-    try {
-      await client.classPackage.upsert(this.state.data);
-      // call navigate will unmount this component, but the onClick doesn't get back,
-      // so use setTimeout to fix this problem.
-      setTimeout(() => {
-        const next = window.location.pathname.replace('/' + this.state.id, '');
-        this.props.app.router.navigate(next);
-      }, 0);
-    } catch (err) {
-      console.error(err && err.stack);
-      alert(err);
-    }
+    await client.classPackage.upsert(this.state.data);
+    this.gotoListPage();
   }
   form() {
     return [
-      <Row name="名称" required={true} key={0}
+      <Row name="种类" required={true} key="category"
+        hint="可以是团课或者私教">
+        <OptionsPicker 
+          bindStateCtx={this}
+          bindStateName="data.category"
+          bindStateValue={this.state.data.category}
+          options={[
+            {text: '团课', value: 'group'},
+            {text: '私教', value: 'private'},
+          ]}
+        />
+      </Row>,
+      <Row name="类型" required={true} key="accessType"
+        hint="可以是多次卡或不限次卡">
+        <OptionsPicker 
+          bindStateCtx={this}
+          bindStateName="data.accessType"
+          bindStateValue={this.state.data.accessType}
+          options={[
+            {text: '多次卡', value: 'multiple'},
+            {text: '不限次卡', value: 'unlimited'},
+          ]}
+        />
+      </Row>,
+      <Row name="名字" required={true} key="name"
         hint="请给您的卡取个简单易懂的名字">
         <TextInput 
           bindStateCtx={this} 
@@ -85,29 +124,26 @@ class CardDetail extends React.Component {
           bindStateType={String}
         />
       </Row>,
-      <Row name="次数选择" required={true} key={1}
-        hint="设定该健身卡属于一次性，多次，无限次卡">
-        <OptionsPicker
-          bindStateCtx={this} 
-          bindStateName="data.accessType"
-          bindStateValue={this.state.data.accessType}
-          options={[
-            {text: '多次卡', value: 'multiple'},
-            {text: '无限次', value: 'unlimited'}
-          ]} 
+      <Row name="有效次数" required={true} key="passes"
+        hint="不限次卡不需要填写">
+        <TextInput
+          bindStateCtx={this}
+          bindStateName="data.passes"
+          bindStateValue={this.state.data.passes}
+          bindStateType={Number}
         />
       </Row>,
-      <Row name="有效期" required={true} key={2}
+      <Row name="有效时间" required={true} key="lifetime"
         hint="设定该卡的有效期">
         <TextInput 
-          flex={0.8}
+          flex={0.9}
           bindStateCtx={this}
           bindStateType={Number}
           bindStateValue={this.state.data.lifetime.value}
           bindStateName="data.lifetime.value"
         />
         <OptionsPicker 
-          flex={0.2}
+          flex={0.1}
           bindStateCtx={this}
           bindStateName="data.lifetime.scale"
           bindStateValue={this.state.data.lifetime.scale}
@@ -118,25 +154,24 @@ class CardDetail extends React.Component {
           ]}
         />
       </Row>,
-      <Row name="价格" required={true} hint="课程价格" key={3}>
+      <Row name="价格" required={true} key="price">
         <TextInput 
-          flex={0.8}
+          flex={0.9}
           bindStateCtx={this}
           bindStateType={Number} 
           bindStateName="data.price" 
           bindStateValue={this.state.data.price}
         />
         <OptionsPicker 
-          flex={0.2}
+          flex={0.1}
           disabled={true}
-          bindStateCtx={this}
           options={[
             {text: '元', value: 'yuan'},
           ]}
         />
       </Row>,
-      <Row name="延期次数" required={true} key={4}
-        hint="您的会员可能因为各种情况需要延长卡的有效期，您可以在这里设置延长次数">
+      <Row name="延期次数" required={true} key="extensible"
+        hint="会员出差或工作室休息的时候可以给会卡延期">
         <OptionsPicker 
           bindStateCtx={this}
           bindStateName="data.extensible"
@@ -150,7 +185,14 @@ class CardDetail extends React.Component {
           ]}
         />
       </Row>,
-      <Row name="描述" hint="您可以在这里添加更多关于该卡的信息" key={5}>
+      <Row name="卡片颜色" key="color" hint="给不同的卡片设定不同的颜色可以帮你区分不同的卡">
+        <ColorPicker
+          bindStateCtx={this}
+          bindStateName="data.color"
+          bindStateValue={this.state.data.color}
+        />
+      </Row>,
+      <Row name="描述" hint="您可以在这里添加更多关于该卡的信息" key="description">
         <TextInput 
           bindStateCtx={this}
           bindStateName="data.description"
@@ -158,33 +200,21 @@ class CardDetail extends React.Component {
           multiline={true} 
         />
       </Row>,
-      <Row name="所属种类" required={true} key={6}
-        hint="您可以为这张卡和其他您创建过的卡整理归类。只支持单选，可以删除预定义的类别">
-        <OptionsPicker 
-          bindStateCtx={this}
-          bindStateName="data.category"
-          bindStateValue={this.state.data.category}
-          options={[
-            {text: '年卡', value: '年卡'},
-            {text: '次卡', value: '次卡'},
-          ]}
-        />
-      </Row>,
-      <Row key={7}>
-        <TextButton text="确认添加"
-          onClick={this.onSubmit.bind(this)} 
-          disabled={this.disabled}
-        />
-      </Row>
     ];
   }
   render() {
     return (
-      <div className="class-package-detail-container">
-        <Form className="class-package-detail-form">
-          {this.form()}
-        </Form>
-        <div className="class-package-detail-preview">
+      <div className="detail-cards class-package-detail-container">
+        <div className="detail-cards-left">
+          <Form className="detail-card class-package-detail-form">
+            {this.form()}
+          </Form>
+        </div>
+        <div className="detail-cards-right">
+          <div className="detail-card class-package-detail-preview">
+            <h3>预览</h3>
+            <MembershipCard data={this.state.data} />
+          </div>
         </div>
       </div>
     );

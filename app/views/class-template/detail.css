@@ -22,7 +22,8 @@
 }
 
 .class-template-new-form {
-  width: 60%;
+  width: 50%;
+  margin-right: 10%;
 }
 
 .class-template-new-form textarea {

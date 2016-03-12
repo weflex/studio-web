@@ -3,14 +3,96 @@
 import React from 'react';
 import moment from 'moment';
 import { client } from '../../api';
+import MembershipCard from '../../components/membership-card';
 import './detail.css';
 
 class Detail extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      membership: null
+    };
+  }
+  async componentWillMount() {
+    const order = this.props.data;
+    const payment = order.payments && order.payments[0];
+    if (payment.membership && payment.membership.id) {
+      const membership = await client.membership.get(payment.membership.id, {
+        include: ['package']
+      });
+      this.setState({
+        membership,
+      });
+    }
+  }
+  payment(payments) {
+    let description = '未知方式支付';
+    let preview = null;
+    let metadata = null;
+    const data = payments && payments[0];
+    if (this.state.membership) {
+      const membership = this.state.membership;
+      const classPackage = membership.package;
+      const lifetime = classPackage.lifetime;
+      description = `使用${classPackage.name}抵扣`;
+      preview = (
+        <MembershipCard 
+          data={classPackage}
+        />
+      );
+      metadata = (
+        <div className="order-payment-metadata-container">
+          <fieldset>
+            <legend>会卡详情</legend>
+          </fieldset>
+          <div className="detail-card-row">
+            <label>会卡种类</label>
+            <span>{classPackage.category === 'group' ? '团课' : '私教'}</span>
+          </div>
+          <div className="detail-card-row">
+            <label>会卡类型</label>
+            <span>{classPackage.accessType === 'unlimited' ? '不限次卡': '多次卡'}</span>
+          </div>
+          <div className="detail-card-row">
+            <label>剩余次数</label>
+            <span>{classPackage.passes}次</span>
+          </div>
+          <div className="detail-card-row">
+            <label>开卡时间</label>
+            <span>{moment(membership.createdAt).format('YYYY[年]MM[月]DD[日]')}</span>
+          </div>
+          <div className="detail-card-row">
+            <label>到期时间</label>
+            <span>
+              {moment(membership.createdAt)
+                .add(lifetime.value, lifetime.scale)
+                .format('YYYY[年]MM[月]DD[日]')}
+            </span>
+          </div>
+        </div>
+      );
+    } else if (data._raw) {
+      if (data._raw.method === 'wechat') {
+        description = `使用微信支付：${data.fee} ${data._raw.currency}`;
+      } else {
+        description = `使用支付宝支付：${data.fee} ${data._raw.currency}`;
+      }
+    }
+    return (
+      <div className="detail-card order-payment">
+        <h3>费用支付</h3>
+        <div className="order-payment-description">{description}</div>
+        <div className="order-payment-preview">{preview}</div>
+        <div className="order-payment-metadata">{metadata}</div>
+      </div>
+    );
+  }
   history(logs) {
+    let content;
     if (!logs.length) {
-      return <div className="order-history-empty">无最近记录</div>
+      content = <div className="order-history-empty">无最近记录</div>;
     } else {
-      return (
+      content = (
         <ul className="order-logs">
           {logs.map((log, key) => {
             const date = moment(log.createdAt);
@@ -42,13 +124,19 @@ class Detail extends React.Component {
           })}
         </ul>
       );
+      return (
+        <div className="detail-card detail-card-right order-history">
+          <h3>订单最近操作</h3>
+          {content}
+        </div>
+      );
     }
   }
   render() {
     const order = this.props.data;
     const { date, from, to, trainer } = order.class;
     return (
-      <div className="order-detail-container">
+      <div className="detail-cards order-detail-container">
         <div className="detail-cards-left">
           <div className="detail-card" style={{height: '100%'}}>
             <h3>订单主要信息</h3>
@@ -90,31 +178,8 @@ class Detail extends React.Component {
           </div>
         </div>
         <div className="detail-cards-right">
-          <div className="detail-card order-payment">
-            <h3>费用支付</h3>
-            <div className="order-payment-description">使用[会员卡]抵扣</div>
-            <div className="order-payment-preview order-class-package">
-            </div>
-            <fieldset>
-              <legend>会卡详情</legend>
-            </fieldset>
-            <div className="detail-card-row">
-              <label>会卡类型</label>
-              <span>次卡</span>
-            </div>
-            <div className="detail-card-row">
-              <label>剩余次数</label>
-              <span>3次</span>
-            </div>
-            <div className="detail-card-row">
-              <label>到期时间</label>
-              <span>{moment().format('lll')}</span>
-            </div>
-          </div>
-          <div className="detail-card detail-card-right order-history">
-            <h3>订单最近操作</h3>
-            {this.history(order.history)}
-          </div>
+          {this.payment(order.payments)}
+          {this.history(order.history)}
         </div>
       </div>
     );

@@ -12,7 +12,7 @@ class ClassPackageList extends React.Component {
     super(props);
     this.state = {
       loading: true,
-      sortKey: 'tags',
+      sortKey: 'accessType',
       data: [],
     };
   }
@@ -54,18 +54,35 @@ class ClassPackageList extends React.Component {
         </div>
       );
     }
-    const sets = _.groupBy(this.state.data, this.state.sortKey);
-    return Object.keys(sets).map((name) => {
+
+    const data = _.groupBy(this.state.data, (item) => {
+      let key;
+      switch (item.accessType) {
+        case 'unlimited': key = '不限次卡'; break;
+        case 'multiple':
+          switch (item.category) {
+            case 'group': key = '团课次卡'; break;
+            case 'private': key = '私教次卡'; break;
+            default: key = '次卡'; break;
+          }
+          break;
+        default:
+          key = '未归类';
+      }
+      return key;
+    });
+
+    return Object.keys(data).map((name) => {
       return (
         <div className="class-package-grid grid" key={name}>
           <fieldset className="grid-title">
             <legend>
-              <span>{name || '默认'}</span>
-              <span className="grid-title-total">{sets[name].length}</span>
+              <span>{name}</span>
+              <span className="grid-title-total">{data[name].length}</span>
             </legend>
           </fieldset>
           <div className="grid-items">
-            {sets[name].map((data, key) => {
+            {data[name].map((data, key) => {
               return (
                 <MembershipCard 
                   className="grid-item" 
