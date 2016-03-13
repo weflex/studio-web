@@ -17,24 +17,20 @@ class Form extends React.Component {
 class Row extends React.Component {
   render() {
     let hint = null;
-    let labelOverStyle;
-    if (this.props.hint) {
-      hint = <HintText text={this.props.hint} />;
-    } else {
-      labelOverStyle = {
-        width: '20%'
-      };
-    }
-    return (
-      <div className="form-row">
+    if (this.props.name) {
+      hint = (
         <div className="form-row-label">
           <Label
             required={this.props.required} 
             text={this.props.name} 
-            style={labelOverStyle}
           />
-          {hint}
+          <HintText text={this.props.hint || ''} />
         </div>
+      );
+    }
+    return (
+      <div className="form-row">
+        {hint}
         <div className="form-row-controls">
           {this.props.children}
         </div>

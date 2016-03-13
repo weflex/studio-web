@@ -70,11 +70,6 @@ header {
   color: #fff;
 }
 
-.userpass-container,
-.smscode-container {
-  width: 300px;
-}
-
 .qrcode-container {
   display: inline-block;
   line-height: 0;

@@ -5,7 +5,7 @@
 }
 
 .form-row {
-  margin-bottom: 25px;
+  margin-bottom: 15px;
 }
 
 .form-row > * {
@@ -134,6 +134,7 @@
   border: 1px solid #9b9b9b;
   border-radius: 4px;
   padding: 0 10px;
+  margin: 0 10px 0 0;
   color: #7e7e7e;
   font-size: 12px;
   font-family: 'PingFang SC', 'Open Sans', sans-serif;
