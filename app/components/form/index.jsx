@@ -40,6 +40,12 @@ class Row extends React.Component {
 }
 
 class TextInput extends BindingComponent {
+  onInputChange(event) {
+    this.onChange(event);
+    if (typeof this.props.onChange === 'function') {
+      this.props.onChange(event);
+    }
+  }
   render() {
     let className = ['form-input'];
     let styles = {
@@ -65,7 +71,7 @@ class TextInput extends BindingComponent {
           className={className.join(' ')}
           style={styles}
           value={this.props.bindStateValue}
-          onChange={this.onChange.bind(this)}
+          onChange={this.onInputChange.bind(this)}
           placeholder={this.props.placeholder}
           disabled={this.props.disabled}
         />
@@ -220,6 +226,24 @@ class OptionsPicker extends BindingComponent {
       this.bindStateValue = this.props.options[0].value;
     }
   }
+  componentDidUpdate(prevProps, prevState) {
+    const prevOptions = JSON.stringify(prevProps.options);
+    const currOptions = JSON.stringify(this.props.options);
+    if (prevOptions !== currOptions) {
+      const options = this.props.options[0];
+      this.onInputChange({
+        target: {
+          value: options.value || options.text
+        }
+      });
+    }
+  }
+  onInputChange(event) {
+    this.onChange(event);
+    if (typeof this.props.onChange === 'function') {
+      this.props.onChange(event);
+    }
+  }
   render() {
     let styles = {
       width: 'calc(100% - 5px)'
@@ -232,7 +256,7 @@ class OptionsPicker extends BindingComponent {
         style={styles}
         disabled={this.props.disabled}
         value={this.props.bindStateValue}
-        onChange={this.onChange.bind(this)}>
+        onChange={this.onInputChange.bind(this)}>
         {(this.props.options || []).map((item, index) => {
           return <option key={index} value={item.value}>{item.text}</option>;
         })}

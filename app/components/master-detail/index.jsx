@@ -235,7 +235,7 @@ class MasterDetail extends React.Component {
       if (config.onClickAdd) {
         theAddButton = (
           <li className="master-item master-item-add">
-            <Link href={config.onClickAdd}>+{config.addButtonText}</Link>
+            <a onClick={config.onClickAdd}>+{config.addButtonText}</a>
           </li>
         );
       }
@@ -245,7 +245,7 @@ class MasterDetail extends React.Component {
       className += ' master-iterator';
       theAddButton = (
         <li className="master-item master-item-add">
-          <Link href={config.onClickAdd}>+{config.addButtonText}</Link>
+          <a onClick={config.onClickAdd}>+{config.addButtonText}</a>
         </li>
       );
     }
