@@ -21,7 +21,8 @@ class NewClassTemplate extends React.Component {
       trainers: [],
       loading: true,
       data: Object.assign({
-        template: {}
+        template: {},
+        templateId: props.data.template.id,
       }, props.data),
     };
     this.isModalShow = true;

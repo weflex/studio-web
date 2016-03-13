@@ -27,7 +27,7 @@ class TableHeader extends React.Component {
 
   render() {
     let header = [];
-    let date = this.props.currentDate;
+    let date = moment(this.props.currentDate).startOf('week');
 
     header.push(
       <li key="header-index" className="header-index"></li>
@@ -43,7 +43,7 @@ class TableHeader extends React.Component {
           {dayLocale} {dayDate}
         </li>
       );
-     }
+    }
 
     return (
       <ul className="table-header" ref="table-header">{header}</ul>
@@ -71,42 +71,6 @@ class Cards extends React.Component {
             <this.props.cardTemplate key={index} cardInfo={card} />
           );
         })}
-      </div>
-    );
-  }
-}
-
-class WeekHeader extends React.Component {
-  constructor(props) {
-    super(props);
-    this.setDate = props.setDate;
-    this.currentDate = props.currentDate;
-  }
-
-  goPrevWeek() {
-    this.setDate(moment(this.currentDate.subtract(7, 'days')));
-  }
-
-  goNextWeek() {
-    this.setDate(moment(this.currentDate.add(7, 'days')));
-  }
-
-  render() {
-    let weekDate = getWeek(this.props.currentDate, 'MM[月]DD[日]');
-
-    return (
-      <div className="week-header">
-        <div className="selector">
-          <span className="go-prev-btn icon-font icon-left-open"
-            onClick={this.goPrevWeek.bind(this)}>
-          </span>
-          <div className="week-date">{weekDate.begin} - {weekDate.end}</div>
-          <span className="go-next-btn icon-font icon-right-open"
-            onClick={this.goNextWeek.bind(this)}>
-          </span>
-        </div>
-        <TableHeader currentDate={this.props.currentDate} ref="tableHeader" />
-        <div className="scroll-div"></div>
       </div>
     );
   }

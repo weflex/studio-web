@@ -400,7 +400,7 @@ class ClassCard extends React.Component {
     } = this.props.cardInfo;
     const calendar = this.props.calendar;
     const duration = '' + moment(this.state.date).format('ddd') +
-      ' ' + getFormatTime(from) + ' - ' + getFormatTime(to);
+      ' ' + getFormatTime(this.state.from) + ' - ' + getFormatTime(this.state.to);
     const stats = _.groupBy(orders, 'status');
 
     let hideButton;
