@@ -17,19 +17,43 @@ class Venue extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      venue: {
-        administrator: {
-          username: '...'
-        }
-      }
+      venue: {},
+      owner: {}
     };
   }
   async componentWillMount() {
-    const id = (await client.user.getVenueById()).id;
-    const venue = await client.venue.get(id, {
-      include: ['administrator']
+    const venue = await client.user.getVenueById();
+    const org = await client.org.get(venue.orgId, {
+      include: [
+        {
+          'members': ['roles']
+        },
+      ]
     });
-    this.setState({venue});
+    this.setState({
+      venue,
+      owner: this.getOwner(org.members),
+    });
+  }
+  getOwner(members) {
+    let owner;
+    for (let member of members) {
+      for (let role of member.roles) {
+        if (role.name === '$owner') {
+          owner = member;
+          break;
+        }
+      }
+      if (owner) {
+        break;
+      }
+    }
+    owner.display = owner.fullname.first + ' ' + owner.fullname.last;
+    return owner;
+  }
+  async onSubmit() {
+    await client.venue.upsert(this.state.venue);
+    location.reload();
   }
   render() {
     return (
@@ -59,17 +83,12 @@ class Venue extends React.Component {
           <Row name="店长" required={true}>
             <TextInput
               bindStateCtx={this}
-              bindStateName="venue.address"
-              bindStateValue={this.state.venue.administrator.username}
+              bindStateValue={this.state.owner.display}
               disabled={true}
             />
           </Row>
-          <Row name="场景图片">
-            <FileInput
-              bindStateCtx={this}
-              bindStateName="venue.photos"
-              multiple={true}
-            />
+          <Row>
+            <TextButton text="保存信息" onClick={this.onSubmit.bind(this)} />
           </Row>
         </Form>
       </div>

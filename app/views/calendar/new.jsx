@@ -33,7 +33,14 @@ class NewClassTemplate extends React.Component {
       const venue = await client.user.getVenueById();
       const members = await client.orgMember.list({
         where: {
-          venueId: venue.id,
+          or: [
+            {
+              orgId: venue.orgId
+            },
+            {
+              venueId: venue.id
+            }
+          ],
         },
         include: ['roles'],
       });

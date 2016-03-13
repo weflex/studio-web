@@ -18,24 +18,45 @@ class Venue extends React.Component {
     super(props);
     this.state = {
       venue: {},
-      org: {
-        administrator: {
-          username: '...'
-        }
-      },
+      org: {},
+      owner: {
+        fullname: {}
+      }
     };
   }
   async componentWillMount() {
     const venue = await client.user.getVenueById();
     const org = await client.org.get(venue.orgId, {
-      include: ['administrator']
+      include: [
+        'banner', 
+        {
+          'members': ['roles']
+        }
+      ]
     });
     this.setState({
-      venue, org
+      venue, 
+      org,
+      owner: this.getOwner(org.members),
     });
   }
+  getOwner(members) {
+    let owner;
+    for (let member of members) {
+      for (let role of member.roles) {
+        if (role.name === '$owner') {
+          owner = member;
+          break;
+        }
+      }
+      if (owner) {
+        break;
+      }
+    }
+    owner.display = owner.fullname.first + ' ' + owner.fullname.last;
+    return owner;
+  }
   checkBanner(file) {
-    console.log(file.type);
     if (file.type !== 'image/png' &&
       file.type !== 'image/jpg' &&
       file.type !== 'image/jpeg' &&
@@ -69,10 +90,9 @@ class Venue extends React.Component {
             />
           </Row>
           <Row name="经理" required={true}>
-            <TextInput 
+            <TextInput
               bindStateCtx={this}
-              bindStateName="org.administrator.username"
-              bindStateValue={this.state.org.administrator.username}
+              bindStateValue={this.state.owner.display}
               disabled={true}
             />
           </Row>

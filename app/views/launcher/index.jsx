@@ -30,7 +30,10 @@ class LaunchScreen extends React.Component {
     });
     
     let intv1 = setInterval(this.addBarWidth.bind(this), 200);
-    await client.user.getCurrent();
+    const user = await client.user.getCurrent();
+    if (!user.asMembers.length) {
+      window.location.href = '/login?status=403';
+    }
     clearInterval(intv1);
 
     // start loading 2/3

@@ -120,7 +120,7 @@ class Login extends React.Component {
     this.setState({ url });
   }
   onlogged() {
-    window.location.href = '/';
+    window.location.href = '/calendar';
   }
   get canLogin() {
     return !(this.state.data.username &&
@@ -133,10 +133,14 @@ class Login extends React.Component {
     window.location.href = '/calendar';
   }
   async onSmsCodeRequestSent() {
-    
+    await client.user.smsRequest(this.state.data.phone);
   }
   async onSmsCodeLogin() {
-    // TODO(Yorkie)
+    await client.user.smsLogin(
+      this.state.data.phone,
+      this.state.data.smscode
+    );
+    window.location.href = '/calendar';
   }
   renderSelectButton(select, index) {
     let className;

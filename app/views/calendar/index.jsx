@@ -116,11 +116,8 @@ class WeflexCalendar extends React.Component {
 
   async getClassData() {
     const venue = await client.user.getVenueById();
-    const classes = await client.class.list({
+    const classes = (await client.class.list({
       // TODO(Yorkie): will use view
-      // where: {
-      //   venueId: venue.id,
-      // },
       include: [
         'trainer', 
         'template',
@@ -128,7 +125,10 @@ class WeflexCalendar extends React.Component {
           'orders': 'user'
         },
       ]
+    })).filter((item) => {
+      return item.template.venueId === venue.id;
     });
+
     classes.forEach((classInfo) => {
       this.state.allClass.set(classInfo.id, classInfo);
     });
@@ -243,6 +243,7 @@ class WeflexCalendar extends React.Component {
             date,
             from: timeStringToObject(from),
             to: timeStringToObject(to),
+            template: {}
           },
         };
         return (

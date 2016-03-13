@@ -70,6 +70,10 @@ header {
   color: #fff;
 }
 
+.smscode-container .form-btn {
+  margin-right: 10px;
+}
+
 .qrcode-container {
   display: inline-block;
   line-height: 0;

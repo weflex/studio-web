@@ -1,5 +1,6 @@
 "use strict"
 
+import _ from 'lodash';
 import React from 'react';
 import {
   Form,
@@ -18,30 +19,76 @@ class Venue extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      orgAdmin: null,
-      venues: [],
-      trainers: [],
+      orgmembers    : [],
+      venues        : [],
+      trainers      : [],
     };
   }
   async componentWillMount() {
-    const id = (await client.user.getVenueById()).orgId;
-    const org = await client.org.get(id, {
-      include: {
-        venues: 'administrator'
-      }
-    });
-    const orgAdmin = await client.user.get(org.administratorId);
-    const venues = org.venues;
-    const trainers = await client.trainer.list({
-      where: { 
-        orgId: id 
+    let venue = await client.user.getVenueById();
+    let members = await client.orgMember.list({
+      where: {
+        or: [
+          {orgId: venue.orgId},
+          {venueId: venue.id}
+        ]
       },
-      include: ['user', 'venue']
+      include: [
+        'roles',
+        'venue',
+        {
+          'user': ['avatar']
+        }
+      ]
     });
+    let orgmembers = [];
+    let trainers = [];
+    let venues = await client.venue.list({
+      where: {
+        orgId: venue.orgId
+      },
+    });
+
+    for (let member of members) {
+      for (let role of member.roles) {
+        switch (role.name) {
+          case '$owner':
+            if (!member.venueId) {
+              orgmembers.push(Object.assign({
+                isOwner: true
+              }, member));
+            } else {
+              const venue = _.find(venues, {
+                id: member.venueId,
+              });
+              venue.owner = member;
+            }
+            break;
+          case '$admin':
+            if (!member.venueId) {
+              orgmembers.push(Object.assign({
+                isOwner: false
+              }, member));
+            } else {
+              const venue = _.find(venues, {
+                id: member.venueId,
+              });
+              if (!Array.isArray(venue.admin)) {
+                venue.admin = [];
+              }
+              venue.admin.push(member);
+            }
+            break;
+          case 'trainer':
+            trainers.push(member);
+            break;
+        }
+      }
+    }
     this.setState({
-      orgAdmin,
+      orgmembers,
       venues,
-      trainers
+      trainers,
     });
   }
   render() {
@@ -51,14 +98,12 @@ class Venue extends React.Component {
           <h3>组织</h3>
         </header>
         <ul className="settings-team-trainers">
-          {([this.state.orgAdmin]).map((user, index) => {
-            if (!user) {
-              return;
-            }
+          {(this.state.orgmembers).map((member, index) => {
+            console.log(member.user.avatar.uri);
             return (
               <li key={index}>
-                <img src={user.avatar.uri} />
-                <span className="username">{user.username}</span>
+                <img src={member.user.avatar.uri} />
+                <span className="username">{member.user.username}</span>
               </li>
             );
           })}
@@ -69,10 +114,18 @@ class Venue extends React.Component {
         </header>
         <ul className="settings-team-trainers">
           {this.state.venues.map((venue, index) => {
+            let venueOwner;
+            if (!venue.owner) {
+              venueOwner = _.find(this.state.orgmembers, {isOwner: true});
+            } else {
+              venueOwner = venue.owner;
+            }
             return (
               <li key={index}>
-                <img src={venue.administrator.avatar.uri} />
-                <span className="username">{venue.administrator.username}</span>
+                <img src={venueOwner.user.avatar.uri} />
+                <span className="username">
+                  {venueOwner.fullname.first} {venueOwner.fullname.first}
+                </span>
                 <span className="venue">{venue.name}</span>
               </li>
             );
@@ -89,7 +142,9 @@ class Venue extends React.Component {
                 <img src={trainer.user.avatar.uri} />
                 <span className="username">{fullname(trainer.fullname)}</span>
                 <span className="description">{trainer.description}</span>
-                <span className="venue">{trainer.venue.name}</span>
+                <span className="venue">
+                  {trainer.venue ? trainer.venue.name : '所有门店'}
+                </span>
               </li>
             );
           })}
