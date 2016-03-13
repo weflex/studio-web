@@ -40,7 +40,9 @@ class List extends React.Component {
         {name: '教练', key: 'trainer.fullname.first'},
         {name: '价格', key: 'price'},
       ],
-      onClickAdd: '/class/template/add',
+      onClickAdd: () => {
+        this.props.app.router.navigate('/class/template/add');
+      },
       addButtonText: '新的课程模版',
     };
   }

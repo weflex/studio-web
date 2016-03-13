@@ -1,10 +1,12 @@
 "use strict";
 
+import moment from 'moment';
 import React from 'react';
 import ListView from '../../components/list-view';
 import MasterDetail from '../../components/master-detail';
 import Detail from './detail';
-import moment from 'moment';
+import AddOrderView from './add';
+import { DropModal } from 'boron2';
 import { client } from '../../api';
 import './list.css';
 moment.locale('zh-cn');
@@ -14,7 +16,12 @@ class List extends React.Component {
     return '订单管理';
   }
   get actions() {
-    return [];
+    return [
+      {
+        title: '创建订单',
+        onClick: this.onViewAddOrder.bind(this)
+      }
+    ];
   }
   get config() {
     return {
@@ -49,7 +56,7 @@ class List extends React.Component {
         {name: '课程时间', key: 'class.date'},
         {name: '用户', key: 'user.nickname'},
       ],
-      onClickAdd: 'order/add',
+      onClickAdd: this.onViewAddOrder.bind(this),
       addButtonText: '添加新订单',
     };
   }
@@ -86,14 +93,27 @@ class List extends React.Component {
       return item;
     });
   }
+  onViewAddOrder() {
+    this.refs.addOrderModal.show();
+  }
+  onCompleteAddOrder() {
+    this.refs.addOrderModal.hide();
+  }
   render() {
     return (
-      <MasterDetail 
-        pathname="order"
-        className="order"
-        masterSource={this.source}
-        masterConfig={this.config}
-      />
+      <div style={{height: '100%'}}>
+        <MasterDetail 
+          pathname="order"
+          className="order"
+          masterSource={this.source}
+          masterConfig={this.config}
+        />
+        <DropModal ref="addOrderModal">
+          <AddOrderView 
+            onComplete={this.onCompleteAddOrder.bind(this)}
+          />
+        </DropModal>
+      </div>
     );
   }
 }

@@ -17,12 +17,12 @@ class List extends React.Component {
   }
   get actions() {
     return [
-      {
-        title: '邀请新会员',
-        onClick: () => {
-          this.refs.inviteNewMemberModal.show();
-        }
-      }
+      // {
+      //   title: '邀请新会员',
+      //   onClick: () => {
+      //     this.refs.inviteNewMemberModal.show();
+      //   }
+      // }
     ];
   }
   get config() {
@@ -37,13 +37,15 @@ class List extends React.Component {
       detail: {
         component: Detail
       },
-      iterated: true,
+      iterated: false,
       sortKeys: [
         {name: '姓名', key: 'user.nickname'},
         {name: '卡种', key: 'classPackage.name'},
       ],
-      onClickAdd: 'membership/add',
-      addButtonText: '添加新用户',
+      onClickAdd: () => {
+        this.refs.inviteNewMemberModal.show();
+      },
+      addButtonText: '邀请新会员',
     };
   }
   async source() {
