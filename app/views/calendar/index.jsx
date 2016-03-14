@@ -126,7 +126,8 @@ class WeflexCalendar extends React.Component {
         },
       ]
     })).filter((item) => {
-      return item.template.venueId === venue.id;
+      return item.template &&
+        item.template.venueId === venue.id;
     });
 
     classes.forEach((classInfo) => {
