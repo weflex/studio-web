@@ -35,6 +35,7 @@ class CardDetail extends React.Component {
     let newState = this.state;
     if (id !== 'add') {
       newState.data = await client.classPackage.get(id);
+      newState.data.lifetime = newState.data.lifetime || {};
     }
     newState.id = id;
     this.setState(newState);

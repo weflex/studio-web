@@ -83,6 +83,7 @@ class ClassPackageList extends React.Component {
           </fieldset>
           <div className="grid-items">
             {data[name].map((data, key) => {
+              data.lifetime = data.lifetime || {};
               return (
                 <MembershipCard 
                   className="grid-item" 
