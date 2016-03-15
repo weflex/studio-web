@@ -58,5 +58,8 @@ His admin will receive a SMS message about his request.
 #+NAME: Request Invitation Screen
 [[./Send Invitation Request.png]]
 ** Create a Studio
-We will reach this topic soon in the next document.
-*** DOCUMENT createing a studio from scratch
+If this user is a completely new user, then we will ask him to signup
+and create a studio from scratch.
+#+CAPTION: Sign Up Screen
+#+NAME: Sign Up Screen
+[[./Sign Up Screen.png]]
