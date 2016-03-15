@@ -1,5 +1,6 @@
 "use strict";
 
+import Url from 'url';
 import React from 'react';
 import { 
   Location,
@@ -79,6 +80,13 @@ class MasterDetail extends React.Component {
     });
   }
 
+  async updateMasterSource() {
+    let masterSource = await this.props.masterSource();
+    this.setState({
+      masterSource,
+    });
+  }
+
   /**
    * @event onSearchInputChange
    * @param {String} text
@@ -105,7 +113,6 @@ class MasterDetail extends React.Component {
    */
   onSortButtonClick(event) {
     const sortBy = event.target.value;
-    console.log(sortBy);
     const val = (ctx, exp) => {
       exp = exp || sortBy;
       const dotIndex = exp.indexOf('.');
@@ -169,6 +176,7 @@ class MasterDetail extends React.Component {
       // master has a 1px `border-right` width.
       detailWidth = `calc(100% - ${masterWidth + 1}px)`;
     }
+
     return (
       <div className={className}>
         {this.renderMaster(masterWidth)}
@@ -249,6 +257,7 @@ class MasterDetail extends React.Component {
         </li>
       );
     }
+
     return (
       <ul className={className} style={style}>
         {theSortButton}
@@ -324,9 +333,15 @@ class MasterDetail extends React.Component {
       <section className="detail-container">
         {React.createElement(
           component,
-          {
-            data: detail
-          }
+          Object.assign({
+            ref: (instance) => {
+              if (instance && typeof this.props.refDetail === 'function') {
+                this.props.refDetail(instance);
+              }
+            },
+            data: detail,
+            updateMaster: this.updateMasterSource.bind(this),
+          }, this.props.detailProps),
         )}
       </section>
     );

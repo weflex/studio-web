@@ -72,12 +72,20 @@ class Detail extends React.Component {
   }
   
   get actions() {
-    return [
-      {
-        title: '返回',
-        path: '/class/template'
-      }
-    ];
+    let list = [];
+    if (this.state.data.id) {
+      list.push({
+        title: '删除课程',
+        onClick: this.onDelete.bind(this),
+        disableToggled: true,
+      });
+    }
+    list.push({
+      title: '保存课程',
+      onClick: this.onSave.bind(this),
+      disableToggled: true,
+    });
+    return list;
   }
   
   get disabled() {
@@ -91,8 +99,16 @@ class Detail extends React.Component {
     }
   }
   
-  async onSubmit() {
-    await client.classTemplate.upsert(this.state.data);
+  async onSave() {
+    await client.classTemplate.upsert(Object.assign({}, this.state.data));
+    setTimeout(() => {
+      this.props.app.router.navigate('/class/template/' + this.state.data.id);
+    }, 0);
+  }
+
+  async onDelete() {
+    await client.classTemplate.delete(this.state.data.id);
+    await this.props.updateMaster();
   }
   
   makeOnOpenImageManager(title, mode, onFinish, data) {
@@ -200,10 +216,7 @@ class Detail extends React.Component {
             />
           </Row>
           <Row>
-            <TextButton text={this.props.data ? '保存修改' : '确认添加'}
-              onClick={this.onSubmit.bind(this)} 
-              disabled={this.disabled}
-            />
+            <TextButton text="保存课程" onClick={this.onSave.bind(this)} />
           </Row>
         </Form>
         <div className="class-template-new-preview">

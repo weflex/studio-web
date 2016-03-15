@@ -19,25 +19,33 @@ function createViewWithBars (component, app) {
   return class Page extends React.Component {
     constructor(props) {
       super(props);
-      this.pageProps = Object.assign({
-        ref: 'main',
-        app: app,
-      }, props);
       this.state = {
-        page: null,
+        isResourceShown: false,
         resource: null,
-        isResourceShown: false
+        title: '',
+        actions: [],
       };
     }
     componentDidMount() {
-      const { title, actions, resource } = this.refs.main;
-      this.refs.toolbar.setTitle(title);
-      this.refs.toolbar.refs.actions.updateActions(actions);
-      this.refs.toolbar.refs.actions.setActivity(this);
-      this.setState({ resource });
+      const main = this.refs.main;
+      const toolbar = this.refs.toolbar;
+      const actions = toolbar.refs.actions;
+      app.title = toolbar.setTitle.bind(toolbar);
+      app.actions = actions.updateActions.bind(actions);
+      app.activity = actions.setActivity.bind(actions);
+      // init the title, actions and activity
+      app.title(main.title);
+      app.actions(main.actions);
+      app.activity(this);
+      this.setState({
+        resource: main.resource,
+      });
     }
     render() {
-      const activity = React.createElement(component, this.pageProps);
+      const activity = React.createElement(component, Object.assign({
+        app,
+        ref: 'main'
+      }, this.props));
       const activityStyle = {
         width: this.state.isResourceShown ? 'calc(100% - 140px)' : '100%'
       };

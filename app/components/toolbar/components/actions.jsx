@@ -24,8 +24,10 @@ class Action extends React.Component {
     }
     return (event) => {
       actions.closeAll.call(actions);
-      let toggled = !this.state.toggled;
-      this.setState({toggled});
+      if (!this.props.disableToggled) {
+        const toggled = !this.state.toggled;
+        this.setState({toggled});
+      }
       if (typeof handler === 'function') {
         handler(actions.sharedCtx);
       }

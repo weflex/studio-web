@@ -20,7 +20,7 @@ class List extends React.Component {
         title: '新的课程模版',
         path: '/class/template/add'
       }
-    ];
+    ]
   }
   get config() {
     return {
@@ -47,7 +47,7 @@ class List extends React.Component {
     };
   }
   async source() {
-    let venue = await client.user.getVenueById();
+    const venue = await client.user.getVenueById();
     return await client.classTemplate.list({
       where: {
         venueId: venue.id
@@ -60,6 +60,16 @@ class List extends React.Component {
       ]
     });
   }
+  onRefDetail(instance) {
+    if (instance) {
+      if (instance.title) {
+        this.props.app.title(instance.title);
+      }
+      if (instance.actions) {
+        this.props.app.actions(instance.actions);
+      }
+    }
+  }
   render() {
     return (
       <MasterDetail 
@@ -67,6 +77,8 @@ class List extends React.Component {
         className="class-template"
         masterSource={this.source}
         masterConfig={this.config}
+        refDetail={this.onRefDetail.bind(this)}
+        detailProps={{app: this.props.app}}
       />
     );
   }
