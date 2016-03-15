@@ -1,6 +1,5 @@
 "use strict";
 
-import Url from 'url';
 import React from 'react';
 import { 
   Location,
