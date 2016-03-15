@@ -31,13 +31,17 @@ class Detail extends React.Component {
   }
   render() {
     let membership = this.props.data;
+    let userAvatar = 'http://static.theweflex.com/default-avatar-male.png';
+    if (membership.user.avatar) {
+      userAvatar = membership.user.avatar.uri;
+    }
     return (
       <div className="membership-detail-container">
         <div className="detail-cards-left">
           <div className="detail-card">
             <h3>基础信息</h3>
             <div className="membership-user-avatar">
-              <img src={membership.user.avatar.uri} />
+              <img src={userAvatar} />
             </div>
             <div className="detail-card-row">
               <label>姓名</label>

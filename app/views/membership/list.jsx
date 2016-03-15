@@ -5,7 +5,7 @@ import moment from 'moment';
 import MasterDetail from '../../components/master-detail';
 import ListView from '../../components/list-view';
 import Detail from './detail';
-import QRCode from 'qrcode.react';
+import AddMembershipView from './add';
 import { DropModal } from 'boron';
 import { SearchInput } from '../../components/toolbar/components/search';
 import { client } from '../../api';
@@ -37,14 +37,12 @@ class List extends React.Component {
       detail: {
         component: Detail
       },
-      iterated: false,
+      iterated: true,
       sortKeys: [
         {name: '姓名', key: 'user.nickname'},
         {name: '卡种', key: 'classPackage.name'},
       ],
-      onClickAdd: () => {
-        this.refs.inviteNewMemberModal.show();
-      },
+      onClickAdd: this.onViewAddMembership.bind(this),
       addButtonText: '邀请新会员',
     };
   }
@@ -76,14 +74,29 @@ class List extends React.Component {
       return memberships;
     }, []);
   }
+  onViewAddMembership() {
+    this.refs.addMembershipModal.show();
+  }
+  async onCompleteAddMembership() {
+    this.refs.addMembershipModal.hide();
+    await this.refs.masterDetail.updateMasterSource();
+  }
   render() {
     return (
-      <MasterDetail 
-        pathname="membership"
-        className="membership"
-        masterSource={this.source}
-        masterConfig={this.config}
-      />
+      <div style={{height: '100%'}}>
+        <MasterDetail 
+          ref="masterDetail"
+          pathname="membership"
+          className="membership"
+          masterSource={this.source}
+          masterConfig={this.config}
+        />
+        <DropModal ref="addMembershipModal">
+          <AddMembershipView 
+            onComplete={this.onCompleteAddMembership.bind(this)}
+          />
+        </DropModal>
+      </div>
     );
   }
 }

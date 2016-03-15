@@ -48,18 +48,19 @@ class TextInput extends BindingComponent {
   }
   render() {
     let className = ['form-input'];
-    let styles = {
+    let style = {
       width: 'calc(100% - 5px)'
     };
     if (this.props.flex) {
-      styles.width = 'calc(' + (this.props.flex * 100) + '% - 5px)';
+      style.width = 'calc(' + (this.props.flex * 100) + '% - 5px)';
     }
     if (this.props.multiline) {
       className.push('form-input-multiline');
       return (
         <textarea className={className.join(' ')} 
-          style={styles}
+          style={style}
           value={this.props.bindStateValue}
+          defaultValue={this.props.defaultValue}
           placeholder={this.props.placeholder}
           onChange={this.onChange.bind(this)}>
         </textarea>
@@ -69,14 +70,44 @@ class TextInput extends BindingComponent {
         <input
           type={this.props.password ? 'password' : 'text'}
           className={className.join(' ')}
-          style={styles}
+          style={style}
           value={this.props.bindStateValue}
+          defaultValue={this.props.defaultValue}
           onChange={this.onInputChange.bind(this)}
           placeholder={this.props.placeholder}
           disabled={this.props.disabled}
         />
       );
     }
+  }
+}
+
+class DateInput extends BindingComponent {
+  onInputChange(event) {
+    this.onChange(event);
+    if (typeof this.props.onChange === 'function') {
+      this.props.onChange(event);
+    }
+  }
+  render() {
+    let style = {
+      width: 'calc(100% - 5px)'
+    };
+    if (this.props.flex) {
+      style.width = 'calc(' + (this.props.flex * 100) + '% - 5px)';
+    }
+    return (
+      <input
+        type="date"
+        className="form-input form-input-date"
+        style={style}
+        value={this.props.bindStateValue}
+        defaultValue={this.props.defaultValue}
+        onChange={this.onInputChange.bind(this)}
+        placeholder={this.props.placeholder}
+        disabled={this.props.disabled}
+      />
+    );
   }
 }
 
@@ -256,6 +287,7 @@ class OptionsPicker extends BindingComponent {
         style={styles}
         disabled={this.props.disabled}
         value={this.props.bindStateValue}
+        defaultValue={this.props.defaultValue}
         onChange={this.onInputChange.bind(this)}>
         {(this.props.options || []).map((item, index) => {
           return <option key={index} value={item.value}>{item.text}</option>;
@@ -334,6 +366,7 @@ exports.Row = Row;
 exports.Label = Label;
 exports.HintText = HintText;
 exports.TextInput = TextInput;
+exports.DateInput = DateInput;
 exports.FileInput = FileInput;
 exports.TextButton = TextButton;
 exports.OptionsPicker = OptionsPicker;

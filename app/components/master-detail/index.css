@@ -12,6 +12,7 @@
 .master-detail .master {
   width: 200px;
   border-right-color: rgba(0,0,0,0);
+  overflow-y: auto;
 }
 
 .master-detail .master:not(.master-without-border) {
