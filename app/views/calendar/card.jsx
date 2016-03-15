@@ -151,7 +151,10 @@ class ClassCard extends React.Component {
       }
       let timeToFrom;
       if (this.props.isEmptyFrom) {
-        timeToFrom = event.srcEvent.layerY;
+        const relativeY = event.srcEvent.layerY;
+        // FIXME(Yorkie): the `timeToFrom` should be converted to be the value relative
+        // to calendar's cellHeight
+        timeToFrom = 60 * relativeY / calendar.props.cellHeight;
       } else {
         timeToFrom = getTimeDuration(cardInfo.from, calendar.state.baselineClock);
       }

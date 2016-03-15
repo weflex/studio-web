@@ -74,7 +74,8 @@ class Template extends React.Component {
         top: 0,
         left: 0,
         marginTop: 0,
-        marginLeft: 0
+        marginLeft: 0,
+        width: '100%'
       };
     }
     return (
