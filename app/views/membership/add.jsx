@@ -31,7 +31,9 @@ class AddMembershipView extends React.Component {
   async componentWillMount() {
     const venue = await client.user.getVenueById();
     const packages = await client.classPackage.list({
-      venueId: venue.id,
+      where: {
+        venueId: venue.id,
+      }
     });
     this.cachedPackages = _.keyBy(packages, 'id');
     this.setState({
