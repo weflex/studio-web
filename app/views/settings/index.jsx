@@ -19,17 +19,17 @@ class SettingsIndex extends React.Component {
       {
         id: 'basic',
         title: '基本信息',
-        component: require('./components/basic')
+        component: require('./tabs/basic')
       },
       {
         id: 'venue',
         title: '门店信息',
-        component: require('./components/venue')
+        component: require('./tabs/venue')
       },
       {
         id: 'team',
         title: '团队',
-        component: require('./components/team')
+        component: require('./tabs/team')
       }
     ];
   }
