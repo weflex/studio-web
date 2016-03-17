@@ -63,27 +63,27 @@ class Venue extends React.Component {
             <TextInput 
               bindStateCtx={this}
               bindStateName="venue.name"
-              bindStateValue={this.state.venue.name}
+              value={this.state.venue.name}
             />
           </Row>
           <Row name="联系电话" required={true}>
             <TextInput
               bindStateCtx={this}
               bindStateName="venue.phone"
-              bindStateValue={this.state.venue.phone}
+              value={this.state.venue.phone}
             />
           </Row>
           <Row name="地址" required={true}>
             <TextInput
               bindStateCtx={this}
               bindStateName="venue.address"
-              bindStateValue={this.state.venue.address}
+              value={this.state.venue.address}
             />
           </Row>
           <Row name="店长" required={true}>
             <TextInput
               bindStateCtx={this}
-              bindStateValue={this.state.owner.display}
+              value={this.state.owner.display}
               disabled={true}
             />
           </Row>

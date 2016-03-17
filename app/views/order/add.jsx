@@ -120,9 +120,10 @@ class AddOrderView extends React.Component {
     ];
     if (!this.state.isUserNotFound && this.state.user) {
       const user = this.state.user;
+      const avatar = user.avatar && user.avatar.uri;
       view.push(
         <div key="user" className="order-add-find-user">
-          <img src={user.avatar.uri} />
+          <img src={avatar} />
           <span>{user.nickname}</span>
         </div>
       );

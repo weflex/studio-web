@@ -79,7 +79,7 @@ class Venue extends React.Component {
             <TextInput 
               bindStateCtx={this}
               bindStateName="org.name"
-              bindStateValue={this.state.org.name} 
+              value={this.state.org.name} 
             />
           </Row>
           <Row name="首栏图片" required={true}>
@@ -91,8 +91,7 @@ class Venue extends React.Component {
           </Row>
           <Row name="经理" required={true}>
             <TextInput
-              bindStateCtx={this}
-              bindStateValue={this.state.owner.display}
+              value={this.state.owner.display}
               disabled={true}
             />
           </Row>
