@@ -96,13 +96,15 @@ class List extends React.Component {
   onViewAddOrder() {
     this.refs.addOrderModal.show();
   }
-  onCompleteAddOrder() {
+  async onCompleteAddOrder() {
     this.refs.addOrderModal.hide();
+    await this.refs.masterDetail.updateMasterSource();
   }
   render() {
     return (
       <div style={{height: '100%'}}>
         <MasterDetail 
+          ref="masterDetail"
           pathname="order"
           className="order"
           masterSource={this.source}

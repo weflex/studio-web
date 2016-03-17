@@ -4,6 +4,12 @@
   font-family: 'PingFang SC', 'Open Sans', sans-serif;
 }
 
+.form input[disabled],
+.form textarea[disabled],
+.form select[disabled] {
+  cursor: not-allowed
+}
+
 .form-row {
   margin-bottom: 15px;
 }

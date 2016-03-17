@@ -1,11 +1,14 @@
 "use strict";
 
+import moment from 'moment';
 import React from 'react';
 import { ClipLoader } from 'halogen';
 import { client } from '../../api';
 import {
   Form,
   Row,
+  DateInput,
+  TimeInput,
   TextInput,
   TextButton,
   Label,
@@ -24,40 +27,44 @@ class NewClassTemplate extends React.Component {
         template: {},
         templateId: props.data.template.id,
       }, props.data),
+      templates: [],
     };
     this.isModalShow = true;
   }
 
   async componentDidMount() {
-    if (this.isModalShow) {
-      const venue = await client.user.getVenueById();
-      const members = await client.orgMember.list({
-        where: {
-          or: [
-            {
-              orgId: venue.orgId
-            },
-            {
-              venueId: venue.id
-            }
-          ],
-        },
-        include: ['roles'],
+    const venue = await client.user.getVenueById();
+    const templates = await client.classTemplate.list({
+      where: {
+        venueId: venue.id,
+      },
+    });
+    const members = await client.orgMember.list({
+      where: {
+        or: [
+          {
+            orgId: venue.orgId,
+          },
+          {
+            venueId: venue.id,
+          },
+        ],
+      },
+      include: ['roles'],
+    });
+    const trainers = members.filter((member) => {
+      return member.roles.filter((role) => {
+        return role.name === 'trainer';
       });
-      const trainers = members.filter((member) => {
-        return member.roles.filter((role) => {
-          return role.name === 'trainer';
-        });
-      });
-      this.setState({
-        trainers,
-        loading: false
-      });
-    }
+    });
+    this.setState({
+      trainers,
+      templates,
+      loading: false,
+    });
   }
 
   onCreateClass() {
-    // update class 
     this.props.onCreateClass(this.state.data);
   }
 
@@ -73,6 +80,10 @@ class NewClassTemplate extends React.Component {
     return time.hour + ':' + time.minute;
   }
 
+  formatDate(date) {
+    return moment(date).format('YYYY-MM-DD');
+  }
+
   render() {
     if (this.state.loading) {
       return (
@@ -82,63 +93,65 @@ class NewClassTemplate extends React.Component {
         </div>
       );
     }
+    const template = _.find(this.state.templates, {
+      id: this.state.data.templateId
+    }) || {};
+
     return (
       <div className="class-new-container">
         <h1>{this.title}</h1>
         <Form className="class-new-form">
-          <Row name="课程名" required={true}>
-            <TextInput
-              bindStateCtx={this} 
-              bindStateValue={this.state.data.template.name}
-              disabled={true}
-            />
-          </Row>
-          <Row name="价格" required={true}>
-            <TextInput 
+          <Row name="选择课程模版" required={true} hint="选择课程模版可以看到不同课程的价格、教练和描述">
+            <OptionsPicker
               bindStateCtx={this}
-              bindStateValue={this.state.data.template.price}
+              bindStateName="data.templateId"
+              defaultValue={this.state.data.templateId}
+              options={this.state.templates.map((item) => {
+                return {text: item.name, value: item.id};
+              })}
+            />
+          </Row>
+          <Row name="价格" hint="课程模版的价格">
+            <TextInput 
+              value={template.price}
               disabled={true}
             />
           </Row>
-          <Row name="选择教练" required={true}>
+          <Row name="教练" hint="选择上课的教练">
             <OptionsPicker
               bindStateCtx={this}
               bindStateName="data.trainerId"
-              bindStateValue={this.state.data.trainerId}
+              defaultValue={this.state.data.trainerId}
               options={this.state.trainers.map(item => {
                 return {text: item.fullname.first, value: item.id};
               })}
             />
           </Row>
-          <Row name="课程描述" required={true}>
+          <Row name="课程描述">
             <TextInput
+              value={template.description}
               multiline={true}
-              bindStateCtx={this}
-              bindStateValue={this.state.data.template.description}
               disabled={true}
             />
           </Row>
-          <Row name="上课时间" required={true}>
-            <TextInput
+          <Row name="选择上课时间" required={true}>
+            <DateInput
               flex={0.4}
               bindStateCtx={this}
               bindStateName="data.date"
-              bindStateValue={this.state.data.date}
-              placeholder="日期：2017-03-04"
+              defaultValue={this.formatDate(this.state.data.date)}
             />
-            <TextInput
+            <TimeInput
               flex={0.3}
               bindStateCtx={this}
               bindStateName="data.from"
-              bindStateValue={this.formatTime(this.state.data.from)}
-              placeholder="开始时间"
+              defaultValue={this.formatTime(this.state.data.from)}
             />
-            <TextInput
+            <TimeInput
               flex={0.3}
               bindStateCtx={this}
               bindStateName="data.to"
-              bindStateValue={this.formatTime(this.state.data.to)}
-              placeholder="结束时间"
+              defaultValue={this.formatTime(this.state.data.to)}
             />
           </Row>
           <Row>

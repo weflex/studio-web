@@ -446,7 +446,10 @@ class ClassCard extends React.Component {
           arrow={this.state.arrow}
           position={this.state.position}
           transition={0.0}>
-          <this.props.popupTemplate data={this.props.cardInfo} />
+          <this.props.popupTemplate 
+            data={this.props.cardInfo}
+            {...this.props.popupProps}
+          />
         </PopUp>
       );
     }

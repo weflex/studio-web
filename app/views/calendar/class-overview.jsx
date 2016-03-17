@@ -133,7 +133,10 @@ class ClassOverview extends React.Component {
           onClick={this.showClassDetail.bind(this)}>修改课程</div>
         <OrderInfo orders={orders} />
         <DropModal ref="classDetailModal">
-          <NewClassTemplate data={this.props.data} />
+          <NewClassTemplate 
+            data={this.props.data} 
+            onCreateClass={this.props.onCreateClass}
+          />
         </DropModal>
       </div>
     );

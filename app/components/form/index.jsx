@@ -39,75 +39,149 @@ class Row extends React.Component {
   }
 }
 
-class TextInput extends BindingComponent {
+class Control extends BindingComponent {
+  constructor(props) {
+    super(props);
+    this.onChangeOnProps = null;
+  }
   onInputChange(event) {
     this.onChange(event);
-    if (typeof this.props.onChange === 'function') {
-      this.props.onChange(event);
+    if (typeof this.onChangeOnProps === 'function') {
+      this.onChangeOnProps(event);
     }
   }
-  render() {
-    let className = ['form-input'];
+  createProps(obj) {
+    if (this.props.onChange) {
+      this.onChangeOnProps = this.props.onChange;
+    }
+    return Object.assign({}, {
+      type: 'text',
+      style: this.getStyle(),
+      defaultValue: this.props.defaultValue || this.props.bindStateValue,
+      onChange: this.onInputChange.bind(this),
+    }, this.props, obj || {});
+  }
+  getStyle() {
     let style = {
-      width: 'calc(100% - 5px)'
+      width: 'calc(100% - 5px)',
     };
     if (this.props.flex) {
       style.width = 'calc(' + (this.props.flex * 100) + '% - 5px)';
     }
+    return style;
+  }
+}
+
+class Input extends Control {
+  constructor(props) {
+    super(props);
+  }
+  className() {
+    return Array.prototype.concat.apply(
+      ['form-input'], arguments).join(' ');
+  }
+}
+
+class Label extends React.Component {
+  render() {
+    let className = null;
+    if (this.props.required) {
+      className = 'required';
+    }
+    return (
+      <label className={className} style={this.props.style}>
+        <span className="label-text">{this.props.text}</span>
+      </label>
+    );
+  }
+}
+
+class HintText extends React.Component {
+  render() {
+    return (
+      <div className="form-row-hint" style={this.props.style}>
+        {this.props.text.split('\\n').map((line, index) => {
+          return <p key={index}>{line}</p>;
+        })}
+      </div>
+    );
+  }
+}
+
+class TextButton extends Control {
+  constructor(props) {
+    super(props);
+    this.state = {
+      disabled: false,
+    };
+  }
+  async onClick(event) {
+    this.setState({
+      disabled: true
+    });
+    if (typeof this.props.onClick === 'function') {
+      await this.props.onClick(event);
+    }
+    this.setState({
+      disabled: false
+    });
+  }
+  render() {
+    let newProps = this.createProps({
+      className: 'form-btn',
+      disabled: this.props.disabled || this.state.disabled,
+      onClick: this.onClick.bind(this),
+    });
+    if (!this.props.flex) {
+      newProps.style.width = null;
+    }
+    return (
+      <button {...newProps}>
+        {this.props.text || this.props.children}
+      </button>
+    );
+  }
+}
+
+class TextInput extends Input {
+  render() {
+    let newProps = this.createProps();
     if (this.props.multiline) {
-      className.push('form-input-multiline');
-      return (
-        <textarea className={className.join(' ')} 
-          style={style}
-          value={this.props.bindStateValue}
-          defaultValue={this.props.defaultValue}
-          placeholder={this.props.placeholder}
-          onChange={this.onChange.bind(this)}>
-        </textarea>
-      );
+      newProps.className = this.className('form-input-multiline');
+      return <textarea {...newProps} />;
     } else {
-      return (
-        <input
-          type={this.props.password ? 'password' : 'text'}
-          className={className.join(' ')}
-          style={style}
-          value={this.props.bindStateValue}
-          defaultValue={this.props.defaultValue}
-          onChange={this.onInputChange.bind(this)}
-          placeholder={this.props.placeholder}
-          disabled={this.props.disabled}
-        />
-      );
+      newProps.className = this.className();
+      return <input {...newProps} />;
     }
   }
 }
 
-class DateInput extends BindingComponent {
-  onInputChange(event) {
-    this.onChange(event);
-    if (typeof this.props.onChange === 'function') {
-      this.props.onChange(event);
-    }
-  }
+class DateInput extends Input {
   render() {
-    let style = {
-      width: 'calc(100% - 5px)'
-    };
-    if (this.props.flex) {
-      style.width = 'calc(' + (this.props.flex * 100) + '% - 5px)';
-    }
-    return (
-      <input
-        type="date"
-        className="form-input form-input-date"
-        style={style}
-        value={this.props.bindStateValue}
-        defaultValue={this.props.defaultValue}
-        onChange={this.onInputChange.bind(this)}
-        placeholder={this.props.placeholder}
-        disabled={this.props.disabled}
-      />
-    );
+    let newProps = this.createProps({
+      type: 'date',
+      className: this.className('form-input-date'),
+    });
+    return <input {...newProps} />;
+  }
+}
+
+class TimeInput extends Input {
+  static defaultProps = {
+    bindStateType: (val) => {
+      const time = val.split(':');
+      return {
+        hour: parseInt(time[0], 10),
+        minute: parseInt(time[1], 10),
+      };
+    },
+  };
+  render() {
+    let newProps = this.createProps({
+      type: 'time',
+      className: this.className('form-input-time'),
+    });
+    return <input {...newProps} />;
   }
 }
 
@@ -163,7 +237,7 @@ class FileInput extends BindingComponent {
       return null;
     }
     let props = {
-      className: 'form-file-preview'
+      className: 'form-file-preview',
     };
     if (this.props.multiple) {
       props.className += ' multiple';
@@ -212,46 +286,7 @@ class FileInput extends BindingComponent {
   }
 }
 
-class TextButton extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      disabled: false,
-    };
-  }
-  async onClick(event) {
-    this.setState({
-      disabled: true
-    });
-    if (typeof this.props.onClick === 'function') {
-      await this.props.onClick(event);
-    }
-    this.setState({
-      disabled: false
-    });
-  }
-  render() {
-    let className = 'form-btn';
-    let disabled = this.props.disabled || this.state.disabled;
-    if (disabled) {
-      className += ' disabled';
-    }
-    let styles = {};
-    if (this.props.flex) {
-      styles.width = 'calc(' + (this.props.flex * 100) + '% - 5px)';
-    }
-    return (
-      <button className={className}
-        style={styles}
-        onClick={this.onClick.bind(this)}
-        disabled={disabled}>
-        {this.props.text}
-      </button>
-    );
-  }
-}
-
-class OptionsPicker extends BindingComponent {
+class OptionsPicker extends Control {
   componentDidMount() {
     if (this.props.bindStateCtx && !this.bindStateValue) {
       this.bindStateValue = this.props.options[0].value;
@@ -269,26 +304,15 @@ class OptionsPicker extends BindingComponent {
       });
     }
   }
-  onInputChange(event) {
-    this.onChange(event);
-    if (typeof this.props.onChange === 'function') {
-      this.props.onChange(event);
-    }
-  }
   render() {
-    let styles = {
-      width: 'calc(100% - 5px)'
-    };
-    if (this.props.flex) {
-      styles.width = 'calc(' + (this.props.flex * 100) + '% - 5px)';
-    }
+    let newProps = this.createProps({
+      className: 'form-select',
+      options: (this.props.options || []).map((item, index) => {
+        return <option key={index} value={item.value}>{item.text}</option>;
+      }),
+    });
     return (
-      <select className="form-select" 
-        style={styles}
-        disabled={this.props.disabled}
-        value={this.props.bindStateValue}
-        defaultValue={this.props.defaultValue}
-        onChange={this.onInputChange.bind(this)}>
+      <select {...newProps}>
         {(this.props.options || []).map((item, index) => {
           return <option key={index} value={item.value}>{item.text}</option>;
         })}
@@ -335,38 +359,13 @@ class ColorPicker extends BindingComponent {
   }
 }
 
-class Label extends React.Component {
-  render() {
-    let className = null;
-    if (this.props.required) {
-      className = 'required';
-    }
-    return (
-      <label className={className} style={this.props.style}>
-        <span className="label-text">{this.props.text}</span>
-      </label>
-    );
-  }
-}
-
-class HintText extends React.Component {
-  render() {
-    return (
-      <div className="form-row-hint" style={this.props.style}>
-        {this.props.text.split('\\n').map((line, index) => {
-          return <p key={index}>{line}</p>;
-        })}
-      </div>
-    );
-  }
-}
-
 exports.Form = Form;
 exports.Row = Row;
 exports.Label = Label;
 exports.HintText = HintText;
 exports.TextInput = TextInput;
 exports.DateInput = DateInput;
+exports.TimeInput = TimeInput;
 exports.FileInput = FileInput;
 exports.TextButton = TextButton;
 exports.OptionsPicker = OptionsPicker;

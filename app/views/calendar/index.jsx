@@ -218,6 +218,9 @@ class WeflexCalendar extends React.Component {
             calendar={self.refs.calendar}
             popupEnabled={true}
             popupTemplate={ClassOverview}
+            popupProps={{
+              onCreateClass: updateClasses,
+            }}
             onHide={onHide}
             onPanEnd={onPanEnd}
           />
@@ -238,25 +241,21 @@ class WeflexCalendar extends React.Component {
     const onCreateClass = this.onCreateClass.bind(this);
     const newClassTemplate = class ClassTemplate extends React.Component {
       render() {
-        const props = {
+        const newProps = {
           data: {
             date,
             from: timeStringToObject(from),
             to: timeStringToObject(to),
             template: {}
           },
+          ref: (template) => {
+            if (template) {
+              self.newClassTemplate = template;
+            }
+          },
+          onCreateClass,
         };
-        return (
-          <NewClassTemplate
-            {...props}
-            ref={(node) => {
-              if (node) {
-                self.newClassTemplate = node;
-              }
-            }}
-            onCreateClass={onCreateClass}
-          />
-        );
+        return <NewClassTemplate {...newProps} />;
       }
     };
     this.setState({
@@ -329,7 +328,7 @@ class WeflexCalendar extends React.Component {
           contentStyle={{padding: 10}}
           onHide={this.handleHideModal.bind(this)}
         >
-        {classTempalte}
+          {classTempalte}
         </DropModal>
       </div>
     );

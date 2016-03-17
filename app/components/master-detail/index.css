@@ -52,6 +52,7 @@
 .master-detail .detail {
   /* should add border 1px width */
   width: calc(100% - 201px);
+  overflow-y: auto;
 }
 
 .master-detail .detail > div,
