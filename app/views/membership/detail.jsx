@@ -51,6 +51,10 @@ class Detail extends React.Component {
               <label>手机号码</label>
               <span>{membership.user.phone}</span>
             </div>
+            <div className="detail-card-row">
+              <label>电子邮箱</label>
+              <a href={'mailto:' + membership.user.email}>{membership.user.email}</a>
+            </div>
           </div>
           <div className="detail-card">
             <h3>订课记录</h3>

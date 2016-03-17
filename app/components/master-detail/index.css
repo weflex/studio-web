@@ -158,6 +158,10 @@
   font-family: 'PingFang SC', 'Open Sans', sans-serif;
 }
 
+.detail-card-row a {
+  color: #70CCA1;
+}
+
 .detail-card-row > * {
   display: inline-block;
 }
