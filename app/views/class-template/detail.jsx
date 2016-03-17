@@ -107,8 +107,10 @@ class Detail extends React.Component {
   }
 
   async onDelete() {
-    await client.classTemplate.delete(this.state.data.id);
-    await this.props.updateMaster();
+    if (confirm('确认删除该课程模版')) {
+      await client.classTemplate.delete(this.state.data.id);
+      await this.props.updateMaster();
+    }
   }
   
   makeOnOpenImageManager(title, mode, onFinish, data) {
