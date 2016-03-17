@@ -209,7 +209,8 @@ class MasterDetail extends React.Component {
 
     let theAddButton = null;
     let theSortButton = null;
-    let className = 'master';
+    let containerClassName = 'master';
+    let listClassName = '';
     let style;
     if (width) {
       style = { 
@@ -218,13 +219,13 @@ class MasterDetail extends React.Component {
     }
 
     if (config.hideMasterShadow) {
-      className += ' master-without-border';
+      containerClassName += ' master-without-border';
     }
     if (config.iterated) {
-      className += ' master-iterator';
+      listClassName = 'master-iterator';
       if (config.sortKeys) {
         theSortButton = (
-          <li className="master-item master-item-sort">
+          <div className="master-sort">
             <select onChange={this.onSortButtonClick.bind(this)}>
               {config.sortKeys.map((item, index) => {
                 return (
@@ -236,7 +237,7 @@ class MasterDetail extends React.Component {
                 );
               })}
             </select>
-          </li>
+          </div>
         );
       }
       if (config.onClickAdd) {
@@ -249,7 +250,6 @@ class MasterDetail extends React.Component {
     }
 
     if (config.iterated && config.onClickAdd) {
-      className += ' master-iterator';
       theAddButton = (
         <li className="master-item master-item-add">
           <a onClick={config.onClickAdd}>+{config.addButtonText}</a>
@@ -258,44 +258,46 @@ class MasterDetail extends React.Component {
     }
 
     return (
-      <ul className={className} style={style}>
+      <div className={containerClassName} style={style}>
         {theSortButton}
-        {this.state.masterSource.map((item, index) => {
-          let content = null;
-          if (config.master) {
-            content = config.master(item, index);
-          } else {
-            content = [
-              // header
-              <header key="header">{item[config.title]}</header>
-            ];
-            if (typeof config.section === 'function') {
-              content.push(
-                <section key="section">{config.section(item)}</section>
-              );
+        <ul className={listClassName}>
+          {this.state.masterSource.map((item, index) => {
+            let content = null;
+            if (config.master) {
+              content = config.master(item, index);
+            } else {
+              content = [
+                // header
+                <header key="header">{item[config.title]}</header>
+              ];
+              if (typeof config.section === 'function') {
+                content.push(
+                  <section key="section">{config.section(item)}</section>
+                );
+              }
             }
-          }
-          let className = 'master-item';
-          // FIXME(Yorkie): weird problem, the state.selected has been
-          // converted to string
-          if (parseInt(selected) === index) {
-            className += ' active';
-          }
-          if (content.length === 1) {
-            className += ' hide-bottom-line';
-          }
-          let href = this.state.pathname + '/' + item.id;
-          if (!href.startsWith('/')) {
-            href = '/' + href;
-          }
-          return (
-            <li key={index} className={className}>
-              <Link href={href}>{content}</Link>
-            </li>
-          );
-        })}
-        {theAddButton}
-      </ul>
+            let className = 'master-item';
+            // FIXME(Yorkie): weird problem, the state.selected has been
+            // converted to string
+            if (parseInt(selected) === index) {
+              className += ' active';
+            }
+            if (content.length === 1) {
+              className += ' hide-bottom-line';
+            }
+            let href = this.state.pathname + '/' + item.id;
+            if (!href.startsWith('/')) {
+              href = '/' + href;
+            }
+            return (
+              <li key={index} className={className}>
+                <Link href={href}>{content}</Link>
+              </li>
+            );
+          })}
+          {theAddButton}
+        </ul>
+      </div>
     );
   }
 
