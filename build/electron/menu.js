@@ -21,6 +21,22 @@ var template = [
     ]
   },
   {
+    label: '编辑',
+    role: 'edit',
+    submenu: [
+      {
+        label: '复制',
+        accelerator: 'CmdOrCtrl+C',
+        role: 'copy'
+      },
+      {
+        label: 'paste',
+        accelerator: 'CmdOrCtrl+V',
+        role: 'paste'
+      },
+    ]
+  },
+  {
     label: '视图',
     submenu: [
       {
