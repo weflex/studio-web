@@ -17,12 +17,10 @@ class List extends React.Component {
   }
   get actions() {
     return [
-      // {
-      //   title: '邀请新会员',
-      //   onClick: () => {
-      //     this.refs.inviteNewMemberModal.show();
-      //   }
-      // }
+      {
+        title: '邀请新会员',
+        onClick: this.onViewAddMembership.bind(this),
+      }
     ];
   }
   get config() {
