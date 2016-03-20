@@ -85,14 +85,14 @@ class EditTrainerView extends React.Component {
             flex={0.5}
             bindStateCtx={this}
             bindStateName="form.fullname.first"
-            bindStateValue={this.state.form.fullname.first}
+            value={this.state.form.fullname.first}
             placeholder="名"
           />
           <TextInput
             flex={0.5}
             bindStateCtx={this}
             bindStateName="form.fullname.last"
-            bindStateValue={this.state.form.fullname.last}
+            value={this.state.form.fullname.last}
             placeholder="姓"
           />
         </Row>
@@ -100,7 +100,7 @@ class EditTrainerView extends React.Component {
           <OptionsPicker
             bindStateCtx={this}
             bindStateName="form.language"
-            bindStateValue={this.state.form.language}
+            value={this.state.form.language}
             options={[
               {text: '中文', value: 'zh'},
               {text: 'English', value: 'en'},
@@ -111,7 +111,7 @@ class EditTrainerView extends React.Component {
           <OptionsPicker
             bindStateCtx={this}
             bindStateName="form.venueId"
-            bindStateValue={this.state.form.venueId}
+            value={this.state.form.venueId}
             options={venueOptions}
           />
         </Row>
@@ -119,7 +119,7 @@ class EditTrainerView extends React.Component {
           <TextInput
             bindStateCtx={this}
             bindStateName="form.description"
-            bindStateValue={this.state.form.description}
+            value={this.state.form.description}
             multiline={true}
           />
         </Row>
