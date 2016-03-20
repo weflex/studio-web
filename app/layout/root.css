@@ -3,19 +3,23 @@ body {
   height: 100%;
   overflow: hidden;
 }
-p, span {
+
+* {
   font-family: 'PingFang SC', 'Open Sans', sans-serif;
 }
+
 #root-container {
   width: 100%;
   height: 100%;
   overflow-x: hidden;
   overflow-y: scroll;
 }
+
 #root-container > div {
   height: 100%;
   background-color: #fafafa;
 }
+
 .main {
   position: absolute;
   left: 150px;
@@ -24,15 +28,18 @@ p, span {
   bottom: 0;
   overflow: hidden;
 }
+
 .main-activity, .main-resource {
   display: inline-block;
 }
+
 .main-activity {
   width: 100%;
   height: 100%;
   overflow-y: auto;
   transition: all .2s ease-in-out;
 }
+
 .main-resource {
   height: 100%;
   vertical-align: top;
