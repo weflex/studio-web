@@ -21,6 +21,7 @@ class AddMembershipView extends React.Component {
     this.state = {
       form: {
         correction: {},
+        lifetime: {},
       },
       packageOptions: [
         {text: '未选择'}
@@ -142,12 +143,14 @@ class AddMembershipView extends React.Component {
           <TextInput
             bindStateCtx={this}
             bindStateName="form.nickname"
+            value={this.props.user && this.props.user.nickname}
           />
         </Row>
         <Row name="手机号码" hint="用户的手机号码">
           <TextInput
             bindStateCtx={this}
             bindStateName="form.phone"
+            value={this.props.user && this.props.user.phone}
           />
         </Row>
         <Row name="会卡" hint="用户需要会卡才能预定课程">

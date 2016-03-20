@@ -6,7 +6,8 @@
 
 .form input[disabled],
 .form textarea[disabled],
-.form select[disabled] {
+.form select[disabled],
+.form button[disabled] {
   cursor: not-allowed
 }
 

@@ -4,7 +4,7 @@ import _ from 'lodash';
 import React from 'react';
 import { client } from '../../api';
 import { ClipLoader } from 'halogen';
-import MembershipCard from '../../components/membership-card';
+import { UIMembershipCard } from '../../components/ui-membership-card';
 import './list.css';
 
 class ClassPackageList extends React.Component {
@@ -83,9 +83,8 @@ class ClassPackageList extends React.Component {
           </fieldset>
           <div className="grid-items">
             {data[name].map((data, key) => {
-              data.lifetime = data.lifetime || {};
               return (
-                <MembershipCard 
+                <UIMembershipCard 
                   className="grid-item" 
                   data={data} 
                   key={key}
@@ -93,7 +92,7 @@ class ClassPackageList extends React.Component {
                 />
               );
             })}
-            <MembershipCard className="grid-item" onClick={this.onClickAddCard.bind(this)} />
+            <UIMembershipCard className="grid-item" onClick={this.onClickAddCard.bind(this)} />
           </div>
         </div>
       );

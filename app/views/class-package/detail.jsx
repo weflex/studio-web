@@ -12,7 +12,7 @@ import {
   OptionsPicker,
   ColorPicker,
 } from '../../components/form';
-import MembershipCard from '../../components/membership-card';
+import { UIMembershipCard } from '../../components/ui-membership-card';
 import './detail.css';
 
 class CardDetail extends React.Component {
@@ -97,7 +97,7 @@ class CardDetail extends React.Component {
         <OptionsPicker 
           bindStateCtx={this}
           bindStateName="data.category"
-          bindStateValue={this.state.data.category}
+          value={this.state.data.category}
           options={[
             {text: '团课', value: 'group'},
             {text: '私教', value: 'private'},
@@ -109,7 +109,7 @@ class CardDetail extends React.Component {
         <OptionsPicker 
           bindStateCtx={this}
           bindStateName="data.accessType"
-          bindStateValue={this.state.data.accessType}
+          value={this.state.data.accessType}
           options={[
             {text: '多次卡', value: 'multiple'},
             {text: '不限次卡', value: 'unlimited'},
@@ -121,8 +121,7 @@ class CardDetail extends React.Component {
         <TextInput 
           bindStateCtx={this} 
           bindStateName="data.name"
-          bindStateValue={this.state.data.name}
-          bindStateType={String}
+          value={this.state.data.name}
         />
       </Row>,
       <Row name="有效次数" required={true} key="passes"
@@ -130,7 +129,7 @@ class CardDetail extends React.Component {
         <TextInput
           bindStateCtx={this}
           bindStateName="data.passes"
-          bindStateValue={this.state.data.passes}
+          value={this.state.data.passes}
           bindStateType={Number}
         />
       </Row>,
@@ -140,14 +139,14 @@ class CardDetail extends React.Component {
           flex={0.9}
           bindStateCtx={this}
           bindStateType={Number}
-          bindStateValue={this.state.data.lifetime.value}
+          value={this.state.data.lifetime.value}
           bindStateName="data.lifetime.value"
         />
         <OptionsPicker 
           flex={0.1}
           bindStateCtx={this}
           bindStateName="data.lifetime.scale"
-          bindStateValue={this.state.data.lifetime.scale}
+          value={this.state.data.lifetime.scale}
           options={[
             {text: '天', value: 'day'},
             {text: '月', value: 'month'},
@@ -161,7 +160,7 @@ class CardDetail extends React.Component {
           bindStateCtx={this}
           bindStateType={Number} 
           bindStateName="data.price" 
-          bindStateValue={this.state.data.price}
+          value={this.state.data.price}
         />
         <OptionsPicker 
           flex={0.1}
@@ -176,7 +175,7 @@ class CardDetail extends React.Component {
         <OptionsPicker 
           bindStateCtx={this}
           bindStateName="data.extensible"
-          bindStateValue={this.state.data.extensible}
+          value={this.state.data.extensible}
           options={[
             {text: '不能延期', value: 0},
             {text: '可1次', value: 1},
@@ -190,14 +189,14 @@ class CardDetail extends React.Component {
         <ColorPicker
           bindStateCtx={this}
           bindStateName="data.color"
-          bindStateValue={this.state.data.color}
+          value={this.state.data.color}
         />
       </Row>,
       <Row name="描述" hint="您可以在这里添加更多关于该卡的信息" key="description">
         <TextInput 
           bindStateCtx={this}
           bindStateName="data.description"
-          bindStateValue={this.state.data.description}
+          value={this.state.data.description}
           multiline={true} 
         />
       </Row>,
@@ -214,7 +213,9 @@ class CardDetail extends React.Component {
         <div className="detail-cards-right">
           <div className="detail-card class-package-detail-preview">
             <h3>预览</h3>
-            <MembershipCard data={this.state.data} />
+            <div className="class-package-detail-preview-card">
+              <UIMembershipCard data={this.state.data} />
+            </div>
           </div>
         </div>
       </div>

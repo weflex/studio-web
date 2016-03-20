@@ -32,6 +32,7 @@ class AddOrderView extends React.Component {
     };
   }
   async componentWillMount() {
+    const today = moment().startOf('day');
     const venue = await client.user.getVenueById();
     const templates = (await client.classTemplate.list({
       where: {
@@ -40,7 +41,7 @@ class AddOrderView extends React.Component {
       include: ['classes']
     })).map((template) => {
       template.classes = template.classes.filter((item) => {
-        return Date.now() <= +new Date(item.date);
+        return moment(item.date).isAfter(today);
       });
       return template;
     }).filter((template) => {
@@ -72,7 +73,8 @@ class AddOrderView extends React.Component {
     } else {
       this.setState({
         isUserNotFound: false,
-        user: ''
+        user: '',
+        memberships: [],
       });
     }
   }

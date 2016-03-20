@@ -6,6 +6,7 @@ import ListView from '../../components/list-view';
 import MasterDetail from '../../components/master-detail';
 import Detail from './detail';
 import AddOrderView from './add';
+import { UIProfileListItem } from '../../components/ui-profile';
 import { DropModal } from 'boron2';
 import { client } from '../../api';
 import './list.css';
@@ -28,24 +29,17 @@ class List extends React.Component {
       title: 'title',
       master: (item, index) => {
         return (
-          <div className="order-item">
-            <div className="order-user">
-              <img src={item.user.avatar.uri} />
-              <span>{item.user.nickname}</span>
+          <UIProfileListItem avatar={item.user.avatar}
+            header={item.class.template.name}
+            labelText={item.user.nickname}>
+            <div className="order-class-duration">
+              {moment(item.class.date).format('MM[月]DD[日]')}
             </div>
-            <div className="order-simple-info">
-              <header>{item.class.template.name}</header>
-              <section>
-                <div className="order-class-duration">
-                  {moment(item.class.date).format('MM[月]DD[日]')}
-                </div>
-                <div className="order-num">
-                  订单号: {item.passcode}
-                </div>
-              </section>
+            <div className="order-num">
+              订单号: {item.passcode}
             </div>
-          </div>
-        )
+          </UIProfileListItem>
+        );
       },
       detail: {
         component: Detail

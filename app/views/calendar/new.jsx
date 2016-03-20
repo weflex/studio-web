@@ -105,7 +105,7 @@ class NewClassTemplate extends React.Component {
             <OptionsPicker
               bindStateCtx={this}
               bindStateName="data.templateId"
-              defaultValue={this.state.data.templateId}
+              value={this.state.data.templateId}
               options={this.state.templates.map((item) => {
                 return {text: item.name, value: item.id};
               })}
@@ -121,7 +121,7 @@ class NewClassTemplate extends React.Component {
             <OptionsPicker
               bindStateCtx={this}
               bindStateName="data.trainerId"
-              defaultValue={this.state.data.trainerId}
+              value={this.state.data.trainerId}
               options={this.state.trainers.map(item => {
                 return {text: item.fullname.first, value: item.id};
               })}
@@ -139,19 +139,19 @@ class NewClassTemplate extends React.Component {
               flex={0.4}
               bindStateCtx={this}
               bindStateName="data.date"
-              defaultValue={this.formatDate(this.state.data.date)}
+              value={this.formatDate(this.state.data.date)}
             />
             <TimeInput
               flex={0.3}
               bindStateCtx={this}
               bindStateName="data.from"
-              defaultValue={this.formatTime(this.state.data.from)}
+              value={this.formatTime(this.state.data.from)}
             />
             <TimeInput
               flex={0.3}
               bindStateCtx={this}
               bindStateName="data.to"
-              defaultValue={this.formatTime(this.state.data.to)}
+              value={this.formatTime(this.state.data.to)}
             />
           </Row>
           <Row>

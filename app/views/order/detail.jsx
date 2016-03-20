@@ -3,7 +3,8 @@
 import React from 'react';
 import moment from 'moment';
 import { client } from '../../api';
-import MembershipCard from '../../components/membership-card';
+import { UIHistory } from '../../components/ui-history';
+import { UIMembershipCard } from '../../components/ui-membership-card';
 import './detail.css';
 
 class Detail extends React.Component {
@@ -35,11 +36,7 @@ class Detail extends React.Component {
       const classPackage = membership.package;
       const lifetime = classPackage.lifetime;
       description = `使用${classPackage.name}抵扣`;
-      preview = (
-        <MembershipCard 
-          data={classPackage}
-        />
-      );
+      preview = <UIMembershipCard data={classPackage} />;
       metadata = (
         <div className="order-payment-metadata-container">
           <fieldset>
@@ -88,49 +85,26 @@ class Detail extends React.Component {
     );
   }
   history(logs) {
-    let content;
-    if (!logs.length) {
-      content = <div className="order-history-empty">无最近记录</div>;
-    } else {
-      content = (
-        <ul className="order-logs">
-          {logs.map((log, key) => {
-            const date = moment(log.createdAt);
-            const className = 'order-log order-log-' + log.status;
-            let description;
-            if (log.status === 'cancel') {
-              description = '用户取消了预定';
-            } else if (log.status === 'paid') {
-              description = '用户预定了课程';
-            } else if (log.status === 'checkin') {
-              description = '用户签到了课程';
-            } else {
-              description = '未知操作';
+    return (
+      <div className="detail-card detail-card-right">
+        <h3>订单历史记录</h3>
+        <UIHistory 
+          data={logs}
+          colors={{
+            paid: '#80c7e8',
+            cancel: '#ff8ac2',
+            checkin: '#6ed4a4',
+          }}
+          description={(item) => {
+            switch (item.status) {
+              case 'paid'   : return '用户取消了预定'; break;
+              case 'cancel' : return '用户预定了课程'; break;
+              case 'checkin': return '用户签到了课程'; break;
             }
-            return (
-              <li key={key} className={className}>
-                <span className="order-log-dot"></span>
-                <span className="order-log-date">
-                  {date.format('MM[月]DD[日]')}
-                </span>
-                <span className="order-log-time">
-                  {date.format('hh:mm')}
-                </span>
-                <span className="order-log-description">
-                  {description}
-                </span>
-              </li>
-            );
-          })}
-        </ul>
-      );
-      return (
-        <div className="detail-card detail-card-right order-history">
-          <h3>订单最近操作</h3>
-          {content}
-        </div>
-      );
-    }
+          }}
+        />
+      </div>
+    );
   }
   render() {
     const order = this.props.data;
@@ -142,7 +116,7 @@ class Detail extends React.Component {
             <h3>订单主要信息</h3>
             <div className="order-user">
               <div className="order-user-avatar">
-                <img src={order.user.avatar.uri} />
+                <img src={order.user.avatar && order.user.avatar.uri} />
               </div>
               <div className="detail-card-row">
                 <label>用户</label>
@@ -151,6 +125,10 @@ class Detail extends React.Component {
               <div className="detail-card-row">
                 <label>手机号码</label>
                 <span>{order.user.phone}</span>
+              </div>
+              <div className="detail-card-row">
+                <label>电子邮箱</label>
+                <a href={'mailto:' + order.user.email}>{order.user.email}</a>
               </div>
             </div>
             <div className="order-class">

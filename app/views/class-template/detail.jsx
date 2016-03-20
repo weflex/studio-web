@@ -166,19 +166,19 @@ class Detail extends React.Component {
             <TextInput
               bindStateCtx={this} 
               bindStateName="data.name" 
-              bindStateValue={this.state.data.name}
+              value={this.state.data.name}
             />
           </Row>
           <Row name="价格" required={true}>
             <TextInput 
-              flex={0.7}
+              flex={0.8}
               bindStateCtx={this} 
               bindStateName="data.price"
               bindStateType={Number}
-              bindStateValue={this.state.data.price}
+              value={this.state.data.price}
             />
             <OptionsPicker 
-              flex={0.3}
+              flex={0.2}
               disabled={true}
               options={[
                 {text: '元'},
@@ -187,14 +187,14 @@ class Detail extends React.Component {
           </Row>
           <Row name="课程时长" required={true}>
             <TextInput
-              flex={0.7}
+              flex={0.8}
               bindStateCtx={this}
               bindStateName="data.duration"
               bindStateType={Number}
-              bindStateValue={this.state.data.duration}
+              value={this.state.data.duration}
             />
             <OptionsPicker 
-              flex={0.3}
+              flex={0.2}
               disabled={true}
               options={[
                 {text: '分钟'},
@@ -205,7 +205,7 @@ class Detail extends React.Component {
             <OptionsPicker
               bindStateCtx={this}
               bindStateName="data.trainerId"
-              bindStateValue={this.state.data.trainerId}
+              value={this.state.data.trainerId}
               options={trainerOptions}
             />
           </Row>
@@ -214,7 +214,7 @@ class Detail extends React.Component {
               multiline={true}
               bindStateCtx={this}
               bindStateName="data.description"
-              bindStateValue={this.state.data.description}
+              value={this.state.data.description}
             />
           </Row>
           <Row>

@@ -2,6 +2,12 @@
   padding: 20px;
   box-sizing: border-box;
 }
+
 .class-package-detail-form .price-prices li {
   margin: 5px 0;
+}
+
+.class-package-detail-preview-card {
+  text-align: center;
+  margin: 40px 0;
 }

@@ -54,12 +54,12 @@ class Control extends BindingComponent {
     if (this.props.onChange) {
       this.onChangeOnProps = this.props.onChange;
     }
-    return Object.assign({}, {
+    return Object.assign({
       type: 'text',
       style: this.getStyle(),
-      defaultValue: this.props.defaultValue || this.props.bindStateValue,
+    }, this.props, {
       onChange: this.onInputChange.bind(this),
-    }, this.props, obj || {});
+    }, obj || {});
   }
   getStyle() {
     let style = {
@@ -73,8 +73,10 @@ class Control extends BindingComponent {
 }
 
 class Input extends Control {
-  constructor(props) {
-    super(props);
+  componentDidMount() {
+    if (this.props.bindStateCtx && !this.bindStateValue) {
+      this.bindStateValue = this.props.value || this.props.defaultValue;
+    }
   }
   className() {
     return Array.prototype.concat.apply(
@@ -112,7 +114,7 @@ class TextButton extends Control {
   constructor(props) {
     super(props);
     this.state = {
-      disabled: false,
+      disabled: props.disabled,
     };
   }
   async onClick(event) {
@@ -127,9 +129,19 @@ class TextButton extends Control {
     });
   }
   render() {
+    let disabled;
+    let className = 'form-btn';
+    if (this.props.disabled === undefined) {
+      disabled = this.state.disabled;
+    } else {
+      disabled = this.props.disabled;
+      if (disabled) {
+        className += ' disabled';
+      }
+    }
     let newProps = this.createProps({
-      className: 'form-btn',
-      disabled: this.props.disabled || this.state.disabled,
+      className,
+      disabled,
       onClick: this.onClick.bind(this),
     });
     if (!this.props.flex) {
@@ -145,7 +157,9 @@ class TextButton extends Control {
 
 class TextInput extends Input {
   render() {
-    let newProps = this.createProps();
+    let newProps = this.createProps({
+      type: (this.props.password === true) ? 'password' : 'text',
+    });
     if (this.props.multiline) {
       newProps.className = this.className('form-input-multiline');
       return <textarea {...newProps} />;
@@ -287,7 +301,7 @@ class FileInput extends BindingComponent {
 }
 
 class OptionsPicker extends Control {
-  componentDidMount() {
+  componentWillMount() {
     if (this.props.bindStateCtx && !this.bindStateValue) {
       this.bindStateValue = this.props.options[0].value;
     }
@@ -307,9 +321,6 @@ class OptionsPicker extends Control {
   render() {
     let newProps = this.createProps({
       className: 'form-select',
-      options: (this.props.options || []).map((item, index) => {
-        return <option key={index} value={item.value}>{item.text}</option>;
-      }),
     });
     return (
       <select {...newProps}>
@@ -334,6 +345,11 @@ class ColorPicker extends BindingComponent {
       ],
     };
   }
+  componentWillMount() {
+    if (this.props.bindStateCtx && !this.bindStateValue) {
+      this.bindStateValue = this.state.colors[0];
+    }
+  }
   onSelect(color) {
     this.onChange({
       target: {
@@ -342,7 +358,7 @@ class ColorPicker extends BindingComponent {
     });
   }
   render() {
-    const selected = this.props.bindStateValue || this.state.colors[0];
+    const selected = this.bindStateValue || this.state.colors[0];
     return (
       <ul className="form-color-picker">
         {this.state.colors.map((color) => {
@@ -359,14 +375,16 @@ class ColorPicker extends BindingComponent {
   }
 }
 
-exports.Form = Form;
-exports.Row = Row;
-exports.Label = Label;
-exports.HintText = HintText;
-exports.TextInput = TextInput;
-exports.DateInput = DateInput;
-exports.TimeInput = TimeInput;
-exports.FileInput = FileInput;
-exports.TextButton = TextButton;
-exports.OptionsPicker = OptionsPicker;
-exports.ColorPicker = ColorPicker;
+module.exports = {
+  Form,
+  Row,
+  Label,
+  HintText,
+  DateInput,
+  TimeInput,
+  FileInput,
+  TextInput,
+  TextButton,
+  OptionsPicker,
+  ColorPicker,
+};

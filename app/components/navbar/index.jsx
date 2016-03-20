@@ -77,24 +77,42 @@ class NavBar extends React.Component {
   async componentWillMount () {
     const user = await client.user.getCurrent();
     const venue = await client.user.getVenueById();
-    // TODO(Yorkie): use views to instead of the hacky way
-    let orders = await client.order.list({
+    const templates = await client.classTemplate.list({
       where: {
         venueId: venue.id,
       },
-      include: 'class'
     });
-    orders = orders.filter((order) => {
-      if (!order.class) {
-        // if class doesn't have set, it means the class
-        // has been removed already.
-        return false;
-      }
-      const date = +new Date(order.class.date);
-      return +moment().startOf('day').toDate() < date &&
-        +moment().endOf('day').toDate() > date;
+    const classes = await client.class.list({
+      where: {
+        templateId: {
+          inq: _.map(templates, 'id'),
+        },
+        date: {
+          gt: +moment().startOf('day').toDate(),
+          lt: +moment().endOf('day').toDate(),
+        },
+      },
+      include: [
+        {
+          orders: ['history']
+        },
+      ],
     });
-    const stats = _.groupBy(orders, 'status');
+    const stats = {
+      paid: [],
+      cancel: [],
+      checkin: [],
+    };
+    classes.forEach((item) => {
+      item.orders.forEach((order) => {
+        if (!order.history || !order.history.length) {
+          stats.paid.push(order);
+        } else {
+          const status = order.history[order.history.length - 1].status;
+          stats[status].push(order);
+        }
+      });
+    });
     this.setState({
       user,
       stats: {

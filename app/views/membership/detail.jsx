@@ -2,8 +2,12 @@
 
 import React from 'react';
 import moment from 'moment';
+import { UIMembershipCard } from '../../components/ui-membership-card';
+import { UIHistory } from '../../components/ui-history';
+import { DropModal } from 'boron2';
 import { ClipLoader } from 'halogen';
 import { client } from '../../api';
+import AddMembershipView from './add';
 import './detail.css';
 
 class Detail extends React.Component {
@@ -11,12 +15,13 @@ class Detail extends React.Component {
     super(props);
     this.state = {
       orders: [],
+      membershipProps: {},
     };
   }
   async componentWillMount() {
     const orders = await client.order.list({
       where: {
-        userId: this.props.data.userId,
+        userId: this.props.data.id,
       },
       include: {
         'class': [
@@ -29,11 +34,45 @@ class Detail extends React.Component {
     });
     this.setState({ orders });
   }
+  addMembership() {
+    this.refs.membershipModal.show();
+    this.setState({
+      membershipProps: {
+        user: this.props.data,
+      }
+    });
+  }
+  async onCompleteMembership() {
+    this.refs.membershipModal.hide();
+    await this.props.updateMaster();
+  }
+  cards() {
+    if (this.refs.membershipcards === undefined) {
+      return;
+    }
+    const container = this.refs.membershipcards;
+    const width = parseInt(container.getBoundingClientRect().width) * 0.30;
+    return this.props.data.memberships.map((membership, key) => {
+      return (
+        <UIMembershipCard 
+          key={key} 
+          width={width}
+          data={membership.package}
+        />
+      );
+    }).concat(
+      <UIMembershipCard
+        key="add"
+        onClick={this.addMembership.bind(this)}
+        width={width}
+      />
+    );
+  }
   render() {
-    let membership = this.props.data;
+    let user = this.props.data;
     let userAvatar = 'http://static.theweflex.com/default-avatar-male.png';
-    if (membership.user.avatar) {
-      userAvatar = membership.user.avatar.uri;
+    if (user.avatar) {
+      userAvatar = user.avatar.uri;
     }
     return (
       <div className="membership-detail-container">
@@ -45,61 +84,44 @@ class Detail extends React.Component {
             </div>
             <div className="detail-card-row">
               <label>姓名</label>
-              <span>{membership.user.nickname}</span>
+              <span>{user.nickname}</span>
             </div>
             <div className="detail-card-row">
               <label>手机号码</label>
-              <span>{membership.user.phone}</span>
+              <span>{user.phone}</span>
             </div>
             <div className="detail-card-row">
               <label>电子邮箱</label>
-              <a href={'mailto:' + membership.user.email}>{membership.user.email}</a>
+              <a href={'mailto:' + user.email}>{user.email}</a>
             </div>
           </div>
           <div className="detail-card">
-            <h3>订课记录</h3>
-            <ul className="membership-orders">
-              {this.state.orders.map((order, index) => {
-                const date = moment(order.class.date).format('MM[月]DD[日]');
-                const title = order.class.template.name;
-                const trainer = order.class.trainer || order.class.template.trainer;
-                return (
-                  <li key={index}>
-                    <a>{membership.user.nickname}</a>
-                    {date}预定了
-                    <a>{trainer.fullname.first} {trainer.fullname.last}</a>
-                    老师的
-                    <a>{title}</a>
-                    课程
-                  </li>
-                );
-              })}
-            </ul>
+            <h3>他的会卡</h3>
+            <div className="membership-cards" ref="membershipcards">
+              {this.cards()}
+            </div>
+            <DropModal ref="membershipModal">
+              <AddMembershipView
+                onComplete={this.onCompleteMembership.bind(this)}
+                {...this.state.membershipProps}
+              />
+            </DropModal>
           </div>
         </div>
         <div className="detail-cards-right">
           <div className="detail-card">
-            <h3>会卡信息</h3>
-            <div className="detail-card-row">
-              <label>名称</label>
-              <span>{membership.package.name}</span>
-            </div>
-            <div className="detail-card-row">
-              <label>价格</label>
-              <span>{membership.package.price}元</span>
-            </div>
-            <div className="detail-card-row">
-              <label>类别</label>
-              <span>{membership.package.category}</span>
-            </div>
-            <div className="detail-card-row">
-              <label>过期时间</label>
-              <span>{moment(membership.package.expiredAt).format('lll')}</span>
-            </div>
-            <div className="detail-card-row">
-              <label>详情</label>
-              <span>{membership.package.description}</span>
-            </div>
+            <h3>订课记录</h3>
+            <UIHistory className="membership-orders"
+              data={this.state.orders.map((item) => {
+                item.createdAt = item.class.date;
+                return item;
+              })}
+              description={(item) => {
+                const title = item.class.template.name;
+                const trainer = item.class.trainer || item.class.template.trainer;
+                return `预定了${title}`;
+              }}
+            />
           </div>
         </div>
       </div>

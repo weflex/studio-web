@@ -6,6 +6,7 @@ import MasterDetail from '../../components/master-detail';
 import ListView from '../../components/list-view';
 import Detail from './detail';
 import AddMembershipView from './add';
+import { UIProfileListItem } from '../../components/ui-profile';
 import { DropModal } from 'boron';
 import { SearchInput } from '../../components/toolbar/components/search';
 import { client } from '../../api';
@@ -26,11 +27,13 @@ class List extends React.Component {
   get config() {
     return {
       title: 'title',
-      section: (item) => {
-        return [
-          <div key={0}>{item.user.phone}</div>,
-          <div key={1}>{item.package.name}</div>
-        ];
+      master: (user, index) => {
+        return (
+          <UIProfileListItem avatar={user.avatar} 
+            header={`${user.nickname} (${user.memberships.length})`}>
+            {user.phone}
+          </UIProfileListItem>
+        );
       },
       detail: {
         component: Detail
@@ -56,21 +59,31 @@ class List extends React.Component {
             {
               'user': ['avatar']
             },
+            'package',
           ],
         },
       ],
     });
-    return packages.reduce((memberships, _package) => {
-      (_package.memberships || []).forEach((item) => {
-        const membership = Object.assign({
-          'title': item.user.nickname,
-          'package': _package,
-          'packageId': _package.id,
-        }, item);
-        memberships.push(membership);
-      });
-      return memberships;
-    }, []);
+    const users = [];
+    const usersIndex = {};
+    for (let _package of packages) {
+      for (let membership of _package.memberships) {
+        let {userId} = membership;
+        let currIndex;
+        if (usersIndex[userId] === undefined) {
+          users.push(Object.assign({
+            memberships: [],
+          }, membership.user));
+          usersIndex[userId] = users.length - 1;
+          currIndex = usersIndex[userId];
+        }
+        if (currIndex === undefined) {
+          currIndex = usersIndex[userId];
+        }
+        users[currIndex].memberships.push(membership);
+      }
+    }
+    return users;
   }
   onViewAddMembership() {
     this.refs.addMembershipModal.show();
