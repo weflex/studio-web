@@ -116,6 +116,7 @@ class MasterDetail extends React.Component {
    */
   onSortButtonClick(event) {
     const sortBy = event.target.value;
+    const op = event.target.selectedIndex % 2 === 0 ? '>' : '<';
     const val = (ctx, exp) => {
       exp = exp || sortBy;
       const dotIndex = exp.indexOf('.');
@@ -126,7 +127,6 @@ class MasterDetail extends React.Component {
         return val(ctx[firstKey], exp.slice(dotIndex + 1));
       }
     };
-    const op = (sortBy === this.state.sortBy) ? '>' : '<';
     this.setState({
       sortBy,
       masterSource: this.cachedMasterSource.sort((prev, next) => {
@@ -137,7 +137,7 @@ class MasterDetail extends React.Component {
         }
         return ret;
       }),
-    })
+    });
   }
 
   /**
@@ -232,13 +232,10 @@ class MasterDetail extends React.Component {
           <div className="master-sort">
             <select onChange={this.onSortButtonClick.bind(this)}>
               {config.sortKeys.map((item, index) => {
-                return (
-                  <option 
-                    key={index} 
-                    value={item.key}>
-                    按{item.name}排序
-                  </option>
-                );
+                return [
+                  <option key={index+'_aesc'} value={item.key}>按{item.name}排序(正)</option>,
+                  <option key={index+'_desc'} value={item.key}>按{item.name}排序(逆)</option>,
+                ];
               })}
             </select>
           </div>
