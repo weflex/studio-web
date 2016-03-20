@@ -4,7 +4,6 @@ import React from 'react';
 import MasterDetail from '../../components/master-detail';
 import Detail from './detail';
 import { DropModal } from 'boron';
-import { SearchInput } from '../../components/toolbar/components/search';
 import { client } from '../../api';
 import moment from 'moment';
 

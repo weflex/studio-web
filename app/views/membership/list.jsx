@@ -8,7 +8,6 @@ import Detail from './detail';
 import AddMembershipView from './add';
 import { UIProfileListItem } from '../../components/ui-profile';
 import { DropModal } from 'boron';
-import { SearchInput } from '../../components/toolbar/components/search';
 import { client } from '../../api';
 moment.locale('zh-cn');
 
@@ -73,6 +72,7 @@ class List extends React.Component {
         if (usersIndex[userId] === undefined) {
           users.push(Object.assign({
             memberships: [],
+            title: membership.user.nickname,
           }, membership.user));
           usersIndex[userId] = users.length - 1;
           currIndex = usersIndex[userId];

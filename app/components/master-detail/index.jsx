@@ -84,6 +84,10 @@ class MasterDetail extends React.Component {
     this.setState({
       masterSource,
     });
+    // when we update the masterSource from this function,
+    // we also need to update the `cachedMasterSource` for
+    // search and sort.
+    this.cachedMasterSource = masterSource;
   }
 
   /**
