@@ -10,11 +10,11 @@ var app = serve('./');
 http.createServer(
   function (req, res, done) {
     var done = finalize(req, res);
-
     if (!/\.\w+(\?.*)?$/.test(req.url)) { // if url is not a file path
-
       if (/^\/login(\/.*)?/.test(req.url)) { // redirect to /login/index.html
         req.url = '/login/index.html';
+      } else if (/^\/signup(\/.*)?/.test(req.url)) {
+        req.url = '/signup/index.html';
       } else {
         req.url = '/index.html';
       }

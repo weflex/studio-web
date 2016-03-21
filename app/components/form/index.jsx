@@ -111,33 +111,68 @@ class HintText extends React.Component {
 }
 
 class TextButton extends Control {
+  static propTypes = {
+    text: React.PropTypes.string,
+    level: React.PropTypes.string,
+    block: React.PropTypes.bool,
+    disabled: React.PropTypes.bool,
+    disableInterval: React.PropTypes.number,
+  };
   constructor(props) {
     super(props);
     this.state = {
-      disabled: props.disabled,
+      disabled: false,
+      text: props.text,
     };
   }
   async onClick(event) {
     this.setState({
       disabled: true
     });
+
+    let isValid;
     if (typeof this.props.onClick === 'function') {
-      await this.props.onClick(event);
+      isValid = await this.props.onClick(event);
     }
-    this.setState({
-      disabled: false
-    });
+    if ((isValid === undefined || isValid) &&
+      this.props.disableInterval !== undefined) {
+      let count = this.props.disableInterval;
+      let interval = setInterval(() => {
+        count -= 1;
+        if (count >= 0) {
+          this.setState({
+            text: `等待中(${count})`
+          });
+        } else {
+          clearInterval(interval);
+          this.setState({
+            text: this.props.text,
+            disabled: false,
+          });
+        }
+      }, 1000);
+    } else {
+      this.setState({
+        disabled: false,
+      });
+    }
   }
   render() {
     let disabled;
     let className = 'form-btn';
-    if (this.props.disabled === undefined) {
-      disabled = this.state.disabled;
+    if (this.state.disabled === true) {
+      disabled = true;
     } else {
       disabled = this.props.disabled;
-      if (disabled) {
-        className += ' disabled';
-      }
+    }
+    if (disabled) {
+      className += ' disabled';
+    }
+    if (this.props.level) {
+      className += ' ' + (this.props.level + '-btn');
+    }
+    if (this.props.block) {
+      className += ' ' + 'block-btn';
     }
     let newProps = this.createProps({
       className,
@@ -149,23 +184,29 @@ class TextButton extends Control {
     }
     return (
       <button {...newProps}>
-        {this.props.text || this.props.children}
+        {this.state.text}
       </button>
     );
   }
 }
 
 class TextInput extends Input {
+  focus() {
+    this.refs.input.focus();
+  }
+  blur() {
+    this.refs.input.blur();
+  }
   render() {
     let newProps = this.createProps({
       type: (this.props.password === true) ? 'password' : 'text',
     });
     if (this.props.multiline) {
       newProps.className = this.className('form-input-multiline');
-      return <textarea {...newProps} />;
+      return <textarea ref="input" {...newProps} />;
     } else {
       newProps.className = this.className();
-      return <input {...newProps} />;
+      return <input ref="input" {...newProps} />;
     }
   }
 }

@@ -4,6 +4,7 @@ import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { client } from '../api';
+import '../layout/root-center.css';
 import './index.css';
 
 const sourceTabs = [
@@ -47,13 +48,13 @@ class LoginIndex extends React.Component {
       }
     });
     return (
-      <div className="login-container">
-        <div className="login">
+      <div className="box-container">
+        <div className="box login">
           <ul className="tabs">{tabs}</ul>
           <div className="contents">
             {content}
           </div>
-          <p className="login-link">还没有账号？点击这里注册</p>
+          <p className="login-link">还没有账号？点击<a href="/signup">这里注册</a></p>
         </div>
       </div>
     );

@@ -155,10 +155,16 @@
   cursor: no-drop;
 }
 .form-btn:not(.disabled):hover,
-.form-file-input:hover .form-btn:not(.disabled) {
+.form-file-input:hover .form-btn:not(.disabled),
+.form-btn.primary-btn
+ {
   color: #fff;
   border-color: #70CCA1;
   background-color: #70CCA1;
+}
+.form-btn.block-btn {
+  width: calc(100% - 5px);
+  display: block;
 }
 
 /* ColorPicker */

@@ -4,6 +4,7 @@ import _ from 'lodash';
 import React from 'react';
 import { DropModal } from 'boron2';
 import { TextButton } from '../../../components/form';
+import { UIAvatarImage } from '../../../components/ui-profile';
 import { client } from '../../../api';
 import InviteTrainerView from '../components/invite-trainer';
 import EditTrainerView from '../components/edit-trainer';
@@ -125,7 +126,7 @@ class Venue extends React.Component {
           {(this.state.orgmembers).map((member, index) => {
             return (
               <li key={index}>
-                <img src={member.user.avatar.uri} />
+                <UIAvatarImage src={member.user.avatar} />
                 <span className="username">{fullname(member.fullname)}</span>
               </li>
             );
@@ -145,7 +146,7 @@ class Venue extends React.Component {
             }
             return (
               <li key={index}>
-                <img src={venueOwner.user.avatar.uri} />
+                <UIAvatarImage src={venueOwner.user.avatar} />
                 <span className="username">
                   {fullname(venueOwner.fullname)}
                 </span>

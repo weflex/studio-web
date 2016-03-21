@@ -5,13 +5,16 @@ assets  = \
 	dist/favicon.ico
 entraces = \
 	dist/index.html \
-	dist/login/index.html
+	dist/login/index.html \
+	dist/signup/index.html
 directories = \
 	dist \
-	dist/login
+	dist/login \
+	dist/signup
 outputs = \
 	dist/app.js \
-	dist/login/index.js
+	dist/login/index.js \
+	dist/signup/index.js
 
 # build dependencies
 PATH := /usr/local/bin:$(PATH)

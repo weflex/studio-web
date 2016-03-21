@@ -2,10 +2,12 @@ assets  = \
 	dist/favicon.ico
 entraces = \
 	dist/index.html \
-	dist/login/index.html
+	dist/login/index.html \
+  dist/signup/index.html
 directories = \
 	dist \
-	dist/login
+	dist/login \
+  dist/signup
 
 PATH := /usr/local/bin:$(PATH)
 PATH := $(shell pwd)/node_modules/.bin:$(PATH)

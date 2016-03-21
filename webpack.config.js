@@ -9,7 +9,8 @@ function dir (subpath) {
 module.exports = {
   entry: {
     'app.js': dir('app/index.jsx'),
-    'login/index.js': dir('app/login/index.jsx')
+    'login/index.js': dir('app/login/index.jsx'),
+    'signup/index.js': dir('app/signup/index.jsx'),
   },
   output: {
     path: dir('dist'),

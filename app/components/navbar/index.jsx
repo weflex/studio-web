@@ -4,6 +4,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import React from 'react';
 import { Link } from 'react-router-component';
+import { UIAvatarImage } from '../ui-profile';
 import { client } from '../../api';
 import './index.css';
 
@@ -175,7 +176,7 @@ class NavBar extends React.Component {
             </ul>
           </div>
           <div className="useravatar">
-            <img src={this.state.user.avatar.uri} />
+            <UIAvatarImage src={this.state.user.avatar} />
           </div>
           <div className="username">
             <span>

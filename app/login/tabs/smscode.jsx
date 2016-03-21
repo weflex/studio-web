@@ -1,6 +1,10 @@
 "use strict";
 
 import React from 'react';
+import {
+  TextInput,
+  TextButton,
+} from '../../components/form';
 import { client } from '../../api';
 
 class TabSMSCode extends React.Component {
@@ -8,71 +12,56 @@ class TabSMSCode extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      count: -1,
+      form: {
+        phone: '',
+        smscode: '',
+      },
       phoneWarning: false,
       smscodeWarning: false,
     };
   }
   async onRequestSMSCode() {
-    if (!this.refs.phone.value ||
-      this.refs.phone.value.length !== 11) {
+    if (!this.state.form.phone ||
+      this.state.form.phone.length !== 11) {
       this.refs.phone.focus();
       this.setState({
         phoneWarning: true
       });
-      return;
+      return false;
     }
-    this.setState({
-      count: 60,
-      phoneWarning: false,
-    });
-    let interval = setInterval(() => {
-      const count = this.state.count - 1;
-      if (count < 0) {
-        clearInterval(interval);
-      }
-      this.setState({count});
-    }, 1000);
-    // change
-    const data = await client.user.smsRequest(this.refs.phone.value);
+    const data = await client.user.smsRequest(this.state.form.phone);
     console.log(data);
   }
   async onLogin() {
-    const newState = this.state;
-    if (!this.refs.phone.value ||
-      this.refs.phone.value.length !== 11) {
+    let newState = this.state;
+    if (!this.state.form.phone ||
+      this.state.form.phone.length !== 11) {
       newState.phoneWarning = true;
     } else {
       newState.phoneWarning = false;
     }
-    if (!this.refs.smscode.value ||
-      this.refs.smscode.value.length !== 4) {
+    if (!this.state.form.smscode ||
+      this.state.form.smscode.length !== 4) {
       newState.smscodeWarning = true;
     } else {
       newState.smscodeWarning = false;
     }
     if (!newState.phoneWarning && !newState.smscodeWarning) {
-      const data = await client.user.smsLogin(
-        this.refs.phone.value, this.refs.smscode.value);
-      console.log(data);
+      const res = await client.user.smsLogin(
+        this.state.form.phone, this.state.form.smscode);
       window.location.href = '/calendar';
     }
     this.setState(newState);
   }
   onPhoneInputChange(event) {
-    if (this.state.phoneWarning && event.target.value.length === 11) {
+    if (this.state.phoneWarning && 
+      this.state.form.phone.length === 11) {
       this.setState({
         phoneWarning: false
       });
     }
   }
   render() {
-    let getSMSCode;
-    if (this.state.count < 0) {
-      getSMSCode = <button className="get-smscode" onClick={this.onRequestSMSCode.bind(this)}>获取验证码</button>;
-    } else {
-      getSMSCode = <div className="get-smscode disabled">等待({this.state.count})</div>;
-    }
     let phoneClassName = 'login-row phone';
     if (this.state.phoneWarning) {
       phoneClassName += ' warning';
@@ -84,19 +73,35 @@ class TabSMSCode extends React.Component {
     return (
       <div className="login-smscode">
         <div className={phoneClassName}>
-          <input 
-            type="text" 
-            ref="phone" 
-            onChange={this.onPhoneInputChange.bind(this)} 
-            placeholder="输入手机号" 
+          <TextInput
+            flex={0.7}
+            type="text"
+            ref="phone"
+            bindStateCtx={this}
+            bindStateName="form.phone"
+            placeholder="输入手机号"
           />
-          {getSMSCode}
+          <TextButton
+            flex={0.3}
+            text="获取验证码"
+            disableInterval={5}
+            onClick={this.onRequestSMSCode.bind(this)}
+          />
         </div>
         <div className={smscodeClassName}>
-          <input type="text" ref="smscode" placeholder="输入验证码" />
+          <TextInput 
+            bindStateCtx={this}
+            bindStateName="form.smscode"
+            placeholder="输入验证码" 
+          />
         </div>
         <div className="login-row">
-          <button className="login-btn" onClick={this.onLogin.bind(this)}>登录</button>
+          <TextButton 
+            text="登录" 
+            block={true} 
+            level="primary"
+            onClick={this.onLogin.bind(this)}
+          />
         </div>
       </div>
     );
