@@ -30,8 +30,10 @@ class LaunchScreen extends React.Component {
     });
     
     let intv1 = setInterval(this.addBarWidth.bind(this), 200);
-    const user = await client.user.getCurrent();
-    if (!user.asMembers.length) {
+    let user;
+    try {
+      user = await client.user.getCurrent();
+    } catch (error) {
       window.location.href = '/login?status=403';
     }
     clearInterval(intv1);
