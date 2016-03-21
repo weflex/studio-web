@@ -5,7 +5,6 @@ import { client } from '../../api';
 
 class TabUserPass extends React.Component {
   static title = '用户名密码登录';
-  static disabled = process.env.GIAN_GATEWAY !== 'test';
   async onLogin() {
     try {
       await client.user.login(
