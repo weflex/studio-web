@@ -206,8 +206,12 @@ class WeflexCalendar extends React.Component {
       }
       render() {
         const props = Object.assign({}, this.props);
-        const onHide = (event, id) => {
-          return deleteClassById(id);
+        const onHide = (event, data) => {
+          if (!data || !data.id) {
+            alert('未知错误');
+          } else if (confirm(`你确认要删除课程“${data.template.name}”？`)) {
+            return deleteClassById(data.id);
+          }
         };
         const onPanEnd = (event, data) => {
           return updateClasses(data);

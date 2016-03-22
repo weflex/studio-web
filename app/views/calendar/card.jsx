@@ -426,13 +426,17 @@ class ClassCard extends React.Component {
       className += ' animated infinite shake';
       if (this.props.onHide) {
         onHide = (event) => {
-          // TODO(Yorkie): hide at UI
-          this.props.onHide.call(this, event, id);
+          this.props.onHide.call(this, event, this.props.cardInfo);
         };
-        onClickThis = onHide;
+        // FIXME(Yorkie): When in edit mode, `onClickThis` should be disable
+        onClickThis = null;
       }
       hideButton = (
-        <div className="class-button-close" onClick={onHide}></div>
+        <div 
+          className="class-close-btn" 
+          onClick={onHide}>
+          <span className="icon-font icon-cancel"></span>
+        </div>
       );
     }
 

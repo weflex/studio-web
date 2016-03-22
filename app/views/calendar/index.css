@@ -194,7 +194,6 @@
 
 .class-card {
   position: relative;
-  overflow: hidden;
   text-align: left;
   background-color: rgba(254,248,217,.5);
   border: 1px solid rgba(238,64,3,.21);
@@ -282,27 +281,24 @@
   background-color: #6ED4A4;
 }
 
-.class-card .class-button-close {
+.class-card .class-close-btn {
   position: absolute;
+  color: #fff;
+  width: 64px;
+  height: 64px;
+  line-height: 64px;
+  right: -32px;
+  top: -32px;
+  text-align: center;
+  vertical-align: middle;
+  z-index: 100;
+}
+
+.class-card .class-close-btn > .icon-font {
   background-color: #FF8AC2;
   height: 16px;
   width: 16px;
-  right: -8px;
-  top: -8px;
   border-radius: 8px;
-}
-
-.class-card .class-button-close:before {
-  content: 'x';
-  color: #fff;
-  font-weight: 500;
-  text-align: center;
-  vertical-align: middle;
-  display: block;
-  height: 100%;
-  line-height: 14px;
-  font-size: 15px;
-  font-family: 'Open Sans', sans-serif;
 }
 
 .create-card {
