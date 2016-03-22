@@ -40,7 +40,6 @@ class List extends React.Component {
       iterated: true,
       sortKeys: [
         {name: '姓名', key: 'nickname'},
-        {name: '电话', key: 'phone'},
       ],
       onClickAdd: this.onViewAddMembership.bind(this),
       addButtonText: '邀请新会员',
