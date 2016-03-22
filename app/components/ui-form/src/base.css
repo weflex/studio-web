@@ -1,0 +1,27 @@
+@charset "UTF-8";
+
+.ui-form input,
+.ui-form textarea,
+.ui-form select {
+  border: 1px solid #ebebeb;
+  border-radius: 4px;
+  padding: 5px;
+  outline: none;
+  height: 30px;
+  margin-right: 5px;
+  box-sizing: border-box;
+  transition: all .2s ease-in-out;
+}
+
+.ui-form input[disabled],
+.ui-form textarea[disabled],
+.ui-form select[disabled],
+.ui-form button[disabled] {
+  cursor: not-allowed
+}
+
+.ui-form input:focus,
+.ui-form textarea:focus,
+.ui-form select:focus {
+  border: 1px solid #70CCA1;
+}

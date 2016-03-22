@@ -2,9 +2,10 @@
 
 import React from 'react';
 import {
-  TextInput,
-  TextButton,
-} from '../../components/form';
+  UIForm,
+  UITextInput,
+  UIButton,
+} from '../../components/ui-form';
 import { client } from '../../api';
 
 class TabUserPass extends React.Component {
@@ -30,16 +31,16 @@ class TabUserPass extends React.Component {
   }
   render() {
     return (
-      <div className="login-smscode">
+      <UIForm className="login-smscode">
         <div className="login-row username">
-          <TextInput 
+          <UITextInput 
             bindStateCtx={this}
             bindStateName="form.username"
             placeholder="输入用户名" 
           />
         </div>
         <div className="login-row password">
-          <TextInput 
+          <UITextInput 
             bindStateCtx={this}
             bindStateName="form.password"
             password={true}
@@ -47,14 +48,14 @@ class TabUserPass extends React.Component {
           />
         </div>
         <div className="login-row">
-          <TextButton 
+          <UIButton 
             onClick={this.onLogin.bind(this)} 
             text="登录" 
             block={true} 
             level="primary" 
           />
         </div>
-      </div>
+      </UIForm>
     );
   }
 }

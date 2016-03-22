@@ -2,7 +2,6 @@
 
 import moment from 'moment';
 import React from 'react';
-import ListView from '../../components/list-view';
 import MasterDetail from '../../components/master-detail';
 import Detail from './detail';
 import AddOrderView from './add';

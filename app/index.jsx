@@ -8,12 +8,11 @@ import {
   Locations 
 } from 'react-router-component';
 import { LaunchScreen } from './views/launcher';
-import NavBar from './components/navbar';
+import NavBar from './views/navbar';
 import ToolBar from './components/toolbar';
 
 import './layout/root.css';
 import './layout/keyframes.css';
-import './index.css';
 
 function createViewWithBars (component, app) {
   return class Page extends React.Component {

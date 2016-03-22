@@ -3,7 +3,7 @@
 import _ from 'lodash';
 import React from 'react';
 import { DropModal } from 'boron2';
-import { TextButton } from '../../../components/form';
+import { UIButton } from '../../../components/ui-form';
 import { UIAvatarImage } from '../../../components/ui-profile';
 import { client } from '../../../api';
 import InviteTrainerView from '../components/invite-trainer';
@@ -134,7 +134,7 @@ class Venue extends React.Component {
         </ul>
         <header>
           <h3>门店店长</h3>
-          <TextButton text="创建新门店" />
+          <UIButton text="创建新门店" disabled={true} title="敬请期待" />
         </header>
         <ul className="settings-team-item settings-team-venues">
           {this.state.venues.map((venue, index) => {
@@ -157,7 +157,7 @@ class Venue extends React.Component {
         </ul>
         <header>
           <h3>教练列表</h3>
-          <TextButton text="邀请新教练" onClick={this.onInviteTrainer.bind(this)} />
+          <UIButton text="邀请新教练" onClick={this.onInviteTrainer.bind(this)} />
           <DropModal ref="inviteTrainerModal">
             <InviteTrainerView
               onComplete={this.onTrainerInvited.bind(this)}
@@ -168,7 +168,7 @@ class Venue extends React.Component {
           {this.state.trainers.map((trainer, index) => {
             return (
               <li key={index}>
-                <img src={trainer.user.avatar.uri} />
+                <UIAvatarImage src={trainer.user.avatar} />
                 <span className="username">{fullname(trainer.fullname)}</span>
                 <span className="description">{trainer.description}</span>
                 <span className="venue" onClick={this.onEditTrainer.bind(this, index)}>

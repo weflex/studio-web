@@ -4,7 +4,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import React from 'react';
 import { Link } from 'react-router-component';
-import { UIAvatarImage } from '../ui-profile';
+import { UIAvatarImage } from '../../components/ui-profile';
 import { client } from '../../api';
 import './index.css';
 

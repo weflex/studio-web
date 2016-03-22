@@ -3,13 +3,13 @@
 import _ from 'lodash';
 import React from 'react';
 import {
-  Form,
-  Row,
-  DateInput,
-  TextInput,
-  TextButton,
-  OptionsPicker,
-} from '../../../components/form';
+  UIForm,
+  UIRow,
+  UIDateInput,
+  UITextInput,
+  UIButton,
+  UIOptionPicker,
+} from '../../../components/ui-form';
 import { client } from '../../../api';
 import './edit-trainer.css';
 
@@ -76,28 +76,28 @@ class EditTrainerView extends React.Component {
       }
     ]);
     return (
-      <Form className="settings-edit-trainer">
-        <Row name="手机号码" hint="教练的手机号码">
-          <TextInput defaultValue={this.state.form.phone} disabled={true} />
-        </Row>
-        <Row name="教练姓名" hint="教练的名字">
-          <TextInput
+      <UIForm className="settings-edit-trainer">
+        <UIRow name="手机号码" hint="教练的手机号码">
+          <UITextInput defaultValue={this.state.form.phone} disabled={true} />
+        </UIRow>
+        <UIRow name="教练姓名" hint="教练的名字">
+          <UITextInput
             flex={0.5}
             bindStateCtx={this}
             bindStateName="form.fullname.first"
             value={this.state.form.fullname.first}
             placeholder="名"
           />
-          <TextInput
+          <UITextInput
             flex={0.5}
             bindStateCtx={this}
             bindStateName="form.fullname.last"
             value={this.state.form.fullname.last}
             placeholder="姓"
           />
-        </Row>
-        <Row name="语言" hint="教练的常用语言">
-          <OptionsPicker
+        </UIRow>
+        <UIRow name="语言" hint="教练的常用语言">
+          <UIOptionPicker
             bindStateCtx={this}
             bindStateName="form.language"
             value={this.state.form.language}
@@ -106,33 +106,33 @@ class EditTrainerView extends React.Component {
               {text: 'English', value: 'en'},
             ]}
           />
-        </Row>
-        <Row name="所属场馆" hint="教练工作的场馆">
-          <OptionsPicker
+        </UIRow>
+        <UIRow name="所属场馆" hint="教练工作的场馆">
+          <UIOptionPicker
             bindStateCtx={this}
             bindStateName="form.venueId"
             value={this.state.form.venueId}
             options={venueOptions}
           />
-        </Row>
-        <Row name="个人简介" hint="教练的个人简介">
-          <TextInput
+        </UIRow>
+        <UIRow name="个人简介" hint="教练的个人简介">
+          <UITextInput
             bindStateCtx={this}
             bindStateName="form.description"
             value={this.state.form.description}
             multiline={true}
           />
-        </Row>
-        <Row>
-          <TextButton text="保存更改"
+        </UIRow>
+        <UIRow>
+          <UIButton text="保存更改"
             onClick={this.onSubmit.bind(this)} 
             disabled={this.submitDisabled} 
           />
-          <TextButton text="删除教练"
+          <UIButton text="删除教练"
             onClick={this.onDelete.bind(this)} 
           />
-        </Row>
-      </Form>
+        </UIRow>
+      </UIForm>
     );
   }
 }

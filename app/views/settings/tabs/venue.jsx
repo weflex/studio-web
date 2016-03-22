@@ -2,15 +2,11 @@
 
 import React from 'react';
 import {
-  Form,
-  Row,
-  TextInput,
-  FileInput,
-  TextButton,
-  Label,
-  HintText,
-  OptionsPicker
-} from '../../../components/form';
+  UIForm,
+  UIRow,
+  UITextInput,
+  UIButton,
+} from '../../../components/ui-form';
 import { client } from '../../../api';
 
 class Venue extends React.Component {
@@ -58,39 +54,38 @@ class Venue extends React.Component {
   render() {
     return (
       <div className="settings-detail settings-venue">
-        <Form>
-          <Row name="场馆名" required={true}>
-            <TextInput 
+        <UIForm>
+          <UIRow name="场馆名" required={true}>
+            <UITextInput 
               bindStateCtx={this}
               bindStateName="venue.name"
               value={this.state.venue.name}
             />
-          </Row>
-          <Row name="联系电话" required={true}>
-            <TextInput
+          </UIRow>
+          <UIRow name="联系电话" required={true}>
+            <UITextInput
               bindStateCtx={this}
               bindStateName="venue.phone"
               value={this.state.venue.phone}
             />
-          </Row>
-          <Row name="地址" required={true}>
-            <TextInput
+          </UIRow>
+          <UIRow name="地址" required={true}>
+            <UITextInput
               bindStateCtx={this}
               bindStateName="venue.address"
               value={this.state.venue.address}
             />
-          </Row>
-          <Row name="店长" required={true}>
-            <TextInput
-              bindStateCtx={this}
+          </UIRow>
+          <UIRow name="店长" required={true}>
+            <UITextInput
               value={this.state.owner.display}
               disabled={true}
             />
-          </Row>
-          <Row>
-            <TextButton text="保存信息" onClick={this.onSubmit.bind(this)} />
-          </Row>
-        </Form>
+          </UIRow>
+          <UIRow>
+            <UIButton text="保存信息" onClick={this.onSubmit.bind(this)} />
+          </UIRow>
+        </UIForm>
       </div>
     );
   }

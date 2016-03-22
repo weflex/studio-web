@@ -1,7 +1,7 @@
 .settings-edit-trainer {
-  padding: 50px;
+  padding: 50px !important;
 }
 
-.settings-edit-trainer .form-btn {
+.settings-edit-trainer button {
   margin-right: 5px;
 }

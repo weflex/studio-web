@@ -5,16 +5,14 @@ import React from 'react';
 import { ClipLoader } from 'halogen';
 import { client } from '../../api';
 import {
-  Form,
-  Row,
-  DateInput,
-  TimeInput,
-  TextInput,
-  TextButton,
-  Label,
-  HintText,
-  OptionsPicker
-} from '../../components/form';
+  UIForm,
+  UIRow,
+  UIDateInput,
+  UITimeInput,
+  UITextInput,
+  UIButton,
+  UIOptionPicker
+} from '../../components/ui-form';
 import './new.css';
 
 class NewClassTemplate extends React.Component {
@@ -100,9 +98,9 @@ class NewClassTemplate extends React.Component {
     return (
       <div className="class-new-container">
         <h1>{this.title}</h1>
-        <Form className="class-new-form">
-          <Row name="选择课程模版" required={true} hint="选择课程模版可以看到不同课程的价格、教练和描述">
-            <OptionsPicker
+        <UIForm className="class-new-form">
+          <UIRow name="选择课程模版" required={true} hint="选择课程模版可以看到不同课程的价格、教练和描述">
+            <UIOptionPicker
               bindStateCtx={this}
               bindStateName="data.templateId"
               value={this.state.data.templateId}
@@ -110,15 +108,15 @@ class NewClassTemplate extends React.Component {
                 return {text: item.name, value: item.id};
               })}
             />
-          </Row>
-          <Row name="价格" hint="课程模版的价格">
-            <TextInput 
+          </UIRow>
+          <UIRow name="价格" hint="课程模版的价格">
+            <UITextInput 
               value={template.price}
               disabled={true}
             />
-          </Row>
-          <Row name="教练" hint="选择上课的教练">
-            <OptionsPicker
+          </UIRow>
+          <UIRow name="教练" hint="选择上课的教练">
+            <UIOptionPicker
               bindStateCtx={this}
               bindStateName="data.trainerId"
               value={this.state.data.trainerId}
@@ -126,40 +124,40 @@ class NewClassTemplate extends React.Component {
                 return {text: item.fullname.first, value: item.id};
               })}
             />
-          </Row>
-          <Row name="课程描述">
-            <TextInput
+          </UIRow>
+          <UIRow name="课程描述">
+            <UITextInput
               value={template.description}
               multiline={true}
               disabled={true}
             />
-          </Row>
-          <Row name="选择上课时间" required={true}>
-            <DateInput
+          </UIRow>
+          <UIRow name="选择上课时间" required={true}>
+            <UIDateInput
               flex={0.4}
               bindStateCtx={this}
               bindStateName="data.date"
               value={this.formatDate(this.state.data.date)}
             />
-            <TimeInput
+            <UITimeInput
               flex={0.3}
               bindStateCtx={this}
               bindStateName="data.from"
               value={this.formatTime(this.state.data.from)}
             />
-            <TimeInput
+            <UITimeInput
               flex={0.3}
               bindStateCtx={this}
               bindStateName="data.to"
               value={this.formatTime(this.state.data.to)}
             />
-          </Row>
-          <Row>
+          </UIRow>
+          <UIRow>
             <TextButton text={this.state.data ? '保存修改' : '确认添加'}
               onClick={this.onCreateClass.bind(this)} 
             />
-          </Row>
-        </Form>
+          </UIRow>
+        </UIForm>
       </div>
     );
   }

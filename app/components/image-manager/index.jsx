@@ -2,7 +2,7 @@
 
 import React from 'react';
 import ImageCell from '../image-cell';
-import { TextButton } from '../form';
+import { UIButton } from '../ui-form';
 import { client } from '../../api';
 import './index.css';
 
@@ -122,7 +122,7 @@ class ImageManager extends React.Component {
           />
         </section>
         <section className="images-manager-footer">
-          <TextButton text="确认选择" onClick={this.onSubmit.bind(this)} />
+          <UIButton text="确认选择" onClick={this.onSubmit.bind(this)} />
         </section>
       </div>
     );

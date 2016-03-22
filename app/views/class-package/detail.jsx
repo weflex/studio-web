@@ -3,15 +3,15 @@
 import React from 'react';
 import { client } from '../../api';
 import {
-  Form,
-  Row,
-  TextInput,
-  TextButton,
-  Label,
-  HintText,
-  OptionsPicker,
-  ColorPicker,
-} from '../../components/form';
+  UIForm,
+  UIRow,
+  UITextInput,
+  UIButton,
+  UILabel,
+  UIText,
+  UIOptionPicker,
+  UIColorPicker,
+} from '../../components/ui-form';
 import { UIMembershipCard } from '../../components/ui-membership-card';
 import './detail.css';
 
@@ -92,9 +92,9 @@ class CardDetail extends React.Component {
   }
   form() {
     return [
-      <Row name="种类" required={true} key="category"
+      <UIRow name="种类" required={true} key="category"
         hint="可以是团课或者私教">
-        <OptionsPicker 
+        <UIOptionPicker 
           bindStateCtx={this}
           bindStateName="data.category"
           value={this.state.data.category}
@@ -103,10 +103,10 @@ class CardDetail extends React.Component {
             {text: '私教', value: 'private'},
           ]}
         />
-      </Row>,
-      <Row name="类型" required={true} key="accessType"
+      </UIRow>,
+      <UIRow name="类型" required={true} key="accessType"
         hint="可以是多次卡或不限次卡">
-        <OptionsPicker 
+        <UIOptionPicker 
           bindStateCtx={this}
           bindStateName="data.accessType"
           value={this.state.data.accessType}
@@ -115,34 +115,34 @@ class CardDetail extends React.Component {
             {text: '不限次卡', value: 'unlimited'},
           ]}
         />
-      </Row>,
-      <Row name="名字" required={true} key="name"
+      </UIRow>,
+      <UIRow name="名字" required={true} key="name"
         hint="请给您的卡取个简单易懂的名字">
-        <TextInput 
+        <UITextInput 
           bindStateCtx={this} 
           bindStateName="data.name"
           value={this.state.data.name}
         />
-      </Row>,
-      <Row name="有效次数" required={true} key="passes"
+      </UIRow>,
+      <UIRow name="有效次数" required={true} key="passes"
         hint="不限次卡不需要填写">
-        <TextInput
+        <UITextInput
           bindStateCtx={this}
           bindStateName="data.passes"
           value={this.state.data.passes}
           bindStateType={Number}
         />
-      </Row>,
-      <Row name="有效时间" required={true} key="lifetime"
+      </UIRow>,
+      <UIRow name="有效时间" required={true} key="lifetime"
         hint="设定该卡的有效期">
-        <TextInput 
+        <UITextInput 
           flex={0.9}
           bindStateCtx={this}
           bindStateType={Number}
           value={this.state.data.lifetime.value}
           bindStateName="data.lifetime.value"
         />
-        <OptionsPicker 
+        <UIOptionPicker 
           flex={0.1}
           bindStateCtx={this}
           bindStateName="data.lifetime.scale"
@@ -153,26 +153,26 @@ class CardDetail extends React.Component {
             {text: '年', value: 'year'},
           ]}
         />
-      </Row>,
-      <Row name="价格" required={true} key="price">
-        <TextInput 
+      </UIRow>,
+      <UIRow name="价格" required={true} key="price">
+        <UITextInput 
           flex={0.9}
           bindStateCtx={this}
           bindStateType={Number} 
           bindStateName="data.price" 
           value={this.state.data.price}
         />
-        <OptionsPicker 
+        <UIOptionPicker 
           flex={0.1}
           disabled={true}
           options={[
             {text: '元', value: 'yuan'},
           ]}
         />
-      </Row>,
-      <Row name="延期次数" required={true} key="extensible"
+      </UIRow>,
+      <UIRow name="延期次数" required={true} key="extensible"
         hint="会员出差或工作室休息的时候可以给会卡延期">
-        <OptionsPicker 
+        <UIOptionPicker 
           bindStateCtx={this}
           bindStateName="data.extensible"
           value={this.state.data.extensible}
@@ -184,31 +184,31 @@ class CardDetail extends React.Component {
             {text: '可4次', value: 4},
           ]}
         />
-      </Row>,
-      <Row name="卡片颜色" key="color" hint="给不同的卡片设定不同的颜色可以帮你区分不同的卡">
-        <ColorPicker
+      </UIRow>,
+      <UIRow name="卡片颜色" key="color" hint="给不同的卡片设定不同的颜色可以帮你区分不同的卡">
+        <UIColorPicker
           bindStateCtx={this}
           bindStateName="data.color"
           value={this.state.data.color}
         />
-      </Row>,
-      <Row name="描述" hint="您可以在这里添加更多关于该卡的信息" key="description">
-        <TextInput 
+      </UIRow>,
+      <UIRow name="描述" hint="您可以在这里添加更多关于该卡的信息" key="description">
+        <UITextInput 
           bindStateCtx={this}
           bindStateName="data.description"
           value={this.state.data.description}
           multiline={true} 
         />
-      </Row>,
+      </UIRow>,
     ];
   }
   render() {
     return (
       <div className="detail-cards class-package-detail-container">
         <div className="detail-cards-left">
-          <Form className="detail-card class-package-detail-form">
+          <UIForm className="detail-card class-package-detail-form">
             {this.form()}
-          </Form>
+          </UIForm>
         </div>
         <div className="detail-cards-right">
           <div className="detail-card class-package-detail-preview">

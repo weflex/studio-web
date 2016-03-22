@@ -7,14 +7,12 @@ import { ClipLoader } from 'halogen';
 import ImageCell from '../../components/image-cell';
 import ImageManager from '../../components/image-manager';
 import {
-  Form,
-  Row,
-  TextInput,
-  TextButton,
-  Label,
-  HintText,
-  OptionsPicker
-} from '../../components/form';
+  UIForm,
+  UIRow,
+  UITextInput,
+  UIButton,
+  UIOptionPicker
+} from '../../components/ui-form';
 import { client } from '../../api';
 import './detail.css';
 
@@ -161,66 +159,66 @@ class Detail extends React.Component {
     );
     return (
       <div className="class-template-new-container">
-        <Form className="class-template-new-form">
-          <Row name="课程名" required={true}>
-            <TextInput
+        <UIForm className="class-template-new-form">
+          <UIRow name="课程名" required={true}>
+            <UITextInput
               bindStateCtx={this} 
               bindStateName="data.name" 
               value={this.state.data.name}
             />
-          </Row>
-          <Row name="价格" required={true}>
-            <TextInput 
+          </UIRow>
+          <UIRow name="价格" required={true}>
+            <UITextInput 
               flex={0.8}
               bindStateCtx={this} 
               bindStateName="data.price"
               bindStateType={Number}
               value={this.state.data.price}
             />
-            <OptionsPicker 
+            <UIOptionPicker 
               flex={0.2}
               disabled={true}
               options={[
                 {text: '元'},
               ]}
             />
-          </Row>
-          <Row name="课程时长" required={true}>
-            <TextInput
+          </UIRow>
+          <UIRow name="课程时长" required={true}>
+            <UITextInput
               flex={0.8}
               bindStateCtx={this}
               bindStateName="data.duration"
               bindStateType={Number}
               value={this.state.data.duration}
             />
-            <OptionsPicker 
+            <UIOptionPicker 
               flex={0.2}
               disabled={true}
               options={[
                 {text: '分钟'},
               ]}
             />
-          </Row>
-          <Row name="选择教练" required={true}>
-            <OptionsPicker
+          </UIRow>
+          <UIRow name="选择教练" required={true}>
+            <UIOptionPicker
               bindStateCtx={this}
               bindStateName="data.trainerId"
               value={this.state.data.trainerId}
               options={trainerOptions}
             />
-          </Row>
-          <Row name="课程描述" required={true}>
-            <TextInput
+          </UIRow>
+          <UIRow name="课程描述" required={true}>
+            <UITextInput
               multiline={true}
               bindStateCtx={this}
               bindStateName="data.description"
               value={this.state.data.description}
             />
-          </Row>
-          <Row>
-            <TextButton text="保存课程" onClick={this.onSave.bind(this)} />
-          </Row>
-        </Form>
+          </UIRow>
+          <UIRow>
+            <UIButton text="保存课程" onClick={this.onSave.bind(this)} />
+          </UIRow>
+        </UIForm>
         <div className="class-template-new-preview">
           <section className="cover">
             <h3>封面</h3>

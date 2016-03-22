@@ -4,12 +4,12 @@ import _ from 'lodash';
 import moment from 'moment';
 import React from 'react';
 import {
-  Form,
-  Row,
-  TextInput,
-  TextButton,
-  OptionsPicker,
-} from '../../components/form';
+  UIForm,
+  UIRow,
+  UITextInput,
+  UIButton,
+  UIOptionPicker,
+} from '../../components/ui-form';
 import { client } from '../../api';
 import './add.css';
 
@@ -112,7 +112,7 @@ class AddOrderView extends React.Component {
   }
   renderUserSearch() {
     const view = [
-      <TextInput
+      <UITextInput
         key="input"
         bindStateCtx={this}
         bindStateName="phone"
@@ -161,7 +161,7 @@ class AddOrderView extends React.Component {
       });
     }
     return [
-      <OptionsPicker 
+      <UIOptionPicker 
         flex={0.6}
         key="template"
         bindStateCtx={this}
@@ -169,7 +169,7 @@ class AddOrderView extends React.Component {
         options={templateOptions}
         onChange={this.onTemplateChange.bind(this)}
       />,
-      <OptionsPicker
+      <UIOptionPicker
         flex={0.4}
         key="class"
         bindStateCtx={this}
@@ -189,7 +189,7 @@ class AddOrderView extends React.Component {
       });
     }
     return (
-      <OptionsPicker
+      <UIOptionPicker
         bindStateCtx={this}
         bindStateName="membershipId"
         options={membershipOptions}
@@ -198,20 +198,20 @@ class AddOrderView extends React.Component {
   }
   render() {
     return (
-      <Form className="order-add">
-        <Row name="手机号码" hint="预定课程用户的手机号码">
+      <UIForm className="order-add">
+        <UIRow name="手机号码" hint="预定课程用户的手机号码">
           {this.renderUserSearch()}
-        </Row>
-        <Row name="课程" hint="预约课程的名称，日期和时间">
+        </UIRow>
+        <UIRow name="课程" hint="预约课程的名称，日期和时间">
           {this.renderClassPicker()}
-        </Row>
-        <Row name="会卡" hint="用户需要会卡才能创建订单">
+        </UIRow>
+        <UIRow name="会卡" hint="用户需要会卡才能创建订单">
           {this.renderMemberships()}
-        </Row>
-        <Row>
-          <TextButton text="创建订单" onClick={this.onSubmit.bind(this)} />
-        </Row>
-      </Form>
+        </UIRow>
+        <UIRow>
+          <UIButton text="创建订单" onClick={this.onSubmit.bind(this)} />
+        </UIRow>
+      </UIForm>
     );
   }
 }

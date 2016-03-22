@@ -3,7 +3,6 @@
 import React from 'react';
 import moment from 'moment';
 import MasterDetail from '../../components/master-detail';
-import ListView from '../../components/list-view';
 import Detail from './detail';
 import AddMembershipView from './add';
 import { UIProfileListItem } from '../../components/ui-profile';

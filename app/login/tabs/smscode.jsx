@@ -2,9 +2,10 @@
 
 import React from 'react';
 import {
-  TextInput,
-  TextButton,
-} from '../../components/form';
+  UIForm,
+  UITextInput,
+  UIButton,
+} from '../../components/ui-form';
 import { client } from '../../api';
 
 class TabSMSCode extends React.Component {
@@ -71,9 +72,9 @@ class TabSMSCode extends React.Component {
       smscodeClassName += ' warning';
     }
     return (
-      <div className="login-smscode">
+      <UIForm className="login-smscode">
         <div className={phoneClassName}>
-          <TextInput
+          <UITextInput
             flex={0.7}
             type="text"
             ref="phone"
@@ -81,7 +82,7 @@ class TabSMSCode extends React.Component {
             bindStateName="form.phone"
             placeholder="输入手机号"
           />
-          <TextButton
+          <UIButton
             flex={0.3}
             text="获取验证码"
             disableInterval={5}
@@ -89,21 +90,21 @@ class TabSMSCode extends React.Component {
           />
         </div>
         <div className={smscodeClassName}>
-          <TextInput 
+          <UITextInput 
             bindStateCtx={this}
             bindStateName="form.smscode"
             placeholder="输入验证码" 
           />
         </div>
         <div className="login-row">
-          <TextButton 
+          <UIButton 
             text="登录" 
             block={true} 
             level="primary"
             onClick={this.onLogin.bind(this)}
           />
         </div>
-      </div>
+      </UIForm>
     );
   }
 }

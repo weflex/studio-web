@@ -2,15 +2,15 @@
 
 import React from 'react';
 import {
-  Form,
-  Row,
-  TextInput,
-  FileInput,
-  TextButton,
-  Label,
-  HintText,
-  OptionsPicker
-} from '../../../components/form';
+  UIForm,
+  UIRow,
+  UITextInput,
+  UIFileInput,
+  UIButton,
+  UILabel,
+  UIText,
+  UIOptionPicker
+} from '../../../components/ui-form';
 import { client } from '../../../api';
 
 class Venue extends React.Component {
@@ -74,28 +74,28 @@ class Venue extends React.Component {
   render() {
     return (
       <div className="settings-detail settings-basic">
-        <Form>
-          <Row name="组织名称" required={true}>
-            <TextInput 
+        <UIForm>
+          <UIRow name="组织名称" required={true}>
+            <UITextInput 
               bindStateCtx={this}
               bindStateName="org.name"
               value={this.state.org.name} 
             />
-          </Row>
-          <Row name="首栏图片" required={true}>
-            <FileInput
+          </UIRow>
+          <UIRow name="首栏图片" required={true}>
+            <UIFileInput
               bindStateCtx={this}
               bindStateName="org.banner"
               checkFile={this.checkBanner.bind(this)}
             />
-          </Row>
-          <Row name="经理" required={true}>
-            <TextInput
+          </UIRow>
+          <UIRow name="经理" required={true}>
+            <UITextInput
               value={this.state.owner.display}
               disabled={true}
             />
-          </Row>
-        </Form>
+          </UIRow>
+        </UIForm>
       </div>
     );
   }

@@ -3,13 +3,13 @@
 import _ from 'lodash';
 import React from 'react';
 import {
-  Form,
-  Row,
-  DateInput,
-  TextInput,
-  TextButton,
-  OptionsPicker,
-} from '../../../components/form';
+  UIForm,
+  UIRow,
+  UIDateInput,
+  UITextInput,
+  UIButton,
+  UIOptionPicker,
+} from '../../../components/ui-form';
 import { client } from '../../../api';
 import './invite-trainer.css';
 
@@ -65,30 +65,30 @@ class InviteTrainerView extends React.Component {
       }
     ]);
     return (
-      <Form className="settings-invite-trainer">
-        <Row name="手机号码" hint="教练的手机号码">
-          <TextInput
+      <UIForm className="settings-invite-trainer">
+        <UIRow name="手机号码" hint="教练的手机号码">
+          <UITextInput
             bindStateCtx={this}
             bindStateName="form.phone"
             placeholder="11位手机号码"
           />
-        </Row>
-        <Row name="教练姓名" hint="教练的名字">
-          <TextInput
+        </UIRow>
+        <UIRow name="教练姓名" hint="教练的名字">
+          <UITextInput
             flex={0.5}
             bindStateCtx={this}
             bindStateName="form.fullname.first"
             placeholder="名"
           />
-          <TextInput
+          <UITextInput
             flex={0.5}
             bindStateCtx={this}
             bindStateName="form.fullname.last"
             placeholder="姓"
           />
-        </Row>
-        <Row name="语言" hint="教练的常用语言">
-          <OptionsPicker
+        </UIRow>
+        <UIRow name="语言" hint="教练的常用语言">
+          <UIOptionPicker
             bindStateCtx={this}
             bindStateName="form.language"
             options={[
@@ -96,28 +96,28 @@ class InviteTrainerView extends React.Component {
               {text: 'English', value: 'en'},
             ]}
           />
-        </Row>
-        <Row name="所属场馆" hint="教练工作的场馆">
-          <OptionsPicker
+        </UIRow>
+        <UIRow name="所属场馆" hint="教练工作的场馆">
+          <UIOptionPicker
             bindStateCtx={this}
             bindStateName="form.venueId"
             options={venueOptions}
           />
-        </Row>
-        <Row name="个人简介" hint="教练的个人简介">
-          <TextInput
+        </UIRow>
+        <UIRow name="个人简介" hint="教练的个人简介">
+          <UITextInput
             bindStateCtx={this}
             bindStateName="form.description"
             multiline={true}
           />
-        </Row>
-        <Row>
-          <TextButton text="邀请教练"
+        </UIRow>
+        <UIRow>
+          <UIButton text="邀请教练"
             onClick={this.onSubmit.bind(this)} 
             disabled={this.submitDisabled} 
           />
-        </Row>
-      </Form>
+        </UIRow>
+      </UIForm>
     );
   }
 }
