@@ -5,7 +5,7 @@ import {
   UIForm,
   UITextInput,
   UIButton,
-} from '../../components/ui-form';
+} from 'react-ui-form';
 import { client } from '../../api';
 
 class TabUserPass extends React.Component {

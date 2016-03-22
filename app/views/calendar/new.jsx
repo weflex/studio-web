@@ -12,7 +12,7 @@ import {
   UITextInput,
   UIButton,
   UIOptionPicker
-} from '../../components/ui-form';
+} from 'react-ui-form';
 import './new.css';
 
 class NewClassTemplate extends React.Component {

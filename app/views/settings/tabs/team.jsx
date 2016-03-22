@@ -3,7 +3,7 @@
 import _ from 'lodash';
 import React from 'react';
 import { DropModal } from 'boron2';
-import { UIButton } from '../../../components/ui-form';
+import { UIButton } from 'react-ui-form';
 import { UIAvatarImage } from '../../../components/ui-profile';
 import { client } from '../../../api';
 import InviteTrainerView from '../components/invite-trainer';

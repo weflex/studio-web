@@ -9,7 +9,7 @@ import {
   UITextInput,
   UIButton,
   UIOptionPicker,
-} from '../../components/ui-form';
+} from 'react-ui-form';
 import { client } from '../../api';
 import './add.css';
 

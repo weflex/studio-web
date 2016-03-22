@@ -1,8 +1,8 @@
 "use strict";
 
 import React from 'react';
+import { UIButton } from 'react-ui-form';
 import ImageCell from '../image-cell';
-import { UIButton } from '../ui-form';
 import { client } from '../../api';
 import './index.css';
 

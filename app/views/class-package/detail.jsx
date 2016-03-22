@@ -11,7 +11,7 @@ import {
   UIText,
   UIOptionPicker,
   UIColorPicker,
-} from '../../components/ui-form';
+} from 'react-ui-form';
 import { UIMembershipCard } from '../../components/ui-membership-card';
 import './detail.css';
 
