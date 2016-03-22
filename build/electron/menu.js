@@ -91,6 +91,15 @@ var template = [
           electron.shell.openExternal('http://www.getweflex.com');
         }
       },
+      {
+        type: 'separator'
+      },
+      {
+        label: '重新登录',
+        click: function(item, focusedWindow) {
+          focusedWindow.loadURL('http://demo.getweflex.com/login');
+        }
+      },
     ]
   },
 ];
@@ -131,12 +140,6 @@ if (process.platform == 'darwin') {
       },
       {
         type: 'separator'
-      },
-      {
-        label: '重新登录',
-        click: function() {
-          electron.remote.app.mainWindow.loadURL('http://demo.getweflex.com/login');
-        }
       },
       {
         label: '退出',
