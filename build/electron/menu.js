@@ -133,6 +133,12 @@ if (process.platform == 'darwin') {
         type: 'separator'
       },
       {
+        label: '重新登录',
+        click: function() {
+          electron.remote.app.mainWindow.loadURL('http://demo.getweflex.com/login');
+        }
+      },
+      {
         label: '退出',
         accelerator: 'Command+Q',
         click: function() { 

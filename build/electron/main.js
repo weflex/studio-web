@@ -5,6 +5,9 @@ const path = require('path');
 const app = electron.app;  // Module to control application life.
 const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
 
+// append command-line options
+app.commandLine.appendSwitch('disable-http-cache');
+
 app.on('window-all-closed', function() {
   app.quit();
 });
@@ -21,4 +24,5 @@ app.on('ready', function() {
     }
   });
   mainWindow.loadURL('http://demo.getweflex.com/calendar');
+  app.mainWindow = mainWindow;
 });
