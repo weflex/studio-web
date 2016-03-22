@@ -48,13 +48,21 @@ class AddMembershipView extends React.Component {
   }
   async onSubmit() {
     try {
-      await client.middleware('/transaction/add-user', {
+      const res = await client.middleware('/transaction/add-user', {
         nickname: this.state.form.nickname,
         phone: this.state.form.phone,
         packageId: this.state.form.packageId,
         createdAt: this.state.form.createdAt,
         correction: this.state.form.correction,
       }, 'post');
+      if (!res || !res.user || !res.membership) {
+        throw new Error('Internal Server Error');
+      }
+      // FIXME(Yorkie): When props doesn't have `user`, we should
+      // notify user if this user is not a new addition.
+      if (!this.props.user && !res.user.isNew) {
+        alert(`您添加了一个已存在的会员：${res.user.nickname}`);
+      }
       if (typeof this.props.onComplete === 'function') {
         this.props.onComplete();
       }
