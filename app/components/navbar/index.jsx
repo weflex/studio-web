@@ -192,7 +192,7 @@ class NavBar extends React.Component {
         <NavItem location="/order"            hint="订单管理"  icon="inbox" />
         <NavItem location="/class/template"   hint="课程模板"  icon="star" />
         <NavItem location="/class/package"    hint="卡种管理"  icon="heart" />
-        <NavItem location="/membership"       hint="用户管理"  icon="customer" />
+        <NavItem location="/membership"       hint="会员管理"  icon="customer" />
         <NavItem location="/settings"         hint="我的设置"  icon="setting" />
       </ul>
     );

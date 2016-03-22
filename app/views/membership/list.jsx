@@ -12,8 +12,24 @@ import { client } from '../../api';
 moment.locale('zh-cn');
 
 class List extends React.Component {
+  static styles = {
+    master: {
+      nickname: {
+        display: 'inline-block',
+        maxWidth: '80%',
+        overflowX: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+      },
+      count: {
+        display: 'inline-block',
+        verticalAlign: 'top',
+        marginLeft: '5px',
+      },
+    },
+  };
   get title() {
-    return '用户管理';
+    return '会员管理';
   }
   get actions() {
     return [
@@ -27,9 +43,19 @@ class List extends React.Component {
     return {
       title: 'title',
       master: (user, index) => {
+        const header = (
+          <p title={user.nickname}>
+            <span style={List.styles.master.nickname}>
+              {user.nickname}
+            </span>
+            <span style={List.styles.master.count}>
+              ({user.memberships.length})
+            </span>
+          </p>
+        );
         return (
           <UIProfileListItem avatar={user.avatar} 
-            header={`${user.nickname} (${user.memberships.length})`}>
+            header={header}>
             {user.phone}
           </UIProfileListItem>
         );
@@ -82,6 +108,7 @@ class List extends React.Component {
         users[currIndex].memberships.push(membership);
       }
     }
+    this.props.app.title(`${this.title}（${users.length}）`);
     return users;
   }
   onViewAddMembership() {
@@ -98,7 +125,7 @@ class List extends React.Component {
           ref="masterDetail"
           pathname="membership"
           className="membership"
-          masterSource={this.source}
+          masterSource={this.source.bind(this)}
           masterConfig={this.config}
         />
         <DropModal ref="addMembershipModal">

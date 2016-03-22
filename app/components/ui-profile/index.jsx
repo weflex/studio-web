@@ -63,7 +63,10 @@ class UIProfileListItem extends React.Component {
     /**
      * @property {String} header - the header content
      */
-    header: React.PropTypes.string,
+    header: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.node,
+    ]),
     /**
      * @property {String} labelText - the text is in bottom of avatar
      */
