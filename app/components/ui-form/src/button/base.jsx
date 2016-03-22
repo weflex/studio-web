@@ -36,6 +36,7 @@ class UIButton extends IControl {
     button: {
       display: 'inline-block',
       height: '30px',
+      width: 'auto',
       border: '1px solid #9b9b9b',
       borderRadius: '4px',
       padding: '0 10px',
