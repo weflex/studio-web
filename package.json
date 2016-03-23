@@ -21,7 +21,7 @@
     "react-qiniu": "0.3.0",
     "react-router-component": "0.28.0",
     "react-touchable-tabular": "^1.2.5",
-    "react-ui-form": "1.1.3",
+    "react-ui-form": "1.2.0",
     "scroller": "0.0.3",
     "superagent": "1.5.0",
     "superagent-prefix": "0.0.2",
