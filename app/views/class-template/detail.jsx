@@ -140,6 +140,128 @@ class Detail extends React.Component {
     this.setState({ data: newData });
   }
   
+  form() {
+    const trainerOptions = this.state.trainers.map(
+      item => {
+        return {
+          text: `${item.fullname.first} ${item.fullname.last}`,
+          value: item.id
+        };
+      }
+    );
+    return (
+      <UIForm className="class-template-new-form">
+        <UIRow name="课程名" required={true}>
+          <UITextInput
+            bindStateCtx={this} 
+            bindStateName="data.name" 
+            value={this.state.data.name}
+          />
+        </UIRow>
+        <UIRow name="价格" required={true}>
+          <UITextInput 
+            flex={0.8}
+            bindStateCtx={this} 
+            bindStateName="data.price"
+            bindStateType={Number}
+            value={this.state.data.price}
+          />
+          <UIOptionPicker 
+            flex={0.2}
+            disabled={true}
+            options={[
+              {text: '元'},
+            ]}
+          />
+        </UIRow>
+        <UIRow name="课程时长" required={true}>
+          <UITextInput
+            flex={0.8}
+            bindStateCtx={this}
+            bindStateName="data.duration"
+            bindStateType={Number}
+            value={this.state.data.duration}
+          />
+          <UIOptionPicker 
+            flex={0.2}
+            disabled={true}
+            options={[
+              {text: '分钟'},
+            ]}
+          />
+        </UIRow>
+        <UIRow name="选择教练" required={true}>
+          <UIOptionPicker
+            bindStateCtx={this}
+            bindStateName="data.trainerId"
+            value={this.state.data.trainerId}
+            options={trainerOptions}
+          />
+        </UIRow>
+        <UIRow name="课程描述" required={true}>
+          <UITextInput
+            multiline={true}
+            bindStateCtx={this}
+            bindStateName="data.description"
+            value={this.state.data.description}
+          />
+        </UIRow>
+      </UIForm>
+    );
+  }
+
+  cover() {
+    return (
+      <section className="class-template-detail-cover">
+        <h3>封面</h3>
+        <div>
+          <ImageCell 
+            src={this.state.data.cover}
+            onClick={this.makeOnOpenImageManager.call(
+              this, 
+              '选择封面图片', 
+              'single', 
+              this.onCoverFinish, 
+              this.state.data.cover)}
+          />
+        </div>
+      </section>
+    );
+  }
+
+  photos() {
+    return (
+      <section className="class-template-detail-photos">
+        <h3>图片</h3>
+        <div>
+          {(this.state.data.photos || []).map((src, index) => {
+            return (
+              <ImageCell 
+                key={index}
+                src={src} 
+                onClick={this.makeOnOpenImageManager.call(
+                  this, 
+                  '选择课程图片', 
+                  'multiple', 
+                  this.onPhotosFinish, 
+                  this.state.data.photos)}
+              />
+            );
+          })}
+          <ImageCell 
+            description="this is for adding new photo"
+            onClick={this.makeOnOpenImageManager.call(
+              this, 
+              '选择课程图片', 
+              'multiple', 
+              this.onPhotosFinish, 
+              this.state.data.photos)}
+          />
+        </div>
+      </section>
+    );
+  }
+
   render() {
     if (this.state.loading) {
       return (
@@ -149,128 +271,29 @@ class Detail extends React.Component {
         </div>
       );
     }
-    let trainerOptions = this.state.trainers.map(
-      item => {
-        return {
-          text: `${item.fullname.first} ${item.fullname.last}`,
-          value: item.id
-        };
-      }
-    );
     return (
-      <div className="class-template-new-container">
-        <UIForm className="class-template-new-form">
-          <UIRow name="课程名" required={true}>
-            <UITextInput
-              bindStateCtx={this} 
-              bindStateName="data.name" 
-              value={this.state.data.name}
-            />
-          </UIRow>
-          <UIRow name="价格" required={true}>
-            <UITextInput 
-              flex={0.8}
-              bindStateCtx={this} 
-              bindStateName="data.price"
-              bindStateType={Number}
-              value={this.state.data.price}
-            />
-            <UIOptionPicker 
-              flex={0.2}
-              disabled={true}
-              options={[
-                {text: '元'},
-              ]}
-            />
-          </UIRow>
-          <UIRow name="课程时长" required={true}>
-            <UITextInput
-              flex={0.8}
-              bindStateCtx={this}
-              bindStateName="data.duration"
-              bindStateType={Number}
-              value={this.state.data.duration}
-            />
-            <UIOptionPicker 
-              flex={0.2}
-              disabled={true}
-              options={[
-                {text: '分钟'},
-              ]}
-            />
-          </UIRow>
-          <UIRow name="选择教练" required={true}>
-            <UIOptionPicker
-              bindStateCtx={this}
-              bindStateName="data.trainerId"
-              value={this.state.data.trainerId}
-              options={trainerOptions}
-            />
-          </UIRow>
-          <UIRow name="课程描述" required={true}>
-            <UITextInput
-              multiline={true}
-              bindStateCtx={this}
-              bindStateName="data.description"
-              value={this.state.data.description}
-            />
-          </UIRow>
-          <UIRow>
-            <UIButton text="保存课程" onClick={this.onSave.bind(this)} />
-          </UIRow>
-        </UIForm>
-        <div className="class-template-new-preview">
-          <section className="cover">
-            <h3>封面</h3>
-            <div>
-              <ImageCell 
-                src={this.state.data.cover}
-                onClick={this.makeOnOpenImageManager.call(
-                  this, 
-                  '选择封面图片', 
-                  'single', 
-                  this.onCoverFinish, 
-                  this.state.data.cover)}
-              />
-            </div>
-          </section>
-          <section className="photos">
-            <h3>图片</h3>
-            <div>
-              {(this.state.data.photos || []).map((src, index) => {
-                return (
-                  <ImageCell 
-                    key={index}
-                    src={src} 
-                    onClick={this.makeOnOpenImageManager.call(
-                      this, 
-                      '选择课程图片', 
-                      'multiple', 
-                      this.onPhotosFinish, 
-                      this.state.data.photos)}
-                  />
-                );
-              })}
-              <ImageCell 
-                description="this is for adding new photo"
-                onClick={this.makeOnOpenImageManager.call(
-                  this, 
-                  '选择课程图片', 
-                  'multiple', 
-                  this.onPhotosFinish, 
-                  this.state.data.photos)}
-              />
-            </div>
-          </section>
+      <div className="detail-cards class-template-detail-container">
+        <div className="detail-cards-left">
+          <div className="detail-card" style={{height: '100%'}}>
+            {this.form()}
+          </div>
         </div>
-        <DropModal ref="imageManagerModal">
-          <ImageManager 
-            title={this.state.imageManagerTitle} 
-            mode={this.state.imageManagerMode}
-            onFinish={this.state.onImageManagerFinish}
-            data={this.state.imageManagerData}
-          />
-        </DropModal>
+        <div className="detail-cards-right">
+          <div className="detail-card">
+            {this.cover()}
+          </div>
+          <div className="detail-card">
+            {this.photos()}
+          </div>
+          <DropModal ref="imageManagerModal">
+            <ImageManager 
+              title={this.state.imageManagerTitle} 
+              mode={this.state.imageManagerMode}
+              onFinish={this.state.onImageManagerFinish}
+              data={this.state.imageManagerData}
+            />
+          </DropModal>
+        </div>
       </div>
     );
   }

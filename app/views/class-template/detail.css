@@ -14,49 +14,19 @@
   padding: 20px;
 }
 
-.class-template-new-form,
-.class-template-new-preview {
-  vertical-align: top;
-  display: inline-block;
-  box-sizing: border-box;
-}
-
 .class-template-new-form {
-  width: 50%;
-  margin-right: 10%;
+  width: 100%;
 }
 
-.class-template-new-form textarea {
-  font-size: 12px;
-  font-family: 'PingFang SC', sans-serif;
-  font-weight: normal;
-}
-
-.class-template-new-preview {
-  width: 40%;
-}
-
-.class-template-new-preview > section h3 {
-  font-size: 12px;
-  font-family: 'PingFang SC', sans-serif;
-  font-weight: normal;
-  margin-bottom: 10px;
-}
-
-.class-template-new-preview > .cover .image-cell {
+.class-template-detail-cover .image-cell {
   height: 180px;
   line-height: 180px;
   width: 100%;
 }
 
-.class-template-new-preview > .photos {
-  width: 100%;
-  overflow-x: auto;
-}
-
-.class-template-new-preview > .photos .image-cell {
+.class-template-detail-photos .image-cell {
   height: 100px;
   line-height: 100px;
-  width: 32%;
+  width: 49%;
   margin-right: 1%;
 }

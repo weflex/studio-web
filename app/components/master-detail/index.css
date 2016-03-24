@@ -130,13 +130,14 @@
   background-color: #F7F7F7;
   height: 100%;
   overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .detail-cards-left,
 .detail-cards-right {
   display: inline-block;
   vertical-align: top;
-  height: calc(100% - 20px);
+  height: 100%;
 }
 
 .detail-cards-left {
@@ -158,10 +159,9 @@
   box-sizing: border-box;
 }
 
-.detail-card > h3 {
-  font-family: 'PingFang SC', 'Open Sans', sans-serif;
+.detail-card h3 {
   font-size: 18px;
-  font-weight: normal;
+  font-weight: 100;
   margin-bottom: 5px;
 }
 
