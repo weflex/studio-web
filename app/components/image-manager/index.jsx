@@ -54,6 +54,7 @@ class ImageManager extends React.Component {
         venueId: venue.id,
       },
     });
+    this.cells = [];
     this.setState({
       images
     });
