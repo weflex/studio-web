@@ -61,12 +61,17 @@ class ImageManager extends React.Component {
 
   async onSelectFiles(files) {
     let self = this;
-    files.forEach(async (file) => {
-      const venue = await client.user.getVenueById();
-      file.preview = [venue.id, random.strings(32)].join('-');
-      await client.resource.upload(self.state.uptoken, file).end();
-    });
-    await this.refresh();
+    const venue = await client.user.getVenueById();
+    try {
+      await Promise.all(files.map((file) => {
+        file.preview = [venue.id, random.strings(32)].join('-');
+        return client.resource.upload(self.state.uptoken, file).end();
+      }));
+      await this.refresh();
+    } catch (err) {
+      console.error(err);
+      alert(err && err.message);
+    }
   }
 
   onRefImageCell(cell) {
