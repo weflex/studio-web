@@ -4,6 +4,7 @@
   "dependencies": {
     "@weflex/gian": "1.20.7-beta.2",
     "@weflex/passport.js": "1.2.0",
+    "@weflex/random": "1.1.1",
     "babel-polyfill": "6.3.14",
     "boron": "^0.2.3",
     "boron2": "0.3.0",

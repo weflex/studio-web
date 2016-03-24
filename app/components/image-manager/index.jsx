@@ -3,6 +3,7 @@
 import React from 'react';
 import { UIButton } from 'react-ui-form';
 import ImageCell from '../image-cell';
+import random from '@weflex/random';
 import { client } from '../../api';
 import './index.css';
 
@@ -46,6 +47,18 @@ class ImageManager extends React.Component {
     });
   }
 
+  async refresh() {
+    const venue = await client.user.getVenueById();
+    const images = await client.externalResource.list({
+      where: {
+        venueId: venue.id,
+      },
+    });
+    this.setState({
+      images
+    });
+  }
+
   async onFileDone(event) {
     const content = event.target.result;
   }
@@ -53,10 +66,11 @@ class ImageManager extends React.Component {
   onSelectFiles(files) {
     let self = this;
     files.forEach(async (file) => {
-      file.preview = 'image-manager';
-      const r = await client.resource.upload(self.state.uptoken, file).end();
-      console.log(r);
+      const venue = await client.user.getVenueById();
+      file.preview = [venue.id, random.strings(32)].join('-');
+      await client.resource.upload(self.state.uptoken, file).end();
     });
+    this.refresh();
   }
 
   onRefImageCell(cell) {
