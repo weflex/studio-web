@@ -153,7 +153,8 @@ class NewClassTemplate extends React.Component {
             />
           </UIRow>
           <UIRow>
-            <TextButton text={this.state.data ? '保存修改' : '确认添加'}
+            <UIButton 
+              text={this.state.data ? '保存修改' : '确认添加'}
               onClick={this.onCreateClass.bind(this)} 
             />
           </UIRow>
