@@ -41,6 +41,7 @@ class List extends React.Component {
   get config() {
     return {
       title: 'title',
+      search: ['title', 'phone'],
       master: (user, index) => {
         const header = (
           <p title={user.nickname}>

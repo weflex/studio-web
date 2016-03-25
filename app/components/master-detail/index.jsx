@@ -100,11 +100,13 @@ class MasterDetail extends React.Component {
         masterSource: this.cachedMasterSource,
       });
     } else {
+      const config = this.props.masterConfig || {};
       this.setState({
         masterSource: this.cachedMasterSource.filter((item) => {
-          const title = (this.props.masterConfig && this.props.masterConfig.title) || 'title';
-          const keyword = item[title].toLowerCase();
-          return keyword.indexOf(text.toLowerCase()) !== -1;
+          const keywords = (config.search) || ['title'];
+          return keywords.filter((keyword) => {
+            return item[keyword].indexOf(text.toLowerCase()) !== -1;
+          }).length > 0;
         }),
       });
     }
