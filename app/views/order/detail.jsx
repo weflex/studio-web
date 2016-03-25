@@ -26,6 +26,23 @@ class Detail extends React.Component {
       });
     }
   }
+  get actions() {
+    let list = [];
+    if (this.props.data.id) {
+      list.push({
+        title: '删除订单',
+        onClick: this.onDelete.bind(this),
+        disableToggled: true,
+      });
+    }
+    return list;
+  }
+  async onDelete() {
+    if (confirm('确认删除该课程模版')) {
+      await client.order.delete(this.props.data.id);
+      await this.props.updateMaster();
+    }
+  }
   payment(payments) {
     let description = '未知方式支付';
     let preview = null;

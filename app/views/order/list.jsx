@@ -19,7 +19,8 @@ class List extends React.Component {
     return [
       {
         title: '创建订单',
-        onClick: this.onViewAddOrder.bind(this)
+        onClick: this.onViewAddOrder.bind(this),
+        disableToggled: true,
       }
     ];
   }
@@ -93,6 +94,16 @@ class List extends React.Component {
     this.refs.addOrderModal.hide();
     await this.refs.masterDetail.updateMasterSource();
   }
+  onRefDetail(instance) {
+    if (instance) {
+      if (instance.title) {
+        this.props.app.title(instance.title);
+      }
+      if (instance.actions) {
+        this.props.app.actions(instance.actions);
+      }
+    }
+  }
   render() {
     return (
       <div style={{height: '100%'}}>
@@ -100,6 +111,7 @@ class List extends React.Component {
           ref="masterDetail"
           pathname="order"
           className="order"
+          refDetail={this.onRefDetail.bind(this)}
           masterSource={this.source}
           masterConfig={this.config}
         />
