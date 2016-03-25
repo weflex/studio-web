@@ -13,18 +13,26 @@ import {
   UIButton,
   UIOptionPicker
 } from 'react-ui-form';
+import {
+  getTime,
+  getFormatTime,
+} from './util';
 import './new.css';
 
 class NewClassTemplate extends React.Component {
   constructor(props) {
     super(props);
+    const newData = Object.assign({
+      template: {},
+      templateId: props.data.template.id,
+    }, props.data, {
+      from: getFormatTime(props.data.from),
+      to: getFormatTime(props.data.to),
+    });
     this.state = {
       trainers: [],
       loading: true,
-      data: Object.assign({
-        template: {},
-        templateId: props.data.template.id,
-      }, props.data),
+      data: newData,
       templates: [],
     };
     this.isModalShow = true;
@@ -63,7 +71,18 @@ class NewClassTemplate extends React.Component {
   }
 
   onCreateClass() {
-    this.props.onCreateClass(this.state.data);
+    const newData = Object.assign({}, this.state.data, {
+      from: getTime(this.state.data.from),
+      to: getTime(this.state.data.to),
+    });
+    const getMinutes = (time) => {
+      return time.hour * 60 + time.minute;
+    };
+    if (getMinutes(newData.to) - getMinutes(newData.from) < 15) {
+      alert('每节课程时长必须大于15分钟');
+    } else {
+      this.props.onCreateClass(newData);
+    }
   }
 
   get title() {
@@ -72,10 +91,6 @@ class NewClassTemplate extends React.Component {
     } else {
       return '创建新课程';
     }
-  }
-
-  formatTime(time) {
-    return time.hour + ':' + time.minute;
   }
 
   formatDate(date) {
@@ -143,13 +158,13 @@ class NewClassTemplate extends React.Component {
               flex={0.3}
               bindStateCtx={this}
               bindStateName="data.from"
-              value={this.formatTime(this.state.data.from)}
+              value={this.state.data.from}
             />
             <UITimeInput
               flex={0.3}
               bindStateCtx={this}
               bindStateName="data.to"
-              value={this.formatTime(this.state.data.to)}
+              value={this.state.data.to}
             />
           </UIRow>
           <UIRow>

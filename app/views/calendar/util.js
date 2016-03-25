@@ -70,6 +70,14 @@ function getFormatTime(time) {
   return hour + ':' + minute;
 }
 
+function getTime(time) {
+  let obj = time.split(':');
+  return {
+    hour: parseInt(obj[0]),
+    minute: parseInt(obj[1]),
+  };
+}
+
 function getWeek(date, format) {
   let weekDate = {};
   weekDate.begin = getWeekBegin(date, format);
@@ -201,6 +209,7 @@ function getDateBySplit(newTime, date) {
 }
 
 export {
+  getTime,
   getWeek,
   getRange,
   getWeekEnd,
