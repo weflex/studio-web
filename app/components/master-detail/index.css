@@ -31,7 +31,6 @@
 .master-detail .master > .master-sort > select {
   width: 100%;
   font-size: 12px;
-  font-family: 'PingFang SC', 'Open Sans', sans-serif;
   background-color: transparent;
   border: 0;
   outline: none;
@@ -63,7 +62,6 @@
 
 .master-detail .master-item {
   cursor: pointer;
-  padding: 10px;
   border-bottom: 1px solid transparent;
   box-sizing: border-box;
   transition: all .2s ease-in-out;
@@ -72,9 +70,13 @@
 .master-detail .master-item,
 .master-detail .master-item > a {
   color: #696969;
+  display: block;
   text-decoration: none;
   font-size: 14px;
-  font-family: 'Ping Fang SC', 'Open Sans', sans-serif;
+}
+
+.master-detail .master-item > a {
+  padding: 10px;
 }
 
 .master-detail .master-item:hover {
@@ -169,7 +171,6 @@
   margin-bottom: 10px;
   font-size: 14px;
   font-weight: normal;
-  font-family: 'PingFang SC', 'Open Sans', sans-serif;
 }
 
 .detail-card-row a {
