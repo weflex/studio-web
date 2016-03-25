@@ -116,20 +116,6 @@
 }
 .navbar .useravatar {
   text-align: center;
-  margin: 10px;
-}
-.navbar .useravatar img {
-  display: inline-block;
-  height: 60px;
-  width: 60px;
-  border-radius: 30px;
-  cursor: pointer;
-  background-color: #242f40;
-  margin: -5px;
-  transition: opacity .2s ease-in-out;
-}
-.navbar .useravatar img:hover {
-  opacity: 0.7;
 }
 .navbar .username a {
   display: inline-block;

@@ -17,6 +17,10 @@ class UIAvatarImage extends React.Component {
      */
     src: React.PropTypes.object,
     /**
+     * @property {Number} size - the size
+     */
+    size: React.PropTypes.number,
+    /**
      * @property {String} className - the class name of the <img>
      */
     className: React.PropTypes.string,
@@ -25,14 +29,8 @@ class UIAvatarImage extends React.Component {
     src: {
       uri: DEFAULT_AVATAR,
     },
+    size: 40,
     className: '',
-  };
-  static styles = {
-    img: {
-      width: 40,
-      height: 40,
-      borderRadius: 20,
-    },
   };
   render() {
     let uri;
@@ -41,10 +39,15 @@ class UIAvatarImage extends React.Component {
     } else {
       uri = this.props.src.uri;
     }
+    const imgStyl = {
+      width: this.props.size,
+      height: this.props.size,
+      borderRadius: this.props.size / 2,
+    };
     return (
       <img 
         className={this.props.className}
-        style={UIAvatarImage.styles.img} 
+        style={imgStyl} 
         src={uri} 
       />
     );

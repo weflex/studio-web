@@ -175,12 +175,12 @@ class NavBar extends React.Component {
               })}
             </ul>
           </div>
-          <div className="useravatar">
-            <UIAvatarImage src={this.state.user.avatar} />
-          </div>
+          <Link className="useravatar" href="/settings/profile">
+            <UIAvatarImage src={this.state.user.avatar} size={64} />
+          </Link>
           <div className="username">
             <span>
-              <a href="#">{this.state.user.nickname}</a>
+              <Link href="/settings/profile">{this.state.user.nickname}</Link>
             </span>
             <a href="/login">登出</a>
           </div>
