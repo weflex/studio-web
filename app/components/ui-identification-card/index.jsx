@@ -77,6 +77,9 @@ class UIIdentificationCard extends React.Component {
       transition: 'all .2s ease-in-out',
       textAlign: 'left',
     },
+    path: {
+      transition: 'all .2s ease-in-out',
+    },
   };
 
   /**
@@ -184,6 +187,7 @@ class UIIdentificationCard extends React.Component {
                     height={this.height}
                   />
                   <path d={this.path} 
+                    style={UIIdentificationCard.styles.path}
                     fillOpacity={this.state.fillOpacity} 
                     fill={this.props.fillColor}
                   />
