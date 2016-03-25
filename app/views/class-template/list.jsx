@@ -6,7 +6,6 @@ import Detail from './detail';
 import { DropModal } from 'boron';
 import { client } from '../../api';
 import moment from 'moment';
-
 moment.locale('zh-cn');
 
 class List extends React.Component {

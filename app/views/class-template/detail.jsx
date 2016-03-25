@@ -190,6 +190,14 @@ class Detail extends React.Component {
             ]}
           />
         </UIRow>
+        <UIRow name="课位" required={true}>
+          <UITextInput
+            bindStateCtx={this}
+            bindStateName="data.spot"
+            bindStateType={Number}
+            value={this.state.data.spot}
+          />
+        </UIRow>
         <UIRow name="选择教练" required={true}>
           <UIOptionPicker
             bindStateCtx={this}
