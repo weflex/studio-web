@@ -205,8 +205,16 @@ class Calendar extends React.Component {
   }
 
   setBaseline(e) {
-    let baselineTop = e.clientY - this.table.top + this.state.scrollTop;
-    let baselineLeft = e.clientX;
+    let clientX, clientY;
+    if (e instanceof TouchEvent) {
+      clientX = e.changedTouches[0].clientX;
+      clientY = e.changedTouches[0].clientY;
+    } else {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    }
+    let baselineTop = clientY - this.table.top + this.state.scrollTop;
+    let baselineLeft = clientX;
     this.setState({ baselineTop });
 
     this.rowList.forEach((row, index) => {
@@ -234,12 +242,22 @@ class Calendar extends React.Component {
       }
     });
 
+    let currColIndex = -1;
     this.colList.forEach((col, index) => {
-      if (col.left < baselineLeft && baselineLeft < col.right) {
-        this.setState({
-          atCol: index,
-        });
+      if (baselineLeft > col.left && baselineLeft < col.right) {
+        currColIndex = index;
       }
+    });
+    // Correct the value if it's out of the colList range
+    if (currColIndex === -1) {
+      if (baselineLeft > this.colList[this.colList.length - 1].right) {
+        currColIndex = this.colList.length - 1;
+      } else if (baselineLeft < this.colList[0].left) {
+        currColIndex = 1;
+      }
+    }
+    this.setState({
+      atCol: currColIndex
     });
   }
 

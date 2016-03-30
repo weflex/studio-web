@@ -151,7 +151,13 @@ class ClassCard extends React.Component {
       }
       let timeToFrom;
       if (this.props.isEmptyFrom) {
-        const relativeY = event.srcEvent.layerY;
+        let relativeY;
+        if (event.srcEvent instanceof TouchEvent) {
+          const cardTop = this.refs.card.getBoundingClientRect().top;
+          relativeY = event.srcEvent.changedTouches[0].clientY - cardTop;
+        } else {
+          relativeY = event.srcEvent.layerY;
+        }
         // FIXME(Yorkie): the `timeToFrom` should be converted to be the value relative
         // to calendar's cellHeight
         timeToFrom = 60 * relativeY / calendar.props.cellHeight;
