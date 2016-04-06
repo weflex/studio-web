@@ -5,8 +5,8 @@ import React from 'react';
 import MasterDetail from '../../components/master-detail';
 import Detail from './detail';
 import AddOrderView from './add';
+import UIFramework from 'weflex-ui';
 import { UIProfileListItem } from '../../components/ui-profile';
-import { DropModal } from 'boron2';
 import { client } from '../../api';
 import './list.css';
 moment.locale('zh-cn');
@@ -54,6 +54,12 @@ class List extends React.Component {
       addButtonText: '添加新订单',
     };
   }
+  constructor(props) {
+    super(props);
+    this.state = {
+      modalVisibled: false,
+    };
+  }
   async source() {
     const venue = await client.user.getVenueById();
     const templates = await client.classTemplate.list({
@@ -75,6 +81,9 @@ class List extends React.Component {
       include: [
         'history',
         {
+          'payments': ['membership']
+        },
+        {
           'user': ['avatar']
         },
         {
@@ -88,10 +97,14 @@ class List extends React.Component {
     });
   }
   onViewAddOrder() {
-    this.refs.addOrderModal.show();
+    this.setState({
+      modalVisibled: true,
+    });
   }
   async onCompleteAddOrder() {
-    this.refs.addOrderModal.hide();
+    this.setState({
+      modalVisibled: false,
+    });
     await this.refs.masterDetail.updateMasterSource();
   }
   onRefDetail(instance) {
@@ -115,11 +128,15 @@ class List extends React.Component {
           masterSource={this.source}
           masterConfig={this.config}
         />
-        <DropModal ref="addOrderModal">
+        <UIFramework.Modal
+          title="添加新订单"
+          footer=""
+          visible={this.state.modalVisibled}
+          onCancel={() => this.setState({modalVisibled: false})}>
           <AddOrderView 
             onComplete={this.onCompleteAddOrder.bind(this)}
           />
-        </DropModal>
+        </UIFramework.Modal>
       </div>
     );
   }

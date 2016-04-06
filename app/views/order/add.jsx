@@ -3,15 +3,8 @@
 import _ from 'lodash';
 import moment from 'moment';
 import React from 'react';
-import {
-  UIForm,
-  UIRow,
-  UITextInput,
-  UIButton,
-  UIOptionPicker,
-} from 'react-ui-form';
+import UIFramework from 'weflex-ui';
 import { client } from '../../api';
-import './add.css';
 
 class AddOrderView extends React.Component {
   constructor(props) {
@@ -93,16 +86,11 @@ class AddOrderView extends React.Component {
     });
     try {
       // create an order
-      await client.order.upsert({
+      await client.middleware('/transaction/add-order', {
         classId: this.state.classId,
         userId: this.state.user.id,
-        payments: [
-          {
-            fee: template.price,
-            membership,
-          }
-        ]
-      });
+        membershipId: membership.id,
+      }, 'post');
       if (typeof this.props.onComplete === 'function') {
         this.props.onComplete();
       }
@@ -112,22 +100,31 @@ class AddOrderView extends React.Component {
   }
   renderUserSearch() {
     const view = [
-      <UITextInput
+      <UIFramework.TextInput
         key="input"
+        flex={1}
         bindStateCtx={this}
         bindStateName="phone"
         bindStateValue={this.state.phone}
         onChange={this.onPhoneInputChange.bind(this)}
       />,
+      <UIFramework.Divider key="divider" />,
     ];
     if (!this.state.isUserNotFound && this.state.user) {
       const user = this.state.user;
-      const avatar = user.avatar && user.avatar.uri;
       view.push(
-        <div key="user" className="order-add-find-user">
-          <img src={avatar} />
-          <span>{user.nickname}</span>
-        </div>
+        <UIFramework.Row key="user">
+          <UIFramework.Cell flex={0.1}>
+            <UIFramework.Image
+              circle={true}
+              src={user.avatar} 
+              size={20}
+              style={{marginRight: 10}} />
+          </UIFramework.Cell>
+          <UIFramework.Cell flex={0.8}>
+            <UIFramework.Text text={user.nickname} />
+          </UIFramework.Cell>
+        </UIFramework.Row>
       );
     } else if (this.state.isUserNotFound) {
       view.push(
@@ -161,7 +158,7 @@ class AddOrderView extends React.Component {
       });
     }
     return [
-      <UIOptionPicker 
+      <UIFramework.Select 
         flex={0.6}
         key="template"
         bindStateCtx={this}
@@ -169,7 +166,7 @@ class AddOrderView extends React.Component {
         options={templateOptions}
         onChange={this.onTemplateChange.bind(this)}
       />,
-      <UIOptionPicker
+      <UIFramework.Select
         flex={0.4}
         key="class"
         bindStateCtx={this}
@@ -189,7 +186,8 @@ class AddOrderView extends React.Component {
       });
     }
     return (
-      <UIOptionPicker
+      <UIFramework.Select
+        flex={1}
         bindStateCtx={this}
         bindStateName="membershipId"
         options={membershipOptions}
@@ -198,20 +196,20 @@ class AddOrderView extends React.Component {
   }
   render() {
     return (
-      <UIForm className="order-add">
-        <UIRow name="手机号码" hint="预定课程用户的手机号码">
+      <UIFramework className="order-add">
+        <UIFramework.Row name="手机号码" hint="预定课程用户的手机号码">
           {this.renderUserSearch()}
-        </UIRow>
-        <UIRow name="课程" hint="预约课程的名称，日期和时间">
+        </UIFramework.Row>
+        <UIFramework.Row name="课程" hint="预约课程的名称，日期和时间">
           {this.renderClassPicker()}
-        </UIRow>
-        <UIRow name="会卡" hint="用户需要会卡才能创建订单">
+        </UIFramework.Row>
+        <UIFramework.Row name="会卡" hint="用户需要会卡才能创建订单">
           {this.renderMemberships()}
-        </UIRow>
-        <UIRow>
-          <UIButton text="创建订单" onClick={this.onSubmit.bind(this)} />
-        </UIRow>
-      </UIForm>
+        </UIFramework.Row>
+        <UIFramework.Row>
+          <UIFramework.Button text="创建订单" onClick={this.onSubmit.bind(this)} />
+        </UIFramework.Row>
+      </UIFramework>
     );
   }
 }

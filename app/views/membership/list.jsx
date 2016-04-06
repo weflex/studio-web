@@ -5,10 +5,34 @@ import moment from 'moment';
 import MasterDetail from '../../components/master-detail';
 import Detail from './detail';
 import AddMembershipView from './add';
+import UIFramework from 'weflex-ui';
 import { UIProfileListItem } from '../../components/ui-profile';
-import { DropModal } from 'boron';
 import { client } from '../../api';
 moment.locale('zh-cn');
+
+function groupUserByPackage(packages) {
+  const users = [];
+  const usersIndex = {};
+  for (let _package of packages) {
+    for (let membership of _package.memberships) {
+      let {userId} = membership;
+      let currIndex;
+      if (usersIndex[userId] === undefined) {
+        users.push(Object.assign({
+          memberships: [],
+          title: membership.user.nickname,
+        }, membership.user));
+        usersIndex[userId] = users.length - 1;
+        currIndex = usersIndex[userId];
+      }
+      if (currIndex === undefined) {
+        currIndex = usersIndex[userId];
+      }
+      users[currIndex].memberships.push(membership);
+    }
+  }
+  return users;
+}
 
 class List extends React.Component {
   static styles = {
@@ -27,6 +51,12 @@ class List extends React.Component {
       },
     },
   };
+  constructor(props) {
+    super(props);
+    this.state = {
+      modalVisibled: false,
+    };
+  }
   get title() {
     return '会员管理';
   }
@@ -34,7 +64,7 @@ class List extends React.Component {
     return [
       {
         title: '邀请新会员',
-        onClick: this.onViewAddMembership.bind(this),
+        onClick: this.viewModal.bind(this),
       }
     ];
   }
@@ -67,7 +97,7 @@ class List extends React.Component {
       sortKeys: [
         {name: '姓名', key: 'nickname'},
       ],
-      onClickAdd: this.onViewAddMembership.bind(this),
+      onClickAdd: this.viewModal.bind(this),
       addButtonText: '邀请新会员',
     };
   }
@@ -88,34 +118,22 @@ class List extends React.Component {
         },
       ],
     });
-    const users = [];
-    const usersIndex = {};
-    for (let _package of packages) {
-      for (let membership of _package.memberships) {
-        let {userId} = membership;
-        let currIndex;
-        if (usersIndex[userId] === undefined) {
-          users.push(Object.assign({
-            memberships: [],
-            title: membership.user.nickname,
-          }, membership.user));
-          usersIndex[userId] = users.length - 1;
-          currIndex = usersIndex[userId];
-        }
-        if (currIndex === undefined) {
-          currIndex = usersIndex[userId];
-        }
-        users[currIndex].memberships.push(membership);
-      }
-    }
+    const users = groupUserByPackage(packages);
     this.props.app.title(`${this.title}（${users.length}）`);
     return users;
   }
-  onViewAddMembership() {
-    this.refs.addMembershipModal.show();
+  viewModal() {
+    this.setState({
+      modalVisibled: true,
+    });
+  }
+  hideModal() {
+    this.setState({
+      modalVisibled: false,
+    });
   }
   async onCompleteAddMembership() {
-    this.refs.addMembershipModal.hide();
+    this.hideModal()
     await this.refs.masterDetail.updateMasterSource();
   }
   render() {
@@ -128,11 +146,15 @@ class List extends React.Component {
           masterSource={this.source.bind(this)}
           masterConfig={this.config}
         />
-        <DropModal ref="addMembershipModal">
+        <UIFramework.Modal 
+          visible={this.state.modalVisibled}
+          onCancel={this.hideModal.bind(this)}
+          title="邀请新会员"
+          footer="">
           <AddMembershipView 
             onComplete={this.onCompleteAddMembership.bind(this)}
           />
-        </DropModal>
+        </UIFramework.Modal>
       </div>
     );
   }

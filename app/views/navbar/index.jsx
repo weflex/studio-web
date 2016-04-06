@@ -4,7 +4,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import React from 'react';
 import { Link } from 'react-router-component';
-import { UIAvatarImage } from '../../components/ui-profile';
+import UIFramework from 'weflex-ui';
 import { client } from '../../api';
 import './index.css';
 
@@ -176,7 +176,7 @@ class NavBar extends React.Component {
             </ul>
           </div>
           <Link className="useravatar" href="/settings/profile">
-            <UIAvatarImage src={this.state.user.avatar} size={48} />
+            <UIFramework.Image circle={true} src={this.state.user.avatar} size={50} />
           </Link>
           <div className="username">
             <span>

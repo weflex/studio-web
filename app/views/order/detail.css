@@ -4,17 +4,6 @@
   border-bottom: 1px solid #E8E8E8;
 }
 
-.detail .order-user-avatar {
-  height: 80px;
-  width: 80px;
-  margin: 10px 0;
-}
-
-.detail .order-user-avatar > img {
-  height: 100%;
-  width: 100%;
-}
-
 .detail .order-payment fieldset {
   border: 0;
   border-top: 1px solid #E8E8E8;

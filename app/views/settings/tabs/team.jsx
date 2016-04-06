@@ -2,23 +2,150 @@
 
 import _ from 'lodash';
 import React from 'react';
-import { DropModal } from 'boron2';
-import { UIButton } from 'react-ui-form';
-import { UIAvatarImage } from '../../../components/ui-profile';
-import { client } from '../../../api';
+import UIFramework from 'weflex-ui';
 import InviteTrainerView from '../components/invite-trainer';
 import EditTrainerView from '../components/edit-trainer';
+import { client } from '../../../api';
 
 let fullname = obj => obj.first + ' ' + obj.last;
 
-class Venue extends React.Component {
+/**
+ * @class TrainesrManager
+ */
+class TrainersManager extends React.Component {
+  static propTypes = {
+    /**
+     * @property {Array} trainers - the trainers
+     */
+    trainers: React.PropTypes.array,
+    /**
+     * @property {Object} context - the context object
+     */
+    context: React.PropTypes.any,
+  };
+  static defaultProps = {
+    trainers: [],
+  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      inviteModalVisibled: false,
+    };
+  }
+  onClickInviteModal() {
+    this.setState({
+      inviteModalVisibled: true,
+    });
+  }
+  onCloseInviteModal() {
+    this.setState({
+      inviteModalVisibled: false,
+    });
+  }
+  onInviteDone() {
+    this.props.context.refresh();
+  }
+  render() {
+    return (
+      <div>
+        <header>
+          <h3>教练列表</h3>
+          <UIFramework.Button 
+            text="邀请新教练" 
+            align="right"
+            onClick={this.onClickInviteModal.bind(this)}
+          />
+          <UIFramework.Modal
+            title="邀请新教练"
+            footer=""
+            onCancel={this.onCloseInviteModal.bind(this)}
+            visible={this.state.inviteModalVisibled}>
+            <InviteTrainerView
+              onComplete={this.onInviteDone.bind(this)}
+            />
+          </UIFramework.Modal>
+        </header>
+        <ul className="settings-team-item settings-team-trainers">
+          {this.props.trainers.map((trainer, index) => {
+            return (
+              <TrainerBox
+                key={index} 
+                data={trainer} 
+                context={this.props.context} 
+              />
+            );
+          })}
+        </ul>
+      </div>
+    );
+  }
+}
+
+/**
+ * @class TrainerBox
+ */
+class TrainerBox extends React.Component {
+  static propTypes = {
+    /**
+     * @property {Object} data - the trainer data
+     */
+    data: React.PropTypes.object,
+    /**
+     * @property {Object} context - the context object
+     */
+    context: React.PropTypes.any,
+  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      modalVisibled: false,
+    };
+  }
+  onClickEditModal() {
+    this.setState({
+      modalVisibled: true,
+    });
+  }
+  onCloseEditModal() {
+    this.setState({
+      modalVisibled: false,
+    });
+  }
+  onEditDone() {
+    this.props.context.refresh();
+  }
+  render() {
+    let trainer = this.props.data;
+    return (
+      <li title={trainer.description}>
+        <UIFramework.Image src={trainer.user.avatar} style={{}} size={30} />
+        <span className="username">{fullname(trainer.fullname)}</span>
+        <span className="description">{trainer.venue ? trainer.venue.name : '所有门店'}</span>
+        <span className="button" onClick={this.onClickEditModal.bind(this)}>编辑教练信息</span>
+        <UIFramework.Modal
+          footer=""
+          visible={this.state.modalVisibled}
+          onCancel={this.onCloseEditModal.bind(this)}>
+          <EditTrainerView
+            data={trainer}
+            onComplete={this.onEditDone.bind(this)}
+          />
+        </UIFramework.Modal>
+      </li>
+    );
+  }
+}
+
+class Team extends React.Component {
   constructor(props) {
     super(props);
     this.editTrainerModals = [];
     this.state = {
-      orgmembers    : [],
-      venues        : [],
-      trainers      : [],
+      inviteTrainerVisible: false,
+      editTrainerVisible: false,
+      orgmembers: [],
+      venues: [],
+      trainers: [],
     };
   }
   async componentWillMount() {
@@ -85,27 +212,17 @@ class Venue extends React.Component {
     if (orgmembers.length === 0) {
       orgmembers.push(venues[0].owner);
     }
-
     this.setState({
       orgmembers,
       venues,
       trainers,
     });
   }
-  onInviteTrainer() {
-    this.refs.inviteTrainerModal.show();
-  }
   onTrainerInvited() {
-    this.refs.inviteTrainerModal.hide();
+    this.setState({
+      inviteTrainerVisible: false,
+    });
     this.refresh();
-  }
-  onRefEditTrainerModal(index, modal) {
-    if (modal) {
-      this.editTrainerModals[index] = modal;
-    }
-  }
-  onEditTrainer(index, event) {
-    this.editTrainerModals[index].show();
   }
   onTrainerEdited(index, event) {
     this.editTrainerModals[index].hide();
@@ -126,7 +243,7 @@ class Venue extends React.Component {
           {(this.state.orgmembers).map((member, index) => {
             return (
               <li key={index}>
-                <UIAvatarImage src={member.user.avatar} />
+                <UIFramework.Image src={member.user.avatar} style={{}} size={30} />
                 <span className="username">{fullname(member.fullname)}</span>
               </li>
             );
@@ -134,7 +251,12 @@ class Venue extends React.Component {
         </ul>
         <header>
           <h3>门店店长</h3>
-          <UIButton text="创建新门店" disabled={true} title="敬请期待" />
+          <UIFramework.Button 
+            text="创建新门店" 
+            disabled={true} 
+            align="right" 
+            title="敬请期待" 
+          />
         </header>
         <ul className="settings-team-item settings-team-venues">
           {this.state.venues.map((venue, index) => {
@@ -146,7 +268,7 @@ class Venue extends React.Component {
             }
             return (
               <li key={index}>
-                <UIAvatarImage src={venueOwner.user.avatar} />
+                <UIFramework.Image src={venueOwner.user.avatar} style={{}} size={30} />
                 <span className="username">
                   {fullname(venueOwner.fullname)}
                 </span>
@@ -155,38 +277,10 @@ class Venue extends React.Component {
             );
           })}
         </ul>
-        <header>
-          <h3>教练列表</h3>
-          <UIButton text="邀请新教练" onClick={this.onInviteTrainer.bind(this)} />
-          <DropModal ref="inviteTrainerModal">
-            <InviteTrainerView
-              onComplete={this.onTrainerInvited.bind(this)}
-            />
-          </DropModal>
-        </header>
-        <ul className="settings-team-item settings-team-trainers">
-          {this.state.trainers.map((trainer, index) => {
-            return (
-              <li key={index}>
-                <UIAvatarImage src={trainer.user.avatar} />
-                <span className="username">{fullname(trainer.fullname)}</span>
-                <span className="description">{trainer.description}</span>
-                <span className="venue" onClick={this.onEditTrainer.bind(this, index)}>
-                  {trainer.venue ? trainer.venue.name : '所有门店'}
-                </span>
-                <DropModal ref={this.onRefEditTrainerModal.bind(this, index)}>
-                  <EditTrainerView
-                    data={trainer}
-                    onComplete={this.onTrainerEdited.bind(this, index)}
-                  />
-                </DropModal>
-              </li>
-            );
-          })}
-        </ul>
+        <TrainersManager trainers={this.state.trainers} context={this} />
       </div>
     );
   }
 }
 
-module.exports = Venue;
+module.exports = Team;

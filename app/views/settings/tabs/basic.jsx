@@ -1,16 +1,7 @@
 "use strict"
 
 import React from 'react';
-import {
-  UIForm,
-  UIRow,
-  UITextInput,
-  UIFileInput,
-  UIButton,
-  UILabel,
-  UIText,
-  UIOptionPicker
-} from 'react-ui-form';
+import UIFramework from 'weflex-ui';
 import { client } from '../../../api';
 
 class Venue extends React.Component {
@@ -56,46 +47,26 @@ class Venue extends React.Component {
     owner.display = owner.fullname.first + ' ' + owner.fullname.last;
     return owner;
   }
-  checkBanner(file) {
-    if (file.type !== 'image/png' &&
-      file.type !== 'image/jpg' &&
-      file.type !== 'image/jpeg' &&
-      file.type !== 'image/gif') {
-      let err = new TypeError('image required');
-      err.displayMessage = '必须选择图片';
-      return err;
-    }
-    if (file.size > 2*1024*1024) {
-      let err = new Error('image size should less than 2M');
-      err.displayMessage = '图片大小必须小于2M'
-    }
-    return null;
-  }
   render() {
     return (
       <div className="settings-detail settings-basic">
-        <UIForm>
-          <UIRow name="组织名称" required={true}>
-            <UITextInput 
+        <UIFramework>
+          <UIFramework.Row name="组织名称">
+            <UIFramework.TextInput 
+              flex={1}
               bindStateCtx={this}
               bindStateName="org.name"
               value={this.state.org.name} 
             />
-          </UIRow>
-          <UIRow name="首栏图片" required={true}>
-            <UIFileInput
-              bindStateCtx={this}
-              bindStateName="org.banner"
-              checkFile={this.checkBanner.bind(this)}
-            />
-          </UIRow>
-          <UIRow name="经理" required={true}>
-            <UITextInput
+          </UIFramework.Row>
+          <UIFramework.Row name="经理">
+            <UIFramework.TextInput
+              flex={1}
               value={this.state.owner.display}
               disabled={true}
             />
-          </UIRow>
-        </UIForm>
+          </UIFramework.Row>
+        </UIFramework>
       </div>
     );
   }

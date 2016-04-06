@@ -4,7 +4,7 @@ import React from 'react';
 import { UIIdentificationCard } from '../ui-identification-card';
 import './index.css';
 
-class UIMembershipCard extends React.Component {
+export default class UIMembershipCard extends React.Component {
   static styles = {
     container: {
       position: 'absolute',
@@ -95,7 +95,3 @@ class UIMembershipCard extends React.Component {
     );
   }
 }
-
-module.exports = {
-  UIMembershipCard,
-};

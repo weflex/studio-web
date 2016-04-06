@@ -3,7 +3,7 @@
 import _ from 'lodash';
 import React from 'react';
 import moment from 'moment';
-import { DropModal } from 'boron2';
+import UIFramework from 'weflex-ui';
 import { NewClassTemplate } from './new';
 import { getFormatTime } from './util'
 moment.locale('zh-cn');
@@ -113,6 +113,9 @@ class OrderInfo extends React.Component {
 class ClassOverview extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      modalVisibled: false,
+    };
   }
   showClassDetail() {
     this.refs.classDetailModal.show();
@@ -129,15 +132,19 @@ class ClassOverview extends React.Component {
           <span>{duration}</span>
         </div>
         <div className="trainer">{trainerName}</div>
-        <div className="btn-modify-class" 
-          onClick={this.showClassDetail.bind(this)}>修改课程</div>
+        <div className="btn-modify-class"
+          onClick={() => this.setState({modalVisibled: true})}>修改课程</div>
         <OrderInfo orders={orders} />
-        <DropModal ref="classDetailModal">
+        <UIFramework.Modal
+          visible={this.state.modalVisibled}
+          title="修改课程"
+          footer=""
+          onCancel={() => this.setState({modalVisibled: false})}>
           <NewClassTemplate 
             data={this.props.data} 
             onCreateClass={this.props.onCreateClass}
           />
-        </DropModal>
+        </UIFramework.Modal>
       </div>
     );
   }

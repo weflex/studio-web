@@ -2,17 +2,10 @@
 
 import React from 'react';
 import _ from 'lodash';
-import { DropModal } from 'boron2';
 import { ClipLoader } from 'halogen';
 import ImageCell from '../../components/image-cell';
 import ImageManager from '../../components/image-manager';
-import {
-  UIForm,
-  UIRow,
-  UITextInput,
-  UIButton,
-  UIOptionPicker
-} from 'react-ui-form';
+import UIFramework from 'weflex-ui';
 import { client } from '../../api';
 import './detail.css';
 
@@ -31,7 +24,8 @@ class Detail extends React.Component {
         coverId: null,
         photoIds: [],
       },
-      imageManagerMode: 'multiple'
+      imageManagerMode: 'multiple',
+      imageManagerVisibled: false,
     };
   }
   
@@ -101,43 +95,58 @@ class Detail extends React.Component {
     await client.classTemplate.upsert(Object.assign({}, this.state.data));
     setTimeout(() => {
       this.props.app.router.navigate('/class/template/' + this.state.data.id);
+      UIFramework.Message.success('保存模版成功');
     }, 0);
   }
 
-  async onDelete() {
-    if (confirm('确认删除该课程模版')) {
-      await client.classTemplate.delete(this.state.data.id);
-      await this.props.updateMaster();
-    }
+  onDelete() {
+    UIFramework.Modal.confirm({
+      title: '确认删除该课程模版？',
+      content: '删除该课程模版将会使相关联的课程无法使用，即便如此，你也确认删除吗？',
+      onOk: async () => {
+        await client.classTemplate.delete(self.state.data.id);
+        await self.props.updateMaster();
+      }
+    });
   }
-  
+
   makeOnOpenImageManager(title, mode, onFinish, data) {
     return () => {
       this.setState({
+        imageManagerVisibled: true,
         imageManagerTitle: title,
         imageManagerMode: mode,
         onImageManagerFinish: onFinish.bind(this),
         imageManagerData: data,
       });
-      this.refs.imageManagerModal.show();
     };
   }
 
+  hideImageManager() {
+    this.setState({
+      imageManagerVisibled: false,
+    });
+  }
+
   onCoverFinish(resources) {
-    this.refs.imageManagerModal.hide();
     const newData = this.state.data;
     const res = resources[0];
     this.state.data.coverId = res.id;
     this.state.data.cover = res;
-    this.setState({ data: newData });
+    this.setState({ 
+      data: newData,
+      imageManagerVisibled: false,
+    });
   }
 
   onPhotosFinish(resources) {
-    this.refs.imageManagerModal.hide();
     const newData = this.state.data;
     this.state.data.photoIds = _.map(resources, 'id');
     this.state.data.photos = resources;
-    this.setState({ data: newData });
+    this.setState({ 
+      data: newData,
+      imageManagerVisibled: false,
+    });
   }
   
   form() {
@@ -150,71 +159,75 @@ class Detail extends React.Component {
       }
     );
     return (
-      <UIForm className="class-template-new-form">
-        <UIRow name="课程名" required={true}>
-          <UITextInput
+      <UIFramework className="class-template-new-form">
+        <UIFramework.Row name="课程名" required={true}>
+          <UIFramework.TextInput
+            flex={1}
             bindStateCtx={this} 
             bindStateName="data.name" 
             value={this.state.data.name}
           />
-        </UIRow>
-        <UIRow name="价格" required={true}>
-          <UITextInput 
+        </UIFramework.Row>
+        <UIFramework.Row name="价格" required={true}>
+          <UIFramework.TextInput 
             flex={0.8}
             bindStateCtx={this} 
             bindStateName="data.price"
             bindStateType={Number}
             value={this.state.data.price}
           />
-          <UIOptionPicker 
+          <UIFramework.Select 
             flex={0.2}
             disabled={true}
             options={[
               {text: '元'},
             ]}
           />
-        </UIRow>
-        <UIRow name="课程时长" required={true}>
-          <UITextInput
+        </UIFramework.Row>
+        <UIFramework.Row name="课程时长" required={true}>
+          <UIFramework.TextInput
             flex={0.8}
             bindStateCtx={this}
             bindStateName="data.duration"
             bindStateType={Number}
             value={this.state.data.duration}
           />
-          <UIOptionPicker 
+          <UIFramework.Select 
             flex={0.2}
             disabled={true}
             options={[
               {text: '分钟'},
             ]}
           />
-        </UIRow>
-        <UIRow name="课位" required={true}>
-          <UITextInput
+        </UIFramework.Row>
+        <UIFramework.Row name="课位" required={true}>
+          <UIFramework.TextInput
+            flex={1}
             bindStateCtx={this}
             bindStateName="data.spot"
             bindStateType={Number}
             value={this.state.data.spot}
           />
-        </UIRow>
-        <UIRow name="选择教练" required={true}>
-          <UIOptionPicker
+        </UIFramework.Row>
+        <UIFramework.Row name="选择教练" required={true}>
+          <UIFramework.Select
+            flex={1}
             bindStateCtx={this}
             bindStateName="data.trainerId"
             value={this.state.data.trainerId}
             options={trainerOptions}
           />
-        </UIRow>
-        <UIRow name="课程描述" required={true}>
-          <UITextInput
+        </UIFramework.Row>
+        <UIFramework.Row name="课程描述" required={true}>
+          <UIFramework.TextInput
+            flex={1}
             multiline={true}
             bindStateCtx={this}
             bindStateName="data.description"
             value={this.state.data.description}
           />
-        </UIRow>
-      </UIForm>
+        </UIFramework.Row>
+      </UIFramework>
     );
   }
 
@@ -293,14 +306,17 @@ class Detail extends React.Component {
           <div className="detail-card">
             {this.photos()}
           </div>
-          <DropModal ref="imageManagerModal">
+          <UIFramework.Modal
+            footer=""
+            title={this.state.imageManagerTitle}
+            visible={this.state.imageManagerVisibled}
+            onCancel={this.hideImageManager.bind(this)}>
             <ImageManager 
-              title={this.state.imageManagerTitle} 
               mode={this.state.imageManagerMode}
               onFinish={this.state.onImageManagerFinish}
               data={this.state.imageManagerData}
             />
-          </DropModal>
+          </UIFramework.Modal>
         </div>
       </div>
     );

@@ -5,7 +5,7 @@ import { ClipLoader } from 'halogen';
 import { client } from '../../api';
 import './index.css';
 
-class LaunchScreen extends React.Component {
+export default class LaunchScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -93,5 +93,3 @@ class LaunchScreen extends React.Component {
     );
   }
 }
-
-exports.LaunchScreen = LaunchScreen;

@@ -7,10 +7,9 @@ import {
   Location, 
   Locations 
 } from 'react-router-component';
-import { LaunchScreen } from './views/launcher';
+import LaunchScreen from './views/launcher';
 import NavBar from './views/navbar';
 import ToolBar from './components/toolbar';
-
 import './layout/root.css';
 import './layout/keyframes.css';
 

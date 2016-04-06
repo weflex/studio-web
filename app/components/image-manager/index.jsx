@@ -1,7 +1,7 @@
 "use strict";
 
 import React from 'react';
-import { UIButton } from 'react-ui-form';
+import UIFramework from 'weflex-ui';
 import ImageCell from '../image-cell';
 import random from '@weflex/random';
 import { client } from '../../api';
@@ -109,7 +109,6 @@ class ImageManager extends React.Component {
   render() {
     return (
       <div className="images-manager-container">
-        <h3>{this.props.title}</h3>
         <section className="images-manager-body">
           {this.state.images.map((src, index) => {
             let data = this.props.data || [];
@@ -138,7 +137,7 @@ class ImageManager extends React.Component {
           />
         </section>
         <section className="images-manager-footer">
-          <UIButton text="确认选择" onClick={this.onSubmit.bind(this)} />
+          <UIFramework.Button text="确认选择" onClick={this.onSubmit.bind(this)} />
         </section>
       </div>
     );

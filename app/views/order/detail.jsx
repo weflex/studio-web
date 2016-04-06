@@ -2,9 +2,10 @@
 
 import React from 'react';
 import moment from 'moment';
+import UIFramework from 'weflex-ui';
 import { client } from '../../api';
 import { UIHistory } from '../../components/ui-history';
-import { UIMembershipCard } from '../../components/ui-membership-card';
+import UIMembershipCard from '../../components/ui-membership-card';
 import './detail.css';
 
 class Detail extends React.Component {
@@ -17,7 +18,7 @@ class Detail extends React.Component {
   async componentWillMount() {
     const order = this.props.data;
     const payment = order.payments && order.payments[0];
-    if (payment.membership && payment.membership.id) {
+    if (payment && payment.membership && payment.membership.id) {
       const membership = await client.membership.get(payment.membership.id, {
         include: ['package']
       });
@@ -38,10 +39,15 @@ class Detail extends React.Component {
     return list;
   }
   async onDelete() {
-    if (confirm('确认删除该课程模版')) {
-      await client.order.delete(this.props.data.id);
-      await this.props.updateMaster();
-    }
+    let self = this;
+    UIFramework.Modal.confirm({
+      title: '确认删除该订单?',
+      content: '确认删除该订单?',
+      onOk: async () => {
+        await client.order.delete(self.props.data.id);
+        await self.props.updateMaster();
+      }
+    });
   }
   payment(payments) {
     let description = '未知方式支付';
@@ -85,7 +91,7 @@ class Detail extends React.Component {
           </div>
         </div>
       );
-    } else if (data._raw) {
+    } else if (data && data._raw) {
       if (data._raw.method === 'wechat') {
         description = `使用微信支付：${data.fee} ${data._raw.currency}`;
       } else {
@@ -132,9 +138,7 @@ class Detail extends React.Component {
           <div className="detail-card" style={{height: '100%'}}>
             <h3>订单主要信息</h3>
             <div className="order-user">
-              <div className="order-user-avatar">
-                <img src={order.user.avatar && order.user.avatar.uri} />
-              </div>
+              <UIFramework.Image size={80} src={order.user.avatar} />
               <div className="detail-card-row">
                 <label>用户</label>
                 <span>{order.user.nickname}</span>

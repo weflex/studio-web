@@ -3,7 +3,7 @@
 import React from 'react';
 import ClassCard from '../card';
 import moment from 'moment';
-import { DropModal } from 'boron2';
+import UIFramework from 'weflex-ui';
 import { NewClassTemplate } from '../new';
 import { client } from '../../../api';
 import './template.css';
@@ -13,7 +13,8 @@ class Template extends React.Component {
     super(props);
     this.state = {
       showCopyCard: false,
-      data: null,
+      data: {},
+      modalVisibled: false,
     };
   }
   onPanStart(event) {
@@ -24,14 +25,16 @@ class Template extends React.Component {
   onPanEnd(event, data) {
     this.setState({
       showCopyCard: false,
+      modalVisibled: true,
       data
     });
-    this.refs.classConfirmModal.show();
   }
   get classConfirmation () {
     if (this.state.data) {
       let onCreateClass = (data) => {
-        this.refs.classConfirmModal.hide();
+        this.setState({
+          modalVisibled: false,
+        });
         this.props.onRelease(data);
       };
       return (
@@ -99,9 +102,13 @@ class Template extends React.Component {
           onPanStart={this.onPanStart.bind(this)}
           onPanEnd={this.onPanEnd.bind(this)}
         />
-        <DropModal ref="classConfirmModal">
+        <UIFramework.Modal
+          title="添加课程"
+          footer=""
+          visible={this.state.modalVisibled}
+          onCancel={() => this.setState({ modalVisibled: false })}>
           {this.classConfirmation}
-        </DropModal>
+        </UIFramework.Modal>
       </li>
     );
   }

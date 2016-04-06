@@ -33,7 +33,7 @@ class SettingsIndex extends React.Component {
       },
       {
         id: 'team',
-        title: '团队',
+        title: '团队管理',
         component: require('./tabs/team')
       }
     ];

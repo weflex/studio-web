@@ -1,12 +1,7 @@
 "use strict"
 
 import React from 'react';
-import {
-  UIForm,
-  UIRow,
-  UITextInput,
-  UIButton,
-} from 'react-ui-form';
+import UIFramework from 'weflex-ui';
 import { client } from '../../../api';
 
 class Venue extends React.Component {
@@ -54,38 +49,43 @@ class Venue extends React.Component {
   render() {
     return (
       <div className="settings-detail settings-venue">
-        <UIForm>
-          <UIRow name="场馆名" required={true}>
-            <UITextInput 
+        <UIFramework>
+          <UIFramework.Row name="场馆名">
+            <UIFramework.TextInput
+              flex={1}
               bindStateCtx={this}
               bindStateName="venue.name"
               value={this.state.venue.name}
             />
-          </UIRow>
-          <UIRow name="联系电话" required={true}>
-            <UITextInput
+          </UIFramework.Row>
+          <UIFramework.Row name="联系电话">
+            <UIFramework.TextInput
+              flex={1}
               bindStateCtx={this}
               bindStateName="venue.phone"
               value={this.state.venue.phone}
             />
-          </UIRow>
-          <UIRow name="地址" required={true}>
-            <UITextInput
+          </UIFramework.Row>
+          <UIFramework.Row name="地址">
+            <UIFramework.TextInput
+              flex={1}
               bindStateCtx={this}
               bindStateName="venue.address"
               value={this.state.venue.address}
             />
-          </UIRow>
-          <UIRow name="店长" required={true}>
-            <UITextInput
+          </UIFramework.Row>
+          <UIFramework.Row name="店长">
+            <UIFramework.TextInput
+              flex={1}
               value={this.state.owner.display}
               disabled={true}
             />
-          </UIRow>
-          <UIRow>
-            <UIButton text="保存信息" onClick={this.onSubmit.bind(this)} />
-          </UIRow>
-        </UIForm>
+          </UIFramework.Row>
+          <UIFramework.Row>
+            <UIFramework.Button text="保存信息" 
+              onClick={this.onSubmit.bind(this)} />
+          </UIFramework.Row>
+        </UIFramework>
       </div>
     );
   }

@@ -9,7 +9,7 @@ import './index.css';
 
 const sourceTabs = [
   require('./tabs/smscode'),
-  require('./tabs/qrcode'),
+  // require('./tabs/qrcode'),
   require('./tabs/userpass'),
 ];
 
