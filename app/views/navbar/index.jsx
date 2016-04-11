@@ -125,14 +125,22 @@ class NavBar extends React.Component {
       venues: client.user.venues
     });
   }
-  onMouseOver () {
+  onMouseOver() {
     this.setState({
       showOrgPanel: true
     });
   }
-  onMouseLeave () {
+  onMouseLeave() {
     this.setState({
       showOrgPanel: false
+    });
+  }
+  onLogout(event) {
+    event.preventDefault();
+    UIFramework.Modal.confirm({
+      title: '确认登出吗？',
+      content: '确认登出吗？',
+      onOk: () => location.href = '/login',
     });
   }
   selectVenue (venue) {
@@ -182,7 +190,7 @@ class NavBar extends React.Component {
             <span>
               <Link href="/settings/profile">{this.state.user.nickname}</Link>
             </span>
-            <a href="/login">登出</a>
+            <a href="#" onClick={this.onLogout.bind(this)}>登出</a>
           </div>
           <DataItem value={this.state.stats.paid.length} hint="今日课程报名" type="signup" />
           <DataItem value={this.state.stats.cancel.length} hint="今日课程取消" type="cancel" />
