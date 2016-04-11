@@ -2,16 +2,8 @@
 
 import _ from 'lodash';
 import React from 'react';
-import {
-  UIForm,
-  UIRow,
-  UIDateInput,
-  UITextInput,
-  UIButton,
-  UIOptionPicker,
-} from 'react-ui-form';
+import UIFramework from 'weflex-ui';
 import { client } from '../../../api';
-import './edit-trainer.css';
 
 class EditTrainerView extends React.Component {
   constructor(props) {
@@ -44,16 +36,17 @@ class EditTrainerView extends React.Component {
     }
   }
   async onDelete() {
-    if (confirm('确认删除教练?')) {
-      try {
-        await client.orgMember.delete(this.props.data.id);
-        if (typeof this.props.onComplete === 'function') {
-          this.props.onComplete();
+    let props = this.props;
+    UIFramework.Modal.confirm({
+      title: '确认删除教练吗?',
+      content: '删除后，你将不能再在课程中添加该教练，以及已经添加的课程也将过期',
+      onOk: async () => {
+        await client.orgMember.delete(props.data.id);
+        if (typeof props.onComplete === 'function') {
+          props.onComplete();
         }
-      } catch (err) {
-        alert(err.message);
-      }
-    }
+      },
+    });
   }
   get submitDisabled() {
     return !(this.state.form.fullname.first &&
@@ -76,28 +69,33 @@ class EditTrainerView extends React.Component {
       }
     ]);
     return (
-      <UIForm className="settings-edit-trainer">
-        <UIRow name="手机号码" hint="教练的手机号码">
-          <UITextInput defaultValue={this.state.form.phone} disabled={true} />
-        </UIRow>
-        <UIRow name="教练姓名" hint="教练的名字">
-          <UITextInput
+      <UIFramework className="settings-edit-trainer">
+        <UIFramework.Row name="手机号码" hint="教练的手机号码">
+          <UIFramework.TextInput 
+            flex={1} 
+            value={this.state.form.phone} 
+            disabled={true} 
+          />
+        </UIFramework.Row>
+        <UIFramework.Row name="教练姓名" hint="教练的名字">
+          <UIFramework.TextInput
             flex={0.5}
             bindStateCtx={this}
             bindStateName="form.fullname.first"
             value={this.state.form.fullname.first}
             placeholder="名"
           />
-          <UITextInput
+          <UIFramework.TextInput
             flex={0.5}
             bindStateCtx={this}
             bindStateName="form.fullname.last"
             value={this.state.form.fullname.last}
             placeholder="姓"
           />
-        </UIRow>
-        <UIRow name="语言" hint="教练的常用语言">
-          <UIOptionPicker
+        </UIFramework.Row>
+        <UIFramework.Row name="语言" hint="教练的常用语言">
+          <UIFramework.Select
+            flex={1}
             bindStateCtx={this}
             bindStateName="form.language"
             value={this.state.form.language}
@@ -106,33 +104,35 @@ class EditTrainerView extends React.Component {
               {text: 'English', value: 'en'},
             ]}
           />
-        </UIRow>
-        <UIRow name="所属场馆" hint="教练工作的场馆">
-          <UIOptionPicker
+        </UIFramework.Row>
+        <UIFramework.Row name="所属场馆" hint="教练工作的场馆">
+          <UIFramework.Select
+            flex={1}
             bindStateCtx={this}
             bindStateName="form.venueId"
             value={this.state.form.venueId}
             options={venueOptions}
           />
-        </UIRow>
-        <UIRow name="个人简介" hint="教练的个人简介">
-          <UITextInput
+        </UIFramework.Row>
+        <UIFramework.Row name="个人简介" hint="教练的个人简介">
+          <UIFramework.TextInput
+            flex={1}
             bindStateCtx={this}
             bindStateName="form.description"
             value={this.state.form.description}
             multiline={true}
           />
-        </UIRow>
-        <UIRow>
-          <UIButton text="保存更改"
+        </UIFramework.Row>
+        <UIFramework.Row>
+          <UIFramework.Button text="保存更改"
             onClick={this.onSubmit.bind(this)} 
             disabled={this.submitDisabled} 
           />
-          <UIButton text="删除教练"
+          <UIFramework.Button text="删除教练"
             onClick={this.onDelete.bind(this)} 
           />
-        </UIRow>
-      </UIForm>
+        </UIFramework.Row>
+      </UIFramework>
     );
   }
 }

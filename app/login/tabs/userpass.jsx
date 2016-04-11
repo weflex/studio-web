@@ -1,11 +1,7 @@
 "use strict";
 
 import React from 'react';
-import {
-  UIForm,
-  UITextInput,
-  UIButton,
-} from 'react-ui-form';
+import UIFramework from 'weflex-ui';
 import { client } from '../../api';
 
 class TabUserPass extends React.Component {
@@ -31,31 +27,34 @@ class TabUserPass extends React.Component {
   }
   render() {
     return (
-      <UIForm className="login-smscode">
-        <div className="login-row username">
-          <UITextInput 
+      <UIFramework className="login-smscode">
+        <UIFramework.Row className="login-row username">
+          <UIFramework.TextInput
+            flex={1} 
             bindStateCtx={this}
             bindStateName="form.username"
             placeholder="输入用户名" 
           />
-        </div>
-        <div className="login-row password">
-          <UITextInput 
+        </UIFramework.Row>
+        <UIFramework.Row className="login-row password">
+          <UIFramework.TextInput
+            flex={1} 
             bindStateCtx={this}
             bindStateName="form.password"
             password={true}
             placeholder="输入密码" 
           />
-        </div>
-        <div className="login-row">
-          <UIButton 
+        </UIFramework.Row>
+        <UIFramework.Row className="login-row">
+          <UIFramework.Button 
+            flex={1}
             onClick={this.onLogin.bind(this)} 
             text="登录" 
             block={true} 
             level="primary" 
           />
-        </div>
-      </UIForm>
+        </UIFramework.Row>
+      </UIFramework>
     );
   }
 }

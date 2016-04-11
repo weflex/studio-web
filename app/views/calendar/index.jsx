@@ -9,12 +9,12 @@ import Calendar from './calendar';
 import { SearchInput } from '../../components/toolbar/components/search';
 import { WeekPicker } from './components/week-picker';
 import { NewClassTemplate } from './new';
-import { DropModal } from 'boron2';
 import {
   getWeek,
   getCellHeight,
   getFormatTime,
 } from './util.js';
+import UIFramework from 'weflex-ui';
 import { client } from '../../api';
 import './index.css';
 
@@ -31,6 +31,7 @@ class WeflexCalendar extends React.Component {
     this.state = {
       schedule: new Map(),
       allClass: new Map(),
+      modalVisibled: false,
     };
     SearchInput.Listen('onChange', this.onSearchInputChange.bind(this));
   }
@@ -208,10 +209,13 @@ class WeflexCalendar extends React.Component {
         const props = Object.assign({}, this.props);
         const onHide = (event, data) => {
           if (!data || !data.id) {
-            alert('未知错误');
-          } else if (confirm(`你确认要删除课程“${data.template.name}”？`)) {
-            return deleteClassById(data.id);
+            return alert('未知错误');
           }
+          UIFramework.Modal.confirm({
+            title: `你确认要删除课程“${data.template.name}”？`,
+            content: `你确认要删除课程“${data.template.name}”？`,
+            onOk: () => deleteClassById(data.id),
+          });
         };
         const onPanEnd = (event, data) => {
           return updateClasses(data);
@@ -251,7 +255,8 @@ class WeflexCalendar extends React.Component {
             date,
             from: timeStringToObject(from),
             to: timeStringToObject(to),
-            template: {}
+            template: {},
+            spots: {},
           },
           ref: (template) => {
             if (template) {
@@ -269,7 +274,9 @@ class WeflexCalendar extends React.Component {
   }
 
   onCreateClass(newClass) {
-    this.refs.newClassModal.hide();
+    this.setState({
+      modalVisibled: false,
+    });
     this.updateClasses(newClass);
     this.refs.calendar.cancelCreateCard();
   }
@@ -278,7 +285,9 @@ class WeflexCalendar extends React.Component {
     const fromString = getFormatTime(from);
     const toString = getFormatTime(to);
     this.setCreateClassTemplate(fromString, toString, date);
-    this.refs.newClassModal.show();
+    this.setState({
+      modalVisibled: true,
+    });
   }
 
   async updateClasses(newClass) {
@@ -306,6 +315,9 @@ class WeflexCalendar extends React.Component {
   }
 
   handleHideModal() {
+    this.setState({
+      modalVisibled: false,
+    });
     this.refs.calendar.cancelCreateCard();
     if (this.newClassTemplate) {
       this.newClassTemplate.isModalShow = false;
@@ -327,14 +339,13 @@ class WeflexCalendar extends React.Component {
           onAddCard={this.onAddCard.bind(this)}
           cardTemplate={this.cardTemplate}
         />
-        <DropModal
-          ref="newClassModal"
-          modalStyle={{width: 700}}
-          contentStyle={{padding: 10}}
-          onHide={this.handleHideModal.bind(this)}
-        >
+        <UIFramework.Modal
+          visible={this.state.modalVisibled}
+          title="添加新课程"
+          footer=""
+          onCancel={this.handleHideModal.bind(this)}>
           {classTempalte}
-        </DropModal>
+        </UIFramework.Modal>
       </div>
     );
   }

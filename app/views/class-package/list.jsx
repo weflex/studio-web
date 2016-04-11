@@ -4,7 +4,7 @@ import _ from 'lodash';
 import React from 'react';
 import { client } from '../../api';
 import { ClipLoader } from 'halogen';
-import { UIMembershipCard } from '../../components/ui-membership-card';
+import UIMembershipCard from '../../components/ui-membership-card';
 import './list.css';
 
 class ClassPackageList extends React.Component {

@@ -1,17 +1,95 @@
 "use strict"
 
 import React from 'react';
-import {
-  UIForm,
-  UIRow,
-  UITextInput,
-  UIFileInput,
-  UIButton,
-  UILabel,
-  UIText,
-  UIOptionPicker
-} from 'react-ui-form';
+import UIFramework from 'weflex-ui';
 import { client } from '../../../api';
+
+class AvatarUploader extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      uptoken: null,
+    };
+  }
+  async componentWillMount() {
+    const venue = await client.user.getVenueById();
+    const token = await client.resource.token();
+    this.setState({
+      uptoken: token.uptoken,
+    });
+  }
+  onAvatarUploaded(result, file) {
+    console.log(result, file);
+  }
+  onError(err) {
+    console.error(err);
+  }
+  render() {
+    return (
+      <UIFramework.Upload 
+        token={this.state.uptoken} 
+        onSuccess={this.onAvatarUploaded}
+        onError={this.onError}>
+        <UIFramework.Image size={70} src={this.props.src} style={{marginRight: '10px'}} />
+        <UIFramework.Cell>
+          <UIFramework.Button>上传头像</UIFramework.Button>
+          <UIFramework.Divider />
+          <UIFramework.Text text="绑定微信帐号可以微信扫一扫登录" />
+        </UIFramework.Cell>
+      </UIFramework.Upload>
+    );
+  }
+}
+
+class PhoneValidator extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      phone: this.props.phone,
+      smscode: null,
+    };
+  }
+  requestSmsCode() {
+    client.user.smsRequest(this.state.phone);
+  }
+  async validate() {
+    // const res = await client.user.smsLogin(this.state.phone, this.state.smscode);
+  }
+  render() {
+    return (
+      <div>
+        <UIFramework.Row name="手机号码" hint="修改手机号码需要重新验证手机号">
+          <UIFramework.TextInput
+            flex={0.8}
+            bindStateCtx={this}
+            bindStateName="phone"
+            value={this.state.phone}
+          />
+          <UIFramework.Button 
+            flex={0.2} 
+            interval={30} 
+            text="获取验证码"
+            onClick={this.requestSmsCode.bind(this)}
+          />
+        </UIFramework.Row>
+        <UIFramework.Row>
+          <UIFramework.TextInput
+            flex={0.8}
+            bindStateCtx={this}
+            bindStateName="smscode"
+            placeholder="输入验证码"
+          />
+          <UIFramework.Button
+            flex={0.2}
+            text="验证"
+            disabled={!this.state.smscode || !this.state.phone}
+            onClick={this.validate.bind(this)}
+          />
+        </UIFramework.Row>
+      </div>
+    );
+  }
+}
 
 class Profile extends React.Component {
   constructor(props) {
@@ -27,7 +105,8 @@ class Profile extends React.Component {
         nickname: user.nickname,
         phone: user.phone,
         email: user.email,
-      }
+        avatar: user.avatar,
+      },
     });
   }
   render() {
@@ -35,46 +114,40 @@ class Profile extends React.Component {
       <div className="detail-cards">
         <div className="detail-cards-left">
           <div className="detail-card">
-            <UIForm>
-              <UIRow name="姓名">
-                <UITextInput 
+            <UIFramework>
+              <UIFramework.Row>
+                <AvatarUploader src={this.state.form.avatar} />
+              </UIFramework.Row>
+              <UIFramework.Row name="姓名" hint="更换姓名">
+                <UIFramework.TextInput
+                  flex={1} 
                   bindStateCtx={this}
                   bindStateName="form.nickname"
                   value={this.state.form.nickname}
                 />
-              </UIRow>
-              <UIRow name="手机号码" hint="修改手机号码需要重新验证手机号">
-                <UITextInput
-                  flex={0.8}
-                  bindStateCtx={this}
-                  bindStateName="form.phone"
-                  value={this.state.form.phone}
-                />
-                <UIButton flex={0.2} text="获取验证码" />
-              </UIRow>
-              <UIRow>
-                <UITextInput
-                  bindStateCtx={this}
-                  bindStateName="form.smscode"
-                  placeholder="输入验证码"
-                />
-              </UIRow>
-              <UIRow name="微信帐号" hint="绑定微信帐号可以微信扫一扫登录">
-                <UITextInput />
-              </UIRow>
-              <UIRow name="邮箱">
-                <UITextInput 
+              </UIFramework.Row>
+              <UIFramework.Row>
+                <PhoneValidator phone={this.state.form.phone} />
+              </UIFramework.Row>
+              <UIFramework.Row name="邮箱">
+                <UIFramework.TextInput 
+                  flex={1}
                   bindStateCtx={this} 
                   bindStateName="form.email" 
                   value={this.state.form.email}
                 />
-              </UIRow>
-            </UIForm>
+              </UIFramework.Row>
+            </UIFramework>
           </div>
         </div>
         <div className="detail-cards-right">
           <div className="detail-card">
             <h3>个人信息完善度</h3>
+            <UIFramework>
+              <UIFramework.Row>
+                <UIFramework.Progress flex={1} percent={90} />
+              </UIFramework.Row>
+            </UIFramework>
           </div>
         </div>
       </div>

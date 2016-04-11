@@ -4,15 +4,7 @@ import moment from 'moment';
 import React from 'react';
 import { ClipLoader } from 'halogen';
 import { client } from '../../api';
-import {
-  UIForm,
-  UIRow,
-  UIDateInput,
-  UITimeInput,
-  UITextInput,
-  UIButton,
-  UIOptionPicker
-} from 'react-ui-form';
+import UIFramework from 'weflex-ui';
 import {
   getTime,
   getFormatTime,
@@ -74,6 +66,7 @@ class NewClassTemplate extends React.Component {
     const newData = Object.assign({}, this.state.data, {
       from: getTime(this.state.data.from),
       to: getTime(this.state.data.to),
+      template: this.template,
     });
     const getMinutes = (time) => {
       return time.hour * 60 + time.minute;
@@ -85,16 +78,14 @@ class NewClassTemplate extends React.Component {
     }
   }
 
-  get title() {
-    if (this.state.data.template && this.state.data.template.name) {
-      return this.state.data.template.name;
-    } else {
-      return '创建新课程';
-    }
-  }
-
   formatDate(date) {
     return moment(date).format('YYYY-MM-DD');
+  }
+
+  get template() {
+    return _.find(this.state.templates, {
+      id: this.state.data.templateId
+    }) || {};
   }
 
   render() {
@@ -106,16 +97,13 @@ class NewClassTemplate extends React.Component {
         </div>
       );
     }
-    const template = _.find(this.state.templates, {
-      id: this.state.data.templateId
-    }) || {};
-
+    const template = this.template;
     return (
       <div className="class-new-container">
-        <h1>{this.title}</h1>
-        <UIForm className="class-new-form">
-          <UIRow name="选择课程模版" required={true} hint="选择课程模版可以看到不同课程的价格、教练和描述">
-            <UIOptionPicker
+        <UIFramework className="class-new-form">
+          <UIFramework.Row name="选择课程模版" required={true} hint="选择课程模版可以看到不同课程的价格、教练和描述">
+            <UIFramework.Select
+              flex={1}
               bindStateCtx={this}
               bindStateName="data.templateId"
               value={this.state.data.templateId}
@@ -123,15 +111,17 @@ class NewClassTemplate extends React.Component {
                 return {text: item.name, value: item.id};
               })}
             />
-          </UIRow>
-          <UIRow name="价格" hint="课程模版的价格">
-            <UITextInput 
+          </UIFramework.Row>
+          <UIFramework.Row name="价格" hint="课程模版的价格">
+            <UIFramework.TextInput
+              flex={1} 
               value={template.price}
               disabled={true}
             />
-          </UIRow>
-          <UIRow name="教练" hint="选择上课的教练">
-            <UIOptionPicker
+          </UIFramework.Row>
+          <UIFramework.Row name="教练" hint="选择上课的教练">
+            <UIFramework.Select
+              flex={1}
               bindStateCtx={this}
               bindStateName="data.trainerId"
               value={this.state.data.trainerId}
@@ -139,41 +129,42 @@ class NewClassTemplate extends React.Component {
                 return {text: item.fullname.first, value: item.id};
               })}
             />
-          </UIRow>
-          <UIRow name="课程描述">
-            <UITextInput
+          </UIFramework.Row>
+          <UIFramework.Row name="课程描述">
+            <UIFramework.TextInput
+              flex={1}
               value={template.description}
               multiline={true}
               disabled={true}
             />
-          </UIRow>
-          <UIRow name="选择上课时间" required={true}>
-            <UIDateInput
+          </UIFramework.Row>
+          <UIFramework.Row name="选择上课时间" required={true}>
+            <UIFramework.DateInput
               flex={0.4}
               bindStateCtx={this}
               bindStateName="data.date"
               value={this.formatDate(this.state.data.date)}
             />
-            <UITimeInput
+            <UIFramework.TimeInput
               flex={0.3}
               bindStateCtx={this}
               bindStateName="data.from"
               value={this.state.data.from}
             />
-            <UITimeInput
+            <UIFramework.TimeInput
               flex={0.3}
               bindStateCtx={this}
               bindStateName="data.to"
               value={this.state.data.to}
             />
-          </UIRow>
-          <UIRow>
-            <UIButton 
+          </UIFramework.Row>
+          <UIFramework.Row>
+            <UIFramework.Button 
               text={this.state.data ? '保存修改' : '确认添加'}
               onClick={this.onCreateClass.bind(this)} 
             />
-          </UIRow>
-        </UIForm>
+          </UIFramework.Row>
+        </UIFramework>
       </div>
     );
   }

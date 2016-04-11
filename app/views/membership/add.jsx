@@ -3,16 +3,8 @@
 import _ from 'lodash';
 import moment from 'moment';
 import React from 'react';
-import {
-  UIForm,
-  UIRow,
-  UIDateInput,
-  UITextInput,
-  UIButton,
-  UIOptionPicker,
-} from 'react-ui-form';
+import UIFramework from 'weflex-ui';
 import { client } from '../../api';
-import './add.css';
 
 class AddMembershipView extends React.Component {
   constructor(props) {
@@ -94,20 +86,20 @@ class AddMembershipView extends React.Component {
         correction.name = '修正有效期';
         correction.hint = currentPackage.name + '是不限次卡，可以修正有效期';
         correction.view = [
-          <UIOptionPicker
+          <UIFramework.Select
             key="lifetime-op" flex={0.2} options={[
               {text: '加', value: 'plus'},
               {text: '减', value: 'minus'},
             ]}
           />,
-          <UITextInput
+          <UIFramework.TextInput
             key="lifetime-value"
             flex={0.6}
             bindStateCtx={this}
             bindStateName="form.lifetime.value"
             defaultValue={0}
           />,
-          <UIOptionPicker
+          <UIFramework.Select
             key="lifetime-scale" flex={0.2} disabled={true} options={[
               {text: '天', value: 'day'},
             ]}
@@ -117,7 +109,7 @@ class AddMembershipView extends React.Component {
         correction.name = '修正可用次数';
         correction.hint = currentPackage.name + '是次卡，可以修正可用次数';
         correction.view = [
-          <UIOptionPicker
+          <UIFramework.Select
             key="passes-op" 
             flex={0.2} 
             bindStateCtx={this}
@@ -128,7 +120,7 @@ class AddMembershipView extends React.Component {
               {text: '减', value: 0},
             ]}
           />,
-          <UITextInput
+          <UIFramework.TextInput
             key="passes"
             flex={0.6}
             bindStateCtx={this}
@@ -136,7 +128,7 @@ class AddMembershipView extends React.Component {
             bindStateName="form.correction.value"
             defaultValue={0}
           />,
-          <UIOptionPicker
+          <UIFramework.Select
             key="passes-unit" flex={0.2} disabled={true} options={[
               {text: '次'}
             ]}
@@ -146,45 +138,48 @@ class AddMembershipView extends React.Component {
     }
 
     return (
-      <UIForm className="membership-add">
-        <UIRow name="用户姓名" hint="用户的名字">
-          <UITextInput
+      <UIFramework className="membership-add">
+        <UIFramework.Row name="用户姓名" hint="用户的名字">
+          <UIFramework.TextInput
+            flex={1}
             bindStateCtx={this}
             bindStateName="form.nickname"
             value={this.props.user && this.props.user.nickname}
           />
-        </UIRow>
-        <UIRow name="手机号码" hint="用户的手机号码">
-          <UITextInput
+        </UIFramework.Row>
+        <UIFramework.Row name="手机号码" hint="用户的手机号码">
+          <UIFramework.TextInput
+            flex={1}
             bindStateCtx={this}
             bindStateName="form.phone"
             value={this.props.user && this.props.user.phone}
+            placeholder="11位手机号码"
           />
-        </UIRow>
-        <UIRow name="会卡" hint="用户需要会卡才能预定课程">
-          <UIOptionPicker
+        </UIFramework.Row>
+        <UIFramework.Row name="会卡" hint="用户需要会卡才能预定课程">
+          <UIFramework.Select
             flex={0.6}
             bindStateCtx={this}
             bindStateName="form.packageId"
             options={this.state.packageOptions}
             onChange={this.onChangePackage.bind(this)}
           />
-          <UIDateInput
+          <UIFramework.DateInput
             flex={0.4}
             bindStateCtx={this}
             bindStateName="form.createdAt"
           />
-        </UIRow>
-        <UIRow name={correction.name} hint={correction.hint}>
+        </UIFramework.Row>
+        <UIFramework.Row name={correction.name} hint={correction.hint}>
           {correction.view}
-        </UIRow>
-        <UIRow>
-          <UIButton text="创建用户" 
+        </UIFramework.Row>
+        <UIFramework.Row>
+          <UIFramework.Button text="创建用户" 
             onClick={this.onSubmit.bind(this)} 
             disabled={this.submitDisabled} 
           />
-        </UIRow>
-      </UIForm>
+        </UIFramework.Row>
+      </UIFramework>
     );
   }
 }

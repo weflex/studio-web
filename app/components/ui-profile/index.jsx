@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import UIFramework from 'weflex-ui';
 const DEFAULT_AVATAR = 'http://static.theweflex.com/default-avatar-male.png';
 
 /**
@@ -107,7 +108,11 @@ class UIProfileListItem extends React.Component {
       <div style={UIProfileListItem.styles.profile} 
         className={this.props.className}>
         <div style={UIProfileListItem.styles.left}>
-          <UIAvatarImage src={this.props.avatar} />
+          <UIFramework.Image 
+            src={this.props.avatar} 
+            circle={true} 
+            style={{}} 
+          />
           <div style={UIProfileListItem.styles.label}>
             {this.props.labelText}
           </div>

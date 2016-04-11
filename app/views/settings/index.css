@@ -14,27 +14,22 @@
   width: 80%;
 }
 
-.settings-team > header {
-  font-family: 'PingFang SC', 'OpenSans', sans-serif;
+.settings-team header {
   padding: 10px 0;
   margin-top: 20px;
 }
 
-.settings-team > header:first-child {
+.settings-team header:first-child {
   margin-top: 0px;
 }
 
-.settings-team > header > * {
+.settings-team header > * {
   display: inline-block;
 }
 
-.settings-team > header > h3 {
+.settings-team header > h3 {
   font-size: 16px;
   font-weight: 300;
-}
-
-.settings-team > header > button {
-  float: right;
 }
 
 .settings-team-item li {
@@ -51,14 +46,7 @@
   height: 30px;
   line-height: 30px;
   vertical-align: middle;
-  font-size: 14px;
-  font-family: 'PingFang SC', 'OpenSans', sans-serif;
   margin-right: 5px;
-}
-
-.settings-team-item li > img {
-  width: 30px;
-  border-radius: 4px;
 }
 
 .settings-team-item li > .username {
@@ -70,9 +58,10 @@
 .settings-team-item li > .description {
   font-size: 12px;
   color: #878787;
+  margin-right: 20px;
 }
 
-.settings-team-item li > .venue {
+.settings-team-item li > .button {
   font-size: 12px;
   color: #1B486B;
   float: right;

@@ -3,7 +3,6 @@
 import React from 'react';
 import MasterDetail from '../../components/master-detail';
 import Detail from './detail';
-import { DropModal } from 'boron';
 import { client } from '../../api';
 import moment from 'moment';
 moment.locale('zh-cn');
