@@ -13,7 +13,7 @@ PATH := /usr/local/bin:$(PATH)
 PATH := $(shell pwd)/node_modules/.bin:$(PATH)
 
 build: $(assets) $(entraces) node_modules $(directories)
-	@PATH=$(PATH) webpack -p
+	@PATH=$(PATH) GIAN_GATEWAY=prod webpack -p
 
 dist/%.html: build/production/%.html $(directories)
 	@cp $< $@
