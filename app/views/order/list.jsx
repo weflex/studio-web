@@ -81,7 +81,7 @@ class List extends React.Component {
       include: [
         'history',
         {
-          'payments': ['membership']
+          'payments': ['membership', 'order']
         },
         {
           'user': ['avatar']
