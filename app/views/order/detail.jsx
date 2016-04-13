@@ -58,7 +58,7 @@ class Detail extends React.Component {
       const membership = this.state.membership;
       const classPackage = membership.package;
       const lifetime = classPackage.lifetime;
-      description = `使用${classPackage.name}抵扣`;
+      description = `使用 ${classPackage.name} 抵扣 ${payments[0].fee} 元`;
       preview = <UIMembershipCard data={classPackage} />;
       metadata = (
         <div className="order-payment-metadata-container">
@@ -75,7 +75,7 @@ class Detail extends React.Component {
           </div>
           <div className="detail-card-row">
             <label>剩余次数</label>
-            <span>{classPackage.passes}次</span>
+            <span>{classPackage.passes - payments.length}次</span>
           </div>
           <div className="detail-card-row">
             <label>开卡时间</label>

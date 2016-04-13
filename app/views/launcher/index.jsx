@@ -28,13 +28,16 @@ export default class LaunchScreen extends React.Component {
       barWidth: 5,
       barMaxWidth: 50
     });
-    
+
     let intv1 = setInterval(this.addBarWidth.bind(this), 200);
     let user;
     try {
       user = await client.user.getCurrent();
+      if (!user.asMembers || !user.asMembers.length) {
+        throw new Error('The user is not an organization user');
+      }
     } catch (error) {
-      window.location.href = '/login?status=403';
+      window.location.href = '/login?status=401';
     }
     clearInterval(intv1);
 
