@@ -18,8 +18,11 @@ class AvatarUploader extends React.Component {
       uptoken: token.uptoken,
     });
   }
-  onAvatarUploaded(result, file) {
-    console.log(result, file);
+  async onAvatarUploaded(result, file) {
+    await client.user.update(client.user.user.id, {
+      avatarId: result.id
+    });
+    location.href = '/calendar';
   }
   onError(err) {
     console.error(err);
