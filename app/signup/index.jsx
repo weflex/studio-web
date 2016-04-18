@@ -85,7 +85,8 @@ class SignupIndex extends React.Component {
                 <UIFramework.Button 
                   flex={0.3} 
                   text="获取验证码" 
-                  disableInterval={60} 
+                  interval={60}
+                  intervalFormat={(c) => `等待(${c})`} 
                   disabled={this.disableRequestSMSCode}
                   onClick={this.onRequestSMSCode.bind(this)}
                 />
