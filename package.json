@@ -13,6 +13,7 @@
     "object-assign": "4.0.1",
     "qrcode.react": "0.5.2",
     "react": "0.14.3",
+    "react-addons-pure-render-mixin": "^15.0.1",
     "react-dom": "0.14.3",
     "react-portal-tooltip": "1.0.3",
     "react-qiniu": "0.3.0",
