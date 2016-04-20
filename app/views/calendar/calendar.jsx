@@ -79,7 +79,7 @@ class Cards extends React.Component {
 class Calendar extends React.Component {
   constructor(props) {
     super(props);
-    const viewDate  = moment();
+    const viewDate     = moment();
     const currentDate  = moment();
     const weekDate     = getWeek(viewDate, 'YYYYMMDD');
     const weekIndex    = `${weekDate.begin}-${weekDate.end}`;
@@ -109,6 +109,7 @@ class Calendar extends React.Component {
       isEditing: false,
     };
     this.createCardTop = 0;
+    this.interval = 0;
   }
 
   renderCards(cardsInfo, hourIndex, dayIndex) {
