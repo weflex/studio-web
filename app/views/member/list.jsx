@@ -32,7 +32,7 @@ class List extends React.Component {
     };
   }
   get title() {
-    return '会员管理';
+    return '会员管理（加载中...）';
   }
   get actions() {
     return [
@@ -87,7 +87,7 @@ class List extends React.Component {
         'avatar'
       ],
     });
-    this.props.app.title(`${this.title}（${members.length}）`);
+    this.props.app.title(`会员管理（${members.length}）`);
     return members;
   }
   viewModal() {

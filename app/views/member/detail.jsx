@@ -102,8 +102,8 @@ class UserProfileCard extends React.Component {
    * @method onMemberAvatarUploaded
    */
   async onMemberAvatarUploaded(result, file) {
-    await client.user.update(client.user.user.id, {
-      avatarId: result.id
+    await client.member.update(this.props.id, {
+      avatarId: result.id,
     });
     await this.props.context.props.updateMaster();
   }
@@ -160,9 +160,9 @@ class UserProfileCard extends React.Component {
           <UIFramework.Row>
             <UIFramework.Upload 
               token={this.state.uptoken} 
-              onSuccess={this.onMemberAvatarUploaded}
-              onError={this.onMemberAvatarUploadFail}>
-              <UIFramework.Image size={60} src={this.props.src} style={{marginRight: '10px'}} />
+              onSuccess={this.onMemberAvatarUploaded.bind(this)}
+              onError={this.onMemberAvatarUploadFail.bind(this)}>
+              <UIFramework.Image size={60} src={this.props.avatar} style={{marginRight: '10px'}} />
               <UIFramework.Cell>
                 <UIFramework.Button>修改会员头像</UIFramework.Button>
                 <UIFramework.Divider />
@@ -238,10 +238,10 @@ class MembershipsCard extends React.Component {
    * In this default delegate, we sync the member object by including
    * memberships and its payments and package
    *
-   * @method componentWillMount
+   * @method componentDidMount
    * @async
    */
-  async componentWillMount() {
+  async componentDidMount() {
     const member = await client.member.get(
       this.props.member.id,
       {
