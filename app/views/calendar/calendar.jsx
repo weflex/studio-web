@@ -287,9 +287,9 @@ class Calendar extends React.Component {
     if (!this.rowList.length) {
       return null;
     }
-    // if the currentDate is after the end day of this week
+    // if the currentDate is after the end day of this week or before the start day of week
     // should not show current line
-    if (currentDate.isAfter(moment().endOf('week'))) {
+    if (currentDate.isAfter(moment().endOf('week')) || currentDate.isBefore(moment().startOf('week'))) {
       return null;
     }
     const time = {
