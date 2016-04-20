@@ -80,6 +80,7 @@ class Calendar extends React.Component {
   constructor(props) {
     super(props);
     const currentDate  = moment();
+    const currentTime  = moment();
     const weekDate     = getWeek(currentDate, 'YYYYMMDD');
     const weekIndex    = `${weekDate.begin}-${weekDate.end}`;
     const weekSchedule = props.schedule.get(weekIndex) || new Map();
@@ -89,6 +90,7 @@ class Calendar extends React.Component {
     this.colList = [];
     this.state = {
       currentDate,
+      currentTime,
       weekSchedule,
       tableHeight: 0,
       scrollTop : 0,
@@ -281,6 +283,7 @@ class Calendar extends React.Component {
    */
   getCurrentLine() {
     const currentDate = this.state.currentDate;
+    const currentTime = this.state.currentTime;
     if (!this.rowList.length) {
       return null;
     }
@@ -290,8 +293,8 @@ class Calendar extends React.Component {
       return null;
     }
     const time = {
-      hour: currentDate.hours(),
-      minute: currentDate.minutes()
+      hour: currentTime.hours(),
+      minute: currentTime.minutes()
     };
     const style = {
       marginTop: 0
@@ -448,10 +451,16 @@ class Calendar extends React.Component {
     window.onresize = () => {
       this.setTableHeight();
     };
+    this.interval = setInterval(() => {
+      this.setState({
+        currentTime: moment()
+      });
+    }, 30000);
   }
 
   componentWillUnmount() {
     window.onresize = null;   
+    clearInterval(this.interval);
   }
 
   componentWillReceiveProps(nextProps) {
