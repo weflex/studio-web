@@ -17,7 +17,7 @@ class List extends React.Component {
         title: '新的课程模版',
         path: '/class/template/add'
       }
-    ]
+    ];
   }
   get config() {
     return {

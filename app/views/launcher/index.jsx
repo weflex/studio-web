@@ -33,7 +33,7 @@ export default class LaunchScreen extends React.Component {
     let user;
     try {
       user = await client.user.getCurrent();
-      if (!user.asMembers || !user.asMembers.length) {
+      if (!user.collaborators || !user.collaborators.length) {
         throw new Error('The user is not an organization user');
       }
     } catch (error) {

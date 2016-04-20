@@ -1,38 +1,12 @@
 "use strict";
 
 import React from 'react';
-import moment from 'moment';
+import UIFramework from 'weflex-ui';
 import MasterDetail from '../../components/master-detail';
 import Detail from './detail';
-import AddMembershipView from './add';
-import UIFramework from 'weflex-ui';
+import ViewToAddMember from './add-member';
 import { UIProfileListItem } from '../../components/ui-profile';
 import { client } from '../../api';
-moment.locale('zh-cn');
-
-function groupUserByPackage(packages) {
-  const users = [];
-  const usersIndex = {};
-  for (let _package of packages) {
-    for (let membership of _package.memberships) {
-      let {userId} = membership;
-      let currIndex;
-      if (usersIndex[userId] === undefined) {
-        users.push(Object.assign({
-          memberships: [],
-          title: membership.user.nickname,
-        }, membership.user));
-        usersIndex[userId] = users.length - 1;
-        currIndex = usersIndex[userId];
-      }
-      if (currIndex === undefined) {
-        currIndex = usersIndex[userId];
-      }
-      users[currIndex].memberships.push(membership);
-    }
-  }
-  return users;
-}
 
 class List extends React.Component {
   static styles = {
@@ -65,6 +39,7 @@ class List extends React.Component {
       {
         title: '邀请新会员',
         onClick: this.viewModal.bind(this),
+        disableToggled: false,
       }
     ];
   }
@@ -103,24 +78,17 @@ class List extends React.Component {
   }
   async source() {
     const venue = await client.user.getVenueById();
-    const packages = await client.classPackage.list({
+    const members = await client.member.list({
       where: {
-        venueId: venue.id
+        venueId: venue.id,
       },
       include: [
-        {
-          'memberships': [
-            {
-              'user': ['avatar']
-            },
-            'package',
-          ],
-        },
+        'memberships',
+        'avatar'
       ],
     });
-    const users = groupUserByPackage(packages);
-    this.props.app.title(`${this.title}（${users.length}）`);
-    return users;
+    this.props.app.title(`${this.title}（${members.length}）`);
+    return members;
   }
   viewModal() {
     this.setState({
@@ -141,7 +109,7 @@ class List extends React.Component {
       <div style={{height: '100%'}}>
         <MasterDetail 
           ref="masterDetail"
-          pathname="membership"
+          pathname="member"
           className="membership"
           masterSource={this.source.bind(this)}
           masterConfig={this.config}
@@ -151,7 +119,7 @@ class List extends React.Component {
           onCancel={this.hideModal.bind(this)}
           title="邀请新会员"
           footer="">
-          <AddMembershipView 
+          <ViewToAddMember 
             onComplete={this.onCompleteAddMembership.bind(this)}
           />
         </UIFramework.Modal>

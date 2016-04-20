@@ -31,7 +31,7 @@ class Detail extends React.Component {
   
   async componentDidMount() {
     const venue = await client.user.getVenueById();
-    const members = await client.orgMember.list({
+    const members = await client.collaborator.list({
       where: {
         or: [
           {

@@ -1,7 +1,7 @@
 "use strict";
 
 import React from 'react';
-import { 
+import {
   Location,
   Locations,
   Link
@@ -352,4 +352,45 @@ class MasterDetail extends React.Component {
   }
 }
 
-module.exports = MasterDetail;
+class Cards extends React.Component {
+  render() {
+    let pos = this.props.position || 'left';
+    return (
+      <div className={`detail-cards-${pos}`}>
+        {this.props.children}
+      </div>
+    );
+  }
+}
+
+class Card extends React.Component {
+  render() {
+    return (
+      <div className="detail-card">
+        {this.props.children}
+        <div className="detail-card-icons">
+          {this.props.actions}
+        </div>
+      </div>
+    );
+  }
+}
+
+class InlineRow extends React.Component {
+  static propTypes = {
+    name: React.PropTypes.string.isRequired,
+  };
+  render() {
+    return (
+      <div className="detail-card-row">
+        <label>{this.props.name}</label>
+        {this.props.children}
+      </div>
+    );
+  }
+}
+
+MasterDetail.Cards = Cards;
+MasterDetail.Card = Card;
+MasterDetail.Card.InlineRow = InlineRow;
+export default MasterDetail;
