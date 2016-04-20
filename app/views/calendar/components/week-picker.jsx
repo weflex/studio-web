@@ -10,26 +10,26 @@ class WeekPicker extends React.Component {
     super(props);
     this.calendar = this.props.calendar;
     this.state = {
-      currentDate: moment()
+      viewDate: moment()
     };
   }
 
   goPrevWeek() {
-    const { currentDate } = this.props.calendar.state;
-    const newDate = currentDate.subtract(7, 'days');
-    this.setState({ currentDate: newDate });
-    this.calendar.setCurrentDate(newDate);
+    const { viewDate } = this.props.calendar.state;
+    const newDate = viewDate.subtract(7, 'days');
+    this.setState({ viewDate: newDate });
+    this.calendar.setviewDate(newDate);
   }
 
   goNextWeek() {
-    const { currentDate } = this.props.calendar.state;
-    const newDate = currentDate.add(7, 'days');
-    this.setState({ currentDate: newDate });
-    this.calendar.setCurrentDate(newDate);
+    const { viewDate } = this.props.calendar.state;
+    const newDate = viewDate.add(7, 'days');
+    this.setState({ viewDate: newDate });
+    this.calendar.setviewDate(newDate);
   }
 
   render() {
-    const weekDate = getWeek(this.state.currentDate, 'MM[月]DD[日]');
+    const weekDate = getWeek(this.state.viewDate, 'MM[月]DD[日]');
     return (
       <div className="week-picker">
         <span className="go-prev-btn icon-font icon-left-open"

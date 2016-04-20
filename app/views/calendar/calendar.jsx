@@ -27,7 +27,7 @@ class TableHeader extends React.Component {
 
   render() {
     let header = [];
-    let date = moment(this.props.currentDate).startOf('week');
+    let date = moment(this.props.viewDate).startOf('week');
 
     header.push(
       <li key="header-index" className="header-index"></li>
@@ -79,9 +79,9 @@ class Cards extends React.Component {
 class Calendar extends React.Component {
   constructor(props) {
     super(props);
+    const viewDate  = moment();
     const currentDate  = moment();
-    const currentTime  = moment();
-    const weekDate     = getWeek(currentDate, 'YYYYMMDD');
+    const weekDate     = getWeek(viewDate, 'YYYYMMDD');
     const weekIndex    = `${weekDate.begin}-${weekDate.end}`;
     const weekSchedule = props.schedule.get(weekIndex) || new Map();
 
@@ -89,8 +89,8 @@ class Calendar extends React.Component {
     this.rowList = [];
     this.colList = [];
     this.state = {
+      viewDate,
       currentDate,
-      currentTime,
       weekSchedule,
       tableHeight: 0,
       scrollTop : 0,
@@ -125,7 +125,7 @@ class Calendar extends React.Component {
         <Cards
           hour={hourIndex}
           day={dayIndex}
-          cardsInfo={cardsInfo} 
+          cardsInfo={cardsInfo}
           cardTemplate={this.props.cardTemplate}
         />
       </li>
@@ -184,7 +184,7 @@ class Calendar extends React.Component {
     return (
       <ul
         className="schedule-table-column"
-        key={dayIndex} 
+        key={dayIndex}
         ref={ul => {
           if (ul) {
             this.colList[dayIndex] = ul.getBoundingClientRect();
@@ -282,19 +282,19 @@ class Calendar extends React.Component {
    * Current Line is for showing what's the time now
    */
   getCurrentLine() {
+    const viewDate = this.state.viewDate;
     const currentDate = this.state.currentDate;
-    const currentTime = this.state.currentTime;
     if (!this.rowList.length) {
       return null;
     }
-    // if the currentDate is after the end day of this week or before the start day of week
+    // if the viewDate is after the end day of this week or before the start day of week
     // should not show current line
-    if (currentDate.isAfter(moment().endOf('week')) || currentDate.isBefore(moment().startOf('week'))) {
+    if (viewDate.isAfter(moment().endOf('week')) || viewDate.isBefore(moment().startOf('week'))) {
       return null;
     }
     const time = {
-      hour: currentTime.hours(),
-      minute: currentTime.minutes()
+      hour: currentDate.hours(),
+      minute: currentDate.minutes()
     };
     const style = {
       marginTop: 0
@@ -332,7 +332,7 @@ class Calendar extends React.Component {
 
   getCreateCard() {
     return (
-      <div 
+      <div
         ref="createCard"
         className="create-card create-card-shown"
         style={this.state.createCardStyle}>
@@ -358,7 +358,7 @@ class Calendar extends React.Component {
       this.setState({ createCardStyle });
     });
 
-    // Hammerjs will trigger both handler while elements are overlap 
+    // Hammerjs will trigger both handler while elements are overlap
     // and listen same event, so need to judge cards is dragging.
     let isCardsDragging = false;
     hammer.on('panstart', (event) => {
@@ -432,7 +432,7 @@ class Calendar extends React.Component {
   }
 
   setScrollTop() {
-    const hour = this.state.currentDate.hours();
+    const hour = this.state.viewDate.hours();
     if (this.rowList.length > 0) {
       let rowHeight = this.rowList[0].height;
       // FIXME(Yorkie): 15px will let user see the complete top time string.
@@ -453,29 +453,29 @@ class Calendar extends React.Component {
     };
     this.interval = setInterval(() => {
       this.setState({
-        currentTime: moment()
+        currentDate: moment()
       });
     }, 30000);
   }
 
   componentWillUnmount() {
-    window.onresize = null;   
+    window.onresize = null;
     clearInterval(this.interval);
   }
 
   componentWillReceiveProps(nextProps) {
-    const currentDate  = this.state.currentDate;
-    const weekDate     = getWeek(currentDate, 'YYYYMMDD');
+    const viewDate  = this.state.viewDate;
+    const weekDate     = getWeek(viewDate, 'YYYYMMDD');
     const weekSchedule = nextProps.schedule.get(`${weekDate.begin}-${weekDate.end}`) || new Map();
-    const state = {currentDate, weekSchedule};
+    const state = {viewDate, weekSchedule};
 
     this.setState(state);
   }
 
-  setCurrentDate(currentDate) {
-    const weekDate = getWeek(currentDate, 'YYYYMMDD');
+  setviewDate(viewDate) {
+    const weekDate = getWeek(viewDate, 'YYYYMMDD');
     const weekSchedule = this.props.schedule.get(`${weekDate.begin}-${weekDate.end}`) || new Map();
-    this.setState({ currentDate, weekSchedule });
+    this.setState({ viewDate, weekSchedule });
   }
 
   render() {
@@ -486,7 +486,7 @@ class Calendar extends React.Component {
     return (
       <div className="calendar" ref="calendar">
         <div className="week-header">
-          <TableHeader currentDate={this.state.currentDate} ref="tableHeader" />
+          <TableHeader viewDate={this.state.viewDate} ref="tableHeader" />
           <div className="scroll-div"></div>
         </div>
         <div
