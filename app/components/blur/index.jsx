@@ -1,10 +1,10 @@
 "use strict";
 
-const React = require('react');
-const ReactDOM = require('react-dom');
-const PureRenderMixin = require('react-addons-pure-render-mixin');
-const stackBlurImage = require('./stack-blur.js');
-require('./index.css');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import PureRenderMixin from 'react-addons-pure-render-mixin';
+import stackBlurImage from './stack-blur.js';
+import './index.css';
 
 /**
  * A component for blur view
@@ -12,16 +12,13 @@ require('./index.css');
  *
  *  <BlurView img="https://host/path/to/your/assets/foo.jpg" blurRadius={10}>
  *    Text or Children
- *  </BlurView> 
+ *  </BlurView>
  *
  * @class BlurView
  */
-var BlurView = React.createClass({
-  mixins: [
-    PureRenderMixin
-  ],
-  
-  propTypes: {
+
+export class BlurView extends React.Component {
+  static propTypes = {
     /**
      * @property {String} img - img url
      * @required
@@ -42,19 +39,22 @@ var BlurView = React.createClass({
     /**
      * @property {any} children - the children elements
      */
-    children: React.PropTypes.any
-  },
+    children: React.PropTypes.any,
+  };
 
-  getDefaultProps() {
-    return {
-      blurRadius: 0,
-      resizeInterval: 128
-    };
-  },
+  static defaultProps = {
+    blurRadius: 0,
+    resizeInterval: 128,
+  };
+
+  constructor(props) {
+    super(props);
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+  }
 
   componentDidMount() {
-    var {blurRadius} = this.props;
-    var container = ReactDOM.findDOMNode(this);
+    const {blurRadius} = this.props;
+    const container = ReactDOM.findDOMNode(this);
 
     this.height = container.offsetHeight;
     this.width = container.offsetWidth;
@@ -71,16 +71,16 @@ var BlurView = React.createClass({
     this.img.src = this.props.img;
 
     window.addEventListener('resize', this.resize);
-  },
+  }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.resize);
-  },
+  }
 
   resize() {
-    var now = new Date().getTime();
-    var deferTimer;
-    var threshhold = this.props.resizeInterval;
+    const now = new Date().getTime();
+    let deferTimer = 0;
+    const threshhold = this.props.resizeInterval;
 
     if (this.last && now < this.last + threshhold) {
       clearTimeout(deferTimer);
@@ -92,27 +92,27 @@ var BlurView = React.createClass({
       this.last = now;
       this.doResize();
     }
-  },
+  }
 
   doResize() {
-    var container = ReactDOM.findDOMNode(this);
+    const container = ReactDOM.findDOMNode(this);
 
     this.height = container.offsetHeight;
     this.width = container.offsetWidth;
 
     stackBlurImage(this.img, this.canvas, this.props.blurRadius, this.width, this.height);
-  },
+  }
 
   componentWillUpdate(nextProps) {
     if (this.img.src !== nextProps.img) {
       this.img.src = nextProps.img;
     }
     stackBlurImage(this.img, this.canvas, nextProps.blurRadius, this.width, this.height);
-  },
+  }
 
   render() {
-    var {img, className, children, ...other} = this.props;
-    var classes = 'react-blur';
+    const {img, className, children, ...other} = this.props;
+    let classes = 'react-blur';
 
     if (className) {
       classes += ' ' + className;
@@ -125,6 +125,4 @@ var BlurView = React.createClass({
       </div>
     );
   }
-});
-
-exports.BlurView = BlurView;
+}
