@@ -472,7 +472,7 @@ class Calendar extends React.Component {
     this.setState(state);
   }
 
-  setviewDate(viewDate) {
+  setViewDate(viewDate) {
     const weekDate = getWeek(viewDate, 'YYYYMMDD');
     const weekSchedule = this.props.schedule.get(`${weekDate.begin}-${weekDate.end}`) || new Map();
     this.setState({ viewDate, weekSchedule });
