@@ -100,9 +100,10 @@ class List extends React.Component {
       modalVisibled: false,
     });
   }
-  async onCompleteAddMembership() {
+  async onAddMemberDone() {
     this.hideModal()
     await this.refs.masterDetail.updateMasterSource();
+    UIFramework.Message.success('添加会员成功');
   }
   render() {
     return (
@@ -120,7 +121,7 @@ class List extends React.Component {
           title="邀请新会员"
           footer="">
           <ViewToAddMember 
-            onComplete={this.onCompleteAddMembership.bind(this)}
+            onComplete={this.onAddMemberDone.bind(this)}
           />
         </UIFramework.Modal>
       </div>

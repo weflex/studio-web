@@ -36,6 +36,9 @@ export default class extends React.Component {
           nickname: this.state.form.nickname,
         });
       }
+      if (typeof this.props.onComplete === 'function') {
+        await this.props.onComplete();
+      }
       // empty the form if submit successfully
       this.setState({
         form: {
@@ -43,9 +46,6 @@ export default class extends React.Component {
           lifetime: {},
         },
       });
-      if (typeof this.props.onComplete === 'function') {
-        this.props.onComplete();
-      }
     } catch (err) {
       console.error(err && err.stack);
       UIFramework.Modal.error({

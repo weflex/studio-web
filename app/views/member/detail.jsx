@@ -91,6 +91,7 @@ class UserProfileCard extends React.Component {
         if (props.id) {
           await client.member.delete(props.id);
           await props.context.props.updateMaster();
+          UIFramework.Message.success('已删除会员：' + props.nickname);
         } else {
           // TODO(Yorkie)
         }
@@ -106,6 +107,7 @@ class UserProfileCard extends React.Component {
       avatarId: result.id,
     });
     await this.props.context.props.updateMaster();
+    UIFramework.Message.success('上传头像成功');
   }
 
   /**
@@ -147,6 +149,7 @@ class UserProfileCard extends React.Component {
   async onComplete() {
     this.hideModal();
     await this.props.context.props.updateMaster();
+    UIFramework.Message.success('会员信息修改成功');
   }
 
   /**
