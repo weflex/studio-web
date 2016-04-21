@@ -325,13 +325,6 @@
   font-family: sans-serif;
 }
 
-.ToolTipPortal .divider {
-  width: 200px;
-  height: 0;
-  border-top: 1px solid #ccc;
-  font-size: 0;
-}
-
 .ToolTipPortal .btn-modify-class {
   height: 20px;
   width: 70px;
@@ -387,46 +380,82 @@
 .ToolTipPortal .order-info-users {
 }
 
-.ToolTipPortal .order-info-users p {
+.ToolTipPortal .order-info-users fieldset {
+  border: 0;
+  border-top: 1px solid #ebebeb;
+  text-align: center;
+  line-height: 17px;
+}
+
+.ToolTipPortal .order-info-users legend {
+  color: #4a4a4a;
   font-size: 12px;
-  margin: 5px 0;
+  font-weight: bold;
+  padding: 0 5px;
 }
 
-.ToolTipPortal .order-info-selection {
-  position: absolute;
-  right: 0px;
-  top: 7px;
+.ToolTipPortal .order-info-users ul {
+  overflow-y: scroll;
+  max-height: 100px;
 }
 
-.ToolTipPortal .order-info-selection li[class^="btn-"] {
+.ToolTipPortal .order-info-user {
+  margin: 7px 0;
+}
+
+.ToolTipPortal .order-info-user > * {
   display: inline-block;
-  margin: 0 3px;
+}
+
+.ToolTipPortal .order-info-user-icon {
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background-color: #80c7e8;
+  margin-right: 5px;
+  transition: background-color .2s ease-in-out;
+}
+
+.ToolTipPortal .order-info-user-icon-checkin {
+  background-color: #6ed4a4;
+}
+
+.ToolTipPortal .order-info-user-icon-cancel {
+  background-color: #ff8ac2;
+}
+
+.ToolTipPortal .order-info-user-name {
+  font-size: 12px;
+  color: #535353;
+}
+
+.ToolTipPortal .order-info-user-status {
+  float: right;
+}
+
+.ToolTipPortal .order-info-user-status span {
   font-size: 10px;
-  color: #777;
+  color: #9b9b9b;
+}
+
+.ToolTipPortal .order-info-user-status button {
+  font-size: 10px;
+  height: 18px;
+  line-height: 18px;
+  text-align: center;
+  vertical-align: middle;
+  color: #4a4a4a;
+  background-color: #fff;
+  border: 1px solid #d8d8d8;
+  border-radius: 2px;
+  padding: 0 5px;
   cursor: pointer;
-  opacity: 0.5;
-  transition: all .3s ease-in-out;
 }
 
-.ToolTipPortal .order-info-selection > li[class^="btn-"]:hover, 
-.ToolTipPortal .order-info-selection > li.selected {
-  opacity: 1;
+.ToolTipPortal .order-info-user-status button:first-child {
+  margin-right: 10px;
 }
 
-.ToolTipPortal .label-checkin {
-  background: #3eca89;
-  color: #3eca89;
-}
-
-.ToolTipPortal .label-cancel {
-  background: #b3b3b3;
-  color: #b3b3b3;
-}
-
-.ToolTipPortal .label-paid {
-  background: #143c65;
-  color: #143c65;
-}
 
 .ToolTipPortal .order-info li {
   list-style: none;
