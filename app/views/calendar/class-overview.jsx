@@ -1,12 +1,78 @@
 "use strict"
 
 import _ from 'lodash';
-import React from 'react';
 import moment from 'moment';
+import React from 'react';
 import UIFramework from 'weflex-ui';
 import { NewClassTemplate } from './new';
 import { getFormatTime } from './util'
+import { client } from '../../api';
 moment.locale('zh-cn');
+
+class OrderLine extends React.Component {
+  constructor(props) {
+    super(props);
+    let status = null;
+    if (props.data.history && props.data.history.length > 0) {
+      status = _.sortBy(props.data.history, 'createdAt')[0].status;
+    }
+    this.state = {
+      status,
+    };
+  }
+  async onClickCheckin(event) {
+    this.setState({
+      status: 'checkin',
+    });
+    await client.orderLog.create({
+      orderId: this.props.data.id,
+      status: 'checkin',
+    });
+    UIFramework.Message.success('签到成功');
+  }
+
+  async onClickCancel(event) {
+    this.setState({
+      status: 'cancel',
+    });
+    await client.orderLog.create({
+      orderId: this.props.data.id,
+      status: 'cancel',
+    });
+    UIFramework.Message.success('取消成功');
+  }
+  render() {
+    let userStatus;
+    if (this.state.status !== 'checkin' &&
+      this.state.status !== 'cancel') {
+      userStatus = (
+        <div className="order-info-user-status">
+          <button onClick={this.onClickCheckin.bind(this)}>签到</button>
+          <button onClick={this.onClickCancel.bind(this)}>取消</button>
+        </div>
+      );
+    } else {
+      userStatus = (
+        <div className="order-info-user-status">
+          <span>{this.state.status === 'checkin' ? '已签到' : '已取消'}</span>
+        </div>
+      );
+    }
+    const userIconClassName = [
+      'order-info-user-icon',
+      'order-info-user-icon-' + this.state.status,
+    ];
+    return (
+      <div className="order-info-user">
+        <div className={userIconClassName.join(' ')}></div>
+        <div className="order-info-user-name">
+          {this.props.data.user.nickname}
+        </div>
+        {userStatus}
+      </div>
+    );
+  }
+}
 
 /**
  * The `OrderInfo` is used for showing the order of every class
@@ -14,7 +80,7 @@ moment.locale('zh-cn');
  *
  * @class OrderInfo
  */
-class OrderInfo extends React.Component {
+class OrdersInfo extends React.Component {
 
   /**
    * To initialize an OrderInfo, the constructor function
@@ -28,43 +94,8 @@ class OrderInfo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      option: 'all',
+      orders: props.data,
     };
-    this.options = {
-      'paid': '已付款',
-      'checkin': '签到',
-      'cancel': '取消',
-    };
-  }
-
-  /**
-   * @method selectOption
-   * @private
-   * @param {Object} option
-   */
-  selectOption(option) {
-    return () => {
-      if (option === this.state.option) {
-        this.setState({
-          option: 'all',
-          orders: this.props.orders
-        });
-      } else {
-        this.setState({
-          option,
-          orders: this.props.orders.filter(o => o.status === option)
-        });
-      }
-    }
-  }
-
-  /**
-   * @method getStatusLabel
-   * @private
-   * @param {String} status
-   */
-  getStatusLabel(status) {
-    return <div className={`label-${status}`}></div>
   }
 
   /**
@@ -72,39 +103,18 @@ class OrderInfo extends React.Component {
    * @return {Element}
    */
   render() {
-    const ordersInfo = this.props.orders.map((order) => {
-      const label = this.getStatusLabel(order.status);
-      return (
-        <li key={`order_${order.id}`}>{label} {order.user.nickname}</li>
-      );
-    });
-
-    const selectButtons = [];
-    for (let key in this.options) {
-      let value = this.options[key];
-      let className = `btn-${key}`;
-      if (this.state.option === key) {
-        className += ' selected';
-      }
-
-      selectButtons.push(
-        <li className={className} key={key} onClick={this.selectOption.call(this, key)}>
-          {this.getStatusLabel(key)}
-          <span className={key}>{value}</span>
-        </li>
-      );
-    }
-
     return (
       <div className="order-info">
-        <div className="divider"></div>
         <div className="order-info-users">
-          <p>已登记用户:</p>
-          {ordersInfo}
+          <fieldset>
+            <legend>已登记用户</legend>
+          </fieldset>
+          <ul>
+            {this.state.orders.map((order, idx) => {
+              return <OrderLine data={order} key={idx} />;
+            })}
+          </ul>
         </div>
-        <ul className="order-info-selection">
-          {selectButtons}
-        </ul>
       </div>
     );
   }
@@ -134,7 +144,7 @@ class ClassOverview extends React.Component {
         <div className="trainer">{trainerName}</div>
         <div className="btn-modify-class"
           onClick={() => this.setState({modalVisibled: true})}>修改课程</div>
-        <OrderInfo orders={orders} />
+        <OrdersInfo data={orders} />
         <UIFramework.Modal
           visible={this.state.modalVisibled}
           title="修改课程"

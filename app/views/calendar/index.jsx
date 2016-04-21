@@ -123,7 +123,7 @@ class WeflexCalendar extends React.Component {
         'trainer', 
         'template',
         {
-          'orders': 'user'
+          'orders': ['user', 'history']
         },
       ]
     })).filter((item) => {
