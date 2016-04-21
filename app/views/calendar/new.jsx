@@ -37,7 +37,7 @@ class NewClassTemplate extends React.Component {
         venueId: venue.id,
       },
     });
-    const members = await client.orgMember.list({
+    const members = await client.collaborator.list({
       where: {
         or: [
           {
