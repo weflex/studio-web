@@ -1,0 +1,64 @@
+#+TITLE:   Settings
+#+AUTHOR:  Scott Wang
+#+STARTUP: align indent
+#+TODO:    |DONE
+
+* Personal Information and Preferences
+** Basic Information
+*** Avatar
+User's avatar image. We can get user's avatar image when he connects
+his Wechat account via OAuth or when he [[Upload Avatar][uploads one]].
+**** Upload Avatar
+*** Name
+User's name. It comes with user's account as he filled in [[file:../login-and-signup/Send Invitation Request.png][the sign up
+form]] when he enrolled into WeFlex Studio.
+** Contacts and Accounts
+*** Phone
+User's phone. It also comes with user's account, see [[file:../login-and-signup/Send Invitation Request.png][the sign up form]].
+**** Verifying Phone
+We allow user to update his phone number as he may switch to another
+number or he may lost it. Since phone is a key we used to identify
+users, we need to verify his new phone number.
+
+By default, the =Get Passcode= button on the right side of phone
+number is disabled and greyed out, as well as the =Passcode= text
+field below it. When user tries to modify his phone number, he click
+on the =Phone= input and thus activates the =Get Passcode= button, as
+well as the =Passcode= field. If user leaves =Phone= without any
+modification, then, again, =Get Passcode= button gets greyed out. This
+UI behavior applies also on other pages where phone verification are
+required.
+*** Wechat
+User's Wechat Account. When user have not Wechat account connected, it
+shows up a [[QR Code]] for user to scan, so that he can authorize WeFlex
+Studio to use his public data from Wechat.
+**** QR Code
+[[./Personal Preference Screen.png]]
+**** Connected Account
+[[./Personal Preference Screen Wechat Authed.png]]
+*** Email
+** Information Completeness
+On the right side of all the information, there's a progress bar
+showing how many information about himself user have filled in. Each
+information have a score.
+
+#+CAPTION: Information Completeness Score
+#+NAME: info-score
+| field  | score | description             |
+|--------+-------+-------------------------|
+| avatar |    20 |                         |
+| name   |    10 |                         |
+| phone  |    20 |                         |
+| wechat |    50 | 30 when =avatar= exists |
+| email  |    20 |                         |
+
+According to the score table above, user have starts from a ~30%~
+(~10%~ from =name= and ~20%~ from =phone=) completeness and he could
+earn a higher and higher score by connecting more accounts and
+uploading more information.
+** Actions
+*** Save
+When *SAVE* button is clicked, it will submit all the verified
+information user filled in.
+** Search
+Searching is disabled in this page.
