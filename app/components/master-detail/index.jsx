@@ -105,7 +105,7 @@ class MasterDetail extends React.Component {
         masterSource: this.cachedMasterSource.filter((item) => {
           const keywords = (config.search) || ['title'];
           return keywords.filter((keyword) => {
-            return item[keyword].indexOf(text.toLowerCase()) !== -1;
+            return (item[keyword] || '').indexOf(text.toLowerCase()) !== -1;
           }).length > 0;
         }),
       });

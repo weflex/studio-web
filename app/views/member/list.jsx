@@ -39,14 +39,14 @@ class List extends React.Component {
       {
         title: '邀请新会员',
         onClick: this.viewModal.bind(this),
-        disableToggled: false,
+        disableToggled: true,
       }
     ];
   }
   get config() {
     return {
       title: 'title',
-      search: ['title', 'phone'],
+      search: ['nickname', 'phone'],
       master: (user, index) => {
         const header = (
           <p title={user.nickname}>
