@@ -6,7 +6,7 @@ import React from 'react';
 import UIFramework from 'weflex-ui';
 import { client } from '../../api';
 
-class AddOrderView extends React.Component {
+export default class extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -45,21 +45,24 @@ class AddOrderView extends React.Component {
   async onPhoneInputChange(event) {
     const phone = event.target.value;
     if (phone.length === 11) {
-      const users = await client.middleware('/search/users', {phone});
-      if (users.length === 0) {
+      const members = await client.member.list({
+        where: {phone},
+        include: ['user']
+      });
+      if (members.length === 0) {
         this.setState({isUserNotFound: true});
       } else {
         // find a user
-        const user = users[0];
+        const member = members[0];
         const memberships = await client.membership.list({
           where: {
-            userId: user.id
+            memberId: member.id
           },
           include: ['package']
         });
         this.setState({
           isUserNotFound: false,
-          user,
+          user: member.user,
           memberships,
         });
       }
@@ -213,5 +216,3 @@ class AddOrderView extends React.Component {
     );
   }
 }
-
-module.exports = AddOrderView;
