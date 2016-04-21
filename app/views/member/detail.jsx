@@ -305,12 +305,18 @@ class MembershipsCard extends React.Component {
     const container = this.refs.membershipcards;
     const width = parseInt(container.getBoundingClientRect().width) * 0.30;
     return this.state.member.memberships.map((membership, key) => {
+      if (!membership.package) {
+        return;
+      }
+      const data = Object.assign({
+        createdAt: membership.createdAt,
+      }, membership.package);
       return (
         <UIMembershipCard 
           key={key} 
           onClick={this.viewModal.bind(this, membership)}
           width={width}
-          data={membership.package}
+          data={data}
         />
       );
     }).concat(
