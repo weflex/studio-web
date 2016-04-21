@@ -36,6 +36,13 @@ export default class extends React.Component {
           nickname: this.state.form.nickname,
         });
       }
+      // empty the form if submit successfully
+      this.setState({
+        form: {
+          correction: {},
+          lifetime: {},
+        },
+      });
       if (typeof this.props.onComplete === 'function') {
         this.props.onComplete();
       }
@@ -82,7 +89,7 @@ export default class extends React.Component {
             bindStateCtx={this}
             bindStateName="form.phone"
             onChange={this.onChangePhone.bind(this)}
-            defaultValue={this.props.member && this.props.member.phone}
+            value={this.state.form.phone}
             placeholder="11位手机号码"
           />
           <UIFramework.TextInput
