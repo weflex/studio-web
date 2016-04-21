@@ -26,13 +26,6 @@ export default class extends React.Component {
         if (!response || !response.user) {
           throw new Error('Internal Server Error');
         }
-        // FIXME(Yorkie): When props doesn't have `user`, we should
-        // notify user if this user is not a new addition.
-        if (!this.props.user && !response.user.isNew) {
-          UIFramework.Modal.info({
-            title: `您添加了一个已存在的会员：${response.user.nickname}`,
-          });
-        }
       } else {
         // edit member object
         await client.member.update(this.props.member.id, {
