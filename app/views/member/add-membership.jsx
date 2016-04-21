@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 import _ from 'lodash';
 import moment from 'moment';
@@ -6,15 +6,20 @@ import React from 'react';
 import UIFramework from 'weflex-ui';
 import { client } from '../../api';
 
-class AddMembershipView extends React.Component {
+export default class extends React.Component {
+  static propTypes = {
+    member: React.PropTypes.object,
+    data: React.PropTypes.object,
+    onComplete: React.PropTypes.func,
+  };
   constructor(props) {
     super(props);
     this.cachedPackages = {};
     this.state = {
-      form: {
+      form: Object.assign({
         correction: {},
         lifetime: {},
-      },
+      }, props.data),
       packageOptions: [
         {text: '未选择'}
       ],
@@ -38,41 +43,40 @@ class AddMembershipView extends React.Component {
       }),
     });
   }
-  async onSubmit() {
-    try {
-      const res = await client.middleware('/transaction/add-user', {
-        nickname: this.state.form.nickname,
-        phone: this.state.form.phone,
-        packageId: this.state.form.packageId,
-        createdAt: this.state.form.createdAt,
-        correction: this.state.form.correction,
-      }, 'post');
-      if (!res || !res.user || !res.membership) {
-        throw new Error('Internal Server Error');
-      }
-      // FIXME(Yorkie): When props doesn't have `user`, we should
-      // notify user if this user is not a new addition.
-      if (!this.props.user && !res.user.isNew) {
-        alert(`您添加了一个已存在的会员：${res.user.nickname}`);
-      }
-      if (typeof this.props.onComplete === 'function') {
-        this.props.onComplete();
-      }
-    } catch (err) {
-      console.error(err);
-      alert(err && err.message);
-    }
-  }
-  get submitDisabled() {
-    return !(this.state.form.nickname &&
-      this.state.form.phone &&
-      this.state.form.phone.length === 11 &&
-      this.state.form.createdAt);
-  }
   onChangePackage(event) {
     this.setState({
       selected: event.target.value,
     });
+  }
+  async onSubmit() {
+    const membership = {
+      packageId: this.state.form.packageId,
+      memberId: this.props.member.id,
+      correction: this.state.form.correction,
+      createdAt: this.state.form.createdAt,
+    };
+    if (this.props.data) {
+      await client.membership.update(
+        this.props.data.id, membership);
+    } else {
+      await client.membership.create(membership);
+    }
+    if (typeof this.props.onComplete === 'function') {
+      this.props.onComplete();
+    }
+  }
+  onDelete() {
+    let props = this.props;
+    UIFramework.Modal.confirm({
+      title: '确认删除会卡信息？',
+      content: `您正在删除会员 ${this.props.member.nickname} 的会卡，删除后将无法返回`,
+      onOk: async () => {
+        await client.membership.delete(props.data.id);
+        if (typeof props.onComplete === 'function') {
+          props.onComplete();
+        }
+      }
+    })
   }
   render() {
     let currentPackage = this.cachedPackages[this.state.selected];
@@ -138,50 +142,59 @@ class AddMembershipView extends React.Component {
     }
 
     return (
-      <UIFramework className="membership-add">
-        <UIFramework.Row name="用户姓名" hint="用户的名字">
-          <UIFramework.TextInput
-            flex={1}
-            bindStateCtx={this}
-            bindStateName="form.nickname"
-            value={this.props.user && this.props.user.nickname}
-          />
+      <UIFramework>
+        <UIFramework.Row name="会员姓名">
+          <UIFramework.TextInput 
+            flex={1} value={this.props.member.nickname} disabled />
         </UIFramework.Row>
-        <UIFramework.Row name="手机号码" hint="用户的手机号码">
-          <UIFramework.TextInput
-            flex={1}
-            bindStateCtx={this}
-            bindStateName="form.phone"
-            value={this.props.user && this.props.user.phone}
-            placeholder="11位手机号码"
-          />
-        </UIFramework.Row>
-        <UIFramework.Row name="会卡" hint="用户需要会卡才能预定课程">
+        <UIFramework.Row name="会卡" hint="会员需要会卡才能预定课程">
           <UIFramework.Select
-            flex={0.6}
+            flex={0.5}
             bindStateCtx={this}
             bindStateName="form.packageId"
+            value={this.state.form.packageId}
             options={this.state.packageOptions}
             onChange={this.onChangePackage.bind(this)}
           />
           <UIFramework.DateInput
-            flex={0.4}
+            flex={0.5}
             bindStateCtx={this}
             bindStateName="form.createdAt"
+            value={moment(this.state.form.createdAt).format('YYYY-MM-DD')}
           />
         </UIFramework.Row>
         <UIFramework.Row name={correction.name} hint={correction.hint}>
           {correction.view}
         </UIFramework.Row>
         <UIFramework.Row>
-          <UIFramework.Button text="创建用户" 
-            onClick={this.onSubmit.bind(this)} 
-            disabled={this.submitDisabled} 
-          />
+          {(() => {
+            let text;
+            let btns = [];
+            if (this.props.data) {
+              text = '保存会员信息';
+              btns.push(
+                <UIFramework.Button 
+                  key="del"
+                  text="删除会卡"
+                  onClick={this.onDelete.bind(this)} 
+                />
+              );
+            } else {
+              text = '确认添加';
+            }
+            btns.push(
+              <UIFramework.Button 
+                key="save"
+                text={text}
+                onClick={this.onSubmit.bind(this)}
+                disabled={!this.state.form.createdAt}
+              />
+            );
+            return btns
+
+          })()}
         </UIFramework.Row>
       </UIFramework>
     );
   }
 }
-
-module.exports = AddMembershipView;
