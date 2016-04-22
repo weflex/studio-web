@@ -2,7 +2,7 @@
 
 import moment from 'moment';
 import React from 'react';
-import { UIIdentificationCard } from '../ui-identification-card';
+import UIIdentificationCard from 'react-identification-card';
 import './index.css';
 
 export default class UIMembershipCard extends React.Component {
