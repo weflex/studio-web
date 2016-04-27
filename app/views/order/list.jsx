@@ -91,7 +91,9 @@ class List extends React.Component {
         },
       ],
     });
-    return (list || []).map((item) => {
+    return (list || []).filter((item) => {
+      return item.class;
+    }).map((item) => {
       item.title = item.class.template.name;
       return item;
     });
