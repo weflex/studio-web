@@ -57,7 +57,9 @@ class Detail extends React.Component {
     if (this.state.membership) {
       const membership = this.state.membership;
       const classPackage = membership.package;
+      classPackage.price = membership.price || classPackage.price;
       const lifetime = classPackage.lifetime;
+
       description = `使用 ${classPackage.name} 抵扣 ${payments[0].fee} 元`;
       preview = <UIMembershipCard data={classPackage} />;
       metadata = (

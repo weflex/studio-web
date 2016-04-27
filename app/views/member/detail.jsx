@@ -208,6 +208,62 @@ class UserProfileCard extends React.Component {
  * @class MembershipCard
  * @extends React.Component
  */
+class MembershipCard extends React.Component {
+  static propTypes = {
+    /**
+     * @property {Number} width - the width of membership card.
+     */
+    width: React.PropTypes.number,
+    /**
+     * @property {Object} data - the data
+     */
+    data: React.PropTypes.object,
+    /**
+     * @property {Object} member - the member data
+     */
+    member: React.PropTypes.object,
+    /**
+     * @property {Function} onComplete - fired when completing
+     */
+    onComplete: React.PropTypes.func,
+  };
+
+  /**
+   * @constructor
+   */
+  constructor(props) {
+    super(props);
+    this.state = {
+      visible: false,
+    };
+  }
+  /**
+   * @method render - render function
+   */
+  render() {
+    return (
+      <span style={{display: 'inline-block', marginBottom: '10px'}}>
+        <UIMembershipCard
+          onClick={() => this.setState({visible: true})}
+          width={this.props.width}
+          data={this.props.data && this.props.data.package}
+        />
+        <UIFramework.Modal 
+          title="会卡"
+          visible={this.state.visible}
+          onCancel={() => this.setState({visible: false})}
+          footer="">
+          <ViewToAddMembership {...this.props} />
+        </UIFramework.Modal>
+      </span>
+    );
+  }
+}
+
+/**
+ * @class MembershipsCard
+ * @extends React.Component
+ */
 class MembershipsCard extends React.Component {
   static propTypes = {
     /**
@@ -224,15 +280,13 @@ class MembershipsCard extends React.Component {
    * The `MembershipCard`'s constructor will create the following
    * states:
    *   1. modelVisibled
-   *   2. membershipProps
+   *   2. membershipView
    *   3. member
    * @constructor
    */
   constructor(props) {
     super(props);
     this.state = {
-      modalVisibled: false,
-      membershipProps: {},
       member: props.member,
     };
   }
@@ -262,35 +316,10 @@ class MembershipsCard extends React.Component {
   }
 
   /**
-   * @method viewModal
-   * @param {Object} membership - the membership to view
-   * @param {Event} event - the browser builtin event object
-   */
-  viewModal(membership, event) {
-    this.setState({
-      modalVisibled: true,
-      membershipProps: {
-        member: this.state.member,
-        data: membership,
-      },
-    });
-  }
-
-  /**
-   * @method hideModal
-   */
-  hideModal() {
-    this.setState({
-      modalVisibled: false,
-    });
-  }
-
-  /**
    * @method onComplete
    * @async
    */
   async onComplete() {
-    this.hideModal();
     await this.props.context.props.updateMaster();
   }
 
@@ -304,26 +333,32 @@ class MembershipsCard extends React.Component {
     }
     const container = this.refs.membershipcards;
     const width = parseInt(container.getBoundingClientRect().width) * 0.30;
+    const onComplete = this.onComplete.bind(this);
+
     return this.state.member.memberships.map((membership, key) => {
       if (!membership.package) {
         return;
       }
-      const data = Object.assign({
-        createdAt: membership.createdAt,
-      }, membership.package);
-      return (
-        <UIMembershipCard 
-          key={key} 
-          onClick={this.viewModal.bind(this, membership)}
-          width={width}
-          data={data}
-        />
-      );
-    }).concat(
-      <UIMembershipCard
-        key="add"
-        onClick={this.viewModal.bind(this, null)}
+      const data = Object.assign(membership, {
+        'package': Object.assign({
+          createdAt: membership.createdAt,
+        }, membership.package, {
+          price: membership.price || membership.package.price,
+        })
+      });
+      return <MembershipCard
+        key={key}
         width={width}
+        data={data}
+        member={this.state.member}
+        onComplete={onComplete}
+      />;
+    }).concat(
+      <MembershipCard
+        key="add"
+        width={width}
+        member={this.state.member}
+        onComplete={onComplete}
       />
     );
   }
@@ -338,16 +373,6 @@ class MembershipsCard extends React.Component {
         <div className="membership-cards" ref="membershipcards">
           {this.cards()}
         </div>
-        <UIFramework.Modal 
-          title="会卡"
-          visible={this.state.modalVisibled}
-          onCancel={this.hideModal.bind(this)}
-          footer="">
-          <ViewToAddMembership
-            onComplete={this.onComplete.bind(this)}
-            {...this.state.membershipProps}
-          />
-        </UIFramework.Modal>
       </MasterDetail.Card>
     );
   }
