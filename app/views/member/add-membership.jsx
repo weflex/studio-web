@@ -20,10 +20,8 @@ export default class extends React.Component {
         correction: {},
         lifetime: {},
       }, props.data),
-      packageOptions: [
-        {text: '未选择'}
-      ],
-      selected: null
+      packageOptions: [],
+      selected: null,
     };
   }
   async componentWillMount() {
@@ -34,22 +32,32 @@ export default class extends React.Component {
       }
     });
     this.cachedPackages = _.keyBy(packages, 'id');
+    
+    const form = this.state.form;
+    const curr = this.cachedPackages[this.state.form.packageId];
+    if (curr && curr.price) {
+      form.price = curr.price;
+    }
     this.setState({
+      form,
       packageOptions: packages.map((item) => {
         return {
           text: item.name,
           value: item.id,
+          data: item,
         };
       }),
     });
   }
   onChangePackage(event) {
-    this.setState({
-      selected: event.target.value,
-    });
+    const curr = this.cachedPackages[this.state.form.packageId];
+    let form = this.state.form;
+    form.price = curr.price;
+    this.forceUpdate();
   }
   async onSubmit() {
     const membership = {
+      price: this.state.form.price,
       packageId: this.state.form.packageId,
       memberId: this.props.member.id,
       correction: this.state.form.correction,
@@ -79,7 +87,7 @@ export default class extends React.Component {
     })
   }
   render() {
-    let currentPackage = this.cachedPackages[this.state.selected];
+    let currentPackage = this.cachedPackages[this.state.form.packageId];
     let correction = {
       name: null,
       hint: null,
@@ -148,19 +156,43 @@ export default class extends React.Component {
             flex={1} value={this.props.member.nickname} disabled />
         </UIFramework.Row>
         <UIFramework.Row name="会卡" hint="会员需要会卡才能预定课程">
-          <UIFramework.Select
-            flex={0.5}
-            bindStateCtx={this}
-            bindStateName="form.packageId"
-            value={this.state.form.packageId}
-            options={this.state.packageOptions}
-            onChange={this.onChangePackage.bind(this)}
-          />
+          {(() => {
+            if (!this.state.packageOptions.length) {
+              return (
+                <UIFramework.Select
+                  flex={0.5}
+                  options={[
+                    {text: '未选择'}
+                  ]}
+                />
+              );
+            } else {
+              return (
+                <UIFramework.Select
+                  flex={0.5}
+                  bindStateCtx={this}
+                  bindStateName="form.packageId"
+                  value={this.state.form.packageId}
+                  options={this.state.packageOptions}
+                  onChange={this.onChangePackage.bind(this)}
+                />
+              );
+            }
+          })()}
           <UIFramework.DateInput
             flex={0.5}
             bindStateCtx={this}
             bindStateName="form.createdAt"
             value={moment(this.state.form.createdAt).format('YYYY-MM-DD')}
+          />
+        </UIFramework.Row>
+        <UIFramework.Row name="实付价格">
+          <UIFramework.TextInput 
+            flex={1}
+            bindStateCtx={this}
+            bindStateName="form.price"
+            bindStateType={Number}
+            value={this.state.form.price}
           />
         </UIFramework.Row>
         <UIFramework.Row name={correction.name} hint={correction.hint}>
