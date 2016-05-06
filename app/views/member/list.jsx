@@ -84,7 +84,9 @@ class List extends React.Component {
       },
       include: [
         'memberships',
-        'avatar'
+        {
+          'user': ['avatar']
+        }
       ],
     });
     this.props.app.title(`会员管理（${members.length}）`);
