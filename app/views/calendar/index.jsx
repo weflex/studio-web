@@ -315,23 +315,14 @@ class WeflexCalendar extends React.Component {
         });
       }
     }
-    newClass.id = res.id;
-    this.state.allClass.set(newClass.id, newClass);
-
-    // compute the schedule object out from classes.
-    const schedule = this.getSchedule(this.state.allClass);
-    this.setState({ schedule });
+    this.getClassData();
   }
 
   async deleteClassById(id) {
     // delete async
     client.class.delete(id);
     // delete in UI
-    this.state.allClass.delete(id);
-
-    // compute the schedule object out from classes.
-    const schedule = this.getSchedule(this.state.allClass);
-    this.setState({ schedule });
+    this.getClassData();
   }
 
   handleHideModal() {
