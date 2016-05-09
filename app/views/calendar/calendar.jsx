@@ -209,7 +209,7 @@ class Calendar extends React.Component {
 
   setBaseline(e) {
     let clientX, clientY;
-    if (e instanceof TouchEvent) {
+    if (window.TouchEvent && e instanceof window.TouchEvent) {
       clientX = e.changedTouches[0].clientX;
       clientY = e.changedTouches[0].clientY;
     } else {
