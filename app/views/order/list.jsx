@@ -119,6 +119,15 @@ class List extends React.Component {
       }
     }
   }
+  async componentDidMount() {
+    const changeProxy = client.context.createTunnel('change-proxy');
+    changeProxy.emit('register', {
+      name: 'Order'
+    });
+    changeProxy.on('change', (data) => {
+      this.refs.masterDetail.updateMasterSource();
+    });
+  }
   render() {
     return (
       <div style={{height: '100%'}}>

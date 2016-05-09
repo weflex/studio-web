@@ -27,7 +27,18 @@ class ClassPackageList extends React.Component {
       }
     ];
   }
-  async componentWillMount() {
+  componentDidMount() {
+    this.refresh();
+    const changeProxy = client.context.createTunnel('change-proxy');
+    changeProxy.emit('register', {
+      name: 'ClassPackage'
+    });
+    changeProxy.on('change', (data) => {
+      this.refresh();
+      UIFramework.Message.success('已更新会卡');
+    });
+  }
+  async refresh() {
     const venue = await client.user.getVenueById();
     const data = await client.classPackage.list({
       where: {

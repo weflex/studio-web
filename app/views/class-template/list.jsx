@@ -1,6 +1,7 @@
 "use strict";
 
 import React from 'react';
+import UIFramework from 'weflex-ui';
 import MasterDetail from '../../components/master-detail';
 import Detail from './detail';
 import { client } from '../../api';
@@ -67,9 +68,20 @@ class List extends React.Component {
       }
     }
   }
+  componentDidMount() {
+    const changeProxy = client.context.createTunnel('change-proxy');
+    changeProxy.emit('register', {
+      name: 'ClassTemplate'
+    });
+    changeProxy.on('change', (data) => {
+      this.refs.master.updateMasterSource();
+      UIFramework.Message.success('已更新课程模版');
+    });
+  }
   render() {
     return (
       <MasterDetail 
+        ref="master"
         pathname="class/template"
         className="class-template"
         masterSource={this.source}
