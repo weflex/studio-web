@@ -90,6 +90,15 @@ class List extends React.Component {
     this.props.app.title(`会员管理（${members.length}）`);
     return members;
   }
+  async componentDidMount() {
+    const changeProxy = client.context.createTunnel('change-proxy');
+    changeProxy.emit('register', {
+      name: 'Member'
+    });
+    changeProxy.on('change', (data) => {
+      this.refs.masterDetail.updateMasterSource();
+    });
+  }
   viewModal() {
     this.setState({
       modalVisibled: true,
