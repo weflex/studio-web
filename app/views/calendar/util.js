@@ -30,7 +30,13 @@ function getRoundTime(time, unit) {
     coll.push(v);
   }
   coll.push(time.minute);
-  coll.sort((a, b) => a > b);
+  coll.sort((a, b) => {
+    if (a === b) {
+      return 0;
+    } else {
+      return (a > b) ? 1 : -1;
+    }
+  });
   let minuteIdx = coll.indexOf(time.minute);
   if (minuteIdx === -1) {
     // TODO(Yorkie): should use assert instead of error throw
