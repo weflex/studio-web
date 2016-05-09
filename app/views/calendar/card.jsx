@@ -152,7 +152,7 @@ class ClassCard extends React.Component {
       let timeToFrom;
       if (this.props.isEmptyFrom) {
         let relativeY;
-        if (event.srcEvent instanceof TouchEvent) {
+        if (window.TouchEvent && event.srcEvent instanceof window.TouchEvent) {
           const cardTop = this.refs.card.getBoundingClientRect().top;
           relativeY = event.srcEvent.changedTouches[0].clientY - cardTop;
         } else {
