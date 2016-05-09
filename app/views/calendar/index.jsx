@@ -143,6 +143,15 @@ class WeflexCalendar extends React.Component {
   componentDidMount() {
     this.getClassData();
     this.getCardTemplate();
+
+    const changeProxy = client.context.createTunnel('change-proxy');
+    changeProxy.emit('register', {
+      name: 'Class'
+    });
+    changeProxy.on('change', (data) => {
+      this.getClassData();
+      UIFramework.Message.success('已更新课程');
+    });
   }
 
   componentWillUpdate(nextProps, nextState) {
