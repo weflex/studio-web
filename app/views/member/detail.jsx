@@ -105,7 +105,7 @@ class UserProfileCard extends React.Component {
   async onMemberAvatarUploaded(result, file) {
     await client.member.update(this.props.id, {
       avatarId: result.id,
-    });
+    }, this.props.modifiedAt);
     UIFramework.Message.success('上传头像成功');
     await this.props.context.props.updateMaster();
   }

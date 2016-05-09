@@ -19,9 +19,10 @@ class AvatarUploader extends React.Component {
     });
   }
   async onAvatarUploaded(result, file) {
-    await client.user.update(client.user.user.id, {
+    let user = client.user.user;
+    await client.user.update(user.id, {
       avatarId: result.id
-    });
+    }, user.modifiedAt);
     location.href = '/calendar';
   }
   onError(err) {

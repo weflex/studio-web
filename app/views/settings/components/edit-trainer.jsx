@@ -21,18 +21,22 @@ class EditTrainerView extends React.Component {
   }
   async onSubmit() {
     try {
-      await client.orgMember.update(this.props.data.id, {
+      await client.collaborator.update(this.props.data.id, {
         venueId: this.state.form.venueId,
         phone: this.state.form.phone,
         fullname: this.state.form.fullname,
         languages: [this.state.form.language],
         description: this.state.form.description,
-      });
+      }, this.props.data.modifiedAt);
       if (typeof this.props.onComplete === 'function') {
         this.props.onComplete();
       }
     } catch (err) {
-      alert(err.message);
+      console.error(err && err.stack);
+      UIFramework.Modal.error({
+        title: err.message,
+        content: err.stack
+      });
     }
   }
   async onDelete() {

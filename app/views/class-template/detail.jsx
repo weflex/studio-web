@@ -92,11 +92,26 @@ class Detail extends React.Component {
   }
   
   async onSave() {
-    await client.classTemplate.upsert(Object.assign({}, this.state.data));
-    setTimeout(() => {
-      this.props.app.router.navigate('/class/template/' + this.state.data.id);
-      UIFramework.Message.success('保存模版成功');
-    }, 0);
+    let shouldRefresh = false;
+    try {
+      await client.classTemplate.upsert(Object.assign({}, this.state.data));
+    } catch (err) {
+      if (err.code === 'RESOURCE_EXPIRED') {
+        shouldRefresh = true;
+      }
+    }
+    if (!shouldRefresh) {
+      setTimeout(() => {
+        this.props.app.router.navigate('/class/template/' + this.state.data.id);
+        UIFramework.Message.success('保存模版成功');
+      }, 0);
+    } else {
+      UIFramework.Modal.confirm({
+        title: `当前数据已过期`,
+        content: `当前数据已过期，点击确认刷新`,
+        onOk: () => location.reload(),
+      });
+    }
   }
 
   onDelete() {

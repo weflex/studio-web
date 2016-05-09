@@ -86,8 +86,23 @@ class CardDetail extends React.Component {
     });
   }
   async onSubmit(event) {
-    await client.classPackage.upsert(this.state.data);
-    this.gotoListPage();
+    let shouldRefreshPage = false;
+    try {
+      await client.classPackage.upsert(this.state.data);
+    } catch (err) {
+      if (err.code === 'RESOURCE_EXPIRED') {
+        shouldRefreshPage = true;
+      }
+    }
+    if (!shouldRefreshPage) {
+      this.gotoListPage();
+    } else {
+      UIFramework.Modal.confirm({
+        title: `当前数据已过期`,
+        content: `当前数据已过期，点击确认刷新`,
+        onOk: () => location.reload(),
+      });
+    }
   }
   form() {
     return (
