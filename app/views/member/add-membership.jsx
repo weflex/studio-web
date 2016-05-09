@@ -65,7 +65,7 @@ export default class extends React.Component {
     };
     if (this.props.data) {
       await client.membership.update(
-        this.props.data.id, membership);
+        this.props.data.id, membership, this.props.data.modifiedAt);
     } else {
       await client.membership.create(membership);
     }

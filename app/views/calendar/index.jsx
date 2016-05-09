@@ -294,8 +294,9 @@ class WeflexCalendar extends React.Component {
     // upsert the class to remote server
     // NOTE(Yorkie): DONT REMOVE THE CLONE, BECAUSE
     // GIAN WILL REMOVE `.id` that will change the id.
+    let res;
     try {
-      const res = await client.class.upsert(newClass);
+      res = await client.class.upsert(newClass);
     } catch (err) {
       if (err.code === 'RESOURCE_EXPIRED') {
         UIFramework.Modal.confirm({

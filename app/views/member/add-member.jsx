@@ -34,7 +34,7 @@ export default class extends React.Component {
           source: this.state.form.source,
           comment: this.state.form.comment,
           nickname: this.state.form.nickname,
-        });
+        }, this.props.member.modifiedAt);
       }
       if (typeof this.props.onComplete === 'function') {
         await this.props.onComplete();
