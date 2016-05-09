@@ -4,7 +4,7 @@ The desktop(HD) application for Studio based on the following stacks:
 
 - React
 - Electron
-- Webpack, Makefile
+- Webpack & Makefile
 
 ![v1.0](./history/v1.0.png)
 
@@ -15,15 +15,16 @@ Studio-desktop is able to build and release for the following platforms:
 - Native application
   - [x] Mac OSX
   - [x] Windows
-  - [ ] Linux
+  - [x] Linux
 
 - Browser SPA(Single Page Application)
   - [x] latest Chrome
-  - [ ] latest safri
+  - [x] latest Safri
+  - [ ] latest Windows Edge
 
 ### Build Dependencies
 
-* NodeJS (>= 5.0.0) See [Official Repo](https://nodejs.org/en/download/)
+* Node.js
 * Make
 * GNU Make 3.81
 
