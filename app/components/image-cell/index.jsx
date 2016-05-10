@@ -1,7 +1,6 @@
 "use strict";
 
 import React from 'react';
-import { BlurView } from '../blur';
 import './index.css';
 
 /**
@@ -13,80 +12,14 @@ class ImageCell extends React.Component {
     super(props);
     this.state = {
       /**
-       * @state {Number} blurRadius - blur radius
-       */
-      blurRadius: 0.0,
-      /**
-       * @state {Boolean} isBluring - flag the action
-       */
-      isBluring: false,
-      /**
        * @state {Boolean} isSelected - flag if selected
        */
       isSelected: props.selected || false,
     };
   }
-  
-  blurOrClear(expect, step = 1) {
-    let self = this;
-    let op;
-    if (!self.props.src || !self.props.src.uri) {
-      return;
-    }
-    if (expect >= self.state.blurRadius) {
-      op = 'plus';
-      this.setState({isBluring: true});
-    } else {
-      op = 'minus';
-      this.setState({isBluring: false});
-    }
-    window.requestAnimationFrame(animate);
-    function animate(timestamp) {
-      const actual = self.state.blurRadius;
-      let blurRadius;
-      switch (op) {
-        case 'plus':
-          if (self.state.isBluring && actual < expect) {
-            self.setState({blurRadius: self.state.blurRadius + step});
-            window.requestAnimationFrame(animate);
-          } else {
-            self.setState({isBluring: false});
-          }
-          break;
-        case 'minus':
-          if (!self.state.isBluring && actual >= 0) {
-            self.setState({
-              blurRadius: self.state.blurRadius - step,
-              isBluring: false,
-            });
-            window.requestAnimationFrame(animate);
-          }
-          break;
-      }
-    }
-  }
-  
-  onMouseOver(event) {
-    if (this.props.selectable && this.state.isSelected) {
-      return false;
-    }
-    this.blurOrClear.call(this, 15, 3);
-  }
-  
-  onMouseLeave(event) {
-    if (this.props.selectable && this.state.isSelected) {
-      return false;
-    }
-    this.blurOrClear.call(this, 0, 5);
-  }
 
   onClick(event) {
     if (this.props.selectable) {
-      if (!this.state.isSelected) {
-        this.blurOrClear.call(this, 0, 5);
-      } else {
-        this.blurOrClear.call(this, 15, 3);
-      }
       this.setState({
         isSelected: !this.state.isSelected,
       });
@@ -151,13 +84,14 @@ class ImageCell extends React.Component {
   render() {
     let className = 'image-cell';
     let bg = null;
+    let checkmark = null;
     let hint = this.props.hint || [
       <span key="icon">+</span>,
       <span key="text">点击上传图片</span>,
     ];
     
     if (this.props.src && this.props.src.uri) {
-      bg = <BlurView img={this.props.src.uri} blurRadius={this.state.blurRadius}></BlurView>;
+      bg = <img src={this.props.src.uri} width="100%" height="100%" className="background"/>;
       hint = '点击更换图片';
     } else {
       className += ' image-cell-empty';
@@ -166,6 +100,7 @@ class ImageCell extends React.Component {
     if (this.props.selectable) {
       className += ' selectable';
       if (this.state.isSelected) {
+        checkmark = this.checkmark;
         className += ' selected';
         hint = '';
       }
@@ -178,9 +113,7 @@ class ImageCell extends React.Component {
     }
 
     return (
-      <div className={className}
-        onMouseOver={this.onMouseOver.bind(this)}
-        onMouseLeave={this.onMouseLeave.bind(this)}>
+      <div className={className}>
         {bg}
         <div className="hint" onClick={this.onClick.bind(this)}>
           {hint}
@@ -189,7 +122,6 @@ class ImageCell extends React.Component {
       </div>
     );
   }
-
 }
 
 module.exports = ImageCell;
