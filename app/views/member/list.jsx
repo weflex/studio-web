@@ -91,12 +91,9 @@ class List extends React.Component {
     return members;
   }
   async componentDidMount() {
-    const changeProxy = client.context.createTunnel('change-proxy');
-    changeProxy.emit('register', {
-      name: 'Member'
-    });
-    changeProxy.on('change', (data) => {
+    client.bindChangeProxy('Member', null, (data) => {
       this.refs.masterDetail.updateMasterSource();
+      UIFramework.Message.success('已更新课程模版');
     });
   }
   viewModal() {
