@@ -84,7 +84,6 @@ class ImageCell extends React.Component {
   render() {
     let className = 'image-cell';
     let bg = null;
-    let checkmark = null;
     let hint = this.props.hint || [
       <span key="icon">+</span>,
       <span key="text">点击上传图片</span>,
