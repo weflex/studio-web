@@ -100,7 +100,6 @@ class ImageCell extends React.Component {
     if (this.props.selectable) {
       className += ' selectable';
       if (this.state.isSelected) {
-        checkmark = this.checkmark;
         className += ' selected';
         hint = '';
       }
