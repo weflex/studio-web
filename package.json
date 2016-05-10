@@ -1,8 +1,8 @@
 {
   "name": "@weflex/studio-desktop",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "dependencies": {
-    "@weflex/gian": "1.26.2",
+    "@weflex/gian": "1.27.3",
     "@weflex/passport.js": "1.2.0",
     "@weflex/random": "1.1.3",
     "babel-polyfill": "6.3.14",
