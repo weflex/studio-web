@@ -69,11 +69,7 @@ class List extends React.Component {
     }
   }
   componentDidMount() {
-    const changeProxy = client.context.createTunnel('change-proxy');
-    changeProxy.emit('register', {
-      name: 'ClassTemplate'
-    });
-    changeProxy.on('change', (data) => {
+    client.bindChangeProxy('ClassTemplate', null, (data) => {
       this.refs.master.updateMasterSource();
       UIFramework.Message.success('已更新课程模版');
     });

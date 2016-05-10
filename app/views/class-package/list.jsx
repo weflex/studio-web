@@ -29,11 +29,7 @@ class ClassPackageList extends React.Component {
   }
   componentDidMount() {
     this.refresh();
-    const changeProxy = client.context.createTunnel('change-proxy');
-    changeProxy.emit('register', {
-      name: 'ClassPackage'
-    });
-    changeProxy.on('change', (data) => {
+    client.bindChangeProxy('ClassPackage', null, (data) => {
       this.refresh();
       UIFramework.Message.success('已更新会卡');
     });
