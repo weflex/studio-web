@@ -92,7 +92,7 @@ class List extends React.Component {
   }
   async componentDidMount() {
     client.bindChangeProxy('Member', null, (data) => {
-      this.refs.master.updateMasterSource();
+      this.refs.masterDetail.updateMasterSource();
       UIFramework.Message.success('已更新课程模版');
     });
   }
