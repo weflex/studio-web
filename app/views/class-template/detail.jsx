@@ -93,33 +93,35 @@ class Detail extends React.Component {
   
   async onSave() {
     let shouldRefresh = false;
+    let resp;
     try {
-      await client.classTemplate.upsert(Object.assign({}, this.state.data));
+      resp = await client.classTemplate.upsert(Object.assign({}, this.state.data));
     } catch (err) {
       if (err.code === 'RESOURCE_EXPIRED') {
         shouldRefresh = true;
+      } else {
+        UIFramework.Message.error('保存模版失败');
+        console.error(err);
       }
     }
-    if (!shouldRefresh) {
-      setTimeout(() => {
-        this.props.app.router.navigate('/class/template/' + this.state.data.id);
-        UIFramework.Message.success('保存模版成功');
-      }, 0);
-    } else {
+    if (shouldRefresh) {
       UIFramework.Modal.confirm({
         title: `当前数据已过期`,
         content: `当前数据已过期，点击确认刷新`,
         onOk: () => location.reload(),
       });
+    } else if (!this.state.data || !this.state.data.id) {
+      this.props.app.router.navigate('/class/template/' + resp.id);
     }
   }
 
   onDelete() {
+    let self = this;
     UIFramework.Modal.confirm({
       title: '确认删除该课程模版？',
       content: '删除该课程模版将会使相关联的课程无法使用，即便如此，你也确认删除吗？',
       onOk: async () => {
-        await client.classTemplate.delete(self.state.data.id);
+        await client.classTemplate.delete(self.state.data.id, self.state.data.modifiedAt);
         await self.props.updateMaster();
       }
     });
@@ -219,9 +221,9 @@ class Detail extends React.Component {
           <UIFramework.TextInput
             flex={1}
             bindStateCtx={this}
-            bindStateName="data.spot"
+            bindStateName="data.spots"
             bindStateType={Number}
-            value={this.state.data.spot}
+            value={this.state.data.spots}
           />
         </UIFramework.Row>
         <UIFramework.Row name="选择教练" required={true}>

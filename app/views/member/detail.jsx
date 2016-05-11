@@ -89,7 +89,7 @@ class UserProfileCard extends React.Component {
       content: '删除会员资料将不可恢复！',
       onOk: async () => {
         if (props.id) {
-          await client.member.delete(props.id);
+          await client.member.delete(props.id, props.modifiedAt);
           await props.context.props.updateMaster();
           UIFramework.Message.success('已删除会员：' + props.nickname);
         } else {
