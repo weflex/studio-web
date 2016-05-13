@@ -150,7 +150,7 @@ class Team extends React.Component {
   }
   async componentWillMount() {
     let venue = await client.user.getVenueById();
-    let members = await client.orgMember.list({
+    let members = await client.collaborator.list({
       where: {
         or: [
           {orgId: venue.orgId},
@@ -210,7 +210,10 @@ class Team extends React.Component {
       }
     }
     if (orgmembers.length === 0) {
-      orgmembers.push(venues[0].owner);
+      const currVenue = _.find(venues, {id: venue.id});
+      orgmembers.push(Object.assign({
+        isOwner: true,
+      }, currVenue.owner));
     }
     this.setState({
       orgmembers,
