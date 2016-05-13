@@ -4,6 +4,7 @@ import _ from 'lodash';
 import React from 'react';
 import { client } from '../../api';
 import { ClipLoader } from 'halogen';
+import UIFramework from 'weflex-ui';
 import UIMembershipCard from '../../components/ui-membership-card';
 import './list.css';
 
