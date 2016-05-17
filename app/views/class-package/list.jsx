@@ -4,6 +4,7 @@ import _ from 'lodash';
 import React from 'react';
 import { client } from '../../api';
 import { ClipLoader } from 'halogen';
+import UIFramework from 'weflex-ui';
 import UIMembershipCard from '../../components/ui-membership-card';
 import './list.css';
 
@@ -27,12 +28,17 @@ class ClassPackageList extends React.Component {
       }
     ];
   }
-  componentDidMount() {
-    this.refresh();
-    client.bindChangeProxy('ClassPackage', null, (data) => {
-      this.refresh();
-      UIFramework.Message.success('已更新会卡');
-    });
+  async componentDidMount() {
+    let self = this;
+    self.refresh();
+    self.onClassPackageChange = (data) => {
+      self.refresh();
+    };
+    self.changeProxy = await client.bindChangeProxy(
+      'ClassPackage', null, self.onClassPackageChange);
+  }
+  componentWillUnmount() {
+    this.changeProxy.off('change');
   }
   async refresh() {
     const venue = await client.user.getVenueById();

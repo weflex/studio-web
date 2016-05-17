@@ -91,10 +91,16 @@ class List extends React.Component {
     return members;
   }
   async componentDidMount() {
-    client.bindChangeProxy('Member', null, (data) => {
-      this.refs.masterDetail.updateMasterSource();
-      UIFramework.Message.success('已更新课程模版');
-    });
+    let self = this;
+    self.onMemberChange = async (data) => {
+      if (data.instance.phone && data.instance.nickname) {
+        await self.refs.masterDetail.updateMasterSource();
+      }
+    };
+    this.changeProxy = await client.bindChangeProxy('Member', null, this.onMemberChange);
+  }
+  componentWillUnmount() {
+    this.changeProxy.off('change');
   }
   viewModal() {
     this.setState({
@@ -107,9 +113,7 @@ class List extends React.Component {
     });
   }
   async onAddMemberDone() {
-    this.hideModal()
-    await this.refs.masterDetail.updateMasterSource();
-    UIFramework.Message.success('添加会员成功');
+    this.hideModal();
   }
   render() {
     return (

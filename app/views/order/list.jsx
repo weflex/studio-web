@@ -107,7 +107,6 @@ class List extends React.Component {
     this.setState({
       modalVisibled: false,
     });
-    await this.refs.masterDetail.updateMasterSource();
   }
   onRefDetail(instance) {
     if (instance) {
@@ -120,10 +119,15 @@ class List extends React.Component {
     }
   }
   async componentDidMount() {
-    client.bindChangeProxy('Order', null, (data) => {
-      this.refs.masterDetail.updateMasterSource();
-      UIFramework.Message.success('已更新课程模版');
-    });
+    let self = this;
+    let onOrderChange = async (data) => {
+      console.log('changing order');
+      await self.refs.masterDetail.updateMasterSource();
+    };
+    self.changeProxy = await client.bindChangeProxy('Order', null, onOrderChange);
+  }
+  componentWillUnmount() {
+    this.changeProxy.off('change');
   }
   render() {
     return (

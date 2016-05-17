@@ -44,7 +44,7 @@ class Detail extends React.Component {
       title: '确认删除该订单?',
       content: '确认删除该订单?',
       onOk: async () => {
-        await client.order.delete(self.props.data.id);
+        await client.order.delete(self.props.data.id, self.props.data.modifiedAt);
         await self.props.updateMaster();
       }
     });

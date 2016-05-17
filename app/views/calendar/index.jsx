@@ -140,15 +140,16 @@ class WeflexCalendar extends React.Component {
     this.setState({ schedule });
   }
 
-  componentDidMount() {
-    this.getClassData();
-    this.getCardTemplate();
-    client.bindChangeProxy('Class', null, (data) => {
-      this.getClassData();
-      UIFramework.Message.success('已更新至最新课程');
-    }, (err) => {
-      console.log('error');
-    });
+  async componentDidMount() {
+    let self = this;
+    self.getClassData();
+    self.getCardTemplate();
+    let onChange = (data) => self.getClassData();
+    self.changeProxy = await client.bindChangeProxy('Class', null, onChange);
+  }
+
+  componentWillUnmount() {
+    this.changeProxy.off('change');
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -220,7 +221,7 @@ class WeflexCalendar extends React.Component {
           UIFramework.Modal.confirm({
             title: `你确认要删除课程“${data.template.name}”？`,
             content: `你确认要删除课程“${data.template.name}”？`,
-            onOk: () => deleteClassById(data.id),
+            onOk: () => deleteClassById(data.id, data.modifiedAt || Date.now()),
           });
         };
         const onPanEnd = (event, data) => {
@@ -310,14 +311,27 @@ class WeflexCalendar extends React.Component {
           content: `当前数据已过期，点击确认刷新`,
           onOk: () => location.reload(),
         });
+      } else {
+        UIFramework.Message.error('我们遇到了一个错误');
+        console.error(err);
       }
     }
     this.getClassData();
   }
 
-  async deleteClassById(id) {
+  async deleteClassById(id, modifiedAt) {
     // delete async
-    client.class.delete(id);
+    try {
+      await client.class.delete(id, modifiedAt);
+    } catch (err) {
+      if (err.code === 'RESOURCE_EXPIRED') {
+        UIFramework.Modal.confirm({
+          title: `当前数据已过期`,
+          content: `当前数据已过期，点击确认刷新`,
+          onOk: () => location.reload(),
+        });
+      }
+    }
     // delete in UI
     this.getClassData();
   }

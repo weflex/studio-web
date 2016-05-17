@@ -79,7 +79,7 @@ class CardDetail extends React.Component {
       title: '你确认删除这张会片吗？',
       content: '删除会卡将会造成相关的会员失效',
       onOk: async () => {
-        await client.classPackage.delete(self.state.id);
+        await client.classPackage.delete(self.state.id, self.state.data.modifiedAt);
         self.gotoListPage();
         UIFramework.Message.success('删除成功');
       },

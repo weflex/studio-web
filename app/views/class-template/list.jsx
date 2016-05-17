@@ -68,11 +68,22 @@ class List extends React.Component {
       }
     }
   }
-  componentDidMount() {
-    client.bindChangeProxy('ClassTemplate', null, (data) => {
-      this.refs.master.updateMasterSource();
-      UIFramework.Message.success('已更新课程模版');
-    });
+  constructor(props) {
+    super(props);
+    this.state = {
+      modalVisibled: false,
+    };
+  }
+  async componentDidMount() {
+    let self = this;
+    let onClassTemplateChange = async (data) => {
+      await self.refs.master.updateMasterSource();
+    };
+    self.changeProxy = await client.bindChangeProxy(
+      'ClassTemplate', null, onClassTemplateChange);
+  }
+  componentWillUnmount() {
+    this.changeProxy.off('change');
   }
   render() {
     return (

@@ -79,9 +79,22 @@ export default class extends React.Component {
       title: '确认删除会卡信息？',
       content: `您正在删除会员 ${this.props.member.nickname} 的会卡，删除后将无法返回`,
       onOk: async () => {
-        await client.membership.delete(props.data.id);
-        if (typeof props.onComplete === 'function') {
-          props.onComplete();
+        try {
+          await client.membership.delete(props.data.id, props.data.modifiedAt);
+          if (typeof props.onComplete === 'function') {
+            props.onComplete();
+          }
+        } catch (err) {
+          if (err.code === 'RESOURCE_EXPIRED') {
+            UIFramework.Modal.confirm({
+              title: '您操作的会卡已过期',
+              content: '您操作的会卡已过期，点击确认键刷新',
+              onOk: () => location.reload(),
+            });
+          } else {
+            UIFramework.Message.error('我们遇到了一个错误');
+            console.error(err);
+          }
         }
       }
     })
