@@ -93,7 +93,9 @@ class List extends React.Component {
   async componentDidMount() {
     let self = this;
     self.onMemberChange = async (data) => {
-      await self.refs.masterDetail.updateMasterSource();
+      if (data.instance.phone && data.instance.nickname) {
+        await self.refs.masterDetail.updateMasterSource();
+      }
     };
     this.changeProxy = await client.bindChangeProxy('Member', null, this.onMemberChange);
   }

@@ -297,6 +297,31 @@ class MembershipsCard extends React.Component {
    * @async
    */
   async componentDidMount() {
+    let self = this;
+    await self.refresh();
+
+    if (!this.onMembershipChange) {
+      this.onMembershipChange = async (data) => {
+        if (!data.instance || data.instance.memberId) {
+          await self.refresh();
+        }
+      };
+    }
+    self.changeProxy = await client.bindChangeProxy(
+      'Membership', null, this.onMembershipChange);
+  }
+
+  componentWillUnmount() {
+    if (this.changeProxy) {
+      this.changeProxy.off('change', this.onMembershipChange);
+    }
+  }
+
+  /**
+   * @method refresh
+   * @async
+   */
+  async refresh() {
     const member = await client.member.get(
       this.props.member.id,
       {
@@ -318,7 +343,9 @@ class MembershipsCard extends React.Component {
    * @async
    */
   async onComplete() {
-    await this.props.context.props.updateMaster();
+    this.refs.$viewToAddMembership.setState({
+      visible: false,
+    });
   }
 
   /**
@@ -354,6 +381,7 @@ class MembershipsCard extends React.Component {
     }).concat(
       <MembershipCard
         key="add"
+        ref="$viewToAddMembership"
         width={width}
         member={this.state.member}
         onComplete={onComplete}
