@@ -148,8 +148,6 @@ class UserProfileCard extends React.Component {
    */
   async onComplete() {
     this.hideModal();
-    await this.props.context.props.updateMaster();
-    UIFramework.Message.success('会员信息修改成功');
   }
 
   /**

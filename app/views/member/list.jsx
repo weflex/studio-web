@@ -91,15 +91,10 @@ class List extends React.Component {
     return members;
   }
   async componentDidMount() {
-    const onUpdate = (data) => {
+    await client.bindChangeProxy('Member', null, (data) => {
       this.refs.masterDetail.updateMasterSource();
       UIFramework.Message.success('已更新会员信息');
-    };
-    await client.bindChangeProxy('Member', null, onUpdate);
-    this.changeProxy = await client.bindChangeProxy('Membership', null, onUpdate);
-  }
-  componentWillUnmount() {
-    this.changeProxy.disconnect();  
+    });
   }
   viewModal() {
     this.setState({
