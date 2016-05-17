@@ -29,15 +29,16 @@ class ClassPackageList extends React.Component {
     ];
   }
   async componentDidMount() {
-    this.refresh();
-    this.changeProxy = await client.bindChangeProxy('ClassPackage', null, (data) => {
-      this.refresh();
-      UIFramework.Message.success('已更新会卡');
-    });
+    let self = this;
+    self.refresh();
+    self.onClassPackageChange = (data) => {
+      self.refresh();
+    };
+    self.changeProxy = await client.bindChangeProxy(
+      'ClassPackage', null, self.onClassPackageChange);
   }
   componentWillUnmount() {
-    this.changeProxy.disconnect();
-    this.changeProxy = null;
+    this.changeProxy.off('change');
   }
   async refresh() {
     const venue = await client.user.getVenueById();
