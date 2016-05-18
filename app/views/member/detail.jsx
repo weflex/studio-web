@@ -163,7 +163,7 @@ class UserProfileCard extends React.Component {
               token={this.state.uptoken} 
               onSuccess={this.onMemberAvatarUploaded.bind(this)}
               onError={this.onMemberAvatarUploadFail.bind(this)}>
-              <UIFramework.Image size={60} src={this.props.avatar} style={{marginRight: '10px'}} />
+              <UIFramework.Image size={120} src={this.props.avatar} style={{marginRight: '10px'}} />
               <UIFramework.Cell>
                 <UIFramework.Button>修改会员头像</UIFramework.Button>
                 <UIFramework.Divider />
