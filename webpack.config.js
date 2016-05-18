@@ -42,7 +42,7 @@ module.exports = {
         loader: 'style-loader!css-loader'
       },
       {
-        test: /\.(jpg|png)$/,
+        test: /\.(jpg|png|svg)$/,
         loader: 'file-loader',
         query: {
           name: 'images/[1]',

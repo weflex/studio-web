@@ -4,6 +4,7 @@ import React from 'react';
 import UIFramework from 'weflex-ui';
 import MasterDetail from '../../components/master-detail';
 import Detail from './detail';
+import Importer from './importer';
 import ViewToAddMember from './add-member';
 import { UIProfileListItem } from '../../components/ui-profile';
 import { client } from '../../api';
@@ -29,6 +30,7 @@ class List extends React.Component {
     super(props);
     this.state = {
       modalVisibled: false,
+      showImporter: false,
     };
   }
   get title() {
@@ -76,9 +78,9 @@ class List extends React.Component {
       addButtonText: '邀请新会员',
     };
   }
-  async source() {
+  async getMembers() {
     const venue = await client.user.getVenueById();
-    const members = await client.member.list({
+    return await client.member.list({
       where: {
         venueId: venue.id,
       },
@@ -87,17 +89,27 @@ class List extends React.Component {
         'avatar'
       ],
     });
-    this.props.app.title(`会员管理（${members.length}）`);
-    return members;
+  }
+  async source() {
+    this.members = await this.getMembers();
+    this.props.app.title(`会员管理（${this.members.length}）`);
+    return this.members;
   }
   async componentDidMount() {
     let self = this;
-    self.onMemberChange = async (data) => {
-      if (data.instance.phone && data.instance.nickname) {
-        await self.refs.masterDetail.updateMasterSource();
-      }
-    };
-    this.changeProxy = await client.bindChangeProxy('Member', null, this.onMemberChange);
+    let members = await self.getMembers();
+    if (members.length) {
+      self.onMemberChange = async (data) => {
+        if (data.model === 'Member') {
+          // TODO(yorkie): doesn't handle with refreshing when deleting to zero.
+          await self.refs.masterDetail.updateMasterSource();
+        }
+      };
+      self.changeProxy = await client.bindChangeProxy('Member', null, self.onMemberChange);
+    }
+    self.setState({
+      showImporter: !members.length,
+    });
   }
   componentWillUnmount() {
     this.changeProxy.off('change');
@@ -118,13 +130,13 @@ class List extends React.Component {
   render() {
     return (
       <div style={{height: '100%'}}>
-        <MasterDetail 
+        {this.state.showImporter ? <Importer />:<MasterDetail 
           ref="masterDetail"
           pathname="member"
           className="membership"
           masterSource={this.source.bind(this)}
           masterConfig={this.config}
-        />
+        />}
         <UIFramework.Modal 
           visible={this.state.modalVisibled}
           onCancel={this.hideModal.bind(this)}
