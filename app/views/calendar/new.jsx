@@ -30,6 +30,15 @@ class NewClassTemplate extends React.Component {
     this.isModalShow = true;
   }
 
+  componentWillReceiveProps(nextProps) {
+    const newData = Object.assign({}, this.state.data, {
+      from: getFormatTime(nextProps.data.from),
+      to: getFormatTime(nextProps.data.to),
+      date: nextProps.data.date
+    });
+    this.setState({ data: newData });
+  }
+
   async componentDidMount() {
     const venue = await client.user.getVenueById();
     const templates = await client.classTemplate.list({
