@@ -122,8 +122,8 @@ class Detail extends React.Component {
           }}
           description={(item) => {
             switch (item.status) {
-              case 'paid'   : return '用户取消了预定'; break;
-              case 'cancel' : return '用户预定了课程'; break;
+              case 'paid'   : return '用户预定了课程'; break;
+              case 'cancel' : return '用户取消了预定'; break;
               case 'checkin': return '用户签到了课程'; break;
             }
           }}
