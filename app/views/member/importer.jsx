@@ -177,7 +177,7 @@ export default class Importer extends React.Component {
               您可以下载 Excel 模板，填入会员信息并上传。<br/>
             </p>
             <a href='http://assets.theweflex.com/Import%20Template.xlsx' download><button style={style.downloadButton}>下载 Excel 模板</button></a>
-            <input ref='file' type='file' onChange={this.handleFile.bind(this)} hidden/>
+            <input ref='file' type='file' onChange={this.handleFile.bind(this)} accept='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' hidden/>
             <button 
               style={this.state.progress ? style.uploadButtonDisable:style.uploadButton} 
               onClick={()=>{this.refs.file.click()}}
