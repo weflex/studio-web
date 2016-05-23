@@ -70,7 +70,7 @@ export default class extends React.Component {
       await client.membership.create(membership);
     }
     if (typeof this.props.onComplete === 'function') {
-      this.props.onComplete();
+      await this.props.onComplete();
     }
   }
   onDelete() {
@@ -112,19 +112,24 @@ export default class extends React.Component {
         correction.hint = currentPackage.name + '是不限次卡，可以修正有效期';
         correction.view = [
           <UIFramework.Select
+            bindStateCtx={this}
+            bindStateType={Boolean}
+            bindStateName="form.correction.positive"
             key="lifetime-op" flex={0.2} options={[
-              {text: '加', value: 'plus'},
-              {text: '减', value: 'minus'},
+              {text: '加', value: true},
+              {text: '减', value: false},
             ]}
           />,
           <UIFramework.TextInput
             key="lifetime-value"
             flex={0.6}
             bindStateCtx={this}
-            bindStateName="form.lifetime.value"
-            defaultValue={0}
+            bindStateType={Number}
+            bindStateName="form.correction.value"
+            value={this.state.form.correction.value}
           />,
           <UIFramework.Select
+            value={this.state.form.correction.value}
             key="lifetime-scale" flex={0.2} disabled={true} options={[
               {text: '天', value: 'day'},
             ]}
@@ -141,8 +146,8 @@ export default class extends React.Component {
             bindStateType={Boolean}
             bindStateName="form.correction.positive"
             options={[
-              {text: '加', value: 1},
-              {text: '减', value: 0},
+              {text: '加', value: true},
+              {text: '减', value: false},
             ]}
           />,
           <UIFramework.TextInput
@@ -151,7 +156,7 @@ export default class extends React.Component {
             bindStateCtx={this}
             bindStateType={Number}
             bindStateName="form.correction.value"
-            defaultValue={0}
+            value={this.state.form.correction.value}
           />,
           <UIFramework.Select
             key="passes-unit" flex={0.2} disabled={true} options={[

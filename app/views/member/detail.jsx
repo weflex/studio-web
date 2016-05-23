@@ -220,10 +220,6 @@ class MembershipCard extends React.Component {
      * @property {Object} member - the member data
      */
     member: React.PropTypes.object,
-    /**
-     * @property {Function} onComplete - fired when completing
-     */
-    onComplete: React.PropTypes.func,
   };
 
   /**
@@ -235,6 +231,36 @@ class MembershipCard extends React.Component {
       visible: false,
     };
   }
+
+  /**
+   * view the modal to change the information of this card
+   * @method viewModal
+   */
+  viewModal() {
+    this.setState({
+      visible: true,
+    });
+  }
+
+  /**
+   * hide the modal changing the information of this card
+   * @method hideModal
+   */
+  hideModal() {
+    this.setState({
+      visible: false,
+    });
+  }
+
+  /**
+   * fired when modal completed
+   * @method onComplete
+   * @async
+   */
+  async onComplete() {
+    this.hideModal();
+  }
+
   /**
    * @method render - render function
    */
@@ -242,7 +268,8 @@ class MembershipCard extends React.Component {
     return (
       <span style={{display: 'inline-block', marginBottom: '10px'}}>
         <UIMembershipCard
-          onClick={() => this.setState({visible: true})}
+          type="membership"
+          onClick={this.viewModal.bind(this)}
           width={this.props.width}
           data={this.props.data && this.props.data.package}
         />
@@ -251,7 +278,10 @@ class MembershipCard extends React.Component {
           visible={this.state.visible}
           onCancel={() => this.setState({visible: false})}
           footer="">
-          <ViewToAddMembership {...this.props} />
+          <ViewToAddMembership
+	    {...this.props}
+	    onComplete={this.onComplete.bind(this)}
+	  />
         </UIFramework.Modal>
       </span>
     );
@@ -339,16 +369,6 @@ class MembershipsCard extends React.Component {
   }
 
   /**
-   * @method onComplete
-   * @async
-   */
-  async onComplete() {
-    this.refs.$viewToAddMembership.setState({
-      visible: false,
-    });
-  }
-
-  /**
    * This method renders out to the cards
    * @method cards
    */
@@ -358,17 +378,16 @@ class MembershipsCard extends React.Component {
     }
     const container = this.refs.membershipcards;
     const width = parseInt(container.getBoundingClientRect().width) * 0.30;
-    const onComplete = this.onComplete.bind(this);
 
     return this.state.member.memberships.map((membership, key) => {
       if (!membership.package) {
         return;
       }
       const data = Object.assign(membership, {
-        'package': Object.assign({
-          createdAt: membership.createdAt,
-        }, membership.package, {
+        'package': Object.assign({}, membership.package, {
           price: membership.price || membership.package.price,
+          createdAt: membership.createdAt,
+          correction: membership.correction
         })
       });
       return <MembershipCard
@@ -376,15 +395,12 @@ class MembershipsCard extends React.Component {
         width={width}
         data={data}
         member={this.state.member}
-        onComplete={onComplete}
       />;
     }).concat(
       <MembershipCard
         key="add"
-        ref="$viewToAddMembership"
         width={width}
         member={this.state.member}
-        onComplete={onComplete}
       />
     );
   }

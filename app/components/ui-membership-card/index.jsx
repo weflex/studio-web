@@ -79,44 +79,85 @@ export default class UIMembershipCard extends React.Component {
       );
     };
 
-    if (this.props.data.accessType === 'multiple') {
-      return wrapper([
-        <li key="multiple-passes">
-          <header style={UIMembershipCard.styles.basicName}>有效次数</header>
-          <section style={UIMembershipCard.styles.basicValue}>
-            {this.props.data.passes}次
-          </section>
-        </li>,
-        <li key="multiple-expires">
-          <header style={UIMembershipCard.styles.basicName}>有效时间</header>
-          <section style={UIMembershipCard.styles.basicValue}>
-            {this.props.data.lifetime && this.props.data.lifetime.value}
-            {((lifetime) => {
-              switch (lifetime.scale) {
-                case 'day'  : return '天';
-                case 'month': return '个月';
-                case 'year' : return '年';
-              }
-            })(this.props.data.lifetime || {})}
-          </section>
-        </li>
-      ]);
+    const { lifetime } = this.props.data;
+
+    if (this.props.type === 'membership') {
+      let correctVal = 0;
+      if (this.props.data.correction) {
+        const { positive, value } = this.props.data.correction;
+        correctVal = positive ? value : -value;
+      }
+      if (this.props.data.accessType === 'multiple') {
+        return wrapper([
+          <li key="multiple-passes">
+            <header style={UIMembershipCard.styles.basicName}>有效次数</header>
+            <section style={UIMembershipCard.styles.basicValue}>
+              {this.props.data.passes + correctVal}次
+            </section>
+          </li>,
+          <li key="multiple-expires">
+            <header style={UIMembershipCard.styles.basicName}>到期时间</header>
+            <section style={UIMembershipCard.styles.basicValue}>
+              {moment(this.props.data.createdAt).add(lifetime.value, lifetime.scale).format('YYYY-MM-DD')}
+            </section>
+          </li>
+        ]);
+      } else {
+        return wrapper([
+          <li key="unlimited-start-time">
+            <header style={UIMembershipCard.styles.basicName}>开卡时间</header>
+            <section style={UIMembershipCard.styles.basicValue}>
+              {moment(this.props.data.createdAt).format('YYYY-MM-DD')}
+            </section>
+          </li>,
+          <li key="unlimited-end-time">
+            <header style={UIMembershipCard.styles.basicName}>到期时间</header>
+            <section style={UIMembershipCard.styles.basicValue}>
+              {moment(this.props.data.createdAt).add(lifetime.value + correctVal, lifetime.scale).format('YYYY-MM-DD')}
+            </section>
+          </li>
+        ]);
+      }
     } else {
-      const { lifetime } = this.props.data;
-      return wrapper([
-        <li key="unlimited-start-time">
-          <header style={UIMembershipCard.styles.basicName}>开卡时间</header>
-          <section style={UIMembershipCard.styles.basicValue}>
-            {moment(this.props.data.createdAt).format('YYYY-MM-DD')}
-          </section>
-        </li>,
-        <li key="unlimited-end-time">
-          <header style={UIMembershipCard.styles.basicName}>过期时间</header>
-          <section style={UIMembershipCard.styles.basicValue}>
-            {moment(this.props.data.createdAt).add(lifetime.value, lifetime.scale).format('YYYY-MM-DD')}
-          </section>
-        </li>
-      ]);
+      let lifetimeString = (lifetime) => {
+        switch (lifetime.scale) {
+          case 'day'  : return `${lifetime.value}天`;
+          case 'month': return `${lifetime.value}个月`;
+          case 'year' : return `${lifetime.value}年`;
+          default     : return '';
+        }
+      }
+      if (this.props.data.accessType === 'multiple') {
+        return wrapper([
+          <li key="multiple-passes">
+            <header style={UIMembershipCard.styles.basicName}>有效次数</header>
+            <section style={UIMembershipCard.styles.basicValue}>
+              {this.props.data.passes}次
+            </section>
+          </li>,
+          <li key="multiple-expires">
+            <header style={UIMembershipCard.styles.basicName}>有效时间</header>
+            <section style={UIMembershipCard.styles.basicValue}>
+              {lifetimeString(lifetime)}
+            </section>
+          </li>
+        ]);
+      } else {
+        return wrapper([
+          <li key="unlimited-start-time">
+            <header style={UIMembershipCard.styles.basicName}>有效次数</header>
+            <section style={UIMembershipCard.styles.basicValue}>
+              不限次
+            </section>
+          </li>,
+          <li key="unlimited-end-time">
+            <header style={UIMembershipCard.styles.basicName}>有效时间</header>
+            <section style={UIMembershipCard.styles.basicValue}>
+              {lifetimeString(lifetime)}
+            </section>
+          </li>
+        ]);
+      }
     }
   }
 }

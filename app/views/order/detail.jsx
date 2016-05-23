@@ -57,12 +57,16 @@ class Detail extends React.Component {
     const data = payments && payments[0];
     if (this.state.membership) {
       const membership = this.state.membership;
-      const classPackage = membership.package;
-      classPackage.price = membership.price || classPackage.price;
+      const classPackage = Object.assign({
+      }, membership.package, {
+        price: membership.price || classPackage.price,
+        createdAt: membership.createdAt,
+        correction: membership.correction
+      });
       const lifetime = classPackage.lifetime;
 
       description = `使用 ${classPackage.name} 抵扣 ${payments[0].fee} 元`;
-      preview = <UIMembershipCard data={classPackage} />;
+      preview = <UIMembershipCard data={classPackage} type="membership"/>;
       metadata = (
         <div className="order-payment-metadata-container">
           <fieldset>
