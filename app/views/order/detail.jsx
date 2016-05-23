@@ -6,6 +6,7 @@ import UIFramework from 'weflex-ui';
 import { client } from '../../api';
 import { UIHistory } from '../../components/ui-history';
 import UIMembershipCard from '../../components/ui-membership-card';
+import { getFormatTime } from '../calendar/util.js';
 import './detail.css';
 
 class Detail extends React.Component {
@@ -165,11 +166,11 @@ class Detail extends React.Component {
               </div>
               <div className="detail-card-row">
                 <label>课程日期</label>
-                <span>{moment(date).format('M[月]DD[日]')}</span>
+                <span>{moment(date).format('MM[月]DD[日]')}</span>
               </div>
               <div className="detail-card-row">
                 <label>课程时间</label>
-                <span>{from.hour}:{from.minute} - {to.hour}:{to.minute}</span>
+                <span>{getFormatTime(from)} - {getFormatTime(to)}</span>
               </div>
               <div className="detail-card-row">
                 <label>课程详情</label>

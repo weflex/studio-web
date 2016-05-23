@@ -5,6 +5,7 @@ import moment from 'moment';
 import React from 'react';
 import UIFramework from 'weflex-ui';
 import { client } from '../../api';
+import { getFormatTime } from '../calendar/util.js';
 
 export default class extends React.Component {
   constructor(props) {
@@ -151,11 +152,10 @@ export default class extends React.Component {
     }
     if (this.state.classes.length) {
       classOptions = this.state.classes.map((item) => {
-        const from = item.from.hour + ':' + item.from.minute;
-        const to = item.to.hour + ':' + item.to.minute;
-        const duration = from + ' - ' + to;
+        const from = getFormatTime(item.from);
+        const to = getFormatTime(item.to);
         return {
-          text: moment(item.date).format('MM[月]DD[日]') + ` (${duration})`,
+          text: moment(item.date).format('MM[月]DD[日]') + ` (${from} - ${to})`,
           value: item.id
         };
       });
