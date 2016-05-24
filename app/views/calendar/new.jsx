@@ -17,9 +17,12 @@ class NewClassTemplate extends React.Component {
     const newData = Object.assign({
       template: {},
       templateId: props.data.template.id,
+      trainer: {},
+      trainerId: props.data.template.trainerId,
     }, props.data, {
       from: getFormatTime(props.data.from),
       to: getFormatTime(props.data.to),
+      spot: props.data.spot || props.data.template.spot,
     });
     this.state = {
       trainers: [],
@@ -31,12 +34,14 @@ class NewClassTemplate extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const newData = Object.assign({}, this.state.data, {
-      from: getFormatTime(nextProps.data.from),
-      to: getFormatTime(nextProps.data.to),
-      date: nextProps.data.date
-    });
-    this.setState({ data: newData });
+    if (!_.isEqual(nextProps.data, this.props.data)) {
+      const newData = Object.assign({}, nextProps.data, {
+        from: getFormatTime(nextProps.data.from),
+        to: getFormatTime(nextProps.data.to),
+        spot: nextProps.data.spot || nextProps.data.template.spot,
+      });
+      this.setState({ data: newData });
+    }
   }
 
   async componentDidMount() {
@@ -60,7 +65,7 @@ class NewClassTemplate extends React.Component {
       include: ['roles'],
     });
     const trainers = members.filter((member) => {
-      return member.roles.filter((role) => {
+      return member.roles.some((role) => {
         return role.name === 'trainer';
       });
     });
@@ -75,7 +80,7 @@ class NewClassTemplate extends React.Component {
     const newData = Object.assign({}, this.state.data, {
       from: getTime(this.state.data.from),
       to: getTime(this.state.data.to),
-      template: this.template,
+      template: this.template
     });
     const getMinutes = (time) => {
       return time.hour * 60 + time.minute;
@@ -137,6 +142,15 @@ class NewClassTemplate extends React.Component {
               options={this.state.trainers.map(item => {
                 return {text: item.fullname.first, value: item.id};
               })}
+            />
+          </UIFramework.Row>
+          <UIFramework.Row name="课位" hint="课程可报名人数">
+            <UIFramework.TextInput
+              flex={1}
+              bindStateCtx={this}
+              bindStateName="data.spot"
+              bindStateType={Number}
+              value={this.state.data.spot}
             />
           </UIFramework.Row>
           <UIFramework.Row name="课程描述">

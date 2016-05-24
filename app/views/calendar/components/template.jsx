@@ -61,7 +61,7 @@ class Template extends React.Component {
         hour: parseInt(template.duration / 60),
         minute: parseInt(template.duration % 60)
       },
-      spots: {},
+      spot: template.spot,
       template: template,
       trainer: template.trainer,
       orders: []
