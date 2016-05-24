@@ -68,7 +68,7 @@ class EditTrainerView extends React.Component {
       return options;
     }, [
       {
-        text: '所有场馆',
+        text: '请选择场馆',
         value: undefined,
       }
     ]);
