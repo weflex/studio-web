@@ -51,12 +51,7 @@ class InviteTrainerView extends React.Component {
         value: venue.id,
       });
       return options;
-    }, [
-      {
-        text: '请选择场馆',
-        value: undefined,
-      }
-    ]);
+    }, []);
     return (
       <UIFramework className="settings-invite-trainer">
         <UIFramework.Row name="手机号码" hint="教练的手机号码">
