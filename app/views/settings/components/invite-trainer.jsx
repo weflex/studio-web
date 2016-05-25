@@ -41,7 +41,8 @@ class InviteTrainerView extends React.Component {
       this.state.form.fullname.last &&
       this.state.form.phone &&
       this.state.form.phone.length === 11 &&
-      this.state.form.language);
+      this.state.form.language &&
+      this.state.form.venueId);
   }
   render() {
     const venueOptions = this.state.venues.reduce((options, venue) => {
@@ -52,7 +53,7 @@ class InviteTrainerView extends React.Component {
       return options;
     }, [
       {
-        text: '所有场馆',
+        text: '请选择场馆',
         value: undefined,
       }
     ]);
