@@ -45,7 +45,17 @@ class EditTrainerView extends React.Component {
       title: '确认删除教练吗?',
       content: '删除后，你将不能再在课程中添加该教练，以及已经添加的课程也将过期',
       onOk: async () => {
-        await client.orgMember.delete(props.data.id);
+        const isOwner = _.some(props.data.roles, {'name': '$owner'});
+        const isAdmin = _.some(props.data.roles, {'name': '$admin'});
+        if (isOwner || isAdmin) {
+          await client.collaborator.update(props.data.id, {
+            roleIds: _.map(_.filter(props.data.roles, (role) => {
+              return role.name !== 'trainer'
+            }), 'id')
+          }, props.data.modifiedAt);
+        } else {
+          await client.collaborator.delete(props.data.id, props.data.modifiedAt);
+        }
         if (typeof props.onComplete === 'function') {
           props.onComplete();
         }
