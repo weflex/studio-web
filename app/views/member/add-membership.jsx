@@ -129,7 +129,6 @@ export default class extends React.Component {
             value={this.state.form.correction.value}
           />,
           <UIFramework.Select
-            value={this.state.form.correction.value}
             key="lifetime-scale" flex={0.2} disabled={true} options={[
               {text: '天', value: 'day'},
             ]}
