@@ -5,6 +5,7 @@ import UIFramework from 'weflex-ui';
 import ImageCell from '../image-cell';
 import random from '@weflex/random';
 import { client } from '../../api';
+import _ from 'lodash';
 import './index.css';
 
 class ImageManager extends React.Component {
@@ -25,7 +26,7 @@ class ImageManager extends React.Component {
        */
       uptoken: null,
     };
-    this.cells = [];
+    this.cells = {};
   }
 
   async componentWillMount() {
@@ -54,7 +55,7 @@ class ImageManager extends React.Component {
         venueId: venue.id,
       },
     });
-    this.cells = [];
+    this.cells = {};
     this.setState({
       images
     });
@@ -77,28 +78,30 @@ class ImageManager extends React.Component {
 
   onRefImageCell(cell) {
     if (cell) {
-      this.cells.push(cell);
+      this.cells[cell.props.src.id] = cell;
     }
   }
 
   onSelectResource(event, resource) {
-    if (this.state.mode === 'single') {
-      this.cells.forEach((cell) => {
-        cell.setState({ 
-          isSelected: resource.id === cell.props.src.id 
+    if (this.props.mode === 'single') {
+      for (let index in this.cells) {
+        this.cells[index].setState({
+          isSelected: resource.id === this.cells[index].props.src.id 
         });
-      });
+      }
       // TODO(Yorkie): directly choose?
       // this.onSubmit();
     }
   }
 
   onSubmit() {
-    const srcs = this.cells.filter((cell) => {
-      return cell.state.isSelected;
-    }).map((cell) => {
-      return cell.props.src;
-    });
+    const srcs = [];
+    for (let index in this.cells) {
+      const cell = this.cells[index];
+      if (cell.state.isSelected) {
+        srcs.push(cell.props.src);
+      }
+    }
     if (typeof this.props.onFinish !== 'function') {
       console.warn('miss onFinish on initializing component');
     } else {

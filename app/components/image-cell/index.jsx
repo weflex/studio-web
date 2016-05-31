@@ -18,6 +18,10 @@ class ImageCell extends React.Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({ isSelected: nextProps.selected || false });
+  }
+
   onClick(event) {
     if (this.props.selectable) {
       this.setState({
