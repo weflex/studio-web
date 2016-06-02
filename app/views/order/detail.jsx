@@ -23,8 +23,24 @@ class Detail extends React.Component {
       const membership = await client.membership.get(payment.membership.id, {
         include: ['package']
       });
+      const reducedMemberships = await client.middleware('/transaction/reduce-memberships', {
+        userId: order.userId,
+        venueId: order.class.template.venueId
+      });
+      const reducedMembership = _.find(reducedMemberships, (reduced) => {
+        return reduced.membershipId === membership.id
+      });
       this.setState({
-        membership,
+        membership: Object.assign(
+          membership,
+          reducedMembership,
+          {
+            lifetime: membership.package.lifetime,
+            category: membership.package.category,
+            passes: membership.package.passes,
+            color: membership.package.color,
+          }
+        )
       });
     }
   }
@@ -57,16 +73,9 @@ class Detail extends React.Component {
     const data = payments && payments[0];
     if (this.state.membership) {
       const membership = this.state.membership;
-      const classPackage = Object.assign({
-      }, membership.package, {
-        price: membership.price || classPackage.price,
-        createdAt: membership.createdAt,
-        correction: membership.correction
-      });
-      const lifetime = classPackage.lifetime;
 
-      description = `使用 ${classPackage.name} 抵扣 ${payments[0].fee} 元`;
-      preview = <UIMembershipCard data={classPackage} type="membership"/>;
+      description = `使用 ${membership.name} 抵扣 ${payments[0].fee} 元`;
+      preview = <UIMembershipCard data={membership} type="membership"/>;
       metadata = (
         <div className="order-payment-metadata-container">
           <fieldset>
@@ -74,28 +83,32 @@ class Detail extends React.Component {
           </fieldset>
           <div className="detail-card-row">
             <label>会卡种类</label>
-            <span>{classPackage.category === 'group' ? '团课' : '私教'}</span>
+            <span>{membership.category === 'group' ? '团课' : '私教'}</span>
           </div>
           <div className="detail-card-row">
             <label>会卡类型</label>
-            <span>{classPackage.accessType === 'unlimited' ? '不限次卡': '多次卡'}</span>
+            <span>{membership.accessType === 'unlimited' ? '不限次卡': '多次卡'}</span>
           </div>
-          <div className="detail-card-row">
-            <label>剩余次数</label>
-            <span>{classPackage.passes - payments.length}次</span>
-          </div>
+          {
+            'available' in membership ?
+            <div className="detail-card-row">
+              <label>剩余次数</label>
+              <span>{membership.available}次</span>
+            </div> : null
+          }
           <div className="detail-card-row">
             <label>开卡时间</label>
             <span>{moment(membership.createdAt).format('YYYY[年]MM[月]DD[日]')}</span>
           </div>
-          <div className="detail-card-row">
-            <label>到期时间</label>
-            <span>
-              {moment(membership.createdAt)
-                .add(lifetime.value, lifetime.scale)
-                .format('YYYY[年]MM[月]DD[日]')}
-            </span>
-          </div>
+          {
+            'expiredAt' in membership ?
+            <div className="detail-card-row">
+              <label>到期时间</label>
+              <span>
+                {moment(membership.expiredAt).format('YYYY[年]MM[月]DD[日]')}
+              </span>
+            </div> : null
+          }
         </div>
       );
     } else if (data && data._raw) {
