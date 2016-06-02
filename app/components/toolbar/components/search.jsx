@@ -2,40 +2,33 @@
 
 import React from 'react';
 
-const events = {};
-
 export class SearchInput extends React.Component {
-  static Listen (name, trigger) {
-    if (typeof trigger !== 'function') {
-      throw new TypeError('trigger must be callable function');
-    }
-    if (!Array.isArray(events[name])) {
-      events[name] = [];
-    }
-    events[name].push(trigger);
-  }
-  static Emit (name, val) {
-    (events[name] || []).forEach(trigger => {
-      trigger(val);
-    });
-  }
   constructor () {
     super();
     this.state = {
-      searchText: ''
+      onChange: null
     };
   }
-  render () {
-    return (
-      <div className='search'>
-        <input type="text"
-               ref="keywords"
-               onChange={this._onchange.bind(this)} />
-        <i className='icon-font icon-search'></i>
-      </div>
-    );
+  initAndListen (handler) {
+    if (typeof handler === 'function') {
+      const onChange = () => {
+        handler(this.refs.keyword.value);
+      };
+      this.setState({ onChange });
+    }
   }
-  _onchange () {
-    SearchInput.Emit('onChange', this.refs.keywords.value);
+  render () {
+    if (this.state.onChange) {
+      return (
+        <div className='search'>
+          <input type="text"
+                 ref="keyword"
+                 onChange={this.state.onChange.bind(this)} />
+          <i className='icon-font icon-search'></i>
+        </div>
+      );
+    } else {
+      return null;
+    }
   }
 }

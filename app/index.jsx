@@ -28,12 +28,15 @@ function createViewWithBars (component, app) {
       const main = this.refs.main;
       const toolbar = this.refs.toolbar;
       const actions = toolbar.refs.actions;
+      const search = toolbar.refs.searchInput;
       app.title = toolbar.setTitle.bind(toolbar);
       app.actions = actions.updateActions.bind(actions);
       app.activity = actions.setActivity.bind(actions);
+      app.search = search.initAndListen.bind(search);
       // init the title, actions and activity
       app.title(main.title);
       app.actions(main.actions);
+      app.search(main.search);
       app.activity(this);
       this.setState({
         resource: main.resource,

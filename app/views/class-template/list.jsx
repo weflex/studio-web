@@ -20,6 +20,12 @@ class List extends React.Component {
       }
     ];
   }
+  get search() {
+    return this.refs
+      .masterDetail
+      .onSearchInputChange
+      .bind(this.refs.masterDetail);
+  }
   get config() {
     return {
       title: 'name',
@@ -91,7 +97,7 @@ class List extends React.Component {
   render() {
     return (
       <MasterDetail 
-        ref="master"
+        ref="masterDetail"
         pathname="class/template"
         className="class-template"
         masterSource={this.source}

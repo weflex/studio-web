@@ -24,6 +24,12 @@ class List extends React.Component {
       }
     ];
   }
+  get search() {
+    return this.refs
+      .masterDetail
+      .onSearchInputChange
+      .bind(this.refs.masterDetail);
+  }
   get config() {
     return {
       title: 'title',

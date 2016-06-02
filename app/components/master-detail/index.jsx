@@ -6,7 +6,6 @@ import {
   Locations,
   Link
 } from 'react-router-component';
-import { SearchInput } from '../toolbar/components/search';
 import './index.css';
 
 /**
@@ -56,9 +55,6 @@ class MasterDetail extends React.Component {
     // `cacheMasterSource` is for caching the first data, which can be used at
     // reseting by search input.
     this.cachedMasterSource = null;
-    // TODO(Yorkie): this should be decoupled from here, currently the master-detail
-    // strongly depends on the `SearchInput`.
-    SearchInput.Listen('onChange', this.onSearchInputChange.bind(this));
   }
 
   /**
@@ -103,7 +99,7 @@ class MasterDetail extends React.Component {
       const config = this.props.masterConfig || {};
       this.setState({
         masterSource: this.cachedMasterSource.filter((item) => {
-          const keywords = (config.search) || ['title'];
+          const keywords = (config.keywords) || ['title'];
           return keywords.filter((keyword) => {
             return (item[keyword] || '').indexOf(text.toLowerCase()) !== -1;
           }).length > 0;

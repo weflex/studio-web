@@ -24,7 +24,7 @@ class ToolBar extends React.Component {
             <SearchInput ref="searchInput" />
           </li>
           <li>
-           <Actions ref="actions" />
+            <Actions ref="actions" />
           </li>
         </ul>
       </div>

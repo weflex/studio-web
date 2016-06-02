@@ -45,10 +45,16 @@ class List extends React.Component {
       }
     ];
   }
+  get search() {
+    return this.refs
+      .masterDetail
+      .onSearchInputChange
+      .bind(this.refs.masterDetail);
+  }
   get config() {
     return {
       title: 'title',
-      search: ['nickname', 'phone'],
+      keywords: ['nickname', 'phone'],
       master: (user, index) => {
         const header = (
           <p title={user.nickname}>

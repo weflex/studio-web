@@ -7,7 +7,6 @@ import ReactDOM from 'react-dom';
 import ClassCard from './card';
 import ClassOverview from './class-overview';
 import Calendar from './calendar';
-import { SearchInput } from '../../components/toolbar/components/search';
 import { WeekPicker } from './components/week-picker';
 import { NewClassTemplate } from './new';
 import {
@@ -28,7 +27,6 @@ import './index.css';
  * @extends React.Component
  */
 class WeflexCalendar extends React.Component {
-
   constructor(props) {
     super(props);
     moment.locale('zh-cn');
@@ -87,6 +85,10 @@ class WeflexCalendar extends React.Component {
         }
       }
     ];
+  }
+
+  get search() {
+    return this.onSearchInputChange.bind(this);
   }
 
   get resource() {
