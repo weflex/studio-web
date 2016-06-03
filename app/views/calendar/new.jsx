@@ -17,6 +17,8 @@ class NewClassTemplate extends React.Component {
     const newData = Object.assign({
       template: {},
       templateId: props.data.template.id,
+      trainer: {},
+      trainerId: props.data.template.trainerId,
     }, props.data, {
       from: getFormatTime(props.data.from),
       to: getFormatTime(props.data.to),
