@@ -29,9 +29,9 @@ class List extends React.Component {
       title: 'title',
       master: (item, index) => {
         return (
-          <UIProfileListItem avatar={item.user.avatar}
+          <UIProfileListItem avatar={item.member.avatar}
             header={item.class.template.name}
-            labelText={item.user.nickname}>
+            labelText={item.member.nickname}>
             <div className="order-class-duration">
               {moment(item.class.date).format('MM[月]DD[日]')}
             </div>
@@ -48,7 +48,7 @@ class List extends React.Component {
       sortKeys: [
         {name: '订单时间', key: 'createdAt'},
         {name: '课程时间', key: 'class.date'},
-        {name: '用户', key: 'user.nickname'},
+        {name: '用户', key: 'member.nickname'},
       ],
       onClickAdd: this.onViewAddOrder.bind(this),
       addButtonText: '添加新订单',
@@ -81,10 +81,14 @@ class List extends React.Component {
       include: [
         'history',
         {
-          'payments': ['membership', 'order']
-        },
-        {
-          'user': ['avatar']
+          'payments': [
+            {
+              'membership': {
+                'member': 'avatar'
+              }
+            },
+            'order'
+          ]
         },
         {
           'class': ['template', 'trainer']
@@ -95,6 +99,7 @@ class List extends React.Component {
       return item.class;
     }).map((item) => {
       item.title = item.class.template.name;
+      item.member = item.payments[0].membership.member;
       return item;
     });
   }

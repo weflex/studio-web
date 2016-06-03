@@ -12,7 +12,7 @@ export default class extends React.Component {
     super(props);
     this.state = {
       phone: '',
-      user: '',
+      member: '',
       date: Date.now(),
       template: '',
       class: '',
@@ -48,7 +48,7 @@ export default class extends React.Component {
     if (phone.length === 11) {
       const members = await client.member.list({
         where: {phone},
-        include: ['user']
+        include: ['avatar']
       });
       if (members.length === 0) {
         this.setState({isUserNotFound: true});
@@ -63,15 +63,15 @@ export default class extends React.Component {
         });
         this.setState({
           isUserNotFound: false,
-          user: member.user,
           memberships,
+          member,
         });
       }
     } else {
       this.setState({
         isUserNotFound: false,
-        user: '',
         memberships: [],
+        member: '',
       });
     }
   }
@@ -97,7 +97,7 @@ export default class extends React.Component {
       // create an order
       await client.middleware('/transaction/add-order', {
         classId: this.state.classId,
-        userId: this.state.user.id,
+        userId: this.state.member.userId,
         membershipId: membership.id,
       }, 'post');
       if (typeof this.props.onComplete === 'function') {
@@ -119,19 +119,19 @@ export default class extends React.Component {
       />,
       <UIFramework.Divider key="divider" />,
     ];
-    if (!this.state.isUserNotFound && this.state.user) {
-      const user = this.state.user;
+    if (!this.state.isUserNotFound && this.state.member) {
+      const member = this.state.member;
       view.push(
-        <UIFramework.Row key="user">
+        <UIFramework.Row key="member">
           <UIFramework.Cell flex={0.1}>
             <UIFramework.Image
               circle={true}
-              src={user.avatar} 
+              src={member.avatar}
               size={20}
               style={{marginRight: 10}} />
           </UIFramework.Cell>
           <UIFramework.Cell flex={0.8}>
-            <UIFramework.Text text={user.nickname} />
+            <UIFramework.Text text={member.nickname} />
           </UIFramework.Cell>
         </UIFramework.Row>
       );

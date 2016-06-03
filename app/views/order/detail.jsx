@@ -157,19 +157,19 @@ class Detail extends React.Component {
         <div className="detail-cards-left">
           <div className="detail-card" style={{height: '100%'}}>
             <h3>订单主要信息</h3>
-            <div className="order-user">
-              <UIFramework.Image size={80} src={order.user.avatar} />
+            <div className="order-member">
+              <UIFramework.Image size={80} src={order.member.avatar} />
               <div className="detail-card-row">
                 <label>用户</label>
-                <span>{order.user.nickname}</span>
+                <span>{order.member.nickname}</span>
               </div>
               <div className="detail-card-row">
                 <label>手机号码</label>
-                <span>{order.user.phone}</span>
+                <span>{order.member.phone}</span>
               </div>
               <div className="detail-card-row">
                 <label>电子邮箱</label>
-                <a href={'mailto:' + order.user.email}>{order.user.email}</a>
+                <a href={'mailto:' + order.member.email}>{order.member.email}</a>
               </div>
             </div>
             <div className="order-class">
