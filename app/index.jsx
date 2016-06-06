@@ -3,9 +3,9 @@
 import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { 
-  Location, 
-  Locations 
+import {
+  Location,
+  Locations
 } from 'react-router-component';
 import LaunchScreen from './views/launcher';
 import NavBar from './views/navbar';
@@ -105,7 +105,7 @@ class App extends React.Component {
   render() {
     if (this.state.pending) {
       return (
-        <LaunchScreen 
+        <LaunchScreen
           onFinish={this.onLauncherFinish.bind(this)}
         />
       );

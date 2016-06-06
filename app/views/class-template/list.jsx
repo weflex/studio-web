@@ -51,9 +51,9 @@ class List extends React.Component {
         venueId: venue.id
       },
       include: [
-        'venue', 
-        'trainer', 
-        'cover', 
+        'venue',
+        'trainer',
+        'cover',
         'photos'
       ]
     });

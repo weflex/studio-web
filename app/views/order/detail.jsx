@@ -131,7 +131,7 @@ class Detail extends React.Component {
     return (
       <div className="detail-card detail-card-right">
         <h3>订单历史记录</h3>
-        <UIHistory 
+        <UIHistory
           data={logs}
           colors={{
             paid: '#80c7e8',

@@ -72,7 +72,7 @@ export class Actions extends React.Component {
       activity: null
     };
     /**
-     * `sharedCtx` is used for sharing state between action buttons 
+     * `sharedCtx` is used for sharing state between action buttons
      * in one page lifecycle.
      */
     this.sharedCtx = {
@@ -162,7 +162,7 @@ export class Actions extends React.Component {
       <div className="actions">
         {this.state.actions.map((action, index) => {
           return (
-            <Action 
+            <Action
               key={index}
               ref={this.addActionRef.bind(this)}
               parent={this}
