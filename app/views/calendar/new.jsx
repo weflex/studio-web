@@ -22,7 +22,6 @@ class NewClassTemplate extends React.Component {
     }, props.data, {
       from: getFormatTime(props.data.from),
       to: getFormatTime(props.data.to),
-      spot: props.data.spot || props.data.template.spot,
     });
     this.state = {
       trainers: [],
@@ -33,12 +32,23 @@ class NewClassTemplate extends React.Component {
     this.isModalShow = true;
   }
 
+  shouldResetTemplate(data) {
+    return (
+      !_.isEqual(data.from, getTime(this.state.data.from)) ||
+      !_.isEqual(data.to, getTime(this.state.data.to)) ||
+      data.date !== this.state.data.date
+    );
+  }
+
   componentWillReceiveProps(nextProps) {
-    if (!_.isEqual(nextProps.data, this.props.data)) {
-      const newData = Object.assign({}, nextProps.data, {
+    if (this.shouldResetTemplate(nextProps.data)) {
+      const newData = Object.assign({}, this.state.data, {
+        trainerId: nextProps.data.template.trainerId,
+        templateId: nextProps.data.template.id,
         from: getFormatTime(nextProps.data.from),
         to: getFormatTime(nextProps.data.to),
-        spot: nextProps.data.spot || nextProps.data.template.spot,
+        date: nextProps.data.date,
+        spot: nextProps.data.spot,
       });
       this.setState({ data: newData });
     }
