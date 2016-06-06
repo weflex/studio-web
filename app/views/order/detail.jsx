@@ -44,7 +44,7 @@ class Detail extends React.Component {
       });
     }
   }
-  get actions() {
+  get detailActions() {
     let list = [];
     if (this.props.data.id) {
       list.push({

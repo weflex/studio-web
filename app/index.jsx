@@ -22,6 +22,7 @@ function createViewWithBars (component, app) {
         resource: null,
         title: '',
         actions: [],
+        detailActions: []
       };
     }
     componentDidMount() {
@@ -30,10 +31,12 @@ function createViewWithBars (component, app) {
       const actions = toolbar.refs.actions;
       app.title = toolbar.setTitle.bind(toolbar);
       app.actions = actions.updateActions.bind(actions);
+      app.detailActions = actions.updateDetailActions.bind(actions);
       app.activity = actions.setActivity.bind(actions);
       // init the title, actions and activity
       app.title(main.title);
       app.actions(main.actions);
+      app.detailActions(main.detailActions);
       app.activity(this);
       this.setState({
         resource: main.resource,

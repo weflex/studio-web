@@ -66,6 +66,9 @@ class List extends React.Component {
       if (instance.actions) {
         this.props.app.actions(instance.actions);
       }
+      if (instance.detailActions) {
+        this.props.app.detailActions(instance.detailActions);
+      }
     }
   }
   constructor(props) {

@@ -67,12 +67,8 @@ export class Actions extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      actions: [
-        {
-          title: '创建新课程',
-          path: '/class/add'
-        }
-      ],
+      actions: [],
+      detailActions: [],
       activity: null
     };
     /**
@@ -135,6 +131,12 @@ export class Actions extends React.Component {
     }
   }
 
+  updateDetailActions(detailActions) {
+    if(Array.isArray(detailActions)) {
+      this.setState({ detailActions });
+    }
+  }
+
   setActivity(activity) {
     this.setState({
       activity
@@ -155,6 +157,7 @@ export class Actions extends React.Component {
 
   render() {
     this.sharedCtx.actions = [];
+    let len = this.state.actions.length;
     return (
       <div className="actions">
         {this.state.actions.map((action, index) => {
@@ -164,6 +167,16 @@ export class Actions extends React.Component {
               ref={this.addActionRef.bind(this)}
               parent={this}
               {...action}
+            />
+          );
+        })}
+        {this.state.detailActions.map((detailAction, index) => {
+          return (
+            <Action
+              key={len + index}
+              ref={this.addActionRef.bind(this)}
+              parent={this}
+              {...detailAction}
             />
           );
         })}
