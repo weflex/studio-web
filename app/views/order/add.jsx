@@ -76,9 +76,14 @@ export default class extends React.Component {
     }
   }
   onTemplateChange(event) {
-    const classes = _.find(this.state.templates, {
+    let classes = _.find(this.state.templates, {
       id: event.target.value
     }).classes;
+    classes = _.sortBy(classes, [
+      'date',
+      (item)=>item['from']['hour'],
+      (item)=>item['from']['minute']
+    ]);
     this.setState({classes});
   }
   async onSubmit() {
