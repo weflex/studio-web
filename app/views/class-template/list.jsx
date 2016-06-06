@@ -26,7 +26,7 @@ class List extends React.Component {
       section: (item) => {
         return [
           <div key={0}>{item.duration}分钟</div>,
-          <div key={1}>{item.trainer.fullname.first}</div>
+          <div key={1}>{item.trainer.fullname.first} {item.trainer.fullname.last}</div>
         ];
       },
       detail: {
