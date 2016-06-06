@@ -81,6 +81,12 @@ export default class extends React.Component {
     }).classes;
     this.setState({classes});
   }
+  get submitDisabled() {
+    return !(
+      this.state.membershipId &&
+      this.state.classId &&
+      this.state.member);
+  }
   async onSubmit() {
     const template = _.find(this.state.templates, {
       id: this.state.templateId
@@ -133,7 +139,7 @@ export default class extends React.Component {
     } else if (this.state.isUserNotFound) {
       view.push(
         <div key="user" className="order-add-find-user">
-          未找到对应用户，系统将自动创建用户并绑定手机号
+          未找到对应用户，请先添加为会员
         </div>
       );
     }
@@ -210,7 +216,7 @@ export default class extends React.Component {
           {this.renderMemberships()}
         </UIFramework.Row>
         <UIFramework.Row>
-          <UIFramework.Button text="创建订单" onClick={this.onSubmit.bind(this)} />
+          <UIFramework.Button text="创建订单" onClick={this.onSubmit.bind(this)} disabled={this.submitDisabled}/>
         </UIFramework.Row>
       </UIFramework>
     );
