@@ -3,9 +3,9 @@
 import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { 
-  Location, 
-  Locations 
+import {
+  Location,
+  Locations
 } from 'react-router-component';
 import LaunchScreen from './views/launcher';
 import NavBar from './views/navbar';
@@ -22,6 +22,7 @@ function createViewWithBars (component, app) {
         resource: null,
         title: '',
         actions: [],
+        detailActions: []
       };
     }
     componentDidMount() {
@@ -30,10 +31,12 @@ function createViewWithBars (component, app) {
       const actions = toolbar.refs.actions;
       app.title = toolbar.setTitle.bind(toolbar);
       app.actions = actions.updateActions.bind(actions);
+      app.detailActions = actions.updateDetailActions.bind(actions);
       app.activity = actions.setActivity.bind(actions);
       // init the title, actions and activity
       app.title(main.title);
       app.actions(main.actions);
+      app.detailActions(main.detailActions);
       app.activity(this);
       this.setState({
         resource: main.resource,
@@ -102,7 +105,7 @@ class App extends React.Component {
   render() {
     if (this.state.pending) {
       return (
-        <LaunchScreen 
+        <LaunchScreen
           onFinish={this.onLauncherFinish.bind(this)}
         />
       );

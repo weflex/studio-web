@@ -121,6 +121,9 @@ class List extends React.Component {
       if (instance.actions) {
         this.props.app.actions(instance.actions);
       }
+      if (instance.detailActions) {
+        this.props.app.detailActions(instance.detailActions);
+      }
     }
   }
   async componentDidMount() {
@@ -137,7 +140,7 @@ class List extends React.Component {
   render() {
     return (
       <div style={{height: '100%'}}>
-        <MasterDetail 
+        <MasterDetail
           ref="masterDetail"
           pathname="order"
           className="order"
@@ -150,7 +153,7 @@ class List extends React.Component {
           footer=""
           visible={this.state.modalVisibled}
           onCancel={() => this.setState({modalVisibled: false})}>
-          <AddOrderView 
+          <AddOrderView
             onComplete={this.onCompleteAddOrder.bind(this)}
           />
         </UIFramework.Modal>
