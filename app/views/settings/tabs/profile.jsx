@@ -138,7 +138,8 @@ class Profile extends React.Component {
                   flex={1}
                   bindStateCtx={this} 
                   bindStateName="form.email" 
-                  value={this.state.form.email}
+                  placeholder="未设置"
+                  value={this.state.form.email.endsWith('theweflex.com') ? '' : this.state.form.email}
                 />
               </UIFramework.Row>
             </UIFramework>

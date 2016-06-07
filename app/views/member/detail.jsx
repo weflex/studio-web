@@ -179,7 +179,7 @@ class UserProfileCard extends React.Component {
           <span>{this.props.phone}</span>
         </MasterDetail.Card.InlineRow>
         <MasterDetail.Card.InlineRow name="电子邮箱">
-          <a href={'mailto:' + this.props.email}>{this.props.email}</a>
+        {this.props.email.endsWith('theweflex.com') ? <span>未设置</span> : <a href={'mailto:' + this.props.email}>{this.props.email}</a>}
         </MasterDetail.Card.InlineRow>
         <MasterDetail.Card.InlineRow name="来源">
           <span>{this.props.source || '未知'}</span>

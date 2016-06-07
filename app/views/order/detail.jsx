@@ -169,7 +169,7 @@ class Detail extends React.Component {
               </div>
               <div className="detail-card-row">
                 <label>电子邮箱</label>
-                <a href={'mailto:' + order.member.email}>{order.member.email}</a>
+                {order.user.email.endsWith('theweflex.com') ? <span>未设置</span> : <a href={'`mailto:' + order.user.email}>{order.user.email}</a>}
               </div>
             </div>
             <div className="order-class">
