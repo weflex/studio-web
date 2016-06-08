@@ -113,8 +113,9 @@ export default class extends React.Component {
         correction.view = [
           <UIFramework.Select
             bindStateCtx={this}
-            bindStateType={Boolean}
             bindStateName="form.correction.positive"
+            bindStateType={Boolean}
+            value={this.state.form.correction.positive}
             key="lifetime-op" flex={0.2} options={[
               {text: '加', value: true},
               {text: '减', value: false},
@@ -142,8 +143,9 @@ export default class extends React.Component {
             key="passes-op" 
             flex={0.2} 
             bindStateCtx={this}
-            bindStateType={Boolean}
             bindStateName="form.correction.positive"
+            bindStateType={Boolean}
+            value={this.state.form.correction.positive}
             options={[
               {text: '加', value: true},
               {text: '减', value: false},
