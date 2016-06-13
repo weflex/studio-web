@@ -214,6 +214,14 @@ function getDateBySplit(newTime, date) {
   }
 }
 
+function getOrderStatus(order) {
+  let status = 'paid';
+  if (order.history && order.history.length > 0) {
+    status = _.last(_.sortBy(order.history, 'createdAt')).status;
+  }
+  return status;
+}
+
 export {
   getTime,
   getWeek,
@@ -230,4 +238,5 @@ export {
   addTimeByMinute,
   getGridOffsetByTime,
   transferToPercentage,
+  getOrderStatus,
 };

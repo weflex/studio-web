@@ -15,6 +15,7 @@ import {
   addTimeByMinute,
   getGridOffsetByTime,
   transferToPercentage,
+  getOrderStatus,
 } from './util'
 moment.locale('zh-cn');
 
@@ -412,11 +413,7 @@ class ClassCard extends React.Component {
       ' ' + getFormatTime(this.state.from) + ' - ' + getFormatTime(this.state.to);
     const stats = _.groupBy(
       orders.map((order) => {
-        if (order.history && order.history.length > 0) {
-          order.status = _.sortBy(order.history, 'createdAt')[0].status;
-        } else {
-          order.status = 'paid';
-        }
+        order.status = getOrderStatus(order);
         return order;
       }),
       'status'
@@ -455,7 +452,7 @@ class ClassCard extends React.Component {
         </div>
       );
     }
-
+    
     let popupView = null;
     if (this.props.popupEnabled) {
       popupView = (
@@ -468,6 +465,7 @@ class ClassCard extends React.Component {
           transition={0.0}>
           <this.props.popupTemplate 
             data={this.props.cardInfo}
+            onChange={this.props.onChange}
             {...this.props.popupProps}
           />
         </PopUp>

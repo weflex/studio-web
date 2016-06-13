@@ -5,21 +5,18 @@ import moment from 'moment';
 import React from 'react';
 import UIFramework from 'weflex-ui';
 import { NewClassTemplate } from './new';
-import { getFormatTime } from './util'
+import { getFormatTime, getOrderStatus } from './util'
 import { client } from '../../api';
 moment.locale('zh-cn');
 
 class OrderLine extends React.Component {
   constructor(props) {
     super(props);
-    let status = null;
-    if (props.data.history && props.data.history.length > 0) {
-      status = _.sortBy(props.data.history, 'createdAt')[0].status;
-    }
     this.state = {
-      status,
+      status: getOrderStatus(this.props.data),
     };
   }
+  
   async onClickCheckin(event) {
     this.setState({
       status: 'checkin',
@@ -28,6 +25,7 @@ class OrderLine extends React.Component {
       orderId: this.props.data.id,
       status: 'checkin',
     });
+    this.props.onChange();
     UIFramework.Message.success('签到成功');
   }
 
@@ -39,8 +37,10 @@ class OrderLine extends React.Component {
       orderId: this.props.data.id,
       status: 'cancel',
     });
+    this.props.onChange();
     UIFramework.Message.success('取消成功');
   }
+  
   render() {
     let userStatus;
     if (this.state.status !== 'checkin' &&
@@ -93,9 +93,6 @@ class OrdersInfo extends React.Component {
    */
   constructor(props) {
     super(props);
-    this.state = {
-      orders: props.data,
-    };
   }
 
   /**
@@ -110,8 +107,8 @@ class OrdersInfo extends React.Component {
             <legend>已登记用户</legend>
           </fieldset>
           <ul>
-            {this.state.orders.map((order, idx) => {
-              return <OrderLine data={order} key={idx} />;
+            {this.props.orders.map(order => {
+              return <OrderLine data={order} key={order.id} onChange={this.props.onChange}/>;
             })}
           </ul>
         </div>
@@ -144,7 +141,7 @@ class ClassOverview extends React.Component {
         <div className="trainer">{trainerName}</div>
         <div className="btn-modify-class"
           onClick={() => this.setState({modalVisibled: true})}>修改课程</div>
-        <OrdersInfo data={orders} />
+        <OrdersInfo orders={orders} onChange={this.props.onChange}/>
         <UIFramework.Modal
           visible={this.state.modalVisibled}
           title="修改课程"

@@ -232,6 +232,7 @@ class WeflexCalendar extends React.Component {
             {...props}
             ref="classCard"
             calendar={self.refs.calendar}
+            onChange={self.getClassData.bind(self)}
             popupEnabled={true}
             popupTemplate={ClassOverview}
             popupProps={{
