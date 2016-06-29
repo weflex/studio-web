@@ -24,6 +24,9 @@ class List extends React.Component {
     return {
       title: 'name',
       section: (item) => {
+        if (!item.trainer) {
+          return null;
+        }
         return [
           <div key={0}>{item.duration}分钟</div>,
           <div key={1}>{item.trainer.fullname.first} {item.trainer.fullname.last}</div>
