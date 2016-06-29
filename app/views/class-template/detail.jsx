@@ -44,10 +44,8 @@ class Detail extends React.Component {
       },
       include: ['roles'],
     });
-    const trainers = members.filter((member) => {
-      return member.roles.filter((role) => {
-        return role.name === 'trainer';
-      });
+    const trainers = _.filter(members, (member) => {
+      return _.contains(member.roles, 'trainer');
     });
     this.setState({
       trainers,
