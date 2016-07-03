@@ -14,6 +14,8 @@ import {
   getGridOffsetByTime,
 } from './util.js'
 
+const Map = require('./class-list');
+
 const DAYHOUR = 24;
 const WEEKDAY = 7;
 const BORDER_HEIGHt = 1;
@@ -81,9 +83,7 @@ class Calendar extends React.Component {
     super(props);
     const viewDate     = moment();
     const currentDate  = moment();
-    const weekDate     = getWeek(viewDate, 'YYYYMMDD');
-    const weekIndex    = `${weekDate.begin}-${weekDate.end}`;
-    const weekSchedule = props.schedule.get(weekIndex) || new Map();
+    const weekSchedule = props.schedule.filterByWeek(viewDate);
 
     this.table = {};
     this.rowList = [];
@@ -134,9 +134,11 @@ class Calendar extends React.Component {
   }
 
   getCards(daySchedule, hourIndex, dayIndex) {
+    const hour = moment(this.state.viewDate);
+    hour.startOf('week').add(hourIndex, 'hours').add(dayIndex, 'days');
     let style = {height: this.state.cellHeight};
     if (daySchedule) {
-      let cardsInfo = daySchedule.get(hourIndex);
+      let cardsInfo = daySchedule.filterByHour(hour).get();
       if (cardsInfo) {
         return this.renderCards(cardsInfo, hourIndex, dayIndex);
       }
@@ -177,7 +179,9 @@ class Calendar extends React.Component {
   }
 
   getTableColumn(weekSchedule, dayIndex) {
-    let daySchedule = weekSchedule.get(dayIndex);
+    const day = moment(this.state.viewDate);
+    day.startOf('week').add(dayIndex, 'days');
+    let daySchedule = weekSchedule.filterByDay(day);
     let col = getRange(0, DAYHOUR - 1).map((value, hourIndex) => {
       return this.getCards(daySchedule, hourIndex, dayIndex);
     });
@@ -465,17 +469,12 @@ class Calendar extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const viewDate  = this.state.viewDate;
-    const weekDate     = getWeek(viewDate, 'YYYYMMDD');
-    const weekSchedule = nextProps.schedule.get(`${weekDate.begin}-${weekDate.end}`) || new Map();
-    const state = {viewDate, weekSchedule};
-
-    this.setState(state);
+    const viewDate = this.state.viewDate;
+    this.setViewDate(viewDate);
   }
 
   setViewDate(viewDate) {
-    const weekDate = getWeek(viewDate, 'YYYYMMDD');
-    const weekSchedule = this.props.schedule.get(`${weekDate.begin}-${weekDate.end}`) || new Map();
+    const weekSchedule = this.props.schedule.filterByWeek(viewDate);
     this.setState({ viewDate, weekSchedule });
   }
 

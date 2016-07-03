@@ -23,6 +23,8 @@ const ResourcePanel = require('../../components/resource-panel');
 const moment = require('moment');
 moment.locale('zh-cn');
 
+const Map = require('./class-list');
+
 class WeflexCalendar extends React.Component {
   
   constructor(props) {
@@ -44,7 +46,7 @@ class WeflexCalendar extends React.Component {
       results = new Map();
       this.state.allClass.forEach((item) => {
         if (item.template.name.indexOf(text) !== -1) {
-          results.set(item.id, item);
+          results.addItem(item);
         }
       });
     }
@@ -132,7 +134,7 @@ class WeflexCalendar extends React.Component {
     });
 
     classes.forEach((classInfo) => {
-      this.state.allClass.set(classInfo.id, classInfo);
+      this.state.allClass.addItem(classInfo);
     });
 
     const schedule = this.getSchedule(classes);
@@ -159,36 +161,7 @@ class WeflexCalendar extends React.Component {
   getSchedule(classes) {
     let schedule = new Map();
     classes.forEach(function (classInfo) {
-      let date = moment(classInfo.date);
-      let week = getWeek(date, 'YYYYMMDD');
-      let weekIndex = `${week.begin}-${week.end}`;
-      let dayIndex = moment(classInfo.date).isoWeekday();
-      let hourIndex = classInfo.from.hour;
-      let weekSchedule, daySchedule, hourSchedule;
-
-      weekSchedule = schedule.get(weekIndex);
-      if (weekSchedule) {
-        daySchedule = weekSchedule.get(dayIndex);
-        if (daySchedule) {
-          hourSchedule = daySchedule.get(hourIndex);
-          if (hourSchedule) {
-            hourSchedule.push(classInfo);
-          } else {
-            daySchedule.set(hourIndex, [classInfo]);
-          }
-        } else {
-          daySchedule = new Map();
-          daySchedule.set(hourIndex, [classInfo]);
-          weekSchedule.set(dayIndex, daySchedule);
-        }
-      } else {
-        weekSchedule = new Map();
-        daySchedule = new Map();
-        hourSchedule = [classInfo];
-        daySchedule.set(hourIndex, hourSchedule);
-        weekSchedule.set(dayIndex, daySchedule);
-        schedule.set(weekIndex, weekSchedule);
-      }
+        schedule.addItem(classInfo);
     });
     return schedule;
   }
