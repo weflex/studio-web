@@ -35,7 +35,7 @@ dist/%: build/% dist
 $(directories):
 	@mkdir -p $@
 
-watch: $(assets) $(entraces) node_modules
+watch: $(assets) $(entraces)
 	@PATH=$(PATH) webpack --watch
 
 .PHONY: build watch

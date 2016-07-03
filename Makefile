@@ -5,7 +5,7 @@ directories = \
 develop: node_modules
 	@make -f build/develop.mk
 
-watch: serve
+watch: serve node_modules
 	@make -f build/develop.mk watch
 
 production:
