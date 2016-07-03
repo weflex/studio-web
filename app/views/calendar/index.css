@@ -204,6 +204,8 @@
   padding: 5px 10px;
   transition: background-color .3s ease-in-out;
   box-sizing: border-box;
+  width: 100%;
+  float: left;
 }
 
 .class-card span {

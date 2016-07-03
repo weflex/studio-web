@@ -60,6 +60,7 @@ class ClassCard extends React.Component {
       height: height,
       marginTop: topPostion,
       marginLeft: 0,
+      width: 100/this.props.total + '%'
     };
 
     // Attach the cellHeight to instance for later uses

@@ -62,6 +62,7 @@ class Cards extends React.Component {
     if (this.props.hour) {
       zIndex = zIndex + (24 - this.props.hour);
     }
+    const total = this.props.cardsInfo.length;
     return (
       <div
         ref="cards"
@@ -70,7 +71,7 @@ class Cards extends React.Component {
         onClick={this.handleClick}>
         {this.props.cardsInfo.map((card, index) => {
           return (
-            <this.props.cardTemplate key={index} cardInfo={card} />
+            <this.props.cardTemplate key={index} cardInfo={card} total={total} />
           );
         })}
       </div>
