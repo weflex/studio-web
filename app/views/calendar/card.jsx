@@ -486,12 +486,6 @@ class ClassCard extends React.Component {
         ref="card">
         <div className="top-dragger" ref="topDragger"></div>
         <div className="class-name">{template.name}</div>
-        <div className="class-duration">{duration}</div>
-        <div className="class-stats">
-          <span className="class-stats-paid">{(stats.paid || []).length}</span>
-          <span className="class-stats-cancel">{(stats.cancel || []).length}</span>
-          <span className="class-stats-checkin">{(stats.checkin || []).length}</span>
-        </div>
         <div className="bottom-dragger" ref="bottomDragger"></div>
         {hideButton}
         {popupView}
