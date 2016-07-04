@@ -245,6 +245,9 @@
 
 .class-card .class-name {
   color: #D0021B;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .class-card .class-duration {
