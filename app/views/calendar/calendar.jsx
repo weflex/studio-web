@@ -55,7 +55,7 @@ class TableHeader extends React.Component {
 
 class Cards extends React.Component {
   render() {
-    let zIndex = this.props.hour;
+    const zIndex = this.props.hour;
     const total = this.props.cardsInfo.length;
     return (
       <div
@@ -130,7 +130,7 @@ class Calendar extends React.Component {
 
   getCards(daySchedule, hourIndex, dayIndex) {
     const hour = moment(this.state.viewDate);
-    hour.startOf('week').add(hourIndex, 'hours').add(dayIndex - 1, 'days');
+    hour.startOf('week').add(dayIndex - 1, 'days').add(hourIndex, 'hours');
     let style = {height: this.state.cellHeight};
     if (daySchedule) {
       let cardsInfo = daySchedule.filterByHour(hour).get();
@@ -464,8 +464,9 @@ class Calendar extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const weekSchedule = nextProps.schedule.filterByWeek(this.state.viewDate);
-    this.setState({ weekSchedule });
+    const {schedule} = nextProps;
+    const weekSchedule = schedule.filterByWeek(this.state.viewDate);
+    this.setState({ schedule, weekSchedule });
   }
 
   render() {
