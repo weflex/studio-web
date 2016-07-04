@@ -17,10 +17,15 @@ module.exports = {
     filename: '[name]'
   },
   resolve: {
-    extensions: ['', '.jsx', '.js']
+    extensions: ['', '.jsx', '.js', 'ts', 'tsx']
   },
   module: {
     loaders: [
+      {
+        test: /\.tsx?$/,
+        exclude: [/node_modules/],
+        loader: 'ts-loader'
+      },
       {
         test: /\.jsx$/,
         exclude: [/node_modules/, /server/],
