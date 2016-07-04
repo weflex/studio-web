@@ -1,4 +1,5 @@
 const moment = require('moment');
+moment.locale('zh-cn');
 
 class ClassList {
 
@@ -16,6 +17,7 @@ class ClassList {
     const {hour, minute} = item.from;
     if (!item.start) {
       item.start = moment(item.date)
+        .startOf('day')
         .add(hour, 'hours')
         .add(minute, 'minutes');
     }
