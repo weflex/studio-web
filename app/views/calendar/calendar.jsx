@@ -470,13 +470,8 @@ class Calendar extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const viewDate = this.state.viewDate;
-    this.setViewDate(viewDate);
-  }
-
-  setViewDate(viewDate) {
-    const weekSchedule = this.props.schedule.filterByWeek(viewDate);
-    this.setState({ viewDate, weekSchedule });
+    const weekSchedule = nextProps.schedule.filterByWeek(this.state.viewDate);
+    this.setState({ weekSchedule });
   }
 
   render() {
