@@ -55,13 +55,7 @@ class TableHeader extends React.Component {
 
 class Cards extends React.Component {
   render() {
-    let zIndex = 0;
-    if (this.props.day) {
-      zIndex = (7 - this.props.day) * 24;
-    }
-    if (this.props.hour) {
-      zIndex = zIndex + (24 - this.props.hour);
-    }
+    let zIndex = this.props.hour;
     const total = this.props.cardsInfo.length;
     return (
       <div
