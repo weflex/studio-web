@@ -107,33 +107,6 @@ class Calendar extends React.Component {
     this.interval = 0;
   }
 
-  getCards(hourIndex, dayIndex) {
-    const refRow = (c) => {
-      if (c) {
-        this.rowList[hourIndex] = c.getBoundingClientRect();
-      }
-    };
-    const style = {height: this.props.cellHeight};
-    const { weekSchedule, viewDate } = this.state;
-    const day = moment(viewDate).startOf('week').add(dayIndex, 'days');
-    let daySchedule = this.state.weekSchedule.filterByDay(day);
-    const hour = moment(day).add(hourIndex, 'hours');
-    const cardsInfo = daySchedule.filterByHour(hour).get();
-
-    return (
-      <li
-        style={style}
-        key={hourIndex}
-        ref={refRow}>
-        <Cards
-          hour={hourIndex}
-          day={dayIndex}
-          cardsInfo={cardsInfo}
-          cardTemplate={this.props.cardTemplate} />
-      </li>
-    );
-  }
-
   getHourAxis() {
     let style = {
       li: {
@@ -157,9 +130,10 @@ class Calendar extends React.Component {
   }
 
   getTableColumn(dayIndex) {
-    let col = range(0, DAYHOUR).map((value, hourIndex) => {
-      return this.getCards(hourIndex, dayIndex);
-    });
+    const style = {height: this.props.cellHeight};
+    const { weekSchedule, viewDate } = this.state;
+    const day = moment(viewDate).startOf('week').add(dayIndex, 'days');
+    let daySchedule = this.state.weekSchedule.filterByDay(day);
 
     return (
       <ul
@@ -169,7 +143,27 @@ class Calendar extends React.Component {
           if (ul) {
             this.colList[dayIndex] = ul.getBoundingClientRect();
         }}}>
-        {col}
+        {
+          range(0, DAYHOUR).map((hourIndex) => {
+            const hour = moment(day).add(hourIndex, 'hours');
+            const cardsInfo = daySchedule.filterByHour(hour).get();
+            const refRow = (c) => {
+              if (c) {
+                this.rowList[hourIndex] = c.getBoundingClientRect();
+              }
+            };
+            return (
+              <li style={style}
+                  key={hourIndex}
+                  ref={refRow}>
+                <Cards hour={hourIndex}
+                       day={dayIndex}
+                       cardsInfo={cardsInfo}
+                       cardTemplate={this.props.cardTemplate} />
+              </li>
+            );
+          })
+        }
       </ul>
     );
   }
@@ -455,7 +449,7 @@ class Calendar extends React.Component {
           {
             [
               this.getHourAxis(),
-              range(0, WEEKDAY).map((i) => this.getTableColumn(i))
+              range(0, WEEKDAY).map(this.getTableColumn.bind(this))
             ]
           }
           {baseline}
