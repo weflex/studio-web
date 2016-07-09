@@ -12,7 +12,9 @@ import {
   getGridHeight,
   getTimeDuration,
   getGridOffsetByTime,
-} from './util.js'
+} from './util.js';
+
+import { range } from 'lodash';
 
 const Map = require('./class-list');
 
@@ -55,7 +57,7 @@ class TableHeader extends React.Component {
 
 class Cards extends React.Component {
   render() {
-    const zIndex = this.props.hour;
+    let zIndex = this.props.hour;
     const total = this.props.cardsInfo.length;
     return (
       <div
@@ -130,7 +132,7 @@ class Calendar extends React.Component {
 
   getCards(daySchedule, hourIndex, dayIndex) {
     const hour = moment(this.state.viewDate);
-    hour.startOf('week').add(dayIndex - 1, 'days').add(hourIndex, 'hours');
+    hour.startOf('week').add(hourIndex, 'hours').add(dayIndex - 1, 'days');
     let style = {height: this.state.cellHeight};
     if (daySchedule) {
       let cardsInfo = daySchedule.filterByHour(hour).get();
@@ -158,27 +160,25 @@ class Calendar extends React.Component {
         marginTop: (this.state.cellHeight + 1) / 2
       }
     };
-
-    let col = getRange(1, DAYHOUR - 1).map((value) => {
-      if (value < 10) {
-        value = '0' + value;
-      }
-      return <li key={value} style={style.li}>{`${value}:00`}</li>
-    });
-
     return (
       <ul key="hour-axis" className="hour-axis" style={style.ul}>
-        {col}
+        {
+          range(1, DAYHOUR - 1).map((h, index) => {
+            const formatedSting = moment().hour(h).format('HH:00')
+            return <li key={index} style={style.li}>{formatedSting}</li>
+          })
+        }
       </ul>
     );
   }
 
-  getTableColumn(weekSchedule, dayIndex) {
+  getTableColumn(dayIndex) {
+    const { weekSchedule } = this.state;
     const day = moment(this.state.viewDate);
-    day.startOf('week').add(dayIndex - 1, 'days');
+    day.startOf('week').add(dayIndex, 'days');
     let daySchedule = weekSchedule.filterByDay(day);
     let col = getRange(0, DAYHOUR - 1).map((value, hourIndex) => {
-      return this.getCards(daySchedule, hourIndex, dayIndex);
+      return this.getCards(daySchedule, hourIndex, dayIndex + 1);
     });
 
     return (
@@ -192,18 +192,6 @@ class Calendar extends React.Component {
         {col}
       </ul>
     );
-  }
-
-  getTableBody() {
-    let hourAxis = this.getHourAxis();
-    let tableBody = [hourAxis];
-
-    for (let i = 1; i <= WEEKDAY; ++i) {
-      let col = this.getTableColumn(this.state.weekSchedule, i);
-      tableBody[i] = col;
-    }
-
-    return tableBody;
   }
 
   setBaseline(e) {
@@ -464,13 +452,11 @@ class Calendar extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {schedule} = nextProps;
-    const weekSchedule = schedule.filterByWeek(this.state.viewDate);
-    this.setState({ schedule, weekSchedule });
+    const weekSchedule = nextProps.schedule.filterByWeek(this.state.viewDate);
+    this.setState({ weekSchedule });
   }
 
   render() {
-    const tableBody = this.getTableBody();
     const baseline = this.getBaseLine(this.state.baselineClock, this.state.baselineTop);
     const currline = this.getCurrentLine();
     const createCard = this.getCreateCard();
@@ -486,7 +472,12 @@ class Calendar extends React.Component {
           style={{height: this.state.tableHeight}}
           onMouseMove={this.setBaseline.bind(this)}
           onScroll={this.handleScroll.bind(this)}>
-          {tableBody}
+          {
+            [
+              this.getHourAxis(),
+              range(0, WEEKDAY).map((i) => this.getTableColumn(i))
+            ]
+          }
           {baseline}
           {currline}
           {createCard}
