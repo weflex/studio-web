@@ -4,7 +4,6 @@ import Hammer from 'hammerjs';
 import moment from 'moment';
 import {
   getWeek,
-  getRange,
   getWeekEnd,
   getWeekBegin,
   getRoundTime,
@@ -108,45 +107,29 @@ class Calendar extends React.Component {
     this.interval = 0;
   }
 
-  renderCards(cardsInfo, hourIndex, dayIndex) {
-    let refRow = c => {
+  getCards(hourIndex, dayIndex) {
+    const refRow = (c) => {
       if (c) {
         this.rowList[hourIndex] = c.getBoundingClientRect();
       }
     };
-    return (
-      <li
-        key={dayIndex + '_' + hourIndex}
-        style={{height: this.props.cellHeight}}
-        ref={refRow}>
-        <Cards
-          hour={hourIndex}
-          day={dayIndex}
-          cardsInfo={cardsInfo}
-          cardTemplate={this.props.cardTemplate}
-        />
-      </li>
-    );
-  }
-
-  getCards(hourIndex, dayIndex) {
+    const style = {height: this.props.cellHeight};
     const { weekSchedule, viewDate } = this.state;
     const day = moment(viewDate).startOf('week').add(dayIndex, 'days');
     let daySchedule = this.state.weekSchedule.filterByDay(day);
     const hour = moment(day).add(hourIndex, 'hours');
-    let style = {height: this.props.cellHeight};
-    if (daySchedule) {
-      let cardsInfo = daySchedule.filterByHour(hour).get();
-      if (cardsInfo) {
-        return this.renderCards(cardsInfo, hourIndex, dayIndex + 1);
-      }
-    }
+    const cardsInfo = daySchedule.filterByHour(hour).get();
 
     return (
       <li
         style={style}
         key={hourIndex}
-        ref={c => {if (c) {this.rowList[hourIndex] = c.getBoundingClientRect()}}}>
+        ref={refRow}>
+        <Cards
+          hour={hourIndex}
+          day={dayIndex}
+          cardsInfo={cardsInfo}
+          cardTemplate={this.props.cardTemplate} />
       </li>
     );
   }
@@ -174,7 +157,7 @@ class Calendar extends React.Component {
   }
 
   getTableColumn(dayIndex) {
-    let col = getRange(0, DAYHOUR - 1).map((value, hourIndex) => {
+    let col = range(0, DAYHOUR).map((value, hourIndex) => {
       return this.getCards(hourIndex, dayIndex);
     });
 
