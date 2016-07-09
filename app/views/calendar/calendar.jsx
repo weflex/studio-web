@@ -162,7 +162,7 @@ class Calendar extends React.Component {
     return (
       <ul key="hour-axis" className="hour-axis" style={style.ul}>
         {
-          range(1, DAYHOUR - 1).map((h, index) => {
+          range(1, DAYHOUR).map((h, index) => {
             const formatedSting = moment().hour(h).format('HH:00')
             return <li key={index} style={style.li}>{formatedSting}</li>
           })
