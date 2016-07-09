@@ -126,6 +126,11 @@ class Calendar extends React.Component {
     );
   }
 
+  setViewDate(viewDate) {
+    const weekSchedule = this.props.schedule.filterByWeek(viewDate);
+    this.setState({ weekSchedule, viewDate });
+  }
+
   getTableColumn(dayIndex) {
     const style = {height: this.props.cellHeight};
     const { weekSchedule, viewDate } = this.state;
