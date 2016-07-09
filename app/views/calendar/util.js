@@ -61,19 +61,8 @@ function getRoundTime(time, unit) {
 }
 
 function getFormatTime(time) {
-  let hour, minute;
-  if (time.minute < 10) {
-    minute = '0' + time.minute;
-  } else {
-    minute = time.minute;
-  }
-
-  if (time.hour < 10) {
-    hour = '0' + time.hour;
-  } else {
-    hour = time.hour;
-  }
-  return hour + ':' + minute;
+  const { hour, minute } = time;
+  return moment().hour(hour).minute(minute).format('HH:mm');
 }
 
 function getTime(time) {
@@ -104,19 +93,7 @@ function getCellHeight() {
 }
 
 function getRange(start, end) {
-  if (!end) {
-    end = start;
-    start = 0;
-  }
-
-  let rangeArray = [];
-
-  while (end >= start) {
-    rangeArray[start] = start;
-    start = start + 1;
-  }
-
-  return rangeArray;
+  return _.range(start, end + 1);
 }
 
 function addTimeByHour(time, offsetHour) {

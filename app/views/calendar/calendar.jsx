@@ -3,9 +3,6 @@ import ReactDOM from 'react-dom';
 import Hammer from 'hammerjs';
 import moment from 'moment';
 import {
-  getWeek,
-  getWeekEnd,
-  getWeekBegin,
   getRoundTime,
   getFormatTime,
   getGridHeight,
@@ -120,8 +117,8 @@ class Calendar extends React.Component {
     return (
       <ul key="hour-axis" className="hour-axis" style={style.ul}>
         {
-          range(1, DAYHOUR).map((h, index) => {
-            const formatedSting = moment().hour(h).format('HH:00')
+          range(1, DAYHOUR).map((hour, index) => {
+            const formatedSting = getFormatTime({hour, minute: 0});
             return <li key={index} style={style.li}>{formatedSting}</li>
           })
         }
@@ -139,23 +136,27 @@ class Calendar extends React.Component {
       <ul
         className="schedule-table-column"
         key={dayIndex}
-        ref={ul => {
-          if (ul) {
+        ref={
+          (ul) => {
+            if (ul) {
             this.colList[dayIndex] = ul.getBoundingClientRect();
-        }}}>
+            }
+          }
+        }>
         {
           range(0, DAYHOUR).map((hourIndex) => {
             const hour = moment(day).add(hourIndex, 'hours');
             const cardsInfo = daySchedule.filterByHour(hour).get();
-            const refRow = (c) => {
-              if (c) {
-                this.rowList[hourIndex] = c.getBoundingClientRect();
-              }
-            };
             return (
               <li style={style}
                   key={hourIndex}
-                  ref={refRow}>
+                  ref={
+                    (c) => {
+                      if (c) {
+                        this.rowList[hourIndex] = c.getBoundingClientRect();
+                      }
+                    }
+                  }>
                 <Cards hour={hourIndex}
                        day={dayIndex}
                        cardsInfo={cardsInfo}
@@ -449,7 +450,7 @@ class Calendar extends React.Component {
           {
             [
               this.getHourAxis(),
-              range(0, WEEKDAY).map(this.getTableColumn.bind(this))
+              range(0, WEEKDAY).map((d) => this.getTableColumn(d))
             ]
           }
           {baseline}
