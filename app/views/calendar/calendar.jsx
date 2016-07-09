@@ -129,14 +129,16 @@ class Calendar extends React.Component {
     );
   }
 
-  getCards(daySchedule, hourIndex, dayIndex) {
-    const hour = moment(this.state.viewDate);
-    hour.startOf('week').add(hourIndex, 'hours').add(dayIndex - 1, 'days');
+  getCards(hourIndex, dayIndex) {
+    const { weekSchedule, viewDate } = this.state;
+    const day = moment(viewDate).startOf('week').add(dayIndex, 'days');
+    let daySchedule = this.state.weekSchedule.filterByDay(day);
+    const hour = moment(day).add(hourIndex, 'hours');
     let style = {height: this.props.cellHeight};
     if (daySchedule) {
       let cardsInfo = daySchedule.filterByHour(hour).get();
       if (cardsInfo) {
-        return this.renderCards(cardsInfo, hourIndex, dayIndex);
+        return this.renderCards(cardsInfo, hourIndex, dayIndex + 1);
       }
     }
 
@@ -172,12 +174,8 @@ class Calendar extends React.Component {
   }
 
   getTableColumn(dayIndex) {
-    const { weekSchedule } = this.state;
-    const day = moment(this.state.viewDate);
-    day.startOf('week').add(dayIndex, 'days');
-    let daySchedule = weekSchedule.filterByDay(day);
     let col = getRange(0, DAYHOUR - 1).map((value, hourIndex) => {
-      return this.getCards(daySchedule, hourIndex, dayIndex + 1);
+      return this.getCards(hourIndex, dayIndex);
     });
 
     return (
