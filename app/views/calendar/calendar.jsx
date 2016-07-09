@@ -92,7 +92,6 @@ class Calendar extends React.Component {
       tableHeight: 0,
       scrollTop : 0,
       baselineTop: 0,
-      cellHeight: props.cellHeight || 40,
       baselineClock: {
         hour: 0,
         minute: 0,
@@ -118,7 +117,7 @@ class Calendar extends React.Component {
     return (
       <li
         key={dayIndex + '_' + hourIndex}
-        style={{height: this.state.cellHeight}}
+        style={{height: this.props.cellHeight}}
         ref={refRow}>
         <Cards
           hour={hourIndex}
@@ -133,7 +132,7 @@ class Calendar extends React.Component {
   getCards(daySchedule, hourIndex, dayIndex) {
     const hour = moment(this.state.viewDate);
     hour.startOf('week').add(hourIndex, 'hours').add(dayIndex - 1, 'days');
-    let style = {height: this.state.cellHeight};
+    let style = {height: this.props.cellHeight};
     if (daySchedule) {
       let cardsInfo = daySchedule.filterByHour(hour).get();
       if (cardsInfo) {
@@ -153,11 +152,11 @@ class Calendar extends React.Component {
   getHourAxis() {
     let style = {
       li: {
-        height: this.state.cellHeight + 1,
-        lineHeight: parseInt(this.state.cellHeight + 1) + 'px'
+        height: this.props.cellHeight + 1,
+        lineHeight: parseInt(this.props.cellHeight + 1) + 'px'
       },
       ul: {
-        marginTop: (this.state.cellHeight + 1) / 2
+        marginTop: (this.props.cellHeight + 1) / 2
       }
     };
     return (
@@ -394,8 +393,8 @@ class Calendar extends React.Component {
         const rowIndex = newFromHour.hour;
         const row = this.rowList[rowIndex];
         const top = row.top - this.table.top + this.state.scrollTop;
-        const marginTop = getGridOffsetByTime(newFromHour, this.state.cellHeight);
-        const height = getGridHeight(newFromHour, newToHour, this.state.cellHeight);
+        const marginTop = getGridOffsetByTime(newFromHour, this.props.cellHeight);
+        const height = getGridHeight(newFromHour, newToHour, this.props.cellHeight);
         const createCardStyle = Object.assign({}, this.state.createCardStyle);
         createCardStyle.height = height;
         createCardStyle.top = top;
