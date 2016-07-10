@@ -26,27 +26,22 @@ class TableHeader extends React.Component {
   }
 
   render() {
-    let header = [];
     let date = moment(this.props.viewDate).startOf('week');
-
-    header.push(
-      <li key="header-index" className="header-index"></li>
-    );
-
-    for (let i = 1; i <= WEEKDAY; i++) {
-      let day = moment(date).days(i);
-      let dayDate = day.format('DD');
-      let dayLocale = day.format('ddd');
-
-      header.push(
-        <li key={i} ref={(c)=> {this.dayList[i] = day}}>
-          {dayLocale} {dayDate}
-        </li>
-      );
-    }
-
     return (
-      <ul className="table-header" ref="table-header">{header}</ul>
+      <ul className="table-header" ref="table-header">
+        <li key="header-index" className="header-index"></li>
+          {
+            range(1, WEEKDAY + 1).map((i) => {
+              const day = moment(date).days(i);
+              const dayString = day.format('ddd DD');
+              return (
+                <li key={i} ref={(c)=> {this.dayList[i] = day}}>
+                  {dayString}
+                </li>
+              );
+            })
+          }
+      </ul>
     );
   }
 }
@@ -472,5 +467,19 @@ Calendar.propTypes = {
   cellHeight: React.PropTypes.number,
   onAddCard: React.PropTypes.func,
 };
+
+/* Calendar Controller */
+const CCViewMode = {
+  week: 'week',
+  day: 'day'
+};
+
+class CalendarController {
+  constructor () {
+    this._schedule = new Map();
+    this._viewMode = CCViewMode.week;
+    this._indexes  = [];
+  }
+}
 
 module.exports = Calendar;
