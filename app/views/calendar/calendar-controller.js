@@ -1,7 +1,7 @@
 import moment from 'moment';
-import ClassList from './class-list';
+import { range } from 'lodash';
+import { client } from '../../api';
 
-/* Calendar Controller */
 const CCViewMode = {
   week: 'week',
   day: 'day'
@@ -9,17 +9,17 @@ const CCViewMode = {
 
 class CalendarController {
   constructor () {
-    this._schedule = new ClassList();
     this._viewMode = CCViewMode.week;
     this._viewDate = moment();
-    this._indexes  = [];
     this._calendar = null;
     this._picker   = null;
   }
 
-  setViewMode (nextViewMode) {
+  async setViewMode (nextViewMode) {
     this._viewMode = nextViewMode;
     this._calendar.setViewMode(nextViewMode);
+    const indexes = await this.getIndexes();
+    this._calendar.setState({ indexes });
   }
 
   set viewMode (nextViewMode) {
@@ -30,9 +30,11 @@ class CalendarController {
     return this._viewMode;
   }
 
-  setViewDate (nextViewDate) {
+  async setViewDate (nextViewDate) {
     this._viewDate = nextViewDate;
     this._calendar.setViewDate(nextViewDate);
+    const indexes = await this.getIndexes();
+    this._calendar.setState({ indexes });
   }
 
   set viewDate (nextViewDate) {
@@ -49,6 +51,35 @@ class CalendarController {
 
   setPicker (nextPicker) {
     this._picker = nextPicker;
+  }
+
+  async getIndexes () {
+    if (this._viewMode === CCViewMode.week) {
+      const startOfWeek = moment(this._viewDate).startOf('week');
+      const week = range(0, 7).map((n) => moment(startOfWeek).add(n, 'days'));
+      return week.map((d) => {
+        return {
+          raw: d,
+          content: d.format('ddd DD')
+        };
+      });
+    } else {
+      const venue = await client.user.getVenueById();
+      const trainers = await client.collaborator.list({
+        include: ['roles'],
+        where: {
+          venueId: venue.id
+        }
+      });
+      return trainers
+        .filter((c)=> c.roles.filter((r) => r.name === 'trainer').length > 0)
+        .map((t) => {
+          return {
+            raw: t,
+            content: t.fullname.first + t.fullname.last
+          };
+        });
+    }
   }
 }
 

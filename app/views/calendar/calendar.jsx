@@ -31,12 +31,10 @@ class TableHeader extends React.Component {
       <ul className="table-header" ref="table-header">
         <li key="header-index" className="header-index"></li>
           {
-            range(1, WEEKDAY + 1).map((i) => {
-              const day = moment(date).days(i);
-              const dayString = day.format('ddd DD');
+            this.props.indexes.map(({raw, content}, i) => {
               return (
-                <li key={i} ref={(c)=> {this.dayList[i] = day}}>
-                  {dayString}
+                <li key={i} ref={(c)=> {this.dayList[i] = raw}}>
+                  {content}
                 </li>
               );
             })
@@ -72,6 +70,14 @@ class Calendar extends React.Component {
     const viewDate     = moment();
     const currentDate  = moment();
     const weekSchedule = props.schedule.filterByWeek(viewDate);
+    const startOfWeek = moment(this._viewDate).startOf('week');
+    const week = range(0, 7).map((n) => moment(startOfWeek).add(n, 'days'));
+    const indexes = week.map((d) => {
+      return {
+        raw: d,
+        content: d.format('ddd DD')
+      };
+    });
 
     this.table = {};
     this.rowList = [];
@@ -80,6 +86,7 @@ class Calendar extends React.Component {
       viewDate,
       currentDate,
       weekSchedule,
+      indexes,
       tableHeight: 0,
       scrollTop : 0,
       baselineTop: 0,
@@ -442,7 +449,7 @@ class Calendar extends React.Component {
     return (
       <div className="calendar" ref="calendar">
         <div className="week-header">
-          <TableHeader viewDate={this.state.viewDate} ref="tableHeader" />
+          <TableHeader viewDate={this.state.viewDate} indexes={this.state.indexes} ref="tableHeader" />
           <div className="scroll-div"></div>
         </div>
         <div
