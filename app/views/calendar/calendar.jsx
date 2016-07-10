@@ -126,6 +126,10 @@ class Calendar extends React.Component {
     this.setState({ weekSchedule, viewDate });
   }
 
+  setViewMode(viewMode) {
+    this.setState({ viewMode });
+  }
+
   getTableColumn(dayIndex) {
     const style = {height: this.props.cellHeight};
     const { weekSchedule, viewDate } = this.state;
@@ -467,19 +471,5 @@ Calendar.propTypes = {
   cellHeight: React.PropTypes.number,
   onAddCard: React.PropTypes.func,
 };
-
-/* Calendar Controller */
-const CCViewMode = {
-  week: 'week',
-  day: 'day'
-};
-
-class CalendarController {
-  constructor () {
-    this._schedule = new Map();
-    this._viewMode = CCViewMode.week;
-    this._indexes  = [];
-  }
-}
 
 module.exports = Calendar;

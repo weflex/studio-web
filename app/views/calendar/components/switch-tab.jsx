@@ -5,15 +5,20 @@ class SwitchTab extends React.Component {
 
   constructor (props) {
     super(props);
-    const { options } = props;
     this.state = {
       selectedIndex: 0
     }
   }
 
+  setSelectedIndex(selectedIndex) {
+    const { events, onSwitch} = this.props;
+    onSwitch(events[selectedIndex]);
+    this.setState({ selectedIndex });
+  }
+
   render () {
     return (
-      <div className='switch-tab-wrapper'>
+      <span className='switch-tab-wrapper'>
         {
           this.props.options.map((op, i) => {
             const style = {
@@ -27,15 +32,21 @@ class SwitchTab extends React.Component {
               <span className='switch-tab-option'
                     key={i}
                     style={style}
-                    onClick={(e) => this.setState({selectedIndex: i})}>
+                    onClick={(e) => this.setSelectedIndex(i)}>
                 {op}
               </span>
             );
           })
         }
-      </div>        
+      </span>
     );
   }
 }
+
+SwitchTab.propTypes = {
+  options: React.PropTypes.array,
+  events: React.PropTypes.array,
+  onSwitch: React.PropTypes.func
+};
 
 exports.SwitchTab = SwitchTab;

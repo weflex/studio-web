@@ -1,10 +1,18 @@
 .switch-tab-wrapper {
   border: 1px solid #00e4ff;
   border-radius: 4px;
+  margin: 0 10px;
+  padding: 3px 0;
 }
 
 .switch-tab-option {
   color: #00e4ff;
   background: transparent;
-  padding: 5px 10px;
+  padding: 3px 10px;
+  box-sizing: border-box;
+  border-left: 1px solid #00e4ff;
+}
+
+.switch-tab-option:first-of-type {
+  border-left: none;
 }
