@@ -12,19 +12,20 @@ class WeekPicker extends React.Component {
     super(props);
     this.calendar = this.props.calendar;
     this.state = {
-      viewDate: moment()
+      viewDate: this.calendar.viewDate
     };
+    this.calendar.setPicker(this);
   }
 
   goPrevWeek() {
-    const { viewDate } = this.props.calendar.state;
+    const viewDate = this.calendar.viewDate;
     const newDate = viewDate.subtract(7, 'days');
     this.setState({ viewDate: newDate });
     this.calendar.setViewDate(newDate);
   }
 
   goNextWeek() {
-    const { viewDate } = this.props.calendar.state;
+    const viewDate = this.calendar.viewDate;
     const newDate = viewDate.add(7, 'days');
     this.setState({ viewDate: newDate });
     this.calendar.setViewDate(newDate);

@@ -17,6 +17,7 @@ import {
 import UIFramework from 'weflex-ui';
 import { client } from '../../api';
 import './index.css';
+import { CalendarController } from './calendar-controller';
 
 const Template = require('./components/template');
 const ResourcePanel = require('../../components/resource-panel');
@@ -36,6 +37,7 @@ class WeflexCalendar extends React.Component {
       modalVisibled: false,
     };
     SearchInput.Listen('onChange', this.onSearchInputChange.bind(this));
+    this.controller = new CalendarController();
   }
 
   onSearchInputChange(text) {
@@ -56,7 +58,7 @@ class WeflexCalendar extends React.Component {
 
   get title() {
     return (
-      <WeekPicker calendar={this.refs.calendar} />
+      <WeekPicker calendar={this.controller}/>
     );
   }
 
@@ -143,6 +145,7 @@ class WeflexCalendar extends React.Component {
   }
 
   async componentDidMount() {
+    this.controller.setCalendar(this.refs.calendar);
     let self = this;
     self.getClassData();
     self.getCardTemplate();
