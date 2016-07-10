@@ -1,0 +1,10 @@
+.switch-tab-wrapper {
+  border: 1px solid #00e4ff;
+  border-radius: 4px;
+}
+
+.switch-tab-option {
+  color: #00e4ff;
+  background: transparent;
+  padding: 5px 10px;
+}

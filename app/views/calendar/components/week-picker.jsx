@@ -4,6 +4,7 @@ import {
   getWeek
 } from '../util';
 import './week-picker.css';
+import { SwitchTab } from './switch-tab';
 
 class WeekPicker extends React.Component {
   constructor(props) {
@@ -39,6 +40,7 @@ class WeekPicker extends React.Component {
         <span className="go-next-btn icon-font icon-right-open"
           onClick={this.goNextWeek.bind(this)}>
         </span>
+        <SwitchTab options={['周', '日']} />
       </div>
     );
   }
