@@ -46,6 +46,12 @@ class ClassList {
     return this._filterBy('minute', value);
   }
 
+  filterByTrainer (trainer) {
+    return new ClassList(this._list.filter((object) => {
+      return object.trainer.id === trainer.id;
+    }));
+  }
+
   get () {
     return this._list;
   }

@@ -11,6 +11,7 @@ import {
 } from './util.js';
 
 import { range } from 'lodash';
+import { CCViewMode } from './calendar-controller';
 
 const Map = require('./class-list');
 
@@ -26,14 +27,17 @@ class TableHeader extends React.Component {
   }
 
   render() {
-    let date = moment(this.props.viewDate).startOf('week');
+    const date = moment(this.props.viewDate).startOf('week');
+    const style = {
+      width: `calc((100% - 60px) / ${this.props.indexes.length} - 1px)`
+    }
     return (
       <ul className="table-header" ref="table-header">
         <li key="header-index" className="header-index"></li>
           {
             this.props.indexes.map(({raw, content}, i) => {
               return (
-                <li key={i} ref={(c)=> {this.dayList[i] = raw}}>
+                <li key={i} style={style} ref={(c)=> {this.dayList[i] = raw}}>
                   {content}
                 </li>
               );
@@ -84,6 +88,7 @@ class Calendar extends React.Component {
     this.colList = [];
     this.state = {
       viewDate,
+      viewMode: CCViewMode.week,
       currentDate,
       weekSchedule,
       indexes,
@@ -137,29 +142,45 @@ class Calendar extends React.Component {
     this.setState({ viewMode });
   }
 
-  getTableColumn(dayIndex) {
-    const style = {height: this.props.cellHeight};
+  getTableColumn(index, i) {
+    const style = {
+      ul: {
+        width: `calc((100% - 60px) / ${this.state.indexes.length} - 1px)`
+      },
+      li: {
+        height: this.props.cellHeight,
+      }
+    };
     const { weekSchedule, viewDate } = this.state;
-    const day = moment(viewDate).startOf('week').add(dayIndex, 'days');
-    let daySchedule = this.state.weekSchedule.filterByDay(day);
+    let day;
+    let schedule;
+    if (CCViewMode.day === this.state.viewMode) {
+      day = moment(this.state.viewDate);
+      const trainer = index.raw;
+      schedule = this.state.weekSchedule.filterByTrainer(trainer);
+    } else {
+      day = index.raw;
+      schedule = this.state.weekSchedule.filterByDay(day);
+    }
 
     return (
       <ul
         className="schedule-table-column"
-        key={dayIndex}
+        key={i}
+        style={style.ul}
         ref={
           (ul) => {
             if (ul) {
-            this.colList[dayIndex] = ul.getBoundingClientRect();
+            this.colList[i] = ul.getBoundingClientRect();
             }
           }
         }>
         {
           range(0, DAYHOUR).map((hourIndex) => {
             const hour = moment(day).add(hourIndex, 'hours');
-            const cardsInfo = daySchedule.filterByHour(hour).get();
+            const cardsInfo = schedule.filterByHour(hour).get();
             return (
-              <li style={style}
+              <li style={style.li}
                   key={hourIndex}
                   ref={
                     (c) => {
@@ -169,7 +190,7 @@ class Calendar extends React.Component {
                     }
                   }>
                 <Cards hour={hourIndex}
-                       day={dayIndex}
+                       day={i}
                        cardsInfo={cardsInfo}
                        cardTemplate={this.props.cardTemplate} />
               </li>
@@ -392,6 +413,8 @@ class Calendar extends React.Component {
 
         const duration = getTimeDuration(newFromHour, newToHour);
         if (duration) {
+          // TODO: (Scott)
+          // fix this when viewMode === CCViewMode.day
           const date = this.refs.tableHeader.dayList[this.state.atCol].format('YYYY-MM-DD');
           this.props.onAddCard(newFromHour, newToHour, date);
         }
@@ -461,7 +484,7 @@ class Calendar extends React.Component {
           {
             [
               this.getHourAxis(),
-              range(0, WEEKDAY).map((d) => this.getTableColumn(d))
+              this.state.indexes.map((d) => this.getTableColumn(d))
             ]
           }
           {baseline}
