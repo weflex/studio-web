@@ -66,19 +66,16 @@ class CalendarController {
     } else {
       const venue = await client.user.getVenueById();
       const trainers = await client.collaborator.list({
-        include: ['roles'],
         where: {
           venueId: venue.id
         }
       });
-      return trainers
-        .filter((c)=> c.roles.filter((r) => r.name === 'trainer').length > 0)
-        .map((t) => {
-          return {
-            raw: t,
-            content: t.fullname.first + t.fullname.last
-          };
-        });
+      return trainers.map((t) => {
+        return {
+          raw: t,
+          content: t.fullname.first + t.fullname.last
+        };
+      });
     }
   }
 }
