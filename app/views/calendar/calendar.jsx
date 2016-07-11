@@ -50,7 +50,7 @@ class TableHeader extends React.Component {
 
 class Cards extends React.Component {
   render() {
-    let zIndex = this.props.hour;
+    let zIndex = this.props.hour + 10;
     const total = this.props.cardsInfo.length;
     return (
       <div
