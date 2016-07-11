@@ -413,10 +413,14 @@ class Calendar extends React.Component {
 
         const duration = getTimeDuration(newFromHour, newToHour);
         if (duration) {
-          // TODO: (Scott)
-          // fix this when viewMode === CCViewMode.day
-          const date = this.refs.tableHeader.dayList[this.state.atCol].format('YYYY-MM-DD');
-          this.props.onAddCard(newFromHour, newToHour, date);
+          if (CCViewMode.week === this.state.viewMode) {
+            const date = this.refs.tableHeader.dayList[this.state.atCol].format('YYYY-MM-DD');
+            this.props.onAddCard(newFromHour, newToHour, date);
+          } else {
+            const date = this.state.viewMode;
+            const { trainerId } = this.refs.tableHeader.dayList[this.state.atCol];
+            this.props.onAddCard(newFromHour, newToHour, date, trainerId);
+          }
         }
       }
     });
