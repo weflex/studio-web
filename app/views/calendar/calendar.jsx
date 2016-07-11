@@ -484,7 +484,7 @@ class Calendar extends React.Component {
           {
             [
               this.getHourAxis(),
-              this.state.indexes.map((d) => this.getTableColumn(d))
+              this.state.indexes.map((d, i) => this.getTableColumn(d, i))
             ]
           }
           {baseline}
