@@ -15,8 +15,6 @@ import {
 import { range } from 'lodash';
 import { CCViewMode } from './calendar-controller';
 
-const Map = require('./class-list');
-
 const DAYHOUR = 24;
 const WEEKDAY = 7;
 const BORDER_HEIGHt = 1;
