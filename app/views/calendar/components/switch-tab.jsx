@@ -1,39 +1,71 @@
+"use strict";
+
 import React from 'react';
 import './switch-tab.css'
 
-class SwitchTab extends React.Component {
+/**
+ * @class SwitchTab
+ * @extends React.Component
+ */
+export class SwitchTab extends React.Component {
 
+  /**
+   * @property {Object} propTypes - the props types
+   * @static
+   */
+  static propTypes = {
+    /**
+     * @react.props {Array} options - The switch options, 
+     * the item of this array is a value of string.
+     */
+    options: React.PropTypes.array,
+    /**
+     * @react.props {Function} onSwitch - the callback will be fired on switching actions.
+     */
+    onSwitch: React.PropTypes.func
+  };
+
+  /**
+   * @method constructor
+   * @param {Object} props
+   */
   constructor (props) {
     super(props);
     this.state = {
-      selectedIndex: 0
-    }
+      selectedIndex: Object.keys(props.options)[0]
+    };
   }
 
-  setSelectedIndex(selectedIndex) {
-    const { events, onSwitch} = this.props;
-    onSwitch(events[selectedIndex]);
-    this.setState({ selectedIndex });
+  /**
+   * @method setSelectedIndex
+   * @param {Number} index - the selected index.
+   */
+  setSelectedIndex (index) {
+    this.setState({ selectedIndex: index });
+    this.props.onSwitch(index);
   }
 
+  /**
+   * @method render
+   */
   render () {
     return (
-      <span className='switch-tab-wrapper'>
+      <span className="calendar-switch-tab-wrapper">
         {
-          this.props.options.map((op, i) => {
+          Object.keys(this.props.options).map((key, _, keys) => {
             const style = {
-              width: 100 / this.props.options.length + '%'
+              width: `${100 / keys.length}%`
             };
-            if (i === this.state.selectedIndex) {
-              style.color = 'white';
-              style.background = '#00e4ff';
+            if (key === this.state.selectedIndex) {
+              style.color = '#fff';
+              style.backgroundColor = '#00e4ff';
             }
             return (
-              <span className='switch-tab-option'
-                    key={i}
-                    style={style}
-                    onClick={(e) => this.setSelectedIndex(i)}>
-                {op}
+              <span className="calendar-switch-tab-option" 
+                    key={_} 
+                    style={style} 
+                    onClick={(e) => this.setSelectedIndex(key)}>
+                {this.props.options[key]}
               </span>
             );
           })
@@ -42,11 +74,3 @@ class SwitchTab extends React.Component {
     );
   }
 }
-
-SwitchTab.propTypes = {
-  options: React.PropTypes.array,
-  events: React.PropTypes.array,
-  onSwitch: React.PropTypes.func
-};
-
-exports.SwitchTab = SwitchTab;

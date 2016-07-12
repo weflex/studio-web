@@ -1,11 +1,11 @@
-.switch-tab-wrapper {
+.calendar-switch-tab-wrapper {
   border: 1px solid #00e4ff;
   border-radius: 4px;
   margin: 0 10px;
   padding: 3px 0;
 }
 
-.switch-tab-option {
+.calendar-switch-tab-option {
   color: #00e4ff;
   background: transparent;
   padding: 3px 10px;
@@ -15,10 +15,10 @@
   transition: opacity .3s ease-in-out;
 }
 
-.switch-tab-option:hover {
+.calendar-switch-tab-option:hover {
   opacity: 0.7;
 }
 
-.switch-tab-option:first-of-type {
+.calendar-switch-tab-option:first-of-type {
   border-left: none;
 }

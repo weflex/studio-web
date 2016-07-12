@@ -57,9 +57,12 @@ class WeekPicker extends React.Component {
         <span className="go-next-btn icon-font icon-right-open"
           onClick={this.goNext.bind(this)}>
         </span>
-        <SwitchTab options={['周视图', '日视图']}
-                   events={[CCViewMode.week, CCViewMode.day]}
-                   onSwitch={(e) => this.onSwitch(e)}/>
+        <SwitchTab options={{
+            [CCViewMode.week]: '周视图',
+            [CCViewMode.day ]: '日视图'
+          }}
+          onSwitch={(e) => this.onSwitch(e)}
+        />
       </div>
     );
   }
