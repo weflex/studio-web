@@ -15,10 +15,10 @@ export class SwitchTab extends React.Component {
    */
   static propTypes = {
     /**
-     * @react.props {Array} options - The switch options, 
+     * @react.props {Object} options - The switch options, 
      * the item of this array is a value of string.
      */
-    options: React.PropTypes.array,
+    options: React.PropTypes.object,
     /**
      * @react.props {Function} onSwitch - the callback will be fired on switching actions.
      */
