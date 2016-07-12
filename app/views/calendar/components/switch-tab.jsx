@@ -42,7 +42,7 @@ export class SwitchTab extends React.Component {
    */
   setSelectedIndex (index) {
     this.setState({ selectedIndex: index });
-    this.props.onSwitch(index);
+    this.props.onSwitch(this.state.selectedIndex);
   }
 
   /**
