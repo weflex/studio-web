@@ -19,9 +19,9 @@ export default class ClassList {
   constructor (optionalArray) {
     this._list = [];
     if (optionalArray && optionalArray.length > 0) {
-      for (var i = 0; i < optionalArray.length; i++) {
-        this.addItem(optionalArray[i]);
-      }
+      optionalArray.forEach((item) => {
+        this.addItem(item);
+      });
     }
   }
 
