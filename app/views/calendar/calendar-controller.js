@@ -5,19 +5,41 @@ import keymirror from 'keymirror';
 import { range } from 'lodash';
 import { client } from '../../api';
 
-const CCViewMode = keymirror({
+/**
+ * @enum CCViewMode
+ */
+export const CCViewMode = keymirror({
+  /**
+   * @property {String} week
+   */
   'week': null, 
+  /**
+   * @property {String} day
+   */
   'day': null
 });
 
-class CalendarController {
+/**
+ * @class CalendarController
+ */
+export class CalendarController {
+  /**
+   * @method constructor
+   */
   constructor () {
     this._viewMode = CCViewMode.week;
+    // FIXME(Yorkie): should we use JavaScript's native date to instead of
+    // the `Moment` object in the below property `_viewDate`?
     this._viewDate = moment();
     this._calendar = null;
     this._picker   = null;
   }
 
+  /**
+   * @method setViewMode
+   * @async
+   * @param {CCViewMode} nextViewMode
+   */
   async setViewMode (nextViewMode) {
     this._viewMode = nextViewMode;
     this._calendar.setViewMode(nextViewMode);
@@ -25,14 +47,26 @@ class CalendarController {
     this._calendar.setState({ indexes });
   }
 
+  /**
+   * The proxy property to the internal method `setViewMode`.
+   * @setter viewMode
+   */
   set viewMode (nextViewMode) {
     this.setViewMode(nextViewMode);
   }
 
+  /**
+   * @getter viewMode
+   */
   get viewMode () {
     return this._viewMode;
   }
 
+  /**
+   * @method setViewDate
+   * @async
+   * @param {Moment} nextViewDate
+   */
   async setViewDate (nextViewDate) {
     this._viewDate = nextViewDate;
     this._calendar.setViewDate(nextViewDate);
@@ -40,22 +74,41 @@ class CalendarController {
     this._calendar.setState({ indexes });
   }
 
+  /**
+   * @setter viewDate
+   */
   set viewDate (nextViewDate) {
     this.setViewDate(nextViewDate);
   }
 
+  /**
+   * @getter viewDate
+   */
   get viewDate () {
     return this._viewDate;
   }
 
+  /**
+   * @method setCalendar
+   * @param {CalendarView} nextCalendar - the next view for calendar.
+   */
   setCalendar (nextCalendar) {
     this._calendar = nextCalendar;
   }
 
+  /**
+   * @method setPicker
+   * @param {Picker} nextPicker - the next view for calendar picker.
+   */
   setPicker (nextPicker) {
     this._picker = nextPicker;
   }
 
+  /**
+   * @method getIndexes
+   * @async
+   * @return {raw: Moment, content: String}
+   */
   async getIndexes () {
     if (this._viewMode === CCViewMode.week) {
       const startOfWeek = moment(this._viewDate).startOf('week');
@@ -82,6 +135,3 @@ class CalendarController {
     }
   }
 }
-
-exports.CCViewMode = CCViewMode;
-exports.CalendarController = CalendarController;
