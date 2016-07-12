@@ -1,11 +1,14 @@
+"use strict";
+
 import moment from 'moment';
+import keymirror from 'keymirror';
 import { range } from 'lodash';
 import { client } from '../../api';
 
-const CCViewMode = {
-  week: 'week',
-  day: 'day'
-};
+const CCViewMode = keymirror({
+  'week': null, 
+  'day': null
+});
 
 class CalendarController {
   constructor () {

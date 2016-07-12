@@ -8,6 +8,7 @@
     "babel-polyfill": "6.3.14",
     "halogen": "0.1.10",
     "hammerjs": "2.0.6",
+    "keymirror": "^0.1.1",
     "lodash": "4.0.0",
     "moment": "2.10.6",
     "object-assign": "4.0.1",
