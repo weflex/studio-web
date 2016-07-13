@@ -1,6 +1,7 @@
 "use strict";
 
 import _ from 'lodash';
+import moment from 'moment';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ClassCard from './card';
@@ -16,19 +17,21 @@ import {
 } from './util.js';
 import UIFramework from 'weflex-ui';
 import { client } from '../../api';
-import './index.css';
 import { CalendarController } from './calendar-controller';
 import Map from './class-list';
 import Template from './components/template';
+import ResourcePanel from '../../components/resource-panel';
+import './index.css';
 
-const ResourcePanel = require('../../components/resource-panel');
-const moment = require('moment');
-moment.locale('zh-cn');
-
+/**
+ * @class WeflexCalendar
+ * @extends React.Component
+ */
 class WeflexCalendar extends React.Component {
-  
+
   constructor(props) {
     super(props);
+    moment.locale('zh-cn');
     this.cards = [];
     this.state = {
       schedule: new Map(),
