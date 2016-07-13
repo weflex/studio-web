@@ -41,8 +41,9 @@ export class SwitchTab extends React.Component {
    * @param {Number} index - the selected index.
    */
   setSelectedIndex (index) {
-    this.setState({ selectedIndex: index });
-    this.props.onSwitch(this.state.selectedIndex);
+    this.setState({ selectedIndex: index }, () => {
+      this.props.onSwitch(this.state.selectedIndex);
+    });
   }
 
   /**
