@@ -4,22 +4,43 @@
  * @module calendar
  */
 
-import moment from 'moment';
-moment.locale('zh-cn');
+import * as moment from "moment";
+moment.locale("zh-cn");
+
+/**
+ * @type DateTime
+ */
+type DateTime = {
+  hour: number,
+  minute: number
+};
+
+/**
+ * @type ClassListItem
+ */
+type ClassListItem = {
+  from: DateTime,
+  date: Date,
+  start?: any,
+  trainer?: {
+    id: string
+  }
+};
 
 /**
  * @class ClassList
  */
 export default class ClassList {
 
+  private _list: Array<ClassListItem> = [];
+
   /**
    * @method constructor
    * @param {Array} optionalArray
    */
-  constructor (optionalArray) {
-    this._list = [];
+  constructor(optionalArray?: Array<ClassListItem>) {
     if (optionalArray && optionalArray.length > 0) {
-      optionalArray.forEach((item) => this.addItem(item));
+      optionalArray.forEach((item: ClassListItem) => this.addItem(item));
     }
   }
 
@@ -30,7 +51,7 @@ export default class ClassList {
    * @param {Moment} item.start, optional
    * @param {Moment} item.date
    */
-  addItem (item) {
+  addItem(item: ClassListItem) {
     const { hour, minute } = item.from;
     if (!item.start) {
       item.start = moment(item.date)
@@ -48,7 +69,7 @@ export default class ClassList {
    * @private
    * @return {ClassList} return the new ClassList object.
    */
-  _filterBy (key, val) {
+  private _filterBy(key: string, val: string): any {
     return new ClassList(this._list.filter((object) => {
       return object.start.isSame(val, key);
     }));
@@ -59,7 +80,7 @@ export default class ClassList {
    * @param {String} val
    * @return {ClassList} return the new ClassList object.
    */
-  filterByWeek (val) {
+  filterByWeek(val: string): any {
     return this._filterBy('week', val);
   }
 
@@ -68,7 +89,7 @@ export default class ClassList {
    * @param {String} val
    * @return {ClassList} return the new ClassList object.
    */
-  filterByDay (val) {
+  filterByDay(val: string): any {
     return this._filterBy('day', val);
   }
 
@@ -77,7 +98,7 @@ export default class ClassList {
    * @param {String} val
    * @return {ClassList} return the new ClassList object.
    */
-  filterByHour (val) {
+  filterByHour(val: string): any {
     return this._filterBy('hour', val);
   }
 
@@ -86,7 +107,7 @@ export default class ClassList {
    * @param {String} val
    * @return {ClassList} return the new ClassList object.
    */
-  filterByMinute (val) {
+  filterByMinute(val: string): any {
     return this._filterBy('minute', val);
   }
 
@@ -95,13 +116,13 @@ export default class ClassList {
    * @param {Trainer} trainer
    * @return {ClassList} return the new ClassList object.
    */
-  filterByTrainer (trainer) {
+  filterByTrainer(trainer: {id?: string}): ClassList {
     return new ClassList(this._list.filter((object) => {
       return object.trainer.id === trainer.id;
     }));
   }
 
-  get () {
+  get(): Array<ClassListItem> {
     return this._list;
   }
 }

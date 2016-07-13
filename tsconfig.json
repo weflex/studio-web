@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "sourceMap": true,
+    "removeComments": true,
+    "jsx": "react",
+    "experimentalDecorators": true,
+    "allowJs": true,
+    "module": "amd",
+    "moduleResolution": "classic"
+  },
+  "exclude": [
+    "node_modules",
+    "build",
+    "dist"
+  ],
+  "files": [
+    "typings/index.d.ts"
+  ]
+}

@@ -3,6 +3,7 @@
 The desktop(HD) application for Studio based on the following stacks:
 
 - React
+- TypeScript
 - Electron
 - Webpack & Makefile
 
