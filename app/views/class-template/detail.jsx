@@ -45,7 +45,7 @@ class Detail extends React.Component {
       include: ['roles'],
     });
     const trainers = members.filter((member) => {
-      return member.roles.filter((role) => {
+      return member.roles.some((role) => {
         return role.name === 'trainer';
       });
     });
@@ -221,9 +221,9 @@ class Detail extends React.Component {
           <UIFramework.TextInput
             flex={1}
             bindStateCtx={this}
-            bindStateName="data.spots"
+            bindStateName="data.spot"
             bindStateType={Number}
-            value={this.state.data.spots}
+            value={this.state.data.spot}
           />
         </UIFramework.Row>
         <UIFramework.Row name="选择教练" required={true}>
