@@ -36,7 +36,6 @@ class WeflexCalendar extends React.Component {
       allClass: new Map(),
       modalVisibled: false,
     };
-    SearchInput.Listen('onChange', this.onSearchInputChange.bind(this));
     this.controller = new CalendarController();
   }
 
