@@ -19,8 +19,8 @@ import { client } from '../../api';
 import './index.css';
 import { CalendarController } from './calendar-controller';
 import Map from './class-list';
+import Template from './components/template';
 
-const Template = require('./components/template');
 const ResourcePanel = require('../../components/resource-panel');
 const moment = require('moment');
 moment.locale('zh-cn');

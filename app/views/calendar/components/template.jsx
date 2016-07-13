@@ -1,14 +1,28 @@
 "use strict";
 
+/**
+ * @module calendar
+ */
+
 import React from 'react';
-import ClassCard from '../card';
 import moment from 'moment';
 import UIFramework from 'weflex-ui';
+import ClassCard from '../card';
 import { NewClassTemplate } from '../new';
 import { client } from '../../../api';
 import './template.css';
 
-class Template extends React.Component {
+/**
+ * @class Template
+ * @extends React.Component
+ */
+export default class Template extends React.Component {
+
+  /**
+   * @method constructor
+   * @param {Object} props
+   * @return {Template} the instance of `Template`.
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -17,11 +31,22 @@ class Template extends React.Component {
       modalVisibled: false,
     };
   }
+
+  /**
+   * @method onPanStart
+   * @param {Event} event
+   */
   onPanStart(event) {
     this.setState({
       showCopyCard: true,
     });
   }
+
+  /**
+   * @method onPanEnd
+   * @param {Event} event
+   * @param {Object} data
+   */
   onPanEnd(event, data) {
     this.setState({
       showCopyCard: false,
@@ -29,6 +54,10 @@ class Template extends React.Component {
       data
     });
   }
+
+  /**
+   * @getter classConfirmation
+   */
   get classConfirmation () {
     if (this.state.data) {
       let onCreateClass = (data) => {
@@ -47,6 +76,10 @@ class Template extends React.Component {
       return null;
     }
   }
+
+  /**
+   * @method render
+   */
   render() {
     const template = this.props.data;
     const viewDate = moment(
@@ -113,5 +146,3 @@ class Template extends React.Component {
     );
   }
 }
-
-module.exports = Template;
