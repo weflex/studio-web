@@ -45,7 +45,7 @@ class Detail extends React.Component {
       include: ['roles'],
     });
     const trainers = _.filter(members, (member) => {
-      return _.contains(member.roles, 'trainer');
+      return _.includes(member.roleIds, 'trainer');
     });
     this.setState({
       trainers,
@@ -219,9 +219,9 @@ class Detail extends React.Component {
           <UIFramework.TextInput
             flex={1}
             bindStateCtx={this}
-            bindStateName="data.spots"
+            bindStateName="data.spot"
             bindStateType={Number}
-            value={this.state.data.spots}
+            value={this.state.data.spot}
           />
         </UIFramework.Row>
         <UIFramework.Row name="选择教练" required={true}>
