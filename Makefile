@@ -10,6 +10,7 @@ watch: serve node_modules
 
 production:
 	@PATH=$(PATH) npm install --no-optional
+	./node_modules/.bin/typings install
 	@make -f build/production.mk
 
 # start a server at localhot:8080
