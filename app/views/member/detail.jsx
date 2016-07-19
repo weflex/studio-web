@@ -332,7 +332,7 @@ class MembershipsCard extends React.Component {
 
     if (!this.onMembershipChange) {
       this.onMembershipChange = async (data) => {
-        if (!data.instance || data.instance.memberId) {
+        if (data.model === 'Membership') {
           await self.refresh();
         }
       };
