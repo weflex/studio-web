@@ -31,14 +31,8 @@ class ClassPackageList extends React.Component {
   async componentDidMount() {
     let self = this;
     self.refresh();
-    self.onClassPackageChange = (data) => {
-      self.refresh();
-    };
-    self.changeProxy = await client.bindChangeProxy(
-      'ClassPackage', null, self.onClassPackageChange);
   }
   componentWillUnmount() {
-    this.changeProxy.off('change');
   }
   async refresh() {
     const venue = await client.user.getVenueById();

@@ -86,11 +86,6 @@ export default class extends React.Component {
           }
         } catch (err) {
           if (err.code === 'RESOURCE_EXPIRED') {
-            UIFramework.Modal.confirm({
-              title: '您操作的会卡已过期',
-              content: '您操作的会卡已过期，点击确认键刷新',
-              onOk: () => location.reload(),
-            });
           } else {
             UIFramework.Message.error('我们遇到了一个错误');
             console.error(err);

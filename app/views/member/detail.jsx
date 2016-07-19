@@ -330,21 +330,9 @@ class MembershipsCard extends React.Component {
     let self = this;
     await self.refresh();
 
-    if (!this.onMembershipChange) {
-      this.onMembershipChange = async (data) => {
-        if (!data.instance || data.instance.memberId) {
-          await self.refresh();
-        }
-      };
-    }
-    self.changeProxy = await client.bindChangeProxy(
-      'Membership', null, this.onMembershipChange);
   }
 
   componentWillUnmount() {
-    if (this.changeProxy) {
-      this.changeProxy.off('change', this.onMembershipChange);
-    }
   }
 
   /**

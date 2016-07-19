@@ -88,11 +88,8 @@ class List extends React.Component {
     let onClassTemplateChange = async (data) => {
       await self.refs.masterDetail.updateMasterSource();
     };
-    self.changeProxy = await client.bindChangeProxy(
-      'ClassTemplate', null, onClassTemplateChange);
   }
   componentWillUnmount() {
-    this.changeProxy.off('change');
   }
   render() {
     return (

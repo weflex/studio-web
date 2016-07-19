@@ -152,12 +152,9 @@ class WeflexCalendar extends React.Component {
     let self = this;
     self.getClassData();
     self.getCardTemplate();
-    let onChange = (data) => self.getClassData();
-    self.changeProxy = await client.bindChangeProxy('Class', null, onChange);
   }
 
   componentWillUnmount() {
-    this.changeProxy.off('change');
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -285,17 +282,11 @@ class WeflexCalendar extends React.Component {
       res = await client.class.upsert(newClass);
     } catch (err) {
       if (err.code === 'RESOURCE_EXPIRED') {
-        UIFramework.Modal.confirm({
-          title: `当前数据已过期`,
-          content: `当前数据已过期，点击确认刷新`,
-          onOk: () => location.reload(),
-        });
       } else {
         UIFramework.Message.error('我们遇到了一个错误');
         console.error(err);
       }
     }
-    this.getClassData();
   }
 
   async deleteClassById(id, modifiedAt) {
@@ -304,11 +295,6 @@ class WeflexCalendar extends React.Component {
       await client.class.delete(id, modifiedAt);
     } catch (err) {
       if (err.code === 'RESOURCE_EXPIRED') {
-        UIFramework.Modal.confirm({
-          title: `当前数据已过期`,
-          content: `当前数据已过期，点击确认刷新`,
-          onOk: () => location.reload(),
-        });
       }
     }
     // delete in UI

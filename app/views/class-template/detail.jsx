@@ -96,19 +96,12 @@ class Detail extends React.Component {
       resp = await client.classTemplate.upsert(Object.assign({}, this.state.data));
     } catch (err) {
       if (err.code === 'RESOURCE_EXPIRED') {
-        shouldRefresh = true;
       } else {
         UIFramework.Message.error('保存模版失败');
         console.error(err);
       }
     }
-    if (shouldRefresh) {
-      UIFramework.Modal.confirm({
-        title: `当前数据已过期`,
-        content: `当前数据已过期，点击确认刷新`,
-        onOk: () => location.reload(),
-      });
-    } else if (!this.state.data || !this.state.data.id) {
+    if (!this.state.data || !this.state.data.id) {
       this.props.app.router.navigate('/class/template/' + resp.id);
     }
   }

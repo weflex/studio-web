@@ -111,14 +111,12 @@ class List extends React.Component {
           await self.refs.masterDetail.updateMasterSource();
         }
       };
-      self.changeProxy = await client.bindChangeProxy('Member', null, self.onMemberChange);
     }
     self.setState({
       showImporter: !members.length,
     });
   }
   componentWillUnmount() {
-    this.changeProxy.off('change');
   }
   viewModal() {
     this.setState({

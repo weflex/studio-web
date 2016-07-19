@@ -131,14 +131,8 @@ class List extends React.Component {
   }
   async componentDidMount() {
     let self = this;
-    let onOrderChange = async (data) => {
-      console.log('changing order');
-      await self.refs.masterDetail.updateMasterSource();
-    };
-    self.changeProxy = await client.bindChangeProxy('Order', null, onOrderChange);
   }
   componentWillUnmount() {
-    this.changeProxy.off('change');
   }
   render() {
     return (
