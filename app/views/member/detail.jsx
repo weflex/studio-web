@@ -217,6 +217,10 @@ class MembershipCard extends React.Component {
      */
     data: React.PropTypes.object,
     /**
+     * @property {Function} onComplete - callback to execute on complete
+     */
+    onComplete: React.PropTypes.func,
+    /**
      * @property {Object} member - the member data
      */
     member: React.PropTypes.object,
@@ -258,6 +262,7 @@ class MembershipCard extends React.Component {
    * @async
    */
   async onComplete() {
+    this.props.onComplete();
     this.hideModal();
   }
 
@@ -382,12 +387,14 @@ class MembershipsCard extends React.Component {
         key={key}
         width={width}
         data={data}
+        onComplete={this.refresh.bind(this)}
         member={this.state.member}
       />;
     }).concat(
       <MembershipCard
         key="add"
         width={width}
+        onComplete={this.refresh.bind(this)}
         member={this.state.member}
       />
     );
