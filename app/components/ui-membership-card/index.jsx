@@ -85,7 +85,11 @@ export default class UIMembershipCard extends React.Component {
       let correctVal = 0;
       if (this.props.data.correction) {
         const { positive, value } = this.props.data.correction;
-        correctVal = positive ? value : -value;
+        if (isFinite(value)) {
+          correctVal = positive ? value : -value;
+        } else {
+          correctVal = 0;
+        } 
       }
       if (this.props.data.accessType === 'multiple') {
         return wrapper([
