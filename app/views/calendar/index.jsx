@@ -239,7 +239,7 @@ class WeflexCalendar extends React.Component {
             from: timeStringToObject(from),
             to: timeStringToObject(to),
             template: {},
-            spots: {},
+            spot: template.spot,
           },
           ref: (template) => {
             if (template) {
