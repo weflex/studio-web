@@ -171,7 +171,7 @@ class Calendar extends React.Component {
         ref={
           (ul) => {
             if (ul) {
-            this.colList[i] = ul.getBoundingClientRect();
+              this.colList[i+1] = ul.getBoundingClientRect();
             }
           }
         }>
