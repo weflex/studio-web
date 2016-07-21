@@ -278,15 +278,19 @@ class WeflexCalendar extends React.Component {
     // NOTE(Yorkie): DONT REMOVE THE CLONE, BECAUSE
     // GIAN WILL REMOVE `.id` that will change the id.
     let res;
-    try {
-      res = await client.class.upsert(newClass);
-    } catch (err) {
-      if (err.code === 'RESOURCE_EXPIRED') {
-      } else {
-        UIFramework.Message.error('我们遇到了一个错误');
-        console.error(err);
+    const { schedule } = this.state;
+    schedule.addItem(newClass);
+    this.setState({ schedule }, () => {
+      try {
+        res = await client.class.upsert(newClass);
+      } catch (err) {
+        if (err.code === 'RESOURCE_EXPIRED') {
+        } else {
+          UIFramework.Message.error('我们遇到了一个错误');
+          console.error(err);
+        }
       }
-    }
+    });
   }
 
   async deleteClassById(id, modifiedAt) {
