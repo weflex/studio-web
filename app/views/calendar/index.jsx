@@ -280,7 +280,7 @@ class WeflexCalendar extends React.Component {
     let res;
     const { schedule } = this.state;
     schedule.addItem(newClass);
-    this.setState({ schedule }, () => {
+    this.setState({ schedule }, async () => {
       try {
         res = await client.class.upsert(newClass);
       } catch (err) {
