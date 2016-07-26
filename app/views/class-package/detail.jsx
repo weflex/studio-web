@@ -13,8 +13,8 @@ class CardDetail extends React.Component {
       id: null,
       data: {
         name: null,
-        category: null,
-        accessType: null,
+        category: 'group',
+        accessType: 'multiple',
         lifetime: {
           value: null,
         },
