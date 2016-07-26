@@ -90,7 +90,7 @@ class List extends React.Component {
           'payments': [
             {
               'membership': {
-                'member': 'avatar'
+                'member': ['avatar']
               }
             },
             'order'
@@ -99,10 +99,17 @@ class List extends React.Component {
         {
           'class': ['template', 'trainer']
         },
+        'user'
       ],
     });
     return (list || []).filter((item) => {
-      return item.class;
+      var membership;
+      try {
+        membership = item.payments[0].membership;
+      } catch (error) {
+        membership = undefined;
+      }
+      return item.class && membership && membership.member;
     }).map((item) => {
       item.title = item.class.template.name;
       item.member = item.payments[0].membership.member;
