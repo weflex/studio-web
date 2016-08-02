@@ -388,14 +388,10 @@ class ClassCard extends React.Component {
    */
   componentDidMount() {
     const card = this.refs.card;
-    const topDragger = this.refs.topDragger;
-    const bottomDragger = this.refs.bottomDragger;
 
     if (!this.props.moveDisabled) {
       this.createMoveHanler(card);
     }
-    this.createResizeHanler(topDragger, 'top');
-    this.createResizeHanler(bottomDragger, 'bottom');
   }
 
   /**
@@ -487,9 +483,7 @@ class ClassCard extends React.Component {
         onMouseDown={this.onMouseDown.bind(this)}
         onMouseUp={this.onMouseUp.bind(this)}
         ref="card">
-        <div className="top-dragger" ref="topDragger"></div>
         <div className="class-name">{template.name}</div>
-        <div className="bottom-dragger" ref="bottomDragger"></div>
         {hideButton}
         {popupView}
       </div>
