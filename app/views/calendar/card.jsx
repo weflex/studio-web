@@ -391,7 +391,9 @@ class ClassCard extends React.Component {
     const topDragger = this.refs.topDragger;
     const bottomDragger = this.refs.bottomDragger;
 
-    this.createMoveHanler(card);
+    if (!this.props.moveDisabled) {
+      this.createMoveHanler(card);
+    }
     this.createResizeHanler(topDragger, 'top');
     this.createResizeHanler(bottomDragger, 'bottom');
   }

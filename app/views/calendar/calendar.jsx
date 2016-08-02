@@ -60,7 +60,7 @@ class Cards extends React.Component {
         onClick={this.handleClick}>
         {this.props.cardsInfo.map((card, index) => {
           return (
-            <this.props.cardTemplate key={index} cardInfo={card} total={total} />
+            <this.props.cardTemplate key={index} cardInfo={card} total={total} moveDisabled={true}/>
           );
         })}
       </div>
