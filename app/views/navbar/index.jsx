@@ -159,8 +159,8 @@ class NavBar extends React.Component {
       onOk: () => location.href = '/login',
     });
   }
-  selectVenue (venue) {
-    client.org.selectVenue(venue.id);
+  async selectVenue (venue) {
+    await client.context.setVenueId(venue.id);
     location.reload();
   }
   render () {
