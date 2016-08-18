@@ -25,3 +25,20 @@
   font-weight: normal;
   margin: 10px 0;
 }
+
+.order-detail-container h3 {
+  display: inline-block;
+}
+
+.order-detail-container .status-tag {
+  margin: 0 5px;
+  padding: 4px 6px;
+  background-color: #a1a2a3;
+  color: white;
+  border-radius: 2px;
+  box-sizing: border-box;
+}
+
+.order-detail-container .green-bg {
+  background-color: #6ED4A4;
+}

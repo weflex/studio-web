@@ -5,6 +5,7 @@ import moment from 'moment';
 import UIFramework from 'weflex-ui';
 import { client } from '../../api';
 import { UIHistory } from '../../components/ui-history';
+import MasterDetail from '../../components/master-detail';
 import UIMembershipCard from '../../components/ui-membership-card';
 import { getFormatTime } from '../calendar/util.js';
 import './detail.css';
@@ -13,11 +14,12 @@ class Detail extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      order: props.data,
       membership: null
     };
   }
   async componentWillMount() {
-    const order = this.props.data;
+    const {order} = this.state;
     const payment = order.payments && order.payments[0];
     if (payment && payment.membership && payment.membership.id) {
       const membership = await client.membership.get(payment.membership.id, {
@@ -45,24 +47,49 @@ class Detail extends React.Component {
     }
   }
   get actions() {
-    let list = [];
-    if (this.props.data.id) {
-      list.push({
-        title: '删除订单',
-        onClick: this.onDelete.bind(this),
-        disableToggled: true,
-      });
+    let {order} = this.state;
+    let cancellableBefore = moment(order.class.date)
+        .hour(order.class.from.hour)
+        .minute(order.class.from.minute);
+
+    if (order.cancelledAt) {
+      return [];
     }
-    return list;
+
+    let actions = [];
+    if (order.checkedInAt) {
+      actions.push(<a key="uncheck" onClick={this.onUncheck.bind(this)}>取消签到</a>);
+    } else {
+      actions.push(<a key="checkin" onClick={this.onCheckIn.bind(this)}>签到</a>);
+    }
+    if (moment().isBefore(cancellableBefore)) {
+      actions.push(<a key="cancel" onClick={this.onCancel.bind(this)}>取消</a>);
+    }
+    return actions;
   }
-  async onDelete() {
+  async onCheckIn () {
+    let {order} = this.state;
+    order.checkedInAt = Date();
+    this.setState({order});
+    await client.order.checkInById(order.id);
+  }
+  async onUncheck () {
+    let {order} = this.state;
+    delete order.checkedInAt;
+    this.setState({order});
+    await client.order.uncheckById(order.id);
+  }
+  async onCancel() {
     let self = this;
     UIFramework.Modal.confirm({
-      title: '确认删除该订单?',
-      content: '确认删除该订单?',
+      title: '确认取消该订单?',
+      content: '确认取消该订单?',
       onOk: async () => {
-        await client.order.delete(self.props.data.id, self.props.data.modifiedAt);
-        await self.props.updateMaster();
+        let {order} = this.state;
+        order.cancelledAt = new Date();
+        this.setState({order});
+        await client.order.cancelById(order.id);
+        // await self.props.updateMaster();
       }
     });
   }
@@ -150,51 +177,65 @@ class Detail extends React.Component {
     );
   }
   render() {
-    const order = this.props.data;
+    const {order} = this.state;
     const { date, from, to, trainer } = order.class;
+    const now = moment();
+    let tags = [];
+    if (now.isAfter(moment(to))) {
+      tags.push(<span className='status-tag green-bg'>课程已完成</span>);
+    }
+    if (order.checkedInAt) {
+      tags.push(<span className='status-tag green-bg'>已签到</span>);
+    } else {
+      tags.push(<span className='status-tag'>尚未签到</span>);
+    }
+              
     return (
       <div className="detail-cards order-detail-container">
         <div className="detail-cards-left">
-          <div className="detail-card" style={{height: '100%'}}>
-            <h3>订单主要信息</h3>
-            <div className="order-member">
-              <UIFramework.Image size={80} src={order.member.avatar} />
-              <div className="detail-card-row">
-                <label>用户</label>
-                <span>{order.member.nickname}</span>
+          <MasterDetail.Card actions={this.actions}>
+            <div className="detail-card" style={{height: '100%'}}>
+              <h3>订单主要信息</h3>
+              {tags}
+              <div className="order-member">
+                <UIFramework.Image size={80} src={order.member.avatar} />
+                <div className="detail-card-row">
+                  <label>用户</label>
+                  <span>{order.member.nickname}</span>
+                </div>
+                <div className="detail-card-row">
+                  <label>手机号码</label>
+                  <span>{order.member.phone}</span>
+                </div>
+                <div className="detail-card-row">
+                  <label>电子邮箱</label>
+                  {order.user.email.endsWith('theweflex.com') ? <span>未设置</span> : <a href={'`mailto:' + order.user.email}>{order.user.email}</a>}
+                </div>
               </div>
-              <div className="detail-card-row">
-                <label>手机号码</label>
-                <span>{order.member.phone}</span>
-              </div>
-              <div className="detail-card-row">
-                <label>电子邮箱</label>
-                {order.user.email.endsWith('theweflex.com') ? <span>未设置</span> : <a href={'`mailto:' + order.user.email}>{order.user.email}</a>}
+              <div className="order-class">
+                <div className="detail-card-row">
+                  <label>报名课程</label>
+                  <span>{order.class.template.name}</span>
+                </div>
+                <div className="detail-card-row">
+                  <label>课程教练</label>
+                  <span>{trainer.fullname.first} {trainer.fullname.last}</span>
+                </div>
+                <div className="detail-card-row">
+                  <label>课程日期</label>
+                  <span>{moment(date).format('MM[月]DD[日]')}</span>
+                </div>
+                <div className="detail-card-row">
+                  <label>课程时间</label>
+                  <span>{getFormatTime(from)} - {getFormatTime(to)}</span>
+                </div>
+                <div className="detail-card-row">
+                  <label>课程详情</label>
+                  <span>{order.class.template.description || '这个人很懒，无课程详情'}</span>
+                </div>
               </div>
             </div>
-            <div className="order-class">
-              <div className="detail-card-row">
-                <label>报名课程</label>
-                <span>{order.class.template.name}</span>
-              </div>
-              <div className="detail-card-row">
-                <label>课程教练</label>
-                <span>{trainer.fullname.first} {trainer.fullname.last}</span>
-              </div>
-              <div className="detail-card-row">
-                <label>课程日期</label>
-                <span>{moment(date).format('MM[月]DD[日]')}</span>
-              </div>
-              <div className="detail-card-row">
-                <label>课程时间</label>
-                <span>{getFormatTime(from)} - {getFormatTime(to)}</span>
-              </div>
-              <div className="detail-card-row">
-                <label>课程详情</label>
-                <span>{order.class.template.description || '这个人很懒，无课程详情'}</span>
-              </div>
-            </div>
-          </div>
+          </MasterDetail.Card>
         </div>
         <div className="detail-cards-right">
           {this.payment(order.payments)}

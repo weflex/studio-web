@@ -127,13 +127,8 @@ class List extends React.Component {
     });
   }
   onRefDetail(instance) {
-    if (instance) {
-      if (instance.title) {
-        this.props.app.title(instance.title);
-      }
-      if (instance.actions) {
-        this.props.app.actions(instance.actions);
-      }
+    if (instance && instance.title) {
+      this.props.app.title(instance.title);
     }
   }
   async componentDidMount() {
