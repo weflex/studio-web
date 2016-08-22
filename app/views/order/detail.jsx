@@ -181,13 +181,17 @@ class Detail extends React.Component {
     const { date, from, to, trainer } = order.class;
     const now = moment();
     let tags = [];
-    if (now.isAfter(moment(to))) {
+    if (now.isAfter(moment(date).hour(to.hour).minute(to.minute))) {
       tags.push(<span className='status-tag green-bg'>课程已完成</span>);
     }
     if (order.checkedInAt) {
       tags.push(<span className='status-tag green-bg'>已签到</span>);
     } else {
       tags.push(<span className='status-tag'>尚未签到</span>);
+    }
+
+    if (order.cancelledAt) {
+      tags = [<span className='status-tag red-bg'>已取消</span>];
     }
               
     return (
