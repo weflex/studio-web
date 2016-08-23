@@ -7,6 +7,7 @@ import { Link } from 'react-router-component';
 import UIFramework from 'weflex-ui';
 import { client } from '../../api';
 import './index.css';
+const qstringify = require('qstringify');
 
 class NavItem extends React.Component {
   get iconfont () {
@@ -40,14 +41,21 @@ class DataItem extends React.Component {
       checkin: '#6ED4A4'
     };
     var backgroundColor = bgColors[this.props.type];
+    const href = '/order/' + qstringify({
+      classBefore: moment().add(1, 'day').format('YYYY-MM-DD'),
+      classAfter: moment().format('YYYY-MM-DD'),
+      orderStatus: this.props.type
+    });
     return (
       <div className='data-item' style={{backgroundColor}}>
-        <div className='value'>
-          {this.props.value}
-        </div>
-        <div className='hint'>
-          {this.props.hint}
-        </div>
+        <Link href={href}>
+          <div className='value'>
+            {this.props.value}
+          </div>
+          <div className='hint'>
+            {this.props.hint}
+          </div>
+        </Link>
       </div>
     );
   }

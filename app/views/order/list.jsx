@@ -11,6 +11,26 @@ import { client } from '../../api';
 import './list.css';
 moment.locale('zh-cn');
 
+function _constructFilter (props) {
+  let filter = {};
+  const query = props._query;
+  for (var param in query) {
+    switch (param) {
+    case 'classBefore':
+    case 'classAfter':
+      filter[param] = moment(query[param]);
+      break;
+    case 'orderStatus':
+      filter[param] = query[param];
+      break;
+    default:
+      continue;
+    }
+  }
+  return filter;
+}
+
+
 class List extends React.Component {
   get title() {
     return '订单管理';
@@ -62,12 +82,20 @@ class List extends React.Component {
   }
   constructor(props) {
     super(props);
+    const filter = _constructFilter(props);
     this.state = {
       modalVisibled: false,
+      filter
     };
+  }
+  componentWillReceiveProps(nextProps) {
+    const filter = _constructFilter(nextProps);
+    this.setState({filter});
+    this.refs.masterDetail.updateMasterSource();
   }
   async source() {
     const venue = await client.user.getVenueById();
+    const {filter} = this.state;
     const templates = await client.classTemplate.list({
       where: {
         venueId: venue.id
@@ -75,15 +103,44 @@ class List extends React.Component {
       include: ['classes']
     });
     const classIds = templates.reduce((ids, template) => {
-      (template.classes || []).forEach(item => ids.push(item.id));
+      (template.classes || []).forEach((item) => {
+        const {hour, minute} = item.from;
+        const classBegins = moment(item.date).hour(hour).minute(minute);
+        if (filter.classBefore &&
+            classBegins.isAfter(filter.classBefore)) {
+          return;
+        }
+        if (filter.classAfter &&
+            classBegins.isBefore(filter.classAfter)) {
+          return;
+        }
+        ids.push(item.id);
+      });
       return ids;
     }, []);
+    const whereFilter = {
+      classId: {
+        inq: classIds
+      }
+    };
+    if (filter.orderStatus) {
+      switch (filter.orderStatus) {
+      case 'cancel':
+        whereFilter.cancelledAt = {exists: true};
+        break;
+      case 'checkin':
+        whereFilter.checkedInAt = {exists: true};
+        break;
+      case 'signup':
+        whereFilter.checkedInAt = {exists: false};
+        whereFilter.cancelledAt = {exists: false};
+        break;
+      default:
+        break;
+      }
+    }
     const list = await client.order.list({
-      where: {
-        classId: {
-          inq: classIds,
-        }
-      },
+      where: whereFilter,
       include: [
         'history',
         {
@@ -144,7 +201,7 @@ class List extends React.Component {
           pathname="order"
           className="order"
           refDetail={this.onRefDetail.bind(this)}
-          masterSource={this.source}
+          masterSource={this.source.bind(this)}
           masterConfig={this.config}
         />
         <UIFramework.Modal

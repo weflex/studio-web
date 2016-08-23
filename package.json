@@ -13,6 +13,7 @@
     "moment": "2.10.6",
     "object-assign": "4.0.1",
     "qrcode.react": "0.5.2",
+    "qstringify": "1.4.2",
     "react": "0.14.7",
     "react-addons-pure-render-mixin": "0.14.7",
     "react-dom": "0.14.7",

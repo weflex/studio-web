@@ -144,11 +144,11 @@
   margin: 10px;
 }
 
-.data-item > div {
+.data-item div {
   width: 100%;
 }
 
-.data-item > .value {
+.data-item .value {
   color: #fff;
   font-size: 36px;
   font-family: 'Open Sans';
@@ -157,7 +157,7 @@
   text-align: center;
 }
 
-.data-item > .hint {
+.data-item .hint {
   font-size: 12px;
   text-align: center;
 }
