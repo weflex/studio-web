@@ -104,13 +104,21 @@ class NavBar extends React.Component {
       cancel: [],
       checkin: [],
     };
-    classes.forEach((item) => {
+    classes.filter((clazz) => {
+      const {hour, minute} = clazz.from;
+      const classBegins = moment(clazz.date).hour(hour).minute(minute);
+      return (classBegins.isBefore(moment().endOf('day')) &&
+              classBegins.isAfter(moment().startOf('day')));
+    }).forEach((item) => {
       item.orders.forEach((order) => {
-        if (!order.history || !order.history.length) {
-          stats.paid.push(order);
-        } else {
-          const status = order.history[order.history.length - 1].status;
-          stats[status].push(order);
+        if (order.cancelledAt) {
+          return stats.cancel.push(order);
+        }
+        if (order.checkedInAt) {
+          return stats.checkin.push(order);
+        }
+        if (order.createdAt) {
+          return stats.paid.push(order);
         }
       });
     });
