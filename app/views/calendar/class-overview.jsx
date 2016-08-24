@@ -24,10 +24,7 @@ class OrderLine extends React.Component {
     this.setState({
       status: 'checkin',
     });
-    await client.orderLog.create({
-      orderId: this.props.data.id,
-      status: 'checkin',
-    });
+    await client.order.checkInById(this.props.data.id);
     UIFramework.Message.success('签到成功');
   }
 
@@ -35,10 +32,7 @@ class OrderLine extends React.Component {
     this.setState({
       status: 'cancel',
     });
-    await client.orderLog.create({
-      orderId: this.props.data.id,
-      status: 'cancel',
-    });
+    await client.order.cancelById(this.props.data.id);
     UIFramework.Message.success('取消成功');
   }
   render() {
