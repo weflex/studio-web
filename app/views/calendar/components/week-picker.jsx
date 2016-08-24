@@ -6,7 +6,6 @@
 
 import React from 'react';
 import moment from 'moment';
-import { SwitchTab } from './switch-tab';
 import { CCViewMode } from '../calendar-controller';
 import './week-picker.css';
 
@@ -101,12 +100,6 @@ export class WeekPicker extends React.Component {
         <span className="go-next-btn icon-font icon-right-open"
           onClick={this.goNext.bind(this)}>
         </span>
-        <SwitchTab options={{
-            [CCViewMode.week]: '周视图',
-            [CCViewMode.day ]: '日视图'
-          }}
-          onSwitch={(e) => this.onSwitch(e)}
-        />
       </div>
     );
   }
