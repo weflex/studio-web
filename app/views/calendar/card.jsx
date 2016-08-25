@@ -411,10 +411,12 @@ class ClassCard extends React.Component {
       ' ' + getFormatTime(this.state.from) + ' - ' + getFormatTime(this.state.to);
     const stats = _.groupBy(
       orders.map((order) => {
-        if (order.history && order.history.length > 0) {
-          order.status = _.sortBy(order.history, 'createdAt')[0].status;
-        } else {
-          order.status = 'paid';
+        order.status = 'paid';
+        if (order.checkedInAt) {
+          order.status = 'checkin';
+        }
+        if (order.cancelledAt) {
+          order.status = 'cancel';
         }
         return order;
       }),

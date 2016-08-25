@@ -154,7 +154,25 @@ class Detail extends React.Component {
       </div>
     );
   }
-  history(logs) {
+  history(order) {
+    var logs = [];
+    ['cancelledAt', 'checkedInAt', 'createdAt'].map((field) => {
+      var status;
+      if (order[field]) {
+        switch (field) {
+        case 'cancelledAt':
+          status = 'cancel';
+          break;
+        case 'checkedInAt':
+          status = 'checkin';
+          break;
+        default:
+          status = 'paid';
+          break;
+        }
+        logs.push({status: status, createdAt: order[field]});
+      }        
+    });
     return (
       <div className="detail-card detail-card-right">
         <h3>订单历史记录</h3>
@@ -243,7 +261,7 @@ class Detail extends React.Component {
         </div>
         <div className="detail-cards-right">
           {this.payment(order.payments)}
-          {this.history(order.history)}
+          {this.history(order)}
         </div>
       </div>
     );

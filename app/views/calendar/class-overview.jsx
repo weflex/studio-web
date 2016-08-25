@@ -12,9 +12,13 @@ moment.locale('zh-cn');
 class OrderLine extends React.Component {
   constructor(props) {
     super(props);
-    let status = null;
-    if (props.data.history && props.data.history.length > 0) {
-      status = _.sortBy(props.data.history, 'createdAt')[0].status;
+    let status = 'paid';
+    const order = props.data;
+    if (order.checkedInAt) {
+      status = 'checkin';
+    }
+    if (order.cancelledAt) {
+      status = 'cancel';
     }
     this.state = {
       status,
