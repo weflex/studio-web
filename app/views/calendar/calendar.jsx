@@ -48,26 +48,6 @@ class TableHeader extends React.Component {
   }
 }
 
-class Cards extends React.Component {
-  render() {
-    let zIndex = this.props.hour + 10;
-    const total = this.props.cardsInfo.length;
-    return (
-      <div
-        ref="cards"
-        className="cards"
-        style={{zIndex}}
-        onClick={this.handleClick}>
-        {this.props.cardsInfo.map((card, index) => {
-          return (
-            <this.props.cardTemplate key={index} cardInfo={card} total={total} moveDisabled={true}/>
-          );
-        })}
-      </div>
-    );
-  }
-}
-
 class Calendar extends React.Component {
   constructor(props) {
     super(props);
@@ -179,6 +159,8 @@ class Calendar extends React.Component {
           range(0, DAYHOUR).map((hourIndex) => {
             const hour = moment(day).add(hourIndex, 'hours');
             const cardsInfo = schedule.filterByHour(hour).get();
+            const zIndex = hourIndex + 10;
+            const total = cardsInfo.length;
             return (
               <li style={style.li}
                   key={hourIndex}
@@ -189,10 +171,17 @@ class Calendar extends React.Component {
                       }
                     }
                   }>
-                <Cards hour={hourIndex}
-                       day={i}
-                       cardsInfo={cardsInfo}
-                       cardTemplate={this.props.cardTemplate} />
+                <div
+                  ref="cards"
+                  className="cards"
+                  style={{zIndex}}>
+                  {
+                    cardsInfo.map(
+                      (card, index) =>
+                        <this.props.cardTemplate key={index} cardInfo={card} total={total} moveDisabled={true}/>
+                    )
+                  }
+                </div>
               </li>
             );
           })
