@@ -29,7 +29,6 @@ class NewClassTemplate extends React.Component {
       data: newData,
       templates: [],
     };
-    this.isModalShow = true;
   }
 
   componentWillReceiveProps(nextProps) {

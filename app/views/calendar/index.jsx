@@ -207,7 +207,7 @@ class WeflexCalendar extends React.Component {
           <ClassCard
             {...props}
             ref="classCard"
-            calendar={self.refs.calendar}
+            calendar={ctx.calendar}
             popupEnabled={true}
             popupTemplate={ClassOverview}
             popupProps={{
@@ -221,41 +221,6 @@ class WeflexCalendar extends React.Component {
     }
   }
 
-  setCreateClassTemplate(from, to, date) {
-    let timeStringToObject = (timeStr) => {
-      const timeStrObj = timeStr.split(':');
-      return {
-        hour: timeStrObj[0],
-        minute: timeStrObj[1],
-      };
-    }
-    const self = this;
-    const onCreateClass = this.onCreateClass.bind(this);
-    const newClassTemplate = class ClassTemplate extends React.Component {
-      render() {
-        const newProps = {
-          data: {
-            date,
-            from: timeStringToObject(from),
-            to: timeStringToObject(to),
-            template: {},
-            spot: template.spot,
-          },
-          ref: (template) => {
-            if (template) {
-              self.newClassTemplate = template;
-            }
-          },
-          onCreateClass,
-        };
-        return <NewClassTemplate {...newProps} />;
-      }
-    };
-    this.setState({
-      newClassTemplate
-    });
-  }
-
   onCreateClass(newClass) {
     this.setState({
       modalVisibled: false,
@@ -267,7 +232,15 @@ class WeflexCalendar extends React.Component {
   onAddCard(from, to, date) {
     const fromString = getFormatTime(from);
     const toString = getFormatTime(to);
-    this.setCreateClassTemplate(fromString, toString, date);
+    this.refs.newClassTemplate.setState({
+      data: {
+        date,
+        from,
+        to,
+        template: {},
+        spot: 0
+      }
+    });
     this.setState({
       modalVisibled: true,
     });
@@ -310,17 +283,10 @@ class WeflexCalendar extends React.Component {
       modalVisibled: false,
     });
     this.refs.calendar.cancelCreateCard();
-    if (this.newClassTemplate) {
-      this.newClassTemplate.isModalShow = false;
-    }
   }
 
   render() {
     const cellHeight = getCellHeight();
-    let classTempalte;
-    if (this.state.newClassTemplate) {
-      classTempalte = <this.state.newClassTemplate />;
-    }
     return (
       <div>
         <Calendar
@@ -328,14 +294,16 @@ class WeflexCalendar extends React.Component {
           cellHeight={cellHeight}
           schedule={this.state.schedule}
           onAddCard={this.onAddCard.bind(this)}
-          cardTemplate={this.cardTemplate}
-        />
+          cardTemplate={this.cardTemplate} />
         <UIFramework.Modal
           visible={this.state.modalVisibled}
           title="添加新课程"
           footer=""
           onCancel={this.handleHideModal.bind(this)}>
-          {classTempalte}
+          <NewClassTemplate
+            data={{}}
+            ref='newClassTemplate'
+            onCreateClass={this.onCreateClass.bind(this)} />
         </UIFramework.Modal>
       </div>
     );
