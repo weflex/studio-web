@@ -326,16 +326,6 @@ class Calendar extends React.Component {
     this.setState({ createCardStyle });
   }
 
-  getCreateCard() {
-    return (
-      <div
-        ref="createCard"
-        className="create-card create-card-shown"
-        style={this.state.createCardStyle}>
-      </div>
-    );
-  }
-
   setTableHeight() {
     this.table = this.refs.table.getBoundingClientRect();
     const tableHeight = window.innerHeight - this.table.top;
@@ -381,7 +371,6 @@ class Calendar extends React.Component {
   render() {
     const baseline = this.getBaseLine(this.state.baselineClock, this.state.baselineTop);
     const currline = this.getCurrentLine();
-    const createCard = this.getCreateCard();
     return (
       <div className="calendar" ref="calendar">
         <div className="week-header">
@@ -402,7 +391,10 @@ class Calendar extends React.Component {
           }
           {baseline}
           {currline}
-          {createCard}
+          <div ref="createCard"
+               className="create-card create-card-shown"
+               style={this.state.createCardStyle}>
+          </div>
         </div>
       </div>
     );
