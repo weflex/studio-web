@@ -37,22 +37,6 @@ class WeflexCalendar extends React.Component {
     this.controller = new CalendarController();
   }
 
-  onSearchInputChange(text) {
-    let results;
-    if (text === '') {
-      results = this.state.allClass;
-    } else {
-      results = new Map();
-      this.state.allClass.forEach((item) => {
-        if (item.template.name.indexOf(text) !== -1) {
-          results.addItem(item);
-        }
-      });
-    }
-    const schedule = this.getSchedule(results);
-    this.setState({ schedule });
-  }
-
   get title() {
     return (
       <WeekPicker calendar={this.controller}/>
@@ -82,10 +66,6 @@ class WeflexCalendar extends React.Component {
         }
       }
     ];
-  }
-
-  get search() {
-    return this.onSearchInputChange.bind(this);
   }
 
   get resource() {
