@@ -36,15 +36,15 @@ class TableHeader extends React.Component {
     return (
       <ul className="table-header" ref="table-header">
         <li key="header-index" className="header-index"></li>
-          {
-            this.props.indexes.map(({raw, content}, i) => {
-              return (
+        {
+          this.props.indexes.map(({raw, content}, i) => {
+            return (
                 <li key={i} style={style} ref={(c)=> {this.dayList[i] = raw}}>
-                  {content}
-                </li>
-              );
-            })
-          }
+                {content}
+              </li>
+            );
+          })
+        }
       </ul>
     );
   }
