@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import PopUp from 'react-portal-tooltip';
 import Hammer from 'hammerjs';
 import moment from 'moment';
+import UIFramework from 'weflex-ui';
 import {
   getRoundTime,
   getFormatTime,

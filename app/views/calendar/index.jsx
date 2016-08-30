@@ -4,8 +4,6 @@ import _ from 'lodash';
 import moment from 'moment';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ClassCard from './card';
-import ClassOverview from './class-overview';
 import Calendar from './calendar';
 import { WeekPicker } from './components/week-picker';
 import { NewClassTemplate } from './new';
@@ -149,16 +147,7 @@ class WeflexCalendar extends React.Component {
 
   async componentDidMount() {
     this.controller.setCalendar(this.refs.calendar);
-    let self = this;
-    self.getClassData();
-    self.getCardTemplate();
-  }
-
-  componentWillUnmount() {
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    this.getCardTemplate();
+    this.getClassData();
   }
 
   getSchedule(classes) {
@@ -167,58 +156,6 @@ class WeflexCalendar extends React.Component {
         schedule.addItem(classInfo);
     });
     return schedule;
-  }
-
-  getCardTemplate() {
-    let self = this;
-    let ctx = {
-      cards: [],
-      calendar: self.refs.calendar
-    };
-    ctx.calendar.ctx = ctx;
-    
-    const updateClasses = self.updateClasses.bind(self);
-    const deleteClassById = self.deleteClassById.bind(self);
-
-    self.cardTemplate = class CardTemplate extends React.Component {
-      componentDidMount() {
-        this.refs.classCard.ctx = ctx;
-        // push card to self.cards
-        self.cards.push(this.refs.classCard);
-        // reference self.cards to ctx.cards
-        ctx.cards = self.cards;
-      }
-      render() {
-        const props = Object.assign({}, this.props);
-        const onHide = (event, data) => {
-          if (!data || !data.id) {
-            return alert('未知错误');
-          }
-          UIFramework.Modal.confirm({
-            title: `你确认要删除课程“${data.template.name}”？`,
-            content: `你确认要删除课程“${data.template.name}”？`,
-            onOk: () => deleteClassById(data.id, data.modifiedAt || Date.now()),
-          });
-        };
-        const onPanEnd = (event, data) => {
-          return updateClasses(data);
-        };
-        return (
-          <ClassCard
-            {...props}
-            ref="classCard"
-            calendar={ctx.calendar}
-            popupEnabled={true}
-            popupTemplate={ClassOverview}
-            popupProps={{
-              onCreateClass: updateClasses,
-            }}
-            onHide={onHide}
-            onPanEnd={onPanEnd}
-          />
-        );
-      }
-    }
   }
 
   onCreateClass(newClass) {
@@ -287,14 +224,27 @@ class WeflexCalendar extends React.Component {
 
   render() {
     const cellHeight = getCellHeight();
+    const ctx = {
+      onCreateClass: this.updateClasses.bind(this),
+      onDeleteClass: (event, data) => {
+        if (!data || !data.id) {
+          return alert('未知错误');
+        }
+        UIFramework.Modal.confirm({
+          title: `你确认要删除课程“${data.template.name}”？`,
+          content: `你确认要删除课程“${data.template.name}”？`,
+          onOk: this.deleteClassById.bind(this, data.id, data.modifiedAt || Date.now()),
+        });
+      }
+    };
     return (
       <div>
         <Calendar
           ref="calendar"
+          ctx={ctx}
           cellHeight={cellHeight}
           schedule={this.state.schedule}
-          onAddCard={this.onAddCard.bind(this)}
-          cardTemplate={this.cardTemplate} />
+          onAddCard={this.onAddCard.bind(this)}/>
         <UIFramework.Modal
           visible={this.state.modalVisibled}
           title="添加新课程"

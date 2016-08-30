@@ -13,6 +13,8 @@ import {
 } from './util.js';
 
 import { range } from 'lodash';
+import ClassCard from './card';
+import ClassOverview from './class-overview';
 import { CCViewMode } from './calendar-controller';
 
 const DAYHOUR = 24;
@@ -131,6 +133,7 @@ class Calendar extends React.Component {
         height: this.props.cellHeight,
       }
     };
+    const {ctx} = this.props;
     const { weekSchedule, viewDate } = this.state;
     let day;
     let schedule;
@@ -178,7 +181,16 @@ class Calendar extends React.Component {
                   {
                     cardsInfo.map(
                       (card, index) =>
-                        <this.props.cardTemplate key={index} cardInfo={card} total={total} moveDisabled={true}/>
+                        <ClassCard key={index}
+                                   cardInfo={card}
+                                   total={total}
+                                   moveDisabled={true}
+                      calendar={this}
+                      popupEnabled={true}
+                      popupTemplate={ClassOverview}
+                      popupProps={{onCreateClass: ctx.onCreateClass}}
+                      onHide={ctx.onDeleteClass}
+                      onPanEnd={ctx.onCreateClass}/>
                     )
                   }
                 </div>
@@ -324,97 +336,6 @@ class Calendar extends React.Component {
     );
   }
 
-  createCard() {
-    const hammer = new Hammer(this.refs.table);
-
-    hammer.get('pan').set({
-      direction: Hammer.DIRECTION_VERTICAL,
-      threshold: 0
-    });
-
-    hammer.on('singletap', (event) => {
-      const createCardStyle = {
-        height: 0,
-        width: 0,
-        top: 0,
-      };
-
-      this.setState({ createCardStyle });
-    });
-
-    // Hammerjs will trigger both handler while elements are overlap
-    // and listen same event, so need to judge cards is dragging.
-    let isCardsDragging = false;
-    hammer.on('panstart', (event) => {
-      if (this.ctx && Array.isArray(this.ctx.cards)) {
-        isCardsDragging = this.ctx.cards.some((card) => {
-          return card.isCardDragging();
-        });
-        if (!isCardsDragging) {
-          const col = this.colList[this.state.atCol];
-          const row = this.rowList[this.state.atRow];
-          const left = col.left - this.table.left;
-          const width = col.right - col.left;
-          const selectBeginTime = this.state.baselineClock;
-          const top = this.state.baselineTop - this.state.scrollTop;
-          this.createCardTop = top;
-          const createCardStyle = {
-            top,
-            left,
-            width,
-            opacity: 1
-          };
-          this.setState({ createCardStyle, selectBeginTime });
-        }
-      }
-    });
-
-    hammer.on('pandown', (event) => {
-      if (event.deltaY > 0 && !isCardsDragging) {
-        const height = event.deltaY;
-        const createCardStyle = Object.assign({}, this.state.createCardStyle);
-        createCardStyle.top = this.createCardTop + this.state.scrollTop;
-        createCardStyle.height = height;
-
-        this.setState({ createCardStyle });
-      }
-    });
-
-    hammer.on('panend', (event) => {
-      if (!isCardsDragging &&
-          this.state.selectBeginTime &&
-          this.state.createCardStyle.height) {
-
-        const newFromHour = getRoundTime(this.state.selectBeginTime);
-        const newToHour = getRoundTime(this.state.baselineClock);
-        const rowIndex = newFromHour.hour;
-        const row = this.rowList[rowIndex];
-        const top = row.top - this.table.top + this.state.scrollTop;
-        const marginTop = getGridOffsetByTime(newFromHour, this.props.cellHeight);
-        const height = getGridHeight(newFromHour, newToHour, this.props.cellHeight);
-        const createCardStyle = Object.assign({}, this.state.createCardStyle);
-        createCardStyle.height = height;
-        createCardStyle.top = top;
-        createCardStyle.marginTop = marginTop;
-
-        isCardsDragging = false;
-        this.setState({ createCardStyle });
-
-        const duration = getTimeDuration(newFromHour, newToHour);
-        if (duration) {
-          if (CCViewMode.week === this.state.viewMode) {
-            const date = this.refs.tableHeader.dayList[this.state.atCol].format('YYYY-MM-DD');
-            this.props.onAddCard(newFromHour, newToHour, date);
-          } else {
-            const date = this.state.viewMode;
-            const { trainerId } = this.refs.tableHeader.dayList[this.state.atCol];
-            this.props.onAddCard(newFromHour, newToHour, date, trainerId);
-          }
-        }
-      }
-    });
-  }
-
   setTableHeight() {
     this.table = this.refs.table.getBoundingClientRect();
     const tableHeight = window.innerHeight - this.table.top;
@@ -435,7 +356,6 @@ class Calendar extends React.Component {
   }
 
   componentDidMount() {
-    this.createCard();
     this.setTableHeight();
     this.setScrollTop();
     window.onresize = () => {
