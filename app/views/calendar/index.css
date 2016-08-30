@@ -1,4 +1,7 @@
 .calendar {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
   height: 100%;
   min-width: 800px;
   margin: 0;
