@@ -176,12 +176,12 @@ class Calendar extends React.Component {
                   }>
                 <div
                   ref="cards"
-                  className="cards"
-                  style={{zIndex}}>
+                  className="cards">
                   {
                     cardsInfo.map(
                       (card, index) =>
                         <ClassCard key={index}
+                                   style={{zIndex}}
                                    cardInfo={card}
                                    total={total}
                                    moveDisabled={true}
