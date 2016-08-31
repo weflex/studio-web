@@ -403,8 +403,7 @@ class Calendar extends React.Component {
 
 Calendar.propTypes = {
   schedule: React.PropTypes.object,
-  cellHeight: React.PropTypes.number,
-  onAddCard: React.PropTypes.func,
+  cellHeight: React.PropTypes.number
 };
 
 module.exports = Calendar;

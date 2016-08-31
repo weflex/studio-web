@@ -8,7 +8,6 @@ import Calendar from './calendar';
 import { WeekPicker } from './components/week-picker';
 import { NewClassTemplate } from './new';
 import {
-  getWeek,
   getCellHeight,
   getFormatTime,
 } from './util.js';
@@ -146,23 +145,6 @@ class WeflexCalendar extends React.Component {
     this.refs.calendar.cancelCreateCard();
   }
 
-  onAddCard(from, to, date) {
-    const fromString = getFormatTime(from);
-    const toString = getFormatTime(to);
-    this.refs.newClassTemplate.setState({
-      data: {
-        date,
-        from,
-        to,
-        template: {},
-        spot: 0
-      }
-    });
-    this.setState({
-      modalVisibled: true,
-    });
-  }
-
   async updateClasses(newClass) {
     // upsert the class to remote server
     // NOTE(Yorkie): DONT REMOVE THE CLONE, BECAUSE
@@ -223,8 +205,7 @@ class WeflexCalendar extends React.Component {
           ref="calendar"
           ctx={ctx}
           cellHeight={cellHeight}
-          schedule={this.state.schedule}
-          onAddCard={this.onAddCard.bind(this)}/>
+          schedule={this.state.schedule} />
         <UIFramework.Modal
           visible={this.state.modalVisibled}
           title="添加新课程"
