@@ -32,7 +32,6 @@ export class CalendarController {
     // the `Moment` object in the below property `_viewDate`?
     this._viewDate = moment();
     this._calendar = null;
-    this._picker   = null;
   }
 
   /**
@@ -45,14 +44,6 @@ export class CalendarController {
     this._calendar.setViewMode(nextViewMode);
     const indexes = await this.getIndexes();
     this._calendar.setState({ indexes });
-  }
-
-  /**
-   * The proxy property to the internal method `setViewMode`.
-   * @setter viewMode
-   */
-  set viewMode (nextViewMode) {
-    this.setViewMode(nextViewMode);
   }
 
   /**
@@ -75,13 +66,6 @@ export class CalendarController {
   }
 
   /**
-   * @setter viewDate
-   */
-  set viewDate (nextViewDate) {
-    this.setViewDate(nextViewDate);
-  }
-
-  /**
    * @getter viewDate
    */
   get viewDate () {
@@ -94,14 +78,6 @@ export class CalendarController {
    */
   setCalendar (nextCalendar) {
     this._calendar = nextCalendar;
-  }
-
-  /**
-   * @method setPicker
-   * @param {Picker} nextPicker - the next view for calendar picker.
-   */
-  setPicker (nextPicker) {
-    this._picker = nextPicker;
   }
 
   /**
