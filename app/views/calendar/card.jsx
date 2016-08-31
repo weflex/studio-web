@@ -9,13 +9,11 @@ import {
   getRoundTime,
   getFormatTime,
   getCellHeight,
-  addTimeByHour,
   getGridHeight,
   getDateBySplit,
   getTimeDuration,
   addTimeByMinute,
-  getGridOffsetByTime,
-  transferToPercentage,
+  getGridOffsetByTime
 } from './util'
 moment.locale('zh-cn');
 
@@ -210,7 +208,7 @@ class ClassCard extends React.Component {
 
       const pointerDay = calendar.state.atCol;
       const toDay = moment(this.props.cardInfo.date)
-        .add(pointerDay - this.state.fromDay, 'day')
+        .add(pointerDay - this.state.fromDay + 1, 'day')
         .format('YYYY-MM-DD');
       const date = getDateBySplit(from, toDay);
       const { from, to } = this.getSnapToValueOnMoving(newHourTime, classDuration);
