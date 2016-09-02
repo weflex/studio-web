@@ -373,16 +373,13 @@ class Calendar extends React.Component {
     const currline = this.getCurrentLine();
     return (
       <div className="calendar" ref="calendar">
-        <div className="week-header">
-          <TableHeader viewDate={this.state.viewDate} indexes={this.state.indexes} ref="tableHeader" />
-          <div className="scroll-div"></div>
-        </div>
-        <div
-          ref="table"
-          className="schedule-table"
-          style={{height: this.state.tableHeight}}
-          onMouseMove={this.setBaseline.bind(this)}
-          onScroll={this.handleScroll.bind(this)}>
+        <TableHeader viewDate={this.state.viewDate} indexes={this.state.indexes} ref="tableHeader" />
+        <div className="scroll-div"></div>
+        <div ref="table"
+             className="schedule-table"
+             style={{height: this.state.tableHeight}}
+             onMouseMove={this.setBaseline.bind(this)}
+             onScroll={this.handleScroll.bind(this)} >
           {
             [
               this.getHourAxis(),
