@@ -5,10 +5,8 @@ import ReactDOM from 'react-dom';
 import Hammer from 'hammerjs';
 import moment from 'moment';
 import {
-  getRoundTime,
   getFormatTime,
   getGridHeight,
-  getTimeDuration,
   getGridOffsetByTime,
 } from './util.js';
 

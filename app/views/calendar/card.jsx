@@ -6,15 +6,13 @@ import Hammer from 'hammerjs';
 import moment from 'moment';
 import UIFramework from 'weflex-ui';
 import {
-  getRoundTime,
   getFormatTime,
   getCellHeight,
   getGridHeight,
   getDateBySplit,
-  getTimeDuration,
-  addTimeByMinute,
   getGridOffsetByTime
 } from './util'
+import HourMinute from '../../lib/hour-minute';
 moment.locale('zh-cn');
 
 /**
@@ -107,22 +105,11 @@ class ClassCard extends React.Component {
    * @return {Object} return {from: n, to: m}
    */
   getSnapToValueOnMoving(time, duration) {
-    let newFromHour = getRoundTime(time);
-    if (newFromHour.hour < 0) {
-      newFromHour.hour = 0;
-      newFromHour.minute = 0;
-    }
-    let newToHour = addTimeByMinute(newFromHour, duration);
-    if (newToHour.hour >= 24 && newToHour.minute >= 0) {
-      newToHour = {
-        hour: 24,
-        minute: 0
-      }
-      newFromHour = addTimeByMinute(newToHour, -duration);
-    }
+    const from = (new HourMinute(time)).snapToMinutes(10);
+    const to = from.adding(duration);
     return {
-      from: newFromHour,
-      to: newToHour
+      from,
+      to
     };
   }
 
@@ -139,7 +126,7 @@ class ClassCard extends React.Component {
 
     // Get the duration of class by from and to
     const cardInfo = this.props.cardInfo;
-    const classDuration = getTimeDuration(cardInfo.from, cardInfo.to);
+    const classDuration = (new HourMinute(cardInfo.to)).subtract(cardInfo.from);
     this.moveHammer.get('pan').set({
       threshold: 0,
     });
@@ -162,7 +149,9 @@ class ClassCard extends React.Component {
         // to calendar's cellHeight
         timeToFrom = 60 * relativeY / calendar.props.cellHeight;
       } else {
-        timeToFrom = getTimeDuration(cardInfo.from, calendar.state.baselineClock);
+        timeToFrom = new HourMintue(calendar.state.baselineClock)
+          .subtract(cardInfo.from)
+          .asMinutes();
       }
 
       const pointerDay = calendar.state.atCol;
@@ -193,7 +182,7 @@ class ClassCard extends React.Component {
       const height = this.style.height;
       const width = col.right - col.left;
       const timeOffset = -this.state.timeToFrom;
-      const newHourTime = addTimeByMinute(calendar.state.baselineClock, timeOffset);
+      const newHourTime = (new HourMinute(calendar.state.baselineClock)).addMinutes(timeOffset);
       const marginLeft = this.style.marginLeft + event.deltaX;
       const marginTop = this.style.marginTop + event.deltaY +
                         calendar.state.scrollTop -
@@ -286,7 +275,7 @@ class ClassCard extends React.Component {
           stickBorderTime 
         });
       } else {
-        const newTime = getRoundTime(calendar.state.baselineClock);
+        const newTime = new HourMinute(calendar.state.baselineClock);
         const newState = {
           style: { marginTop, height },
         };
