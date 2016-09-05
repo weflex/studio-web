@@ -3,12 +3,7 @@
 import * as React from 'react';
 import * as moment from 'moment';
 import './week-picker.css';
-
-interface CalendarContext {
-  viewDate: moment.Moment;
-  viewMode: string;
-  setViewDate(viewDate: moment.Moment);
-}
+import {CalendarContext} from '../index.d';
 
 interface PropsType {
   context: CalendarContext

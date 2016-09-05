@@ -13,7 +13,6 @@ import {
 } from './util.js';
 import UIFramework from 'weflex-ui';
 import { client } from '../../api';
-import { CalendarController } from './calendar-controller';
 import Map from './class-list';
 import Template from './components/template';
 import ResourcePanel from '../../components/resource-panel';
@@ -33,12 +32,11 @@ class WeflexCalendar extends React.Component {
       allClass: new Map(),
       modalVisibled: false,
     };
-    this.controller = new CalendarController();
   }
 
   get title() {
     return (
-      <WeekPicker context={this.controller}/>
+      <WeekPicker context={this}/>
     );
   }
 
@@ -125,7 +123,6 @@ class WeflexCalendar extends React.Component {
   }
 
   async componentDidMount() {
-    this.controller.setCalendar(this.refs.calendar);
     this.getClassData();
   }
 
@@ -218,6 +215,30 @@ class WeflexCalendar extends React.Component {
         </UIFramework.Modal>
       </div>
     );
+  }
+
+  // MARK: - CalendarContext methods
+
+  get viewDate () {
+    return this.refs.calendar.state.viewDate;
+  }
+
+  get viewMode () {
+    return this.refs.calendar.state.viewMode;
+  }
+
+  setViewDate (viewDate) {
+    this.refs.calendar.setViewDate(viewDate);
+    // TODO: avoid calling setState() outside component
+    const startOfWeek = moment(this.viewDate).startOf('week');
+    const week = _.range(0, 7).map((n) => moment(startOfWeek).add(n, 'days'));
+    const indexes = week.map((d) => {
+      return {
+        raw: d,
+        content: d.format('ddd DD')
+      };
+    });
+    this.refs.calendar.setState({indexes});
   }
 }
 

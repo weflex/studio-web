@@ -13,7 +13,6 @@ import {
 import { range } from 'lodash';
 import ClassCard from './card';
 import ClassOverview from './class-overview';
-import { CCViewMode } from './calendar-controller';
 
 const DAYHOUR = 24;
 const WEEKDAY = 7;
@@ -68,7 +67,7 @@ class Calendar extends React.Component {
     this.colList = [];
     this.state = {
       viewDate,
-      viewMode: CCViewMode.week,
+      viewMode: 'week',
       currentDate,
       weekSchedule,
       indexes,
@@ -135,7 +134,7 @@ class Calendar extends React.Component {
     const { weekSchedule, viewDate } = this.state;
     let day;
     let schedule;
-    if (CCViewMode.day === this.state.viewMode) {
+    if ('day' === this.state.viewMode) {
       day = moment(this.state.viewDate);
       const trainer = index.raw;
       schedule = this.state.weekSchedule.filterByTrainer(trainer);
