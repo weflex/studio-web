@@ -38,7 +38,7 @@ class WeflexCalendar extends React.Component {
 
   get title() {
     return (
-      <WeekPicker calendar={this.controller}/>
+      <WeekPicker context={this.controller}/>
     );
   }
 

@@ -11,7 +11,7 @@ interface CalendarContext {
 }
 
 interface PropsType {
-  calendar: CalendarContext
+  context: CalendarContext
 }
 
 interface StateType {
@@ -32,7 +32,7 @@ export class WeekPicker extends React.Component<PropsType, StateType> {
   constructor (props: PropsType) {
     super(props);
     this.state = {
-      context: props.calendar
+      context: props.context
     };
   }
 
