@@ -46,6 +46,10 @@ class TableHeader extends React.Component {
       </ul>
     );
   }
+
+  date(atCol) {
+    return moment(this.props.viewDate).startOf('week').add(atCol, 'days');
+  }
 }
 
 class Calendar extends React.Component {
@@ -74,10 +78,6 @@ class Calendar extends React.Component {
       indexes,
       tableHeight: 0,
       scrollTop : 0,
-      baselineClock: {
-        hour: 0,
-        minute: 0,
-      },
       createCardStyle: {
         top: 0,
         left: 0,
@@ -147,6 +147,7 @@ class Calendar extends React.Component {
       <ul
         className="schedule-table-column"
         key={i}
+        onMouseOver={() => this.setState({baselineDate: day})}
         style={style.ul}
         ref={
           (ul) => {
@@ -219,43 +220,27 @@ class Calendar extends React.Component {
         const offsetTop = baselineTop - top;
         const minute = Math.floor((offsetTop) / row.height * 60);
         const hour = index;
-        this.setState({
-          baselineClock: new HourMinute({hour: hour, minute: minute})
-        });
+        this.baselineClock = new HourMinute({hour: hour, minute: minute});
       }
     });
-
-    let currColIndex = -1;
+    let colIndex = -1;
     this.colList.forEach((col, index) => {
+      if (!(col.left && col.right)) {
+        return;
+      }
       if (baselineLeft > col.left && baselineLeft < col.right) {
-        currColIndex = index;
+        colIndex = index;
       }
     });
     // Correct the value if it's out of the colList range
-    if (currColIndex === -1) {
+    if (colIndex === -1) {
       if (baselineLeft > this.colList[this.colList.length - 1].right) {
-        currColIndex = this.colList.length - 1;
+        colIndex = this.colList.length - 1;
       } else if (baselineLeft < this.colList[0].left) {
-        currColIndex = 1;
+        colIndex = 0;
       }
     }
-    this.setState({
-      atCol: currColIndex
-    });
-  }
-
-  getBaseLine(time, top) {
-    const style = {
-      marginTop: top
-    };
-    if (top > 0) {
-      return (
-        <div className="baseline-wrap">
-          <div className="baseline hidden" style={style}></div>
-        </div>
-      );
-    }
-    return;
+    this.baselineDate = this.refs.tableHeader.date(colIndex);
   }
 
   /**

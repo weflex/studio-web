@@ -9,7 +9,6 @@ import {
   getFormatTime,
   getCellHeight,
   getGridHeight,
-  getDateBySplit,
   getGridOffsetByTime
 } from './util'
 import HourMinute from '../../lib/hour-minute';
@@ -149,16 +148,14 @@ class ClassCard extends React.Component {
         // to calendar's cellHeight
         timeToFrom = 60 * relativeY / calendar.props.cellHeight;
       } else {
-        timeToFrom = new HourMintue(calendar.state.baselineClock)
+        timeToFrom = new HourMintue(calendar.baselineClock)
           .subtract(cardInfo.from)
           .asMinutes();
       }
 
-      const pointerDay = calendar.state.atCol;
       this.setState({
         timeToFrom,
         isMoving: true,
-        fromDay: this.props.isEmptyFrom ? 1 : pointerDay,
         lastScrollOffset: calendar.state.scrollTop,
       });
 
@@ -177,8 +174,7 @@ class ClassCard extends React.Component {
         calendar.setBaseline.call(calendar, event.srcEvent);
       }
 
-      const atCol = calendar.state.atCol;
-      const col = calendar.colList[atCol];
+      const col = calendar.colList[1];
       const height = this.style.height;
       const width = col.right - col.left;
       const timeOffset = -this.state.timeToFrom;
@@ -195,11 +191,7 @@ class ClassCard extends React.Component {
         width
       };
 
-      const pointerDay = calendar.state.atCol;
-      const toDay = moment(this.props.cardInfo.date)
-        .add(pointerDay - this.state.fromDay + 1, 'day')
-        .format('YYYY-MM-DD');
-      const date = getDateBySplit(from, toDay);
+      const date = moment(calendar.baselineDate).format('YYYY-MM-DD');
       const { from, to } = this.getSnapToValueOnMoving(newHourTime, classDuration);
       this.setState({
         newHourTime,
