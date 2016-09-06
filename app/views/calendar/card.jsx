@@ -368,6 +368,11 @@ class ClassCard extends React.Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.style.width = 100/nextProps.total + '%'
+    this.setState({style: this.style});
+  }
+
   /**
    * This is the delegate of this component when component 
    * did finish mountation.
