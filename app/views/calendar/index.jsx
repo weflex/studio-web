@@ -89,7 +89,7 @@ class WeflexCalendar extends React.Component {
         context={{
           actions,
           calendar: this.refs.calendar,
-          onRelease: this.updateClasses.bind(this)
+          onRelease: (newClass) => this.createClass(newClass)
         }}
         getData={getData}
       />
@@ -243,14 +243,16 @@ class WeflexCalendar extends React.Component {
     newClass.id = tempId;
     const schedule = this.state.schedule;
     schedule.addItem(newClass);
+    let results;
     this.setState({ schedule }, async () => {
       try {
-        newClass = await client.class.create(newClass);
+        results = await client.class.create(newClass);
       } catch (err) {
         UIFramework.Message.error('我们遇到了一个错误');
         console.error(err);
       } finally {
         schedule.removeItemById(tempId);
+        newClass.id = results.id;
         schedule.addItem(newClass);
         this.setState({schedule});
       }
