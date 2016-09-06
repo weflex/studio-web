@@ -22,7 +22,7 @@ export interface ClassEvent {
 }
 
 export interface CalendarDataSource {
-  updateClass(classUpdates: ClassEvent, newClass: ClassEvent);
+  updateClass(classUpdates: ClassEvent);
   deleteClass(classDeletes: ClassEvent);
   createClass(newClass: ClassEvent);
 }

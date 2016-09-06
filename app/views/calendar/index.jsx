@@ -164,8 +164,23 @@ class WeflexCalendar extends React.Component {
 
   // MARK: - CalendarDataSource methods
 
-  async updateClass(classUpdates, newClass) {
-
+  async updateClass(classUpdates) {
+    const etag = classUpdates.modifiedAt;
+    const schedule = this.state.schedule;
+    const classId = classUpdates.id;
+    let results;
+    schedule.removeItemById(classId);
+    this.setState({schedule});
+    try {
+      results = await client.class.update(classId, classUpdates, etag);
+    } catch (err) {
+      UIFramework.Message.error('我们遇到了一个错误');
+      console.error(err);
+    } finally {
+      classUpdates.modifiedAt = results.modifiedAt;
+      schedule.addItem(classUpdates);
+      this.setState({schedule});
+    }
   }
 
   async deleteClass(classDeletes) {
@@ -195,7 +210,7 @@ class WeflexCalendar extends React.Component {
     const schedule = this.state.schedule;
     schedule.addItem(newClass);
     let results;
-    this.setState({ schedule }, async () => {
+    this.setState({schedule}, async () => {
       try {
         results = await client.class.create(newClass);
       } catch (err) {

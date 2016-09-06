@@ -35,12 +35,10 @@ export default class ClassList {
    */
   addItem(item: ClassEvent) {
     const { hour, minute } = item.from;
-    if (!item.start) {
-      item.start = moment(item.date)
-        .startOf('day')
-        .add(hour, 'hours')
-        .add(minute, 'minutes');
-    }
+    item.start = moment(item.date)
+      .startOf('day')
+      .add(hour, 'hours')
+      .add(minute, 'minutes');
     this._list.push(item);
   }
 

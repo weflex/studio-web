@@ -150,7 +150,10 @@ class ClassOverview extends React.Component {
           onCancel={() => this.setState({modalVisibled: false})}>
           <NewClassTemplate 
             data={this.props.data} 
-            onCreateClass={this.props.onCreateClass}
+            onCreateClass={(newClass) => {
+              this.setState({modalVisibled: false});
+              this.props.onCreateClass(newClass);
+            }}
           />
         </UIFramework.Modal>
       </div>
