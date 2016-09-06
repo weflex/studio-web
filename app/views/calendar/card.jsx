@@ -178,7 +178,7 @@ class ClassCard extends React.Component {
       const height = this.style.height;
       const width = col.right - col.left;
       const timeOffset = -this.state.timeToFrom;
-      const newHourTime = (new HourMinute(calendar.state.baselineClock)).addMinutes(timeOffset);
+      const newHourTime = (new HourMinute(calendar.baselineClock)).addMinutes(timeOffset);
       const marginLeft = this.style.marginLeft + event.deltaX;
       const marginTop = this.style.marginTop + event.deltaY +
                         calendar.state.scrollTop -
