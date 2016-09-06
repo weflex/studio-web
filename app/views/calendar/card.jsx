@@ -434,9 +434,9 @@ class ClassCard extends React.Component {
     if (calendar && calendar.state.isEditing) {
       let onHide;
       className += ' animated infinite shake';
-      if (this.props.onHide) {
+      if (this.props.ctx) {
         onHide = (event) => {
-          this.props.onHide.call(this, event, this.props.cardInfo);
+          this.props.ctx.deleteClass(this.props.cardInfo);
         };
         // FIXME(Yorkie): When in edit mode, `onClickThis` should be disable
         onClickThis = null;

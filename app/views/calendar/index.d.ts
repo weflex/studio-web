@@ -1,4 +1,5 @@
 import * as moment from "moment";
+import ClassList from "./class-list";
 import HourMinute from "../../lib/hour-minute";
 
 export interface CalendarContext {
@@ -8,10 +9,20 @@ export interface CalendarContext {
 }
 
 export interface ClassEvent {
+  id: string,
   from: HourMinute,
   date: Date,
   start?: moment.Moment,
+  template: {
+    name: string
+  },
   trainer?: {
     id: string
   }
+}
+
+export interface CalendarDataSource {
+  updateClass(classUpdates: ClassEvent, newClass: ClassEvent);
+  deleteClass(classDeletes: ClassEvent);
+  createClass(newClass: ClassEvent);
 }

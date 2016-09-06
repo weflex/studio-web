@@ -104,6 +104,10 @@ export default class ClassList {
     }));
   }
 
+  removeItemById(id: string) {
+    this._list = this._list.filter((item) => item.id !== id);
+  }
+
   get(): Array<ClassEvent> {
     return this._list;
   }

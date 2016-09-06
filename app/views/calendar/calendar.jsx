@@ -183,11 +183,12 @@ class Calendar extends React.Component {
                                    total={total}
                                    moveDisabled={true}
                                    calendar={this}
+                                   ctx={ctx}
                                    popupEnabled={true}
                                    popupTemplate={ClassOverview}
-                                   popupProps={{onCreateClass: ctx.onCreateClass}}
-                                   onHide={ctx.onDeleteClass}
-                                   onPanEnd={ctx.onCreateClass}/>
+                                   popupProps={{onCreateClass: ctx.createClass}}
+                                   onHide={ctx.deleteClass}
+                                   onPanEnd={ctx.createClass}/>
                     )
                   }
                 </div>

@@ -156,18 +156,6 @@ class WeflexCalendar extends React.Component {
     });
   }
 
-  async deleteClassById(id, modifiedAt) {
-    // delete async
-    try {
-      await client.class.delete(id, modifiedAt);
-    } catch (err) {
-      if (err.code === 'RESOURCE_EXPIRED') {
-      }
-    }
-    // delete in UI
-    this.getClassData();
-  }
-
   handleHideModal() {
     this.setState({
       modalVisibled: false,
@@ -177,24 +165,11 @@ class WeflexCalendar extends React.Component {
 
   render() {
     const cellHeight = getCellHeight();
-    const ctx = {
-      onCreateClass: this.updateClasses.bind(this),
-      onDeleteClass: (event, data) => {
-        if (!data || !data.id) {
-          return alert('未知错误');
-        }
-        UIFramework.Modal.confirm({
-          title: `你确认要删除课程“${data.template.name}”？`,
-          content: `你确认要删除课程“${data.template.name}”？`,
-          onOk: this.deleteClassById.bind(this, data.id, data.modifiedAt || Date.now()),
-        });
-      }
-    };
     return (
       <div>
         <Calendar
           ref="calendar"
-          ctx={ctx}
+          ctx={this}
           cellHeight={cellHeight}
           schedule={this.state.schedule} />
         <UIFramework.Modal
@@ -205,6 +180,7 @@ class WeflexCalendar extends React.Component {
           <NewClassTemplate
             data={{}}
             ref='newClassTemplate'
+            ctx={this}
             onCreateClass={this.onCreateClass.bind(this)} />
         </UIFramework.Modal>
       </div>
@@ -233,6 +209,52 @@ class WeflexCalendar extends React.Component {
       };
     });
     this.refs.calendar.setState({indexes});
+  }
+
+  // MARK: - CalendarDataSource methods
+
+  async updateClass(classUpdates, newClass) {
+
+  }
+
+  async deleteClass(classDeletes) {
+    const className = classDeletes.template.name;
+    const schedule = this.state.schedule;
+    const setState = this.setState.bind(this);
+    const etag = classDeletes.modifiedAt;
+    UIFramework.Modal.confirm({
+      title: `你确认要删除课程“${className}”？`,
+      content: `你确认要删除课程“${className}”？`,
+      onOk: async () => {
+        schedule.removeItemById(classDeletes.id);
+        setState({schedule});
+        try {
+          await client.class.delete(classDeletes.id, etag);
+        } catch (err) {
+          UIFramework.Message.error('我们遇到了一个错误');
+          console.error(err);
+        }
+      }
+    });
+  }
+
+  async createClass(newClass) {
+    const tempId = Math.random().toString(36).slice(2); // alpha-numeric random string
+    newClass.id = tempId;
+    const schedule = this.state.schedule;
+    schedule.addItem(newClass);
+    this.setState({ schedule }, async () => {
+      try {
+        newClass = await client.class.create(newClass);
+      } catch (err) {
+        UIFramework.Message.error('我们遇到了一个错误');
+        console.error(err);
+      } finally {
+        schedule.removeItemById(tempId);
+        schedule.addItem(newClass);
+        this.setState({schedule});
+      }
+    });
   }
 }
 
