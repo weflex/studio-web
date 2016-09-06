@@ -132,7 +132,7 @@ class ClassCard extends React.Component {
     });
 
     this.moveHammer.on('panstart', (event) => {
-      const calendar = this.props.calendar || this.ctx.calendar;
+      const calendar = this.props.calendar;
       if (this.state.isResizing) {
         return;
       }
@@ -171,7 +171,7 @@ class ClassCard extends React.Component {
       if (this.state.isResizing) {
         return;
       }
-      const calendar = this.props.calendar || this.ctx.calendar;
+      const calendar = this.props.calendar;
       // FIXME(Yorkie): Call setBaseline when doing pan on card
       if (typeof calendar.setBaseline === 'function') {
         calendar.setBaseline.call(calendar, event.srcEvent);
@@ -211,7 +211,7 @@ class ClassCard extends React.Component {
     });
 
     this.moveHammer.on('panend', (event) => {
-      const calendar = this.props.calendar || this.ctx.calendar;
+      const calendar = this.props.calendar;
       if (this.state.isResizing) {
         return;
       }
@@ -257,7 +257,7 @@ class ClassCard extends React.Component {
     });
 
     resizeHammer.on('panup pandown', (event) => {
-      const calendar = this.props.calendar || this.ctx.calendar;
+      const calendar = this.props.calendar;
       let marginTop = this.style.marginTop + event.deltaY;
       let height = this.style.height - event.deltaY;
       if (direction === 'bottom') {

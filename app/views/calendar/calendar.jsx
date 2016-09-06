@@ -13,6 +13,7 @@ import {
 import { range } from 'lodash';
 import ClassCard from './card';
 import ClassOverview from './class-overview';
+import HourMinute from '../../lib/hour-minute';
 
 const DAYHOUR = 24;
 const WEEKDAY = 7;
@@ -73,7 +74,6 @@ class Calendar extends React.Component {
       indexes,
       tableHeight: 0,
       scrollTop : 0,
-      baselineTop: 0,
       baselineClock: {
         hour: 0,
         minute: 0,
@@ -211,29 +211,16 @@ class Calendar extends React.Component {
     }
     let baselineTop = clientY - this.table.top + this.state.scrollTop;
     let baselineLeft = clientX;
-    this.setState({ baselineTop });
 
     this.rowList.forEach((row, index) => {
-      let top = row.top - this.table.top + this.state.scrollTop;
-      let bottom  = row.bottom - this.table.top + this.state.scrollTop;
+      const top    = row.top - this.table.top + this.state.scrollTop;
+      const bottom = row.bottom - this.table.top + this.state.scrollTop;
       if (top <= baselineTop && baselineTop <= bottom) {
-        let offsetTop = baselineTop - top;
-        let offsetBottom = bottom - baselineTop;
-        let minute = Math.floor((offsetTop) / row.height * 60);
-        let hour = index;
-        if (minute === 60) {
-          hour = hour + 1;
-          minute = 0;
-        }
-
-        let baselineClock = {
-          hour: hour,
-          minute: minute
-        };
-
+        const offsetTop = baselineTop - top;
+        const minute = Math.floor((offsetTop) / row.height * 60);
+        const hour = index;
         this.setState({
-          baselineClock,
-          atRow: index
+          baselineClock: new HourMinute({hour: hour, minute: minute})
         });
       }
     });
@@ -261,7 +248,6 @@ class Calendar extends React.Component {
     const style = {
       marginTop: top
     };
-    const timeString = getFormatTime(time);
     if (top > 0) {
       return (
         <div className="baseline-wrap">
@@ -343,6 +329,8 @@ class Calendar extends React.Component {
     }
   }
 
+  // MARK: - React Component lifecycle methods
+
   componentDidMount() {
     this.setTableHeight();
     this.setScrollTop();
@@ -367,7 +355,6 @@ class Calendar extends React.Component {
   }
 
   render() {
-    const baseline = this.getBaseLine(this.state.baselineClock, this.state.baselineTop);
     const currline = this.getCurrentLine();
     return (
       <div className="calendar">
@@ -384,7 +371,6 @@ class Calendar extends React.Component {
               this.state.indexes.map((d, i) => this.getTableColumn(d, i))
             ]
           }
-          {baseline}
           {currline}
           <div ref="createCard"
                className="create-card create-card-shown"
