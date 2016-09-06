@@ -84,7 +84,11 @@ class NewClassTemplate extends React.Component {
     if (getMinutes(newData.to) - getMinutes(newData.from) < 15) {
       alert('每节课程时长必须大于15分钟');
     } else {
-      this.props.onCreateClass(newData);
+      if (this.props.ctx) {
+        this.props.ctx.createClass(newData);
+      } else {
+        this.props.onCreateClass(newData);
+      }
     }
   }
 

@@ -333,19 +333,6 @@ class ClassCard extends React.Component {
     const calendar = this.props.calendar;
     const duration = '' + moment(this.state.date).format('ddd') +
       ' ' + getFormatTime(this.state.from) + ' - ' + getFormatTime(this.state.to);
-    const stats = _.groupBy(
-      orders.map((order) => {
-        order.status = 'paid';
-        if (order.checkedInAt) {
-          order.status = 'checkin';
-        }
-        if (order.cancelledAt) {
-          order.status = 'cancel';
-        }
-        return order;
-      }),
-      'status'
-    );
 
     let hideButton;
     let onClickThis = this.showPopUp.bind(this);

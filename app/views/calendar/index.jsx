@@ -128,62 +128,13 @@ class WeflexCalendar extends React.Component {
     return schedule;
   }
 
-  onCreateClass(newClass) {
-    this.setState({
-      modalVisibled: false,
-    });
-    this.updateClasses(newClass);
-    this.refs.calendar.cancelCreateCard();
-  }
-
-  async updateClasses(newClass) {
-    // upsert the class to remote server
-    // NOTE(Yorkie): DONT REMOVE THE CLONE, BECAUSE
-    // GIAN WILL REMOVE `.id` that will change the id.
-    let res;
-    const { schedule } = this.state;
-    schedule.addItem(newClass);
-    this.setState({ schedule }, async () => {
-      try {
-        res = await client.class.upsert(newClass);
-      } catch (err) {
-        if (err.code === 'RESOURCE_EXPIRED') {
-        } else {
-          UIFramework.Message.error('我们遇到了一个错误');
-          console.error(err);
-        }
-      }
-    });
-  }
-
-  handleHideModal() {
-    this.setState({
-      modalVisibled: false,
-    });
-    this.refs.calendar.cancelCreateCard();
-  }
-
   render() {
     const cellHeight = getCellHeight();
     return (
-      <div>
-        <Calendar
-          ref="calendar"
-          ctx={this}
-          cellHeight={cellHeight}
-          schedule={this.state.schedule} />
-        <UIFramework.Modal
-          visible={this.state.modalVisibled}
-          title="添加新课程"
-          footer=""
-          onCancel={this.handleHideModal.bind(this)}>
-          <NewClassTemplate
-            data={{}}
-            ref='newClassTemplate'
-            ctx={this}
-            onCreateClass={this.onCreateClass.bind(this)} />
-        </UIFramework.Modal>
-      </div>
+      <Calendar ref="calendar"
+                ctx={this}
+                cellHeight={cellHeight}
+                schedule={this.state.schedule} />
     );
   }
 
