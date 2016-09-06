@@ -13,7 +13,7 @@ import {
 } from './util.js';
 import UIFramework from 'weflex-ui';
 import { client } from '../../api';
-import Map from './class-list';
+import ClassList from './class-list';
 import Template from './components/template';
 import ResourcePanel from '../../components/resource-panel';
 import './index.css';
@@ -28,7 +28,7 @@ class WeflexCalendar extends React.Component {
     moment.locale('zh-cn');
     this.cards = [];
     this.state = {
-      schedule: new Map(),
+      schedule: new ClassList(),
       modalVisibled: false,
     };
   }
@@ -121,7 +121,7 @@ class WeflexCalendar extends React.Component {
   }
 
   getSchedule(classes) {
-    let schedule = new Map();
+    let schedule = new ClassList();
     classes.forEach(function (classInfo) {
         schedule.addItem(classInfo);
     });
