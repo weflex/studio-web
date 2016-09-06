@@ -147,7 +147,6 @@ class Calendar extends React.Component {
       <ul
         className="schedule-table-column"
         key={i}
-        onMouseOver={() => this.setState({baselineDate: day})}
         style={style.ul}
         ref={
           (ul) => {
