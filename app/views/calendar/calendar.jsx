@@ -369,7 +369,7 @@ class Calendar extends React.Component {
     const baseline = this.getBaseLine(this.state.baselineClock, this.state.baselineTop);
     const currline = this.getCurrentLine();
     return (
-      <div className="calendar" ref="calendar">
+      <div className="calendar">
         <TableHeader viewDate={this.state.viewDate} indexes={this.state.indexes} ref="tableHeader" />
         <div className="scroll-div"></div>
         <div ref="table"

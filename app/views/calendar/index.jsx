@@ -29,7 +29,6 @@ class WeflexCalendar extends React.Component {
     this.cards = [];
     this.state = {
       schedule: new Map(),
-      allClass: new Map(),
       modalVisibled: false,
     };
   }
@@ -113,12 +112,7 @@ class WeflexCalendar extends React.Component {
         item.template.venueId === venue.id;
     });
 
-    classes.forEach((classInfo) => {
-      this.state.allClass.addItem(classInfo);
-    });
-
     const schedule = this.getSchedule(classes);
-    this.originalSchedule = schedule;
     this.setState({ schedule });
   }
 
