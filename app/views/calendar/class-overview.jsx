@@ -81,22 +81,6 @@ class OrderLine extends React.Component {
 class OrdersInfo extends React.Component {
 
   /**
-   * To initialize an OrderInfo, the constructor function
-   * does set the following states:
-   * 
-   * - orders
-   * - option
-   *
-   * @constructor
-   */
-  constructor(props) {
-    super(props);
-    this.state = {
-      orders: props.data,
-    };
-  }
-
-  /**
    * @method render
    * @return {Element}
    */
@@ -108,7 +92,7 @@ class OrdersInfo extends React.Component {
             <legend>已登记用户</legend>
           </fieldset>
           <ul>
-            {this.state.orders.map((order, idx) => {
+            {this.props.data.map((order, idx) => {
               return <OrderLine data={order} key={idx} />;
             })}
           </ul>
