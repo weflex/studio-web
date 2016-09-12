@@ -206,9 +206,9 @@ class WeflexCalendar extends React.Component {
 
   async createClass(newClass) {
     const tempId = Math.random().toString(36).slice(2); // alpha-numeric random string
-    newClass.id = tempId;
+    const dupClass = Object.assign({}, newClass, {id: tempId}); // duplicate class to avoid contaminating remote data
     const schedule = this.state.schedule;
-    schedule.addItem(newClass);
+    schedule.addItem(dupClass);
     let results;
     this.setState({schedule}, async () => {
       try {
