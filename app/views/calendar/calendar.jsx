@@ -5,15 +5,15 @@ import ReactDOM from 'react-dom';
 import Hammer from 'hammerjs';
 import moment from 'moment';
 import {
-  getRoundTime,
   getFormatTime,
   getGridHeight,
-  getTimeDuration,
   getGridOffsetByTime,
 } from './util.js';
 
 import { range } from 'lodash';
-import { CCViewMode } from './calendar-controller';
+import ClassCard from './card';
+import ClassOverview from './class-overview';
+import HourMinute from '../../lib/hour-minute';
 
 const DAYHOUR = 24;
 const WEEKDAY = 7;
@@ -34,37 +34,21 @@ class TableHeader extends React.Component {
     return (
       <ul className="table-header" ref="table-header">
         <li key="header-index" className="header-index"></li>
-          {
-            this.props.indexes.map(({raw, content}, i) => {
-              return (
+        {
+          this.props.indexes.map(({raw, content}, i) => {
+            return (
                 <li key={i} style={style} ref={(c)=> {this.dayList[i] = raw}}>
-                  {content}
-                </li>
-              );
-            })
-          }
+                {content}
+              </li>
+            );
+          })
+        }
       </ul>
     );
   }
-}
 
-class Cards extends React.Component {
-  render() {
-    let zIndex = this.props.hour + 10;
-    const total = this.props.cardsInfo.length;
-    return (
-      <div
-        ref="cards"
-        className="cards"
-        style={{zIndex}}
-        onClick={this.handleClick}>
-        {this.props.cardsInfo.map((card, index) => {
-          return (
-            <this.props.cardTemplate key={index} cardInfo={card} total={total} moveDisabled={true}/>
-          );
-        })}
-      </div>
-    );
+  date(atCol) {
+    return moment(this.props.viewDate).startOf('week').add(atCol, 'days');
   }
 }
 
@@ -73,7 +57,7 @@ class Calendar extends React.Component {
     super(props);
     const viewDate     = moment();
     const currentDate  = moment();
-    const weekSchedule = props.schedule.filterByWeek(viewDate);
+    const weekSchedule = this.props.schedule;
     const startOfWeek = moment(this._viewDate).startOf('week');
     const week = range(0, 7).map((n) => moment(startOfWeek).add(n, 'days'));
     const indexes = week.map((d) => {
@@ -88,17 +72,12 @@ class Calendar extends React.Component {
     this.colList = [];
     this.state = {
       viewDate,
-      viewMode: CCViewMode.week,
+      viewMode: 'week',
       currentDate,
       weekSchedule,
       indexes,
       tableHeight: 0,
       scrollTop : 0,
-      baselineTop: 0,
-      baselineClock: {
-        hour: 0,
-        minute: 0,
-      },
       createCardStyle: {
         top: 0,
         left: 0,
@@ -134,8 +113,11 @@ class Calendar extends React.Component {
   }
 
   setViewDate(viewDate) {
-    const weekSchedule = this.props.schedule.filterByWeek(viewDate);
-    this.setState({ weekSchedule, viewDate });
+    this.setState({viewDate}, async () => {
+      const startsAt = moment(viewDate).startOf('week');
+      const endsAt   = moment(viewDate).endOf('week');
+      this.props.ctx.listClasses(startsAt, endsAt);
+    });
   }
 
   setViewMode(viewMode) {
@@ -151,10 +133,11 @@ class Calendar extends React.Component {
         height: this.props.cellHeight,
       }
     };
+    const {ctx} = this.props;
     const { weekSchedule, viewDate } = this.state;
     let day;
     let schedule;
-    if (CCViewMode.day === this.state.viewMode) {
+    if ('day' === this.state.viewMode) {
       day = moment(this.state.viewDate);
       const trainer = index.raw;
       schedule = this.state.weekSchedule.filterByTrainer(trainer);
@@ -171,7 +154,7 @@ class Calendar extends React.Component {
         ref={
           (ul) => {
             if (ul) {
-              this.colList[i+1] = ul.getBoundingClientRect();
+              this.colList[i] = ul.getBoundingClientRect();
             }
           }
         }>
@@ -179,6 +162,8 @@ class Calendar extends React.Component {
           range(0, DAYHOUR).map((hourIndex) => {
             const hour = moment(day).add(hourIndex, 'hours');
             const cardsInfo = schedule.filterByHour(hour).get();
+            const zIndex = hourIndex + 10;
+            const total = cardsInfo.length;
             return (
               <li style={style.li}
                   key={hourIndex}
@@ -189,10 +174,27 @@ class Calendar extends React.Component {
                       }
                     }
                   }>
-                <Cards hour={hourIndex}
-                       day={i}
-                       cardsInfo={cardsInfo}
-                       cardTemplate={this.props.cardTemplate} />
+                <div
+                  ref="cards"
+                  className="cards">
+                  {
+                    cardsInfo.map(
+                      (card, index) =>
+                        <ClassCard key={index}
+                                   style={{zIndex}}
+                                   cardInfo={card}
+                                   total={total}
+                                   moveDisabled={true}
+                                   calendar={this}
+                                   ctx={ctx}
+                                   popupEnabled={true}
+                                   popupTemplate={ClassOverview}
+                                   popupProps={{onCreateClass: (classUpdates) => ctx.updateClass(classUpdates)}}
+                                   onHide={ctx.deleteClass}
+                                   onPanEnd={ctx.createClass}/>
+                    )
+                  }
+                </div>
               </li>
             );
           })
@@ -212,65 +214,35 @@ class Calendar extends React.Component {
     }
     let baselineTop = clientY - this.table.top + this.state.scrollTop;
     let baselineLeft = clientX;
-    this.setState({ baselineTop });
 
     this.rowList.forEach((row, index) => {
-      let top = row.top - this.table.top + this.state.scrollTop;
-      let bottom  = row.bottom - this.table.top + this.state.scrollTop;
+      const top    = row.top - this.table.top + this.state.scrollTop;
+      const bottom = row.bottom - this.table.top + this.state.scrollTop;
       if (top <= baselineTop && baselineTop <= bottom) {
-        let offsetTop = baselineTop - top;
-        let offsetBottom = bottom - baselineTop;
-        let minute = Math.floor((offsetTop) / row.height * 60);
-        let hour = index;
-        if (minute === 60) {
-          hour = hour + 1;
-          minute = 0;
-        }
-
-        let baselineClock = {
-          hour: hour,
-          minute: minute
-        };
-
-        this.setState({
-          baselineClock,
-          atRow: index
-        });
+        const offsetTop = baselineTop - top;
+        const minute = Math.floor((offsetTop) / row.height * 60);
+        const hour = index;
+        this.baselineClock = new HourMinute({hour: hour, minute: minute});
       }
     });
-
-    let currColIndex = -1;
+    let colIndex = -1;
     this.colList.forEach((col, index) => {
+      if (!(col.left && col.right)) {
+        return;
+      }
       if (baselineLeft > col.left && baselineLeft < col.right) {
-        currColIndex = index;
+        colIndex = index;
       }
     });
     // Correct the value if it's out of the colList range
-    if (currColIndex === -1) {
+    if (colIndex === -1) {
       if (baselineLeft > this.colList[this.colList.length - 1].right) {
-        currColIndex = this.colList.length - 1;
+        colIndex = this.colList.length - 1;
       } else if (baselineLeft < this.colList[0].left) {
-        currColIndex = 1;
+        colIndex = 0;
       }
     }
-    this.setState({
-      atCol: currColIndex
-    });
-  }
-
-  getBaseLine(time, top) {
-    const style = {
-      marginTop: top
-    };
-    const timeString = getFormatTime(time);
-    if (top > 0) {
-      return (
-        <div className="baseline-wrap">
-          <div className="baseline hidden" style={style}></div>
-        </div>
-      );
-    }
-    return;
+    this.baselineDate = this.refs.tableHeader.date(colIndex);
   }
 
   /**
@@ -325,107 +297,6 @@ class Calendar extends React.Component {
     this.setState({ createCardStyle });
   }
 
-  getCreateCard() {
-    return (
-      <div
-        ref="createCard"
-        className="create-card create-card-shown"
-        style={this.state.createCardStyle}>
-      </div>
-    );
-  }
-
-  createCard() {
-    const hammer = new Hammer(this.refs.table);
-
-    hammer.get('pan').set({
-      direction: Hammer.DIRECTION_VERTICAL,
-      threshold: 0
-    });
-
-    hammer.on('singletap', (event) => {
-      const createCardStyle = {
-        height: 0,
-        width: 0,
-        top: 0,
-      };
-
-      this.setState({ createCardStyle });
-    });
-
-    // Hammerjs will trigger both handler while elements are overlap
-    // and listen same event, so need to judge cards is dragging.
-    let isCardsDragging = false;
-    hammer.on('panstart', (event) => {
-      if (this.ctx && Array.isArray(this.ctx.cards)) {
-        isCardsDragging = this.ctx.cards.some((card) => {
-          return card.isCardDragging();
-        });
-        if (!isCardsDragging) {
-          const col = this.colList[this.state.atCol];
-          const row = this.rowList[this.state.atRow];
-          const left = col.left - this.table.left;
-          const width = col.right - col.left;
-          const selectBeginTime = this.state.baselineClock;
-          const top = this.state.baselineTop - this.state.scrollTop;
-          this.createCardTop = top;
-          const createCardStyle = {
-            top,
-            left,
-            width,
-            opacity: 1
-          };
-          this.setState({ createCardStyle, selectBeginTime });
-        }
-      }
-    });
-
-    hammer.on('pandown', (event) => {
-      if (event.deltaY > 0 && !isCardsDragging) {
-        const height = event.deltaY;
-        const createCardStyle = Object.assign({}, this.state.createCardStyle);
-        createCardStyle.top = this.createCardTop + this.state.scrollTop;
-        createCardStyle.height = height;
-
-        this.setState({ createCardStyle });
-      }
-    });
-
-    hammer.on('panend', (event) => {
-      if (!isCardsDragging &&
-          this.state.selectBeginTime &&
-          this.state.createCardStyle.height) {
-
-        const newFromHour = getRoundTime(this.state.selectBeginTime);
-        const newToHour = getRoundTime(this.state.baselineClock);
-        const rowIndex = newFromHour.hour;
-        const row = this.rowList[rowIndex];
-        const top = row.top - this.table.top + this.state.scrollTop;
-        const marginTop = getGridOffsetByTime(newFromHour, this.props.cellHeight);
-        const height = getGridHeight(newFromHour, newToHour, this.props.cellHeight);
-        const createCardStyle = Object.assign({}, this.state.createCardStyle);
-        createCardStyle.height = height;
-        createCardStyle.top = top;
-        createCardStyle.marginTop = marginTop;
-
-        isCardsDragging = false;
-        this.setState({ createCardStyle });
-
-        const duration = getTimeDuration(newFromHour, newToHour);
-        if (duration) {
-          if (CCViewMode.week === this.state.viewMode) {
-            const date = this.refs.tableHeader.dayList[this.state.atCol].format('YYYY-MM-DD');
-            this.props.onAddCard(newFromHour, newToHour, date);
-          } else {
-            const date = this.state.viewMode;
-            const { trainerId } = this.refs.tableHeader.dayList[this.state.atCol];
-            this.props.onAddCard(newFromHour, newToHour, date, trainerId);
-          }
-        }
-      }
-    });
-  }
-
   setTableHeight() {
     this.table = this.refs.table.getBoundingClientRect();
     const tableHeight = window.innerHeight - this.table.top;
@@ -445,8 +316,15 @@ class Calendar extends React.Component {
     }
   }
 
+  // MARK: - React Component lifecycle methods
+
+  async componentWillMount () {
+    const startsAt = moment(this.state.viewDate).startOf('week');
+    const endsAt   = moment(this.state.viewDate).endOf('week');
+    await this.props.ctx.listClasses(startsAt, endsAt);
+  }
+
   componentDidMount() {
-    this.createCard();
     this.setTableHeight();
     this.setScrollTop();
     window.onresize = () => {
@@ -465,35 +343,32 @@ class Calendar extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const weekSchedule = nextProps.schedule.filterByWeek(this.state.viewDate);
+    const weekSchedule = nextProps.schedule;
     this.setState({ weekSchedule });
   }
 
   render() {
-    const baseline = this.getBaseLine(this.state.baselineClock, this.state.baselineTop);
     const currline = this.getCurrentLine();
-    const createCard = this.getCreateCard();
     return (
-      <div className="calendar" ref="calendar">
-        <div className="week-header">
-          <TableHeader viewDate={this.state.viewDate} indexes={this.state.indexes} ref="tableHeader" />
-          <div className="scroll-div"></div>
-        </div>
-        <div
-          ref="table"
-          className="schedule-table"
-          style={{height: this.state.tableHeight}}
-          onMouseMove={this.setBaseline.bind(this)}
-          onScroll={this.handleScroll.bind(this)}>
+      <div className="calendar">
+        <TableHeader viewDate={this.state.viewDate} indexes={this.state.indexes} ref="tableHeader" />
+        <div className="scroll-div"></div>
+        <div ref="table"
+             className="schedule-table"
+             style={{height: this.state.tableHeight}}
+             onMouseMove={this.setBaseline.bind(this)}
+             onScroll={this.handleScroll.bind(this)} >
           {
             [
               this.getHourAxis(),
               this.state.indexes.map((d, i) => this.getTableColumn(d, i))
             ]
           }
-          {baseline}
           {currline}
-          {createCard}
+          <div ref="createCard"
+               className="create-card create-card-shown"
+               style={this.state.createCardStyle}>
+          </div>
         </div>
       </div>
     );
@@ -502,8 +377,8 @@ class Calendar extends React.Component {
 
 Calendar.propTypes = {
   schedule: React.PropTypes.object,
-  cellHeight: React.PropTypes.number,
-  onAddCard: React.PropTypes.func,
+  ctx: React.PropTypes.object,
+  cellHeight: React.PropTypes.number
 };
 
 module.exports = Calendar;

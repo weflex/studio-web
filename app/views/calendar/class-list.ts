@@ -5,42 +5,24 @@
  */
 
 import * as moment from "moment";
+import HourMinute from "../../lib/hour-minute";
+import {ClassEvent} from "./index.d"
 moment.locale("zh-cn");
-
-/**
- * @type DateTime
- */
-type DateTime = {
-  hour: number,
-  minute: number
-};
-
-/**
- * @type ClassListItem
- */
-type ClassListItem = {
-  from: DateTime,
-  date: Date,
-  start?: any,
-  trainer?: {
-    id: string
-  }
-};
 
 /**
  * @class ClassList
  */
 export default class ClassList {
 
-  private _list: Array<ClassListItem> = [];
+  private _list: Array<ClassEvent> = [];
 
   /**
    * @method constructor
    * @param {Array} optionalArray
    */
-  constructor(optionalArray?: Array<ClassListItem>) {
+  constructor(optionalArray?: Array<ClassEvent>) {
     if (optionalArray && optionalArray.length > 0) {
-      optionalArray.forEach((item: ClassListItem) => this.addItem(item));
+      optionalArray.forEach((item: ClassEvent) => this.addItem(item));
     }
   }
 
@@ -51,14 +33,12 @@ export default class ClassList {
    * @param {Moment} item.start, optional
    * @param {Moment} item.date
    */
-  addItem(item: ClassListItem) {
+  addItem(item: ClassEvent) {
     const { hour, minute } = item.from;
-    if (!item.start) {
-      item.start = moment(item.date)
-        .startOf('day')
-        .add(hour, 'hours')
-        .add(minute, 'minutes');
-    }
+    item.start = moment(item.date)
+      .startOf('day')
+      .add(hour, 'hours')
+      .add(minute, 'minutes');
     this._list.push(item);
   }
 
@@ -122,7 +102,11 @@ export default class ClassList {
     }));
   }
 
-  get(): Array<ClassListItem> {
+  removeItemById(id: string) {
+    this._list = this._list.filter((item) => item.id !== id);
+  }
+
+  get(): Array<ClassEvent> {
     return this._list;
   }
 }

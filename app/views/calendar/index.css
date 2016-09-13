@@ -1,4 +1,7 @@
 .calendar {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
   height: 100%;
   min-width: 800px;
   margin: 0;
@@ -10,11 +13,8 @@
   list-style: none;
 }
 
-.week-header {
+.table-header {
   box-shadow: 0 1px 2px 0 rgba(0,0,0,0.2);
-}
-
-.week-header .table-header {
   /* width equal to total width substract scroll-div's width */
   /*width: calc(100% - 15px);*/
   width: 100%;
@@ -22,8 +22,7 @@
   padding: 0;
 }
 
-.week-header .table-header,
-.week-header .scroll-div {
+.table-header, .scroll-div {
   display: inline-block;
   height: 30px;
   line-height: 30px;
@@ -33,17 +32,17 @@
 }
 
 /* scroll-div is an placeholder, align table-header horizontal to table-body */
-.week-header .scroll-div {
+.scroll-div {
   /*width: 7px;*/
   width: 0px;
 }
 
-.week-header .table-header .header-index {
+.table-header .header-index {
   border: none;
   width: 60px;
 }
 
-.week-header .table-header li {
+.table-header li {
   /* set table-header cell width by substract serven border width and header-index width
    * and divide equally by serven cell */
   width: calc((100% - 60px - 7px) / 7);
@@ -184,7 +183,6 @@
 
 .schedule-table .cards {
   position: absolute;
-  z-index: 1;
   top: 0px;
   left: 0px;
   width: 100%;

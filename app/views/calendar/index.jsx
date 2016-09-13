@@ -4,20 +4,16 @@ import _ from 'lodash';
 import moment from 'moment';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ClassCard from './card';
-import ClassOverview from './class-overview';
 import Calendar from './calendar';
 import { WeekPicker } from './components/week-picker';
 import { NewClassTemplate } from './new';
 import {
-  getWeek,
   getCellHeight,
   getFormatTime,
 } from './util.js';
 import UIFramework from 'weflex-ui';
 import { client } from '../../api';
-import { CalendarController } from './calendar-controller';
-import Map from './class-list';
+import ClassList from './class-list';
 import Template from './components/template';
 import ResourcePanel from '../../components/resource-panel';
 import './index.css';
@@ -32,32 +28,14 @@ class WeflexCalendar extends React.Component {
     moment.locale('zh-cn');
     this.cards = [];
     this.state = {
-      schedule: new Map(),
-      allClass: new Map(),
+      schedule: new ClassList(),
       modalVisibled: false,
     };
-    this.controller = new CalendarController();
-  }
-
-  onSearchInputChange(text) {
-    let results;
-    if (text === '') {
-      results = this.state.allClass;
-    } else {
-      results = new Map();
-      this.state.allClass.forEach((item) => {
-        if (item.template.name.indexOf(text) !== -1) {
-          results.addItem(item);
-        }
-      });
-    }
-    const schedule = this.getSchedule(results);
-    this.setState({ schedule });
   }
 
   get title() {
     return (
-      <WeekPicker calendar={this.controller}/>
+      <WeekPicker context={this}/>
     );
   }
 
@@ -86,10 +64,6 @@ class WeflexCalendar extends React.Component {
     ];
   }
 
-  get search() {
-    return this.onSearchInputChange.bind(this);
-  }
-
   get resource() {
     const actions = [
       {
@@ -115,177 +89,107 @@ class WeflexCalendar extends React.Component {
         context={{
           actions,
           calendar: this.refs.calendar,
-          onRelease: this.updateClasses.bind(this)
+          onRelease: (newClass) => this.createClass(newClass)
         }}
         getData={getData}
       />
     );
   }
 
-  async getClassData() {
+  render() {
+    const cellHeight = getCellHeight();
+    return (
+      <Calendar ref="calendar"
+                ctx={this}
+                cellHeight={cellHeight}
+                schedule={this.state.schedule} />
+    );
+  }
+
+  // MARK: - CalendarContext methods
+
+  get viewDate () {
+    return this.refs.calendar.state.viewDate;
+  }
+
+  get viewMode () {
+    return this.refs.calendar.state.viewMode;
+  }
+
+  setViewDate (viewDate) {
+    this.refs.calendar.setViewDate(viewDate);
+    // TODO: avoid calling setState() outside component
+    const startOfWeek = moment(this.viewDate).startOf('week');
+    const week = _.range(0, 7).map((n) => moment(startOfWeek).add(n, 'days'));
+    const indexes = week.map((d) => {
+      return {
+        raw: d,
+        content: d.format('ddd DD')
+      };
+    });
+    this.refs.calendar.setState({indexes});
+  }
+
+  // MARK: - CalendarDataSource methods
+
+  async listClasses(startsAt, endsAt) {
     const venue = await client.user.getVenueById();
-    const classes = (await client.class.list({
-      // TODO(Yorkie): will use view
+    const dateFormat = 'YYYY[-]MM[-]DD';
+    const classes = await client.class.list({
+      where: {
+        date: {
+          gte: startsAt.format(dateFormat),
+          lte: endsAt.format(dateFormat)
+        },
+        venueId: venue.id
+      },
       include: [
-        'trainer', 
+        'trainer',
         'template',
         {
-          'orders': ['user', 'history']
+          'orders': ['user']
         },
-      ]
-    })).filter((item) => {
-      return item.template &&
-        item.template.venueId === venue.id;
+      ],
+      order: ['from.hour ASC', 'from.minute ASC']
     });
 
-    classes.forEach((classInfo) => {
-      this.state.allClass.addItem(classInfo);
-    });
-
-    const schedule = this.getSchedule(classes);
-    this.originalSchedule = schedule;
-    this.setState({ schedule });
+    const schedule = new ClassList(classes);
+    this.setState({schedule});
   }
 
-  async componentDidMount() {
-    this.controller.setCalendar(this.refs.calendar);
-    let self = this;
-    self.getClassData();
-    self.getCardTemplate();
-  }
-
-  componentWillUnmount() {
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    this.getCardTemplate();
-  }
-
-  getSchedule(classes) {
-    let schedule = new Map();
-    classes.forEach(function (classInfo) {
-        schedule.addItem(classInfo);
-    });
-    return schedule;
-  }
-
-  getCardTemplate() {
-    let self = this;
-    let ctx = {
-      cards: [],
-      calendar: self.refs.calendar
-    };
-    ctx.calendar.ctx = ctx;
-    
-    const updateClasses = self.updateClasses.bind(self);
-    const deleteClassById = self.deleteClassById.bind(self);
-
-    self.cardTemplate = class CardTemplate extends React.Component {
-      componentDidMount() {
-        this.refs.classCard.ctx = ctx;
-        // push card to self.cards
-        self.cards.push(this.refs.classCard);
-        // reference self.cards to ctx.cards
-        ctx.cards = self.cards;
-      }
-      render() {
-        const props = Object.assign({}, this.props);
-        const onHide = (event, data) => {
-          if (!data || !data.id) {
-            return alert('未知错误');
-          }
-          UIFramework.Modal.confirm({
-            title: `你确认要删除课程“${data.template.name}”？`,
-            content: `你确认要删除课程“${data.template.name}”？`,
-            onOk: () => deleteClassById(data.id, data.modifiedAt || Date.now()),
-          });
-        };
-        const onPanEnd = (event, data) => {
-          return updateClasses(data);
-        };
-        return (
-          <ClassCard
-            {...props}
-            ref="classCard"
-            calendar={self.refs.calendar}
-            popupEnabled={true}
-            popupTemplate={ClassOverview}
-            popupProps={{
-              onCreateClass: updateClasses,
-            }}
-            onHide={onHide}
-            onPanEnd={onPanEnd}
-          />
-        );
-      }
+  async updateClass(classUpdates) {
+    const etag = classUpdates.modifiedAt;
+    const schedule = this.state.schedule;
+    const classId = classUpdates.id;
+    let results;
+    schedule.removeItemById(classId);
+    this.setState({schedule});
+    try {
+      results = await client.class.update(classId, classUpdates, etag);
+    } catch (err) {
+      UIFramework.Message.error('我们遇到了一个错误');
+      console.error(err);
+    } finally {
+      classUpdates.modifiedAt = results.modifiedAt;
+      schedule.addItem(classUpdates);
+      this.setState({schedule});
     }
   }
 
-  setCreateClassTemplate(from, to, date) {
-    let timeStringToObject = (timeStr) => {
-      const timeStrObj = timeStr.split(':');
-      return {
-        hour: timeStrObj[0],
-        minute: timeStrObj[1],
-      };
-    }
-    const self = this;
-    const onCreateClass = this.onCreateClass.bind(this);
-    const newClassTemplate = class ClassTemplate extends React.Component {
-      render() {
-        const newProps = {
-          data: {
-            date,
-            from: timeStringToObject(from),
-            to: timeStringToObject(to),
-            template: {},
-            spot: template.spot,
-          },
-          ref: (template) => {
-            if (template) {
-              self.newClassTemplate = template;
-            }
-          },
-          onCreateClass,
-        };
-        return <NewClassTemplate {...newProps} />;
-      }
-    };
-    this.setState({
-      newClassTemplate
-    });
-  }
-
-  onCreateClass(newClass) {
-    this.setState({
-      modalVisibled: false,
-    });
-    this.updateClasses(newClass);
-    this.refs.calendar.cancelCreateCard();
-  }
-
-  onAddCard(from, to, date) {
-    const fromString = getFormatTime(from);
-    const toString = getFormatTime(to);
-    this.setCreateClassTemplate(fromString, toString, date);
-    this.setState({
-      modalVisibled: true,
-    });
-  }
-
-  async updateClasses(newClass) {
-    // upsert the class to remote server
-    // NOTE(Yorkie): DONT REMOVE THE CLONE, BECAUSE
-    // GIAN WILL REMOVE `.id` that will change the id.
-    let res;
-    const { schedule } = this.state;
-    schedule.addItem(newClass);
-    this.setState({ schedule }, async () => {
-      try {
-        res = await client.class.upsert(newClass);
-      } catch (err) {
-        if (err.code === 'RESOURCE_EXPIRED') {
-        } else {
+  async deleteClass(classDeletes) {
+    const className = classDeletes.template.name;
+    const schedule = this.state.schedule;
+    const setState = this.setState.bind(this);
+    const etag = classDeletes.modifiedAt;
+    UIFramework.Modal.confirm({
+      title: `你确认要删除课程“${className}”？`,
+      content: `你确认要删除课程“${className}”？`,
+      onOk: async () => {
+        schedule.removeItemById(classDeletes.id);
+        setState({schedule});
+        try {
+          await client.class.delete(classDeletes.id, etag);
+        } catch (err) {
           UIFramework.Message.error('我们遇到了一个错误');
           console.error(err);
         }
@@ -293,52 +197,25 @@ class WeflexCalendar extends React.Component {
     });
   }
 
-  async deleteClassById(id, modifiedAt) {
-    // delete async
-    try {
-      await client.class.delete(id, modifiedAt);
-    } catch (err) {
-      if (err.code === 'RESOURCE_EXPIRED') {
+  async createClass(newClass) {
+    const tempId = Math.random().toString(36).slice(2); // alpha-numeric random string
+    const dupClass = Object.assign({}, newClass, {id: tempId}); // duplicate class to avoid contaminating remote data
+    const schedule = this.state.schedule;
+    schedule.addItem(dupClass);
+    let results;
+    this.setState({schedule}, async () => {
+      try {
+        results = await client.class.create(newClass);
+      } catch (err) {
+        UIFramework.Message.error('我们遇到了一个错误');
+        console.error(err);
+      } finally {
+        schedule.removeItemById(tempId);
+        newClass.id = results.id;
+        schedule.addItem(newClass);
+        this.setState({schedule});
       }
-    }
-    // delete in UI
-    this.getClassData();
-  }
-
-  handleHideModal() {
-    this.setState({
-      modalVisibled: false,
     });
-    this.refs.calendar.cancelCreateCard();
-    if (this.newClassTemplate) {
-      this.newClassTemplate.isModalShow = false;
-    }
-  }
-
-  render() {
-    const cellHeight = getCellHeight();
-    let classTempalte;
-    if (this.state.newClassTemplate) {
-      classTempalte = <this.state.newClassTemplate />;
-    }
-    return (
-      <div>
-        <Calendar
-          ref="calendar"
-          cellHeight={cellHeight}
-          schedule={this.state.schedule}
-          onAddCard={this.onAddCard.bind(this)}
-          cardTemplate={this.cardTemplate}
-        />
-        <UIFramework.Modal
-          visible={this.state.modalVisibled}
-          title="添加新课程"
-          footer=""
-          onCancel={this.handleHideModal.bind(this)}>
-          {classTempalte}
-        </UIFramework.Modal>
-      </div>
-    );
   }
 }
 

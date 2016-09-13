@@ -6,9 +6,13 @@
     "jsx": "react",
     "experimentalDecorators": true,
     "allowJs": true,
-    "module": "amd",
-    "moduleResolution": "classic"
+    "module": "commonjs",
+    "jsx": "react"
   },
+  "filesGlob": [
+    "**/*.ts",
+    "**/*.tsx"
+  ],
   "exclude": [
     "node_modules",
     "build",

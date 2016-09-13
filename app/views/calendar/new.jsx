@@ -29,7 +29,6 @@ class NewClassTemplate extends React.Component {
       data: newData,
       templates: [],
     };
-    this.isModalShow = true;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -85,7 +84,11 @@ class NewClassTemplate extends React.Component {
     if (getMinutes(newData.to) - getMinutes(newData.from) < 15) {
       alert('每节课程时长必须大于15分钟');
     } else {
-      this.props.onCreateClass(newData);
+      if (this.props.ctx) {
+        this.props.ctx.createClass(newData);
+      } else {
+        this.props.onCreateClass(newData);
+      }
     }
   }
 
@@ -137,7 +140,8 @@ class NewClassTemplate extends React.Component {
               bindStateName="data.trainerId"
               value={this.state.data.trainerId}
               options={this.state.trainers.map(item => {
-                return {text: item.fullname.first, value: item.id};
+                const name = item.fullname.first + ' ' + items.fullname.last;
+                return {text: name, value: item.id};
               })}
             />
           </UIFramework.Row>
