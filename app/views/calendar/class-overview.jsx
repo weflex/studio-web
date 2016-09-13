@@ -30,7 +30,7 @@ class OrderLine extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     const order = nextProps.data;
-    const status = _orderStatue(order);
+    const status = _orderStatus(order);
     this.setState({status});
   }
 
