@@ -57,7 +57,7 @@ class Calendar extends React.Component {
     super(props);
     const viewDate     = moment();
     const currentDate  = moment();
-    const weekSchedule = props.schedule.filterByWeek(viewDate);
+    const weekSchedule = this.props.schedule;
     const startOfWeek = moment(this._viewDate).startOf('week');
     const week = range(0, 7).map((n) => moment(startOfWeek).add(n, 'days'));
     const indexes = week.map((d) => {
@@ -113,8 +113,11 @@ class Calendar extends React.Component {
   }
 
   setViewDate(viewDate) {
-    const weekSchedule = this.props.schedule.filterByWeek(viewDate);
-    this.setState({ weekSchedule, viewDate });
+    this.setState({viewDate}, async () => {
+      const startsAt = moment(viewDate).startOf('week');
+      const endsAt   = moment(viewDate).endOf('week');
+      this.props.ctx.listClasses(startsAt, endsAt);
+    });
   }
 
   setViewMode(viewMode) {
@@ -315,6 +318,12 @@ class Calendar extends React.Component {
 
   // MARK: - React Component lifecycle methods
 
+  async componentWillMount () {
+    const startsAt = moment(this.state.viewDate).startOf('week');
+    const endsAt   = moment(this.state.viewDate).endOf('week');
+    await this.props.ctx.listClasses(startsAt, endsAt);
+  }
+
   componentDidMount() {
     this.setTableHeight();
     this.setScrollTop();
@@ -334,7 +343,7 @@ class Calendar extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const weekSchedule = nextProps.schedule.filterByWeek(this.state.viewDate);
+    const weekSchedule = nextProps.schedule;
     this.setState({ weekSchedule });
   }
 
@@ -368,6 +377,7 @@ class Calendar extends React.Component {
 
 Calendar.propTypes = {
   schedule: React.PropTypes.object,
+  ctx: React.PropTypes.object,
   cellHeight: React.PropTypes.number
 };
 

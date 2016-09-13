@@ -22,6 +22,7 @@ export interface ClassEvent {
 }
 
 export interface CalendarDataSource {
+  listClasses(startsAt: moment.Moment, endsAt: moment.Moment): ClassList;
   updateClass(classUpdates: ClassEvent);
   deleteClass(classDeletes: ClassEvent);
   createClass(newClass: ClassEvent);

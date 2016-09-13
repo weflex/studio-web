@@ -96,38 +96,6 @@ class WeflexCalendar extends React.Component {
     );
   }
 
-  async getClassData() {
-    const venue = await client.user.getVenueById();
-    const classes = (await client.class.list({
-      // TODO(Yorkie): will use view
-      include: [
-        'trainer', 
-        'template',
-        {
-          'orders': ['user', 'history']
-        },
-      ]
-    })).filter((item) => {
-      return item.template &&
-        item.template.venueId === venue.id;
-    });
-
-    const schedule = this.getSchedule(classes);
-    this.setState({ schedule });
-  }
-
-  async componentDidMount() {
-    this.getClassData();
-  }
-
-  getSchedule(classes) {
-    let schedule = new ClassList();
-    classes.forEach(function (classInfo) {
-        schedule.addItem(classInfo);
-    });
-    return schedule;
-  }
-
   render() {
     const cellHeight = getCellHeight();
     return (
@@ -163,6 +131,31 @@ class WeflexCalendar extends React.Component {
   }
 
   // MARK: - CalendarDataSource methods
+
+  async listClasses(startsAt, endsAt) {
+    const venue = await client.user.getVenueById();
+    const dateFormat = 'YYYY[-]MM[-]DD';
+    const classes = await client.class.list({
+      where: {
+        date: {
+          gte: startsAt.format(dateFormat),
+          lte: endsAt.format(dateFormat)
+        },
+        venueId: venue.id
+      },
+      include: [
+        'trainer',
+        'template',
+        {
+          'orders': ['user']
+        },
+      ],
+      order: ['from.hour ASC', 'from.minute ASC']
+    });
+
+    const schedule = new ClassList(classes);
+    this.setState({schedule});
+  }
 
   async updateClass(classUpdates) {
     const etag = classUpdates.modifiedAt;
