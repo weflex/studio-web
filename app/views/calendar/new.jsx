@@ -140,7 +140,8 @@ class NewClassTemplate extends React.Component {
               bindStateName="data.trainerId"
               value={this.state.data.trainerId}
               options={this.state.trainers.map(item => {
-                return {text: item.fullname.first, value: item.id};
+                const name = item.fullname.first + ' ' + items.fullname.last;
+                return {text: name, value: item.id};
               })}
             />
           </UIFramework.Row>
