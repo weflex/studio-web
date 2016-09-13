@@ -189,7 +189,10 @@ class Calendar extends React.Component {
                                    ctx={ctx}
                                    popupEnabled={true}
                                    popupTemplate={ClassOverview}
-                                   popupProps={{onCreateClass: (classUpdates) => ctx.updateClass(classUpdates)}}
+                                   popupProps={{
+                                     onCreateClass: (classUpdates) => ctx.updateClass(classUpdates),
+                                     ctx: ctx
+                                   }}
                                    onHide={ctx.deleteClass}
                                    onPanEnd={ctx.createClass}/>
                     )

@@ -9,44 +9,41 @@ import { getFormatTime } from './util'
 import { client } from '../../api';
 moment.locale('zh-cn');
 
+function _orderStatus (order) {
+  let status = 'paid';
+  if (order.checkedInAt) {
+    status = 'checkin';
+  }
+  if (order.cancelledAt) {
+    status = 'cancel';
+  }
+  return status;
+}
+
 class OrderLine extends React.Component {
   constructor(props) {
     super(props);
-    let status = 'paid';
     const order = props.data;
-    if (order.checkedInAt) {
-      status = 'checkin';
-    }
-    if (order.cancelledAt) {
-      status = 'cancel';
-    }
-    this.state = {
-      status,
-    };
-  }
-  async onClickCheckin(event) {
-    this.setState({
-      status: 'checkin',
-    });
-    await client.order.checkInById(this.props.data.id);
-    UIFramework.Message.success('签到成功');
+    const status = _orderStatus(order);
+    this.state = {status};
   }
 
-  async onClickCancel(event) {
-    this.setState({
-      status: 'cancel',
-    });
-    await client.order.cancelById(this.props.data.id);
-    UIFramework.Message.success('取消成功');
+  componentWillReceiveProps(nextProps) {
+    const order = nextProps.data;
+    const status = _orderStatus(order);
+    this.setState({status});
   }
+
   render() {
     let userStatus;
+    const ctx = this.props.ctx;
+    const orderId = this.props.data.id;
     if (this.state.status !== 'checkin' &&
       this.state.status !== 'cancel') {
       userStatus = (
         <div className="order-info-user-status">
-          <button onClick={this.onClickCheckin.bind(this)}>签到</button>
-          <button onClick={this.onClickCancel.bind(this)}>取消</button>
+          <button onClick={() => {ctx.checkInOrder(orderId)}}>签到</button>
+          <button onClick={() => {ctx.cancelOrder(orderId)}}>取消</button>
         </div>
       );
     } else {
@@ -93,7 +90,7 @@ class OrdersInfo extends React.Component {
           </fieldset>
           <ul>
             {this.props.data.map((order, idx) => {
-              return <OrderLine data={order} key={idx} />;
+              return <OrderLine data={order} key={idx} ctx={this.props.ctx} />;
             })}
           </ul>
         </div>
@@ -112,6 +109,35 @@ class ClassOverview extends React.Component {
   showClassDetail() {
     this.refs.classDetailModal.show();
   }
+
+  // MARK: - ClassOrderContext methods
+
+  async cancelOrder (id) {
+    const {ctx, data} = this.props;
+    const orders = data.orders;
+    orders.filter((order) => {
+      return order.id === id;
+    })[0].cancelledAt = moment();
+    data.orders = orders;
+    ctx.updateClass(data);
+    await client.order.cancelById(id);
+    UIFramework.Message.success('取消成功');
+  }
+
+  async checkInOrder (id) {
+    const {ctx, data} = this.props;
+    const orders = data.orders;
+    orders.filter((order) => {
+      return order.id === id;
+    })[0].checkedInAt = moment();
+    data.orders = orders;
+    ctx.updateClass(data);
+    await client.order.checkInById(id);
+    UIFramework.Message.success('取消成功');
+  }
+
+  // MARK: - Component lifecycle methods
+
   render() {
     const { template, date, from, to, trainer, orders } = this.props.data;
     const duration = `${moment(date).format('ddd')} ${getFormatTime(from)} - ${getFormatTime(to)}`
@@ -126,7 +152,7 @@ class ClassOverview extends React.Component {
         <div className="trainer">{trainerName}</div>
         <div className="btn-modify-class"
           onClick={() => this.setState({modalVisibled: true})}>修改课程</div>
-        <OrdersInfo data={orders} />
+        <OrdersInfo data={orders} ctx={this} />
         <UIFramework.Modal
           visible={this.state.modalVisibled}
           title="修改课程"
