@@ -86,57 +86,10 @@ class NavBar extends React.Component {
   async componentWillMount () {
     const user = await client.user.getCurrent();
     const venue = await client.user.getVenueById();
-    const templates = await client.classTemplate.list({
-      where: {
-        venueId: venue.id,
-      },
-    });
-    const classes = await client.class.list({
-      where: {
-        templateId: {
-          inq: _.map(templates, 'id'),
-        },
-        date: {
-          gt: +moment().startOf('day').toDate(),
-          lt: +moment().endOf('day').toDate(),
-        },
-      },
-      include: [
-        {
-          orders: ['history']
-        },
-      ],
-    });
-    const stats = {
-      paid: [],
-      cancel: [],
-      checkin: [],
-    };
-    classes.filter((clazz) => {
-      const {hour, minute} = clazz.from;
-      const classBegins = moment(clazz.date).hour(hour).minute(minute);
-      return (classBegins.isBefore(moment().endOf('day')) &&
-              classBegins.isAfter(moment().startOf('day')));
-    }).forEach((item) => {
-      item.orders.forEach((order) => {
-        if (order.cancelledAt) {
-          return stats.cancel.push(order);
-        }
-        if (order.checkedInAt) {
-          return stats.checkin.push(order);
-        }
-        if (order.createdAt) {
-          return stats.paid.push(order);
-        }
-      });
-    });
+    const stats = await client.venue.stats(venue.id);
     this.setState({
       user,
-      stats: {
-        paid: stats.paid || [],
-        cancel: stats.cancel || [],
-        checkin: stats.checkin || [],
-      },
+      stats,
       venue,
       venues: client.user.venues
     });
