@@ -32,7 +32,7 @@ class NewClassTemplate extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const newData = Object.assign({}, this.state.data, {
+    const newData = Object.assign({}, nextProps.data, {
       from: getFormatTime(nextProps.data.from),
       to: getFormatTime(nextProps.data.to),
       date: nextProps.data.date
