@@ -92,6 +92,10 @@ class Detail extends React.Component {
   async onSave() {
     let shouldRefresh = false;
     let resp;
+    if (this.state.data.spot <= 0) {
+      alert('课位必须大于 0');
+      return;
+    }
     try {
       resp = await client.classTemplate.upsert(Object.assign({}, this.state.data));
     } catch (err) {

@@ -81,7 +81,10 @@ class NewClassTemplate extends React.Component {
     const getMinutes = (time) => {
       return time.hour * 60 + time.minute;
     };
-    if (getMinutes(newData.to) - getMinutes(newData.from) < 15) {
+
+    if (newData.spot <= 0) {
+      alert('课位必须大于 0');
+    } else if (getMinutes(newData.to) - getMinutes(newData.from) < 15) {
       alert('每节课程时长必须大于15分钟');
     } else {
       if (this.props.ctx) {
@@ -143,6 +146,15 @@ class NewClassTemplate extends React.Component {
                 const name = item.fullname.first + ' ' + item.fullname.last;
                 return {text: name, value: item.id};
               })}
+            />
+          </UIFramework.Row>
+           <UIFramework.Row name="课位" hint="请输入上课预留的课位" required={true}>
+            <UIFramework.TextInput
+              flex={1} 
+              value={this.state.data.spot}
+              bindStateCtx={this}
+              bindStateType={Number}
+              bindStateName="data.spot"
             />
           </UIFramework.Row>
           <UIFramework.Row name="课程描述">
