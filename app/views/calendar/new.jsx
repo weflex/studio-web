@@ -14,15 +14,7 @@ import './new.css';
 class NewClassTemplate extends React.Component {
   constructor(props) {
     super(props);
-    const newData = Object.assign({
-      template: {},
-      templateId: props.data.template.id,
-      trainer: {},
-      trainerId: props.data.template.trainerId,
-    }, props.data, {
-      from: getFormatTime(props.data.from),
-      to: getFormatTime(props.data.to),
-    });
+    const newData = NewClassTemplate.constructState(props);
     this.state = {
       trainers: [],
       loading: true,
@@ -31,12 +23,26 @@ class NewClassTemplate extends React.Component {
     };
   }
 
+  static constructState (nextProps) {
+    const {from, to, template} = nextProps.data;
+    const newData = Object.assign(
+      {
+        template: {},
+        templateId: template.id,
+        trainer: {},
+        trainerId: template.trainerId,
+      },
+      nextProps.data,
+      {
+        from: getFormatTime(from),
+        to: getFormatTime(to),
+      }
+    );
+    return newData;
+  }
+
   componentWillReceiveProps(nextProps) {
-    const newData = Object.assign({}, nextProps.data, {
-      from: getFormatTime(nextProps.data.from),
-      to: getFormatTime(nextProps.data.to),
-      date: nextProps.data.date
-    });
+    const newData = NewClassTemplate.constructState(nextProps);
     this.setState({ data: newData });
   }
 
