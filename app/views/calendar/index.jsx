@@ -170,7 +170,7 @@ class WeflexCalendar extends React.Component {
       UIFramework.Message.error('我们遇到了一个错误');
       console.error(err);
     } finally {
-      classUpdates.modifiedAt = results.modifiedAt;
+      classUpdates = Object.assign({}, classUpdates, results);
       schedule.addItem(classUpdates);
       this.setState({schedule});
     }
