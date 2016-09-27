@@ -84,6 +84,8 @@ class NewClassTemplate extends React.Component {
       to: getTime(this.state.data.to),
       template: this.template,
     });
+    delete newData.spotsBooked;
+
     const getMinutes = (time) => {
       return time.hour * 60 + time.minute;
     };
