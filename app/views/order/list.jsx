@@ -96,32 +96,8 @@ class List extends React.Component {
   async source() {
     const venue = await client.user.getVenueById();
     const {filter} = this.state;
-    const templates = await client.classTemplate.list({
-      where: {
-        venueId: venue.id
-      },
-      include: ['classes']
-    });
-    const classIds = templates.reduce((ids, template) => {
-      (template.classes || []).forEach((item) => {
-        const {hour, minute} = item.from;
-        const classBegins = moment(item.date).hour(hour).minute(minute);
-        if (filter.classBefore &&
-            classBegins.isAfter(filter.classBefore)) {
-          return;
-        }
-        if (filter.classAfter &&
-            classBegins.isBefore(filter.classAfter)) {
-          return;
-        }
-        ids.push(item.id);
-      });
-      return ids;
-    }, []);
     const whereFilter = {
-      classId: {
-        inq: classIds
-      }
+      venueId: venue.id
     };
     if (filter.orderStatus) {
       switch (filter.orderStatus) {
@@ -157,7 +133,7 @@ class List extends React.Component {
           'class': ['template', 'trainer']
         },
         'user'
-      ],
+      ]
     });
     return (list || []).filter((item) => {
       var membership;
