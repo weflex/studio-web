@@ -211,7 +211,7 @@ class WeflexCalendar extends React.Component {
         console.error(err);
       } finally {
         schedule.removeItemById(tempId);
-        newClass.id = results.id;
+        newClass = Object.assign({}, newClass, results);
         schedule.addItem(newClass);
         this.setState({schedule});
       }
