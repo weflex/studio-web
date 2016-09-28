@@ -45,6 +45,7 @@ export default class extends React.Component {
   }
   async onPhoneInputChange(event) {
     const phone = event.target.value;
+    const venue = await client.user.getVenueById();
     if (phone.length === 11) {
       const members = await client.member.list({
         where: {phone},
@@ -55,17 +56,22 @@ export default class extends React.Component {
       } else {
         // find a user
         const member = members[0];
-        const memberships = await client.membership.list({
-          where: {
-            memberId: member.id
-          },
-          include: ['package']
-        });
-        this.setState({
-          isUserNotFound: false,
-          memberships,
-          member,
-        });
+        let memberships;
+        try {
+          memberships = await client.context.requestMiddleware('/transaction/reduce-memberships', {
+            userId: member.userId,
+            venueId: venue.id,
+          });
+        } catch (error) {
+          console.error(error);
+          memberships = [];
+        } finally {
+          this.setState({
+            isUserNotFound: false,
+            memberships: _.filter(memberships, _.property('isValid')),
+            member,
+          });
+        }
       }
     } else {
       this.setState({
@@ -90,15 +96,15 @@ export default class extends React.Component {
     const template = _.find(this.state.templates, {
       id: this.state.templateId
     });
-    const membership = _.find(this.state.memberships, {
-      id: this.state.membershipId
+    let membership = _.find(this.state.memberships, {
+      membershipId: this.state.membershipId
     });
     try {
       // create an order
       await client.middleware('/transaction/add-order', {
         classId: this.state.classId,
         userId: this.state.member.userId,
-        membershipId: membership.id,
+        membershipId: this.state.membershipId,
       }, 'post');
       if (typeof this.props.onComplete === 'function') {
         this.props.onComplete();
@@ -188,8 +194,8 @@ export default class extends React.Component {
     if (this.state.memberships.length > 0) {
       membershipOptions = this.state.memberships.map((item) => {
         return {
-          text: item.package.name,
-          value: item.id
+          text: item.name,
+          value: item.membershipId
         }
       });
     }
