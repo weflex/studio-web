@@ -350,12 +350,20 @@ class MembershipsCard extends React.Component {
       {
         include: [
           {
-            'memberships': [
-              'payments',
-              'package',
-            ],
-          },
-        ],
+            relation: 'memberships',
+            scope: {
+              where: {
+                trashedAt: {
+                  exists: false
+                }
+              },
+              include: [
+                'payments',
+                'package',
+              ]
+            }
+          }
+        ]
       }
     );
     this.setState({member});

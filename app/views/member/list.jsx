@@ -91,7 +91,16 @@ class List extends React.Component {
         venueId: venue.id,
       },
       include: [
-        'memberships',
+        {
+          relation: 'memberships',
+          scope: {
+            where: {
+              trashedAt: {
+                exists: false
+              }
+            }
+          }
+        },
         'avatar'
       ],
     });
