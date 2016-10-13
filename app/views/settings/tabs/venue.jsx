@@ -3,13 +3,15 @@
 import React from 'react';
 import UIFramework from 'weflex-ui';
 import { client } from '../../../api';
+import CopyToClipboard from 'react-copy-to-clipboard';
 
 class Venue extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       venue: {},
-      owner: {}
+      owner: {},
+      wechatURL: ''
     };
   }
   async componentWillMount() {
@@ -21,9 +23,11 @@ class Venue extends React.Component {
         },
       ]
     });
+    const venueId = await client.user.getVenueById().id;
     this.setState({
       venue,
       owner: this.getOwner(org.members),
+      wechatURL: 'http://booking.theweflex.com/venues/' + venueId + '/classes'
     });
   }
   getOwner(members) {
@@ -92,6 +96,18 @@ class Venue extends React.Component {
           <UIFramework.Row>
             <UIFramework.Button text="保存信息" 
               onClick={this.onSubmit.bind(this)} />
+          </UIFramework.Row>
+          <UIFramework.Row name="会员订课网址">
+            <UIFramework.TextInput
+              flex={0.8}
+              disabled={true}
+              value={this.state.wechatURL} />
+            <CopyToClipboard text={this.state.wechatURL}>
+              <UIFramework.Button
+                text="复制"
+                flex={0.2}
+                onClick={() => window.alert("会员订课网址已复制到您的剪贴板")}/>
+            </CopyToClipboard>
           </UIFramework.Row>
         </UIFramework>
       </div>
