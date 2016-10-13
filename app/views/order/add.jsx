@@ -23,6 +23,7 @@ export default class extends React.Component {
       memberships: [],
       // form validation
       isUserNotFound: false,
+      isSpotsAvailable: true,
     };
   }
   async componentWillMount() {
@@ -91,6 +92,14 @@ export default class extends React.Component {
       (item)=>item['from']['minute']
     ]);
     this.setState({classes});
+  }
+   onClassChange(event) {
+    let aClass = _.find(this.state.classes, {
+      id: event.target.value
+    });
+    this.setState({
+      isSpotsAvailable: aClass.spotsAvailable > 0,
+    });
   }
   async onSubmit() {
     const template = _.find(this.state.templates, {
@@ -186,6 +195,7 @@ export default class extends React.Component {
         bindStateCtx={this}
         bindStateName="classId"
         options={classOptions}
+        onChange={this.onClassChange.bind(this)}
       />
     ];
   }
@@ -217,11 +227,18 @@ export default class extends React.Component {
         <UIFramework.Row name="课程" hint="预约课程的名称，日期和时间">
           {this.renderClassPicker()}
         </UIFramework.Row>
+        {
+          this.state.isSpotsAvailable ? '' : (
+            <UIFramework.Row>
+              <span style={{color: 'red'}}>此课程课位已满,无法创建新订单</span>
+            </UIFramework.Row>
+          )
+        }
         <UIFramework.Row name="会卡" hint="用户需要会卡才能创建订单">
           {this.renderMemberships()}
         </UIFramework.Row>
         <UIFramework.Row>
-          <UIFramework.Button text="创建订单" onClick={this.onSubmit.bind(this)} />
+          <UIFramework.Button text="创建订单" onClick={this.onSubmit.bind(this)} disabled={!this.state.isSpotsAvailable} />
         </UIFramework.Row>
       </UIFramework>
     );
