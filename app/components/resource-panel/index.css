@@ -10,6 +10,9 @@
   font-family: 'PingFang SC', sans-serif;
   padding: 5px 5px 0 5px;
   box-sizing: border-box;
+  background: #fff;
+  z-index: 100;
+  position: relative;
 }
 
 .resource-panel-actions a {
@@ -48,4 +51,5 @@
   font-size: 14px;
   font-family: 'PingFang SC', sans-serif;
   padding: 10px;
+  position: relative;
 }

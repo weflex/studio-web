@@ -15,8 +15,25 @@ class ResourcePanel extends React.Component {
     this.state = {
       actions: props.context.actions,
       resources: [],
-      loading: true
+      loading: true,
+      itemsTop: 0
     };
+  }
+
+  onMouseWheel (event) {
+    let nextItemsTop;
+    const prevItemsTop = this.state.itemsTop || 0;
+    const heightDelta  = this.refs.resourcePanel.offsetHeight - this.refs.resourcePanelItems.offsetHeight;
+    console.log(heightDelta);
+    if (heightDelta > 0) {
+      nextItemsTop = 0;
+    } else {
+      nextItemsTop = Math.max(Math.min(0, this.state.itemsTop - event.deltaY * 0.5),
+                              heightDelta - 30);
+    }
+    this.setState({
+      itemsTop: nextItemsTop
+    });
   }
 
   async componentDidMount () {
@@ -38,7 +55,10 @@ class ResourcePanel extends React.Component {
       );
     } else {
       contentBody = (
-        <ul className="resource-panel-items">
+        <ul className="resource-panel-items"
+            ref="resourcePanelItems"
+            style={{top: this.state.itemsTop}}
+            onWheel={(event) => this.onMouseWheel(event)}>
           {this.state.resources.map((item, index) => {
             return (
               <this.props.component 
@@ -52,8 +72,8 @@ class ResourcePanel extends React.Component {
       );
     }
     return (
-      <div className="resource-panel">
-        <div className="resource-panel-actions">
+      <div className="resource-panel" ref="resourcePanel">
+            <div className="resource-panel-actions">
           {this.state.actions.map((action, index) => {
             return (
               <Link key={index} href={action.path}>{action.title}</Link>
