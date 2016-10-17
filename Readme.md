@@ -5,7 +5,7 @@ The desktop(HD) application for Studio based on the following stacks:
 - React
 - TypeScript
 - Electron
-- Webpack & Makefile
+- Webpack
 
 ![v1.0](./history/v1.0.png)
 
@@ -34,53 +34,22 @@ Studio-desktop is able to build and release for the following platforms:
 To make a static build, simply
 
 ```sh
-$ make
+$ npm run build
 ```
 
 ### Electron
 
 ```
-$ make electron
+$ npm run electron
 ```
 
 Currently we only support MacOS and Windows.
 
-### Web 
+### Development
 
 ```sh
-$ make serve
+$ npm run dev
 ```
-
-We setup a `Procfile` to be compatible with Heroku:
-
-```
-$ make heroku
-```
-
-> Note: because we are still using http in API endpoint, so http is required to visit Heroku.
-
-## Development
-
-```sh
-$ make watch
-$ curl http://localhost:8080/
-```
-
-### Change the endpoint of being used by gian.js:
-
-Run local test gateway with the following command:
-
-```sh
-$ GIAN_GATEWAY=test make watch
-```
-
-Run with staging
-
-```sh
-$ GIAN_GATEWAY=staging make watch
-```
-
-The default `GIAN_GATEWAY` is "staging".
 
 ## License
 

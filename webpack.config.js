@@ -56,6 +56,25 @@ module.exports = {
       }
     ]
   },
+  devServer: {
+    open: true,
+    inline: true,
+    publicPath: '/',
+    contentBase: 'assets',
+    historyApiFallback: {
+      rewrites: [
+        {
+          from: /^\/login\/?(\?status.*)?$/,
+          to: '/login/index.html'
+        },
+        {
+          from: /^\/signup\/?$/,
+          to: '/signup/index.html'
+        }
+      ],
+      index: '/index.html'
+    }
+  },
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': `"${process.env.NODE_ENV || 'dev'}"`,
