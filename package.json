@@ -4,7 +4,6 @@
   "dependencies": {
     "@weflex/gian": "1.28.0",
     "@weflex/passport.js": "1.2.0",
-    "@weflex/random": "1.1.3",
     "babel-polyfill": "6.3.14",
     "halogen": "0.1.10",
     "hammerjs": "2.0.6",
@@ -14,6 +13,7 @@
     "object-assign": "4.0.1",
     "qrcode.react": "0.5.2",
     "qstringify": "1.4.2",
+    "randomatic": "1.1.5",
     "react": "0.14.7",
     "react-addons-pure-render-mixin": "0.14.7",
     "react-copy-to-clipboard": "4.2.3",

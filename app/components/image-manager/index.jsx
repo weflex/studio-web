@@ -3,7 +3,7 @@
 import React from 'react';
 import UIFramework from 'weflex-ui';
 import ImageCell from '../image-cell';
-import random from '@weflex/random';
+import randomize from 'randomatic';
 import { client } from '../../api';
 import _ from 'lodash';
 import './index.css';
@@ -66,7 +66,7 @@ class ImageManager extends React.Component {
     const venue = await client.user.getVenueById();
     try {
       await Promise.all(files.map((file) => {
-        file.preview = [venue.id, random.strings(32)].join('-');
+        file.preview = [venue.id, randomize('Aa0', 32)].join('-');
         return client.resource.upload(self.state.uptoken, file).end();
       }));
       await this.refresh();
