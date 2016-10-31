@@ -55,7 +55,7 @@
   "scripts": {
     "test": "make test",
     "dev": "webpack-dev-server",
-    "build": "npm run prebuild && webpack -p",
+    "build": "npm run prebuild && webpack -p --optimize-dedupe",
     "prebuild": "test -e dist || npm run staticAssets && test -e typings || npm run typings",
     "staticAssets": "cp -r assets dist",
     "typinrgs": "typings install",

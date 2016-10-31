@@ -17,7 +17,7 @@ module.exports = {
     filename: '[name]'
   },
   resolve: {
-    extensions: ['', '.ts', '.tsx', '.jsx', '.js']
+    extensions: ['.ts', '.tsx', '.jsx', '.js', '']
   },
   module: {
     loaders: [
@@ -81,6 +81,5 @@ module.exports = {
       'process.env.GIAN_GATEWAY': `"${process.env.GIAN_GATEWAY || 'staging'}"`,
     }),
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /zh/),
-    new webpack.optimize.DedupePlugin(),
   ]
 };
