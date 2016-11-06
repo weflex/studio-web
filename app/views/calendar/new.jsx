@@ -5,6 +5,9 @@ import React from 'react';
 import { ClipLoader } from 'halogen';
 import { client } from '../../api';
 import UIFramework from 'weflex-ui';
+import { Select } from 'antd';
+const Option = Select.Option;
+import _ from 'lodash';
 import {
   getTime,
   getFormatTime,
@@ -20,6 +23,7 @@ class NewClassTemplate extends React.Component {
       loading: true,
       data: newData,
       templates: [],
+      classPackages: [],
     };
   }
 
@@ -31,6 +35,7 @@ class NewClassTemplate extends React.Component {
         templateId: template.id,
         trainer: {},
         trainerId: template.trainerId,
+        paymentOptionIds: template.paymentOptionIds,
       },
       nextProps.data,
       {
@@ -71,10 +76,16 @@ class NewClassTemplate extends React.Component {
         return role.name === 'trainer';
       });
     });
+    const classPackages = await client.classPackage.list({
+      where: {
+        venueId: venue.id
+      },
+    });
     this.setState({
       trainers,
       templates,
       loading: false,
+      classPackages,
     });
   }
 
@@ -154,7 +165,7 @@ class NewClassTemplate extends React.Component {
               })}
             />
           </UIFramework.Row>
-           <UIFramework.Row name="课位" hint="请输入上课预留的课位" required={true}>
+          <UIFramework.Row name="课位" hint="请输入上课预留的课位" required={true}>
             <UIFramework.TextInput
               flex={1} 
               value={this.state.data.spot}
@@ -162,6 +173,27 @@ class NewClassTemplate extends React.Component {
               bindStateType={Number}
               bindStateName="data.spot"
             />
+          </UIFramework.Row>
+          <UIFramework.Row name="可用会卡" hint="可以用于预约该课程的会卡种类">
+            <Select multiple
+                    style={{width:'100%'}}
+                    value={this.state.data.paymentOptionIds}
+                    onSelect={(value) => {
+                      const paymentOptionIds = this.state.data.paymentOptionIds || [];                      
+                      paymentOptionIds.push(value);
+                      this.setState({data: Object.assign(this.state.data, {paymentOptionIds})});
+                    }}
+                    onDeselect={(value) => {
+                      const paymentOptionIds = this.state.data.paymentOptionIds;
+                      const index = paymentOptionIds.indexOf(value);
+                      if (index > -1) {
+                        paymentOptionIds.splice(index, 1);
+                        this.setState({data: Object.assign(this.state.data, {paymentOptionIds})});
+                      }}}>{
+              this.state.classPackages.map((membership, key) =>
+                <Option value={membership.id} key={key}>{membership.name}</Option>
+              )
+            }</Select>
           </UIFramework.Row>
           <UIFramework.Row name="课程描述">
             <UIFramework.TextInput

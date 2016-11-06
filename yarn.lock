@@ -70,6 +70,53 @@ ansi-styles@^2.2.1:
   version "2.2.1"
   resolved "http://npm.weflex.org:2970/ansi-styles/-/ansi-styles-2.2.1.tgz#b432dd3358b634cf75e1e4664368240533c1ddbe"
 
+antd:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/antd/-/antd-2.3.0.tgz#23ae68d04309dbf0a8202bde25bfa69c78f0eb34"
+  dependencies:
+    array-tree-filter "~1.0.0"
+    babel-runtime "6.x"
+    classnames "~2.2.0"
+    css-animation "^1.2.5"
+    gregorian-calendar "~4.1.0"
+    gregorian-calendar-format "~4.1.0"
+    moment "^2.15.1"
+    object-assign "~4.1.0"
+    omit.js "^0.1.0"
+    rc-animate "~2.3.0"
+    rc-calendar "~7.4.1"
+    rc-cascader "~0.10.1"
+    rc-checkbox "~1.4.0"
+    rc-collapse "~1.6.4"
+    rc-dialog "~6.5.0"
+    rc-dropdown "~1.4.8"
+    rc-editor-mention "~0.3.0"
+    rc-form "~1.0.0"
+    rc-input-number "~2.7.0"
+    rc-menu "~5.0.1"
+    rc-notification "~1.3.4"
+    rc-pagination "~1.5.3"
+    rc-progress "~2.0.1"
+    rc-queue-anim "~0.12.4"
+    rc-radio "~2.0.0"
+    rc-rate "~1.1.2"
+    rc-select "~6.6.1"
+    rc-slider "~5.2.0"
+    rc-steps "~2.2.0"
+    rc-switch "~1.4.2"
+    rc-table "~5.0.0"
+    rc-tabs "~7.0.5"
+    rc-time-picker "~2.1.0"
+    rc-tooltip "~3.4.2"
+    rc-tree "~1.4.0"
+    rc-tree-select "~1.8.0"
+    rc-upload "~2.2.0"
+    rc-util "^4.0.1"
+    react-lazy-load "^3.0.10"
+    react-slick "~0.14.2"
+    shallowequal "^0.2.2"
+    warning "~3.0.0"
+
 any-promise@^1.0.0, any-promise@^1.1.0, any-promise@^1.3.0:
   version "1.3.0"
   resolved "http://npm.weflex.org:2970/any-promise/-/any-promise-1.3.0.tgz#abc6afeedcea52e809cdc0376aed3ce39635d17f"
@@ -136,6 +183,10 @@ array-flatten@1.1.1:
   version "1.1.1"
   resolved "http://npm.weflex.org:2970/array-flatten/-/array-flatten-1.1.1.tgz#9a5f699051b1e7073328f2a008968b64ea2955d2"
 
+array-tree-filter@^1.0.0, array-tree-filter@~1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/array-tree-filter/-/array-tree-filter-1.0.1.tgz#0a8ad1eefd38ce88858632f9cc0423d7634e4d5d"
+
 array-uniq@^1.0.2:
   version "1.0.3"
   resolved "http://npm.weflex.org:2970/array-uniq/-/array-uniq-1.0.3.tgz#af6ac877a25cc7f74e058894753858dfdb24fdb6"
@@ -197,6 +248,10 @@ ast-types@0.8.15:
 async-each@^1.0.0:
   version "1.0.1"
   resolved "http://npm.weflex.org:2970/async-each/-/async-each-1.0.1.tgz#19d386a1d9edc6e7c1c85d388aedbcc56d33602d"
+
+async-validator@1.x:
+  version "1.6.6"
+  resolved "https://registry.yarnpkg.com/async-validator/-/async-validator-1.6.6.tgz#12e895ffaaadd5b9a8faf8be1b07cdd930674fa2"
 
 async@^0.9.0, async@~0.9.0:
   version "0.9.2"
@@ -447,11 +502,19 @@ babel-messages@^6.3.13, babel-messages@^6.8.0:
   dependencies:
     babel-runtime "^6.0.0"
 
+babel-plugin-antd:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/babel-plugin-antd/-/babel-plugin-antd-0.5.1.tgz#1bae198ac972238db5727bd5eeee561a8b17be2c"
+
 babel-plugin-check-es2015-constants@^6.1.18:
   version "6.8.0"
   resolved "http://npm.weflex.org:2970/babel-plugin-check-es2015-constants/-/babel-plugin-check-es2015-constants-6.8.0.tgz#dbf024c32ed37bfda8dee1e76da02386a8d26fe7"
   dependencies:
     babel-runtime "^6.0.0"
+
+babel-plugin-import:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/babel-plugin-import/-/babel-plugin-import-1.0.1.tgz#7fe2421e7882ee3940450feb225ecfa09ea8d855"
 
 babel-plugin-syntax-async-functions@^6.8.0:
   version "6.13.0"
@@ -1112,6 +1175,10 @@ camelcase@^2.0.0, camelcase@^2.1.0:
   version "2.1.1"
   resolved "http://npm.weflex.org:2970/camelcase/-/camelcase-2.1.1.tgz#7c1d16d679a1bbe59ca02cacecfb011e201f5a1f"
 
+can-use-dom@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/can-use-dom/-/can-use-dom-0.1.0.tgz#22cc4a34a0abc43950f42c6411024a3f6366b45a"
+
 caniuse-db@^1.0.30000539, caniuse-db@^1.0.30000554:
   version "1.0.30000572"
   resolved "http://npm.weflex.org:2970/caniuse-db/-/caniuse-db-1.0.30000572.tgz#81d0aa6b7de2d785c8dcab135502983276cc707d"
@@ -1176,13 +1243,13 @@ clap@^1.0.9:
   dependencies:
     chalk "^1.1.3"
 
+classnames@^2.2.0, classnames@^2.2.1, classnames@^2.2.3, classnames@^2.2.5, classnames@~2.2.0, classnames@2.x:
+  version "2.2.5"
+  resolved "http://npm.weflex.org:2970/classnames/-/classnames-2.2.5.tgz#fb3801d453467649ef3603c7d61a02bd129bde6d"
+
 classnames@2.2.3:
   version "2.2.3"
   resolved "http://npm.weflex.org:2970/classnames/-/classnames-2.2.3.tgz#551b774b6762a0c0a997187f7ba4f1d603961ac5"
-
-classnames@2.x:
-  version "2.2.5"
-  resolved "http://npm.weflex.org:2970/classnames/-/classnames-2.2.5.tgz#fb3801d453467649ef3603c7d61a02bd129bde6d"
 
 cli-boxes@^1.0.0:
   version "1.0.0"
@@ -1289,7 +1356,7 @@ commoner@^0.10.1:
     q "^1.1.2"
     recast "^0.10.0"
 
-component-classes@^1.2.5:
+component-classes@^1.2.5, component-classes@1.x:
   version "1.2.6"
   resolved "http://npm.weflex.org:2970/component-classes/-/component-classes-1.2.6.tgz#c642394c3618a4d8b0b8919efccbbd930e5cd691"
   dependencies:
@@ -1446,7 +1513,7 @@ crypto-browserify@~3.2.6:
     ripemd160 "0.2.0"
     sha.js "2.2.6"
 
-css-animation@^1.3.0, css-animation@1.x:
+css-animation@^1.2.5, css-animation@^1.3.0, css-animation@1.x:
   version "1.3.0"
   resolved "http://npm.weflex.org:2970/css-animation/-/css-animation-1.3.0.tgz#315d9742bbe282c23b9951ceac2aa53cee05b708"
   dependencies:
@@ -1454,7 +1521,7 @@ css-animation@^1.3.0, css-animation@1.x:
 
 css-animation@1.2.1:
   version "1.2.1"
-  resolved "http://npm.weflex.org:2970/css-animation/-/css-animation-1.2.1.tgz#335194b7a589a35a5d492f9f0faa117e207e5b62"
+  resolved "https://registry.yarnpkg.com/css-animation/-/css-animation-1.2.1.tgz#335194b7a589a35a5d492f9f0faa117e207e5b62"
   dependencies:
     component-classes "^1.2.5"
 
@@ -1646,7 +1713,7 @@ dom-align@1.x:
   version "1.5.2"
   resolved "http://npm.weflex.org:2970/dom-align/-/dom-align-1.5.2.tgz#bceb6c109a3442ebc001c04c48cb37a9d5e96df2"
 
-dom-scroll-into-view@1.x:
+dom-scroll-into-view@^1.2.0, dom-scroll-into-view@1.x:
   version "1.2.0"
   resolved "http://npm.weflex.org:2970/dom-scroll-into-view/-/dom-scroll-into-view-1.2.0.tgz#84932c136872e3e221bfa04eb045a4560ae9ef8b"
 
@@ -1659,6 +1726,14 @@ dot-prop@^3.0.0:
   resolved "http://npm.weflex.org:2970/dot-prop/-/dot-prop-3.0.0.tgz#1b708af094a49c9a0e7dbcad790aba539dac1177"
   dependencies:
     is-obj "^1.0.0"
+
+draft-js@^0.9.1, draft-js@~0.9.1:
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/draft-js/-/draft-js-0.9.1.tgz#940a51a0ad1fede0411676b6404f4050495f54f9"
+  dependencies:
+    fbjs "^0.8.3"
+    immutable "~3.7.4"
+    object-assign "^4.1.0"
 
 ds-store@~0.1.4:
   version "0.1.6"
@@ -1723,6 +1798,12 @@ encodeurl@~1.0.1:
   version "1.0.1"
   resolved "http://npm.weflex.org:2970/encodeurl/-/encodeurl-1.0.1.tgz#79e3d58655346909fe6f0f45a5de68103b294d20"
 
+encoding@^0.1.11:
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/encoding/-/encoding-0.1.12.tgz#538b66f3ee62cd1ab51ec323829d1f9480c74beb"
+  dependencies:
+    iconv-lite "~0.4.13"
+
 enhanced-resolve@^0.9.0, enhanced-resolve@~0.9.0:
   version "0.9.1"
   resolved "http://npm.weflex.org:2970/enhanced-resolve/-/enhanced-resolve-0.9.1.tgz#4d6e689b3725f86090927ccc86cd9f1635b89e2e"
@@ -1730,6 +1811,10 @@ enhanced-resolve@^0.9.0, enhanced-resolve@~0.9.0:
     graceful-fs "^4.1.2"
     memory-fs "^0.2.0"
     tapable "^0.1.8"
+
+enquire.js@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/enquire.js/-/enquire.js-2.1.1.tgz#56ba08cb7c896839eda0c00e9fb0d40339e91c3f"
 
 envify@^3.0.0:
   version "3.4.1"
@@ -1781,6 +1866,10 @@ etag@~1.7.0:
 eventemitter3@1.x.x:
   version "1.2.0"
   resolved "http://npm.weflex.org:2970/eventemitter3/-/eventemitter3-1.2.0.tgz#1c86991d816ad1e504750e73874224ecf3bec508"
+
+eventlistener@0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/eventlistener/-/eventlistener-0.0.1.tgz#ed2baabb852227af2bcf889152c72c63ca532eb8"
 
 events@^1.0.0:
   version "1.1.1"
@@ -1887,6 +1976,18 @@ fbjs@^0.6.1:
     promise "^7.0.3"
     ua-parser-js "^0.7.9"
     whatwg-fetch "^0.9.0"
+
+fbjs@^0.8.3:
+  version "0.8.5"
+  resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.5.tgz#f69ba8a876096cb1b9bffe4d7c1e71c19d39d008"
+  dependencies:
+    core-js "^1.0.0"
+    immutable "^3.7.6"
+    isomorphic-fetch "^2.1.1"
+    loose-envify "^1.0.0"
+    object-assign "^4.1.0"
+    promise "^7.1.1"
+    ua-parser-js "^0.7.9"
 
 fd-slicer@~1.0.1:
   version "1.0.1"
@@ -2198,11 +2299,26 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.6:
   version "1.0.1"
   resolved "http://npm.weflex.org:2970/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
+gregorian-calendar-format@~4.1.0:
+  version "4.1.3"
+  resolved "https://registry.yarnpkg.com/gregorian-calendar-format/-/gregorian-calendar-format-4.1.3.tgz#d93e6b68996402c5f5274fec8811fffe0ab97248"
+  dependencies:
+    gregorian-calendar "4.x"
+    warning "2.x"
+
+gregorian-calendar@~4.1.0, gregorian-calendar@4.x:
+  version "4.1.6"
+  resolved "https://registry.yarnpkg.com/gregorian-calendar/-/gregorian-calendar-4.1.6.tgz#1051b693d6a5e95483ba5f1d10646b9cf6420a03"
+
 halogen@0.1.10:
   version "0.1.10"
   resolved "http://npm.weflex.org:2970/halogen/-/halogen-0.1.10.tgz#b98c9d463838d18e0469f16331830e60119fe540"
   dependencies:
     react-kit "^0.1.0"
+
+hammerjs@^2.0.8:
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/hammerjs/-/hammerjs-2.0.8.tgz#04ef77862cff2bb79d30f7692095930222bf60f1"
 
 hammerjs@2.0.6:
   version "2.0.6"
@@ -2271,6 +2387,10 @@ hawk@~3.1.3:
 hoek@2.x.x:
   version "2.16.3"
   resolved "http://npm.weflex.org:2970/hoek/-/hoek-2.16.3.tgz#20bb7403d3cea398e91dc4710a8ff1b8274a25ed"
+
+hoist-non-react-statics@1.x:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-1.2.0.tgz#aa448cf0986d55cc40773b17174b7dd066cb7cfb"
 
 home-or-tmp@^2.0.0:
   version "2.0.0"
@@ -2358,7 +2478,7 @@ https-proxy-agent@^1.0.0:
     debug "2"
     extend "3"
 
-iconv-lite@^0.4.5:
+iconv-lite@^0.4.5, iconv-lite@~0.4.13:
   version "0.4.13"
   resolved "http://npm.weflex.org:2970/iconv-lite/-/iconv-lite-0.4.13.tgz#1f88aba4ab0b1508e8312acc39345f36e992e2f2"
 
@@ -2373,6 +2493,14 @@ ieee754@^1.1.4:
 image-size@~0.4.0:
   version "0.4.0"
   resolved "http://npm.weflex.org:2970/image-size/-/image-size-0.4.0.tgz#d4b4e1f61952e4cbc1cea9a6b0c915fecb707510"
+
+immutable@^3.7.4, immutable@^3.7.6, immutable@^3.8.1:
+  version "3.8.1"
+  resolved "https://registry.yarnpkg.com/immutable/-/immutable-3.8.1.tgz#200807f11ab0f72710ea485542de088075f68cd2"
+
+immutable@~3.7.4:
+  version "3.7.6"
+  resolved "https://registry.yarnpkg.com/immutable/-/immutable-3.7.6.tgz#13b4d3cb12befa15482a26fe1b2ebae640071e4b"
 
 imul@^1.0.0:
   version "1.0.1"
@@ -2563,7 +2691,7 @@ is-retry-allowed@^1.0.0:
   version "1.1.0"
   resolved "http://npm.weflex.org:2970/is-retry-allowed/-/is-retry-allowed-1.1.0.tgz#11a060568b67339444033d0125a61a20d564fb34"
 
-is-stream@^1.0.0:
+is-stream@^1.0.0, is-stream@^1.0.1:
   version "1.1.0"
   resolved "http://npm.weflex.org:2970/is-stream/-/is-stream-1.1.0.tgz#12d4a3dd4e68e0b79ceb8dbc84173ae80d91ca44"
 
@@ -2605,6 +2733,13 @@ isobject@^2.0.0, isobject@^2.1.0:
   dependencies:
     isarray "1.0.0"
 
+isomorphic-fetch@^2.1.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/isomorphic-fetch/-/isomorphic-fetch-2.2.1.tgz#611ae1acf14f5e81f729507472819fe9733558a9"
+  dependencies:
+    node-fetch "^1.0.1"
+    whatwg-fetch ">=0.10.0"
+
 isstream@~0.1.1, isstream@~0.1.2:
   version "0.1.2"
   resolved "http://npm.weflex.org:2970/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
@@ -2614,6 +2749,10 @@ jodid25519@^1.0.0:
   resolved "http://npm.weflex.org:2970/jodid25519/-/jodid25519-1.0.2.tgz#06d4912255093419477d425633606e0e90782967"
   dependencies:
     jsbn "~0.1.0"
+
+"jquery@>= 1.4.3", jquery@>=1.7.2:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.1.1.tgz#347c1c21c7e004115e0a4da32cece041fad3c8a3"
 
 js-base64@^2.1.9:
   version "2.1.9"
@@ -2649,6 +2788,12 @@ json-schema@0.2.3:
 json-stringify-safe@~5.0.0, json-stringify-safe@~5.0.1:
   version "5.0.1"
   resolved "http://npm.weflex.org:2970/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
+
+json2mq@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/json2mq/-/json2mq-0.2.0.tgz#b637bd3ba9eabe122c83e9720483aeb10d2c904a"
+  dependencies:
+    string-convert "^0.2.0"
 
 json3@^3.3.2:
   version "3.3.2"
@@ -2716,7 +2861,7 @@ lazy-req@^1.1.0:
 
 less@2.6.1:
   version "2.6.1"
-  resolved "http://npm.weflex.org:2970/less/-/less-2.6.1.tgz#658e01ec9ac3149959c6b6dfbcfbc0a170afda7a"
+  resolved "https://registry.yarnpkg.com/less/-/less-2.6.1.tgz#658e01ec9ac3149959c6b6dfbcfbc0a170afda7a"
   optionalDependencies:
     errno "^0.1.1"
     graceful-fs "^4.1.2"
@@ -2775,6 +2920,10 @@ lodash.camelcase@^3.0.1:
   dependencies:
     lodash._createcompounder "^3.0.0"
 
+lodash.debounce@^4.0.0:
+  version "4.0.8"
+  resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
+
 lodash.deburr@^3.0.0:
   version "3.2.0"
   resolved "http://npm.weflex.org:2970/lodash.deburr/-/lodash.deburr-3.2.0.tgz#6da8f54334a366a7cf4c4c76ef8d80aa1b365ed5"
@@ -2804,6 +2953,10 @@ lodash.keys@^3.1.2:
     lodash._getnative "^3.0.0"
     lodash.isarguments "^3.0.0"
     lodash.isarray "^3.0.0"
+
+lodash.throttle@^4.0.0:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/lodash.throttle/-/lodash.throttle-4.1.1.tgz#c23e91b710242ac70c37f1e1cda9274cc39bf2f4"
 
 lodash.words@^3.0.0:
   version "3.2.0"
@@ -3016,6 +3169,10 @@ mksnapshot@0.1.0:
     fs-extra "0.18.2"
     request "2.55.0"
 
+moment@^2.15.1, moment@2.x:
+  version "2.15.2"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.15.2.tgz#1bfdedf6a6e345f322fe956d5df5bd08a8ce84dc"
+
 moment@2.10.6:
   version "2.10.6"
   resolved "http://npm.weflex.org:2970/moment/-/moment-2.10.6.tgz#6cb21967c79cba7b0ca5e66644f173662b3efa77"
@@ -3055,6 +3212,13 @@ ncp@^2.0.0, ncp@~2.0.0:
 negotiator@0.6.1:
   version "0.6.1"
   resolved "http://npm.weflex.org:2970/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
+
+node-fetch@^1.0.1:
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-1.6.3.tgz#dc234edd6489982d58e8f0db4f695029abcd8c04"
+  dependencies:
+    encoding "^0.1.11"
+    is-stream "^1.0.1"
 
 "node-libs-browser@>= 0.4.0 <=0.6.0":
   version "0.6.0"
@@ -3185,7 +3349,7 @@ object-assign@^2.0.0:
   version "2.1.1"
   resolved "http://npm.weflex.org:2970/object-assign/-/object-assign-2.1.1.tgz#43c36e5d569ff8e4816c4efa8be02d26967c18aa"
 
-object-assign@^4.0.1, object-assign@^4.1.0, object-assign@4.x:
+object-assign@^4.0.1, object-assign@^4.1.0, object-assign@~4.1.0, object-assign@4.x:
   version "4.1.0"
   resolved "http://npm.weflex.org:2970/object-assign/-/object-assign-4.1.0.tgz#7a3b3d0e98063d43f4c03f2e8ae6cd51a86883a0"
 
@@ -3196,6 +3360,10 @@ object-assign@4.0.1:
 object-keys@~0.4.0:
   version "0.4.0"
   resolved "http://npm.weflex.org:2970/object-keys/-/object-keys-0.4.0.tgz#28a6aae7428dd2c3a92f3d95f21335dd204e0336"
+
+object-path@^0.11.1:
+  version "0.11.2"
+  resolved "https://registry.yarnpkg.com/object-path/-/object-path-0.11.2.tgz#74bf3b3c5a7f2024d75e333f12021353fa9d485e"
 
 object.omit@^2.0.0:
   version "2.0.1"
@@ -3209,6 +3377,12 @@ object.pick@^1.1.1:
   resolved "http://npm.weflex.org:2970/object.pick/-/object.pick-1.2.0.tgz#b5392bee9782da6d9fb7d6afaf539779f1234c2b"
   dependencies:
     isobject "^2.1.0"
+
+omit.js@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/omit.js/-/omit.js-0.1.0.tgz#9786a21a6d6c316fa35bb14e7101eeee21c52044"
+  dependencies:
+    object-assign "^4.1.0"
 
 on-finished@~2.3.0:
   version "2.3.0"
@@ -3790,17 +3964,122 @@ rc-align@2.x:
     dom-align "1.x"
     rc-util "3.x"
 
-rc-animate@2.0.3:
-  version "2.0.3"
-  resolved "http://npm.weflex.org:2970/rc-animate/-/rc-animate-2.0.3.tgz#0ba647b0dd3e9800ea392ea7abeb6c44b62f1697"
-  dependencies:
-    css-animation "1.x"
-
-rc-animate@2.x:
+rc-animate@^2.0.2, rc-animate@^2.3.0, rc-animate@~2.3.0, rc-animate@2.x:
   version "2.3.1"
   resolved "http://npm.weflex.org:2970/rc-animate/-/rc-animate-2.3.1.tgz#eacda46bf589d857f640c53953d92e07cb688636"
   dependencies:
     css-animation "^1.3.0"
+
+rc-animate@2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/rc-animate/-/rc-animate-2.0.3.tgz#0ba647b0dd3e9800ea392ea7abeb6c44b62f1697"
+  dependencies:
+    css-animation "1.x"
+
+rc-calendar@~7.4.1:
+  version "7.4.1"
+  resolved "https://registry.yarnpkg.com/rc-calendar/-/rc-calendar-7.4.1.tgz#6609e41e392bb94eb6f51ca553b14ac064fcc7bc"
+  dependencies:
+    babel-runtime "6.x"
+    classnames "2.x"
+    moment "2.x"
+    rc-trigger "1.x"
+    rc-util "3.x"
+
+rc-cascader@~0.10.1:
+  version "0.10.3"
+  resolved "https://registry.yarnpkg.com/rc-cascader/-/rc-cascader-0.10.3.tgz#4e399dbcab4bf49250e18eebaeafe439e2b57ede"
+  dependencies:
+    array-tree-filter "^1.0.0"
+    rc-trigger "1.x"
+
+rc-checkbox@~1.4.0, rc-checkbox@1.x:
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/rc-checkbox/-/rc-checkbox-1.4.3.tgz#b951befecc5d2f892d7a2629f9e107badf1c75c6"
+  dependencies:
+    classnames "2.x"
+    rc-util "^4.0.1"
+
+rc-collapse@~1.6.4:
+  version "1.6.9"
+  resolved "https://registry.yarnpkg.com/rc-collapse/-/rc-collapse-1.6.9.tgz#a2936aa6670b23527b0afc3f1b3f34b13aa8e70a"
+  dependencies:
+    classnames "2.x"
+    css-animation "1.x"
+    rc-animate "2.x"
+
+rc-dialog@^6.3.0, rc-dialog@~6.5.0:
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/rc-dialog/-/rc-dialog-6.5.0.tgz#44b186870376d46765b81e032e00feb0834de99f"
+  dependencies:
+    babel-runtime "6.x"
+    object-assign "~4.1.0"
+    rc-animate "2.x"
+    rc-util "^3.4.1"
+
+rc-dropdown@~1.4.8:
+  version "1.4.10"
+  resolved "https://registry.yarnpkg.com/rc-dropdown/-/rc-dropdown-1.4.10.tgz#77d1beff082a5dba0929906c8722fc53f84a69f4"
+  dependencies:
+    rc-trigger "1.x"
+
+rc-editor-core@^0.5.1, rc-editor-core@~0.5.5:
+  version "0.5.7"
+  resolved "https://registry.yarnpkg.com/rc-editor-core/-/rc-editor-core-0.5.7.tgz#576f2eeac2467c9329d82a8a8a2f55e77248ab83"
+  dependencies:
+    classnames "^2.2.5"
+    draft-js "^0.9.1"
+    immutable "^3.7.4"
+    rc-editor-plugin-image "0.0.3"
+
+rc-editor-mention@~0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/rc-editor-mention/-/rc-editor-mention-0.3.0.tgz#9104094da6354671e79638b3b335ea63318cff6f"
+  dependencies:
+    classnames "^2.2.5"
+    dom-scroll-into-view "^1.2.0"
+    draft-js "~0.9.1"
+    immutable "^3.8.1"
+    rc-animate "^2.3.0"
+    rc-editor-core "~0.5.5"
+
+rc-editor-plugin-image@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/rc-editor-plugin-image/-/rc-editor-plugin-image-0.0.3.tgz#44f6fb591eb3038740c526fa130eeb63e289086b"
+  dependencies:
+    classnames "^2.2.5"
+    rc-dialog "^6.3.0"
+    rc-editor-core "^0.5.1"
+    rc-trigger "^1.7.1"
+    rc-upload "^2.0.4"
+    react-resizable "^1.4.2"
+
+rc-form@~1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/rc-form/-/rc-form-1.0.1.tgz#f1186a627895701c7ebfe0b5f8e4206246e132bc"
+  dependencies:
+    async-validator "1.x"
+    babel-runtime "6.x"
+    dom-scroll-into-view "1.x"
+    hoist-non-react-statics "1.x"
+    warning "^3.0.0"
+
+rc-input-number@~2.7.0:
+  version "2.7.6"
+  resolved "https://registry.yarnpkg.com/rc-input-number/-/rc-input-number-2.7.6.tgz#fff2adb7ceb1b8cbeb4fb3402fd62b199330fbb5"
+  dependencies:
+    babel-runtime "6.x"
+    classnames "^2.2.0"
+
+rc-menu@~5.0.1, "rc-menu@5.x || 4.x":
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/rc-menu/-/rc-menu-5.0.3.tgz#bfea796d0300ff06c391884be4ff30da87bfccd8"
+  dependencies:
+    babel-runtime "6.x"
+    classnames "2.x"
+    dom-scroll-into-view "1.x"
+    rc-animate "2.x"
+    rc-util "3.x"
 
 rc-menu@4.x:
   version "4.13.0"
@@ -3812,23 +4091,69 @@ rc-menu@4.x:
     rc-animate "2.x"
     rc-util "3.x"
 
-rc-notification@1.3.2:
-  version "1.3.2"
-  resolved "http://npm.weflex.org:2970/rc-notification/-/rc-notification-1.3.2.tgz#90cb7e3779c939f447d8896e8db58bcd783bc2ef"
+rc-notification@~1.3.4:
+  version "1.3.5"
+  resolved "http://npm.weflex.org:2970/rc-notification/-/rc-notification-1.3.5.tgz#2045a506f1f4004d353743d756fab04b93bf7936"
   dependencies:
     classnames "2.x"
     rc-animate "2.x"
     rc-util "3.x"
 
+rc-notification@1.3.2:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/rc-notification/-/rc-notification-1.3.2.tgz#90cb7e3779c939f447d8896e8db58bcd783bc2ef"
+  dependencies:
+    classnames "2.x"
+    rc-animate "2.x"
+    rc-util "3.x"
+
+rc-pagination@~1.5.3:
+  version "1.5.5"
+  resolved "https://registry.yarnpkg.com/rc-pagination/-/rc-pagination-1.5.5.tgz#c298a7bee5538e272947632e00d49a7a83a8e747"
+
+rc-progress@~2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/rc-progress/-/rc-progress-2.0.1.tgz#adac0f7f00808c9905f653dff6916bae3fc4a391"
+
 rc-progress@1.0.4:
   version "1.0.4"
-  resolved "http://npm.weflex.org:2970/rc-progress/-/rc-progress-1.0.4.tgz#cfcd5c9a11d40935cee42bb90f721b61337a2794"
+  resolved "https://registry.yarnpkg.com/rc-progress/-/rc-progress-1.0.4.tgz#cfcd5c9a11d40935cee42bb90f721b61337a2794"
   dependencies:
     object-assign "4.x"
 
+rc-queue-anim@~0.12.4:
+  version "0.12.5"
+  resolved "https://registry.yarnpkg.com/rc-queue-anim/-/rc-queue-anim-0.12.5.tgz#bb8da775b730e4f653aef2bb397d18920560fe40"
+  dependencies:
+    velocity-animate "~1.2.3"
+
+rc-radio@~2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/rc-radio/-/rc-radio-2.0.0.tgz#357b2da4d46564784b85d4bb5f0edf6c207155b3"
+  dependencies:
+    rc-checkbox "1.x"
+
+rc-rate@~1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/rc-rate/-/rc-rate-1.1.2.tgz#97706ef0615b5a0f4ee873898a743a4d7229f574"
+
+rc-select@~6.6.1:
+  version "6.6.1"
+  resolved "https://registry.yarnpkg.com/rc-select/-/rc-select-6.6.1.tgz#e214b75e7ddfa1743b9b657ecf5ec1d5f092691f"
+  dependencies:
+    babel-runtime "6.x"
+    classnames "2.x"
+    component-classes "1.x"
+    dom-scroll-into-view "1.x"
+    rc-animate "2.x"
+    rc-menu "5.x || 4.x"
+    rc-trigger "1.x"
+    rc-util "3.x"
+    warning "2.x"
+
 rc-select@5.10.4:
   version "5.10.4"
-  resolved "http://npm.weflex.org:2970/rc-select/-/rc-select-5.10.4.tgz#5ae8afb3350e703db23cb3d4cbd2cb74b0d85270"
+  resolved "https://registry.yarnpkg.com/rc-select/-/rc-select-5.10.4.tgz#5ae8afb3350e703db23cb3d4cbd2cb74b0d85270"
   dependencies:
     classnames "2.x"
     dom-scroll-into-view "1.x"
@@ -3837,7 +4162,79 @@ rc-select@5.10.4:
     rc-trigger "1.x"
     rc-util "3.x"
 
-rc-trigger@1.x:
+rc-slider@~5.2.0:
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/rc-slider/-/rc-slider-5.2.1.tgz#58e4526a5296cf40c2a1515fe8fda3736fb611af"
+  dependencies:
+    babel-runtime "6.x"
+    classnames "^2.2.5"
+    rc-tooltip "^3.4.2"
+    rc-util "^3.2.1"
+    warning "^3.0.0"
+
+rc-steps@~2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/rc-steps/-/rc-steps-2.2.0.tgz#fa8ae6c05e9b63da4c060f2bd05333bc16adbf98"
+  dependencies:
+    classnames "^2.2.3"
+
+rc-switch@~1.4.2:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/rc-switch/-/rc-switch-1.4.2.tgz#c19637c9be348ae0b6e86b8e4eae6ad06cb21ee7"
+  dependencies:
+    classnames "^2.2.1"
+
+rc-table@~5.0.0:
+  version "5.0.5"
+  resolved "https://registry.yarnpkg.com/rc-table/-/rc-table-5.0.5.tgz#1ced5bb75e2ce6bb5450bd633041b347565328d6"
+  dependencies:
+    object-path "^0.11.1"
+    rc-util "3.x"
+    shallowequal "^0.2.2"
+
+rc-tabs@~7.0.5:
+  version "7.0.10"
+  resolved "https://registry.yarnpkg.com/rc-tabs/-/rc-tabs-7.0.10.tgz#cfbe35747f18298bd35ea44f52163e89ca6db3a0"
+  dependencies:
+    babel-runtime "6.x"
+    classnames "2.x"
+    react-hammerjs "~0.5.0"
+
+rc-time-picker@~2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/rc-time-picker/-/rc-time-picker-2.1.0.tgz#65bf0a55aae388df938b902a7fa6f8de0f6c4bfb"
+  dependencies:
+    babel-runtime "6.x"
+    classnames "2.x"
+    moment "2.x"
+    rc-trigger "1.x"
+
+rc-tooltip@^3.4.2, rc-tooltip@~3.4.2:
+  version "3.4.2"
+  resolved "https://registry.yarnpkg.com/rc-tooltip/-/rc-tooltip-3.4.2.tgz#c5c89c347ed790f7f290ef825d5e24e8fb599166"
+  dependencies:
+    rc-trigger "1.x"
+
+rc-tree-select@~1.8.0:
+  version "1.8.6"
+  resolved "https://registry.yarnpkg.com/rc-tree-select/-/rc-tree-select-1.8.6.tgz#f88d0148bfcbe1dc7b763fa3c9f55f6def9dc013"
+  dependencies:
+    classnames "^2.2.1"
+    object-assign "^4.0.1"
+    rc-animate "^2.0.2"
+    rc-tree "^1.3.0"
+    rc-trigger "1.x"
+    rc-util "^3.1.2"
+
+rc-tree@^1.3.0, rc-tree@~1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/rc-tree/-/rc-tree-1.4.0.tgz#aa119fc68d8bc0996db03daa5433d1857f5c0cd9"
+  dependencies:
+    classnames "2.x"
+    object-assign "4.x"
+    rc-animate "2.x"
+
+rc-trigger@^1.7.1, rc-trigger@1.x:
   version "1.7.3"
   resolved "http://npm.weflex.org:2970/rc-trigger/-/rc-trigger-1.7.3.tgz#0f34afbc975b3ccd6c2bbb46a8b000749ed4cbf7"
   dependencies:
@@ -3846,13 +4243,21 @@ rc-trigger@1.x:
     rc-animate "2.x"
     rc-util "^3.3.x"
 
+rc-upload@^2.0.4, rc-upload@~2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/rc-upload/-/rc-upload-2.2.0.tgz#f22dd791acdc9a429bbec1223c9b4ea61c3ae6d6"
+  dependencies:
+    babel-runtime "6.x"
+    classnames "^2.2.5"
+    warning "2.x"
+
 rc-upload@1.9.0:
   version "1.9.0"
-  resolved "http://npm.weflex.org:2970/rc-upload/-/rc-upload-1.9.0.tgz#50ba9a6a2d97cc9bf076db06cae7044e84fbe91e"
+  resolved "https://registry.yarnpkg.com/rc-upload/-/rc-upload-1.9.0.tgz#50ba9a6a2d97cc9bf076db06cae7044e84fbe91e"
   dependencies:
     warning "2.x"
 
-rc-util@^3.3.x, rc-util@3.x:
+rc-util@^3.1.2, rc-util@^3.2.1, rc-util@^3.3.x, rc-util@^3.4.1, rc-util@3.x:
   version "3.4.1"
   resolved "http://npm.weflex.org:2970/rc-util/-/rc-util-3.4.1.tgz#4b7e0b0c7593bdbcff8ed045d88fbbc773a7b061"
   dependencies:
@@ -3860,9 +4265,16 @@ rc-util@^3.3.x, rc-util@3.x:
     classnames "2.x"
     shallowequal "0.2.x"
 
+rc-util@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-4.0.1.tgz#9605c86a9768a9640268d4094e32b5b4ceeee228"
+  dependencies:
+    add-dom-event-listener "1.x"
+    shallowequal "^0.2.2"
+
 rc-util@3.1.3:
   version "3.1.3"
-  resolved "http://npm.weflex.org:2970/rc-util/-/rc-util-3.1.3.tgz#aeaa9010a8834645052a537834a8e8a2e5baa5f8"
+  resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-3.1.3.tgz#aeaa9010a8834645052a537834a8e8a2e5baa5f8"
   dependencies:
     add-dom-event-listener "1.x"
     classnames "2.x"
@@ -3888,7 +4300,7 @@ react-addons-pure-render-mixin@0.14.7:
 
 react-binding-component@1.0.5:
   version "1.0.5"
-  resolved "http://npm.weflex.org:2970/react-binding-component/-/react-binding-component-1.0.5.tgz#f4f6ac7205c837f6c912ab9810f3b1c5bd04763b"
+  resolved "https://registry.yarnpkg.com/react-binding-component/-/react-binding-component-1.0.5.tgz#f4f6ac7205c837f6c912ab9810f3b1c5bd04763b"
 
 react-copy-to-clipboard@4.2.3:
   version "4.2.3"
@@ -3904,6 +4316,18 @@ react-dom@0.14.7:
   version "0.14.7"
   resolved "http://npm.weflex.org:2970/react-dom/-/react-dom-0.14.7.tgz#973c302110b3a680c9afe69d07c623b9c0952d82"
 
+react-draggable@^2.1.0:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/react-draggable/-/react-draggable-2.2.2.tgz#80932da5ad81795bdfd141e846d7a9309680e270"
+  dependencies:
+    classnames "^2.2.5"
+
+react-hammerjs@~0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/react-hammerjs/-/react-hammerjs-0.5.0.tgz#aa20e5c5f44d660f3e8e87ed11282f12173e77ae"
+  dependencies:
+    hammerjs "^2.0.8"
+
 react-identification-card@2.0.1:
   version "2.0.1"
   resolved "http://npm.weflex.org:2970/react-identification-card/-/react-identification-card-2.0.1.tgz#3c39eda6726c409336001896c126697cfa5a0297"
@@ -3913,6 +4337,14 @@ react-identification-card@2.0.1:
 react-kit@^0.1.0:
   version "0.1.14"
   resolved "http://npm.weflex.org:2970/react-kit/-/react-kit-0.1.14.tgz#2fddfe82c4ea66256b19b15260b7f359ca51bc25"
+
+react-lazy-load@^3.0.10:
+  version "3.0.10"
+  resolved "https://registry.yarnpkg.com/react-lazy-load/-/react-lazy-load-3.0.10.tgz#75304b6f3705a92f4d1ae820bccf9ffaca2ce47f"
+  dependencies:
+    eventlistener "0.0.1"
+    lodash.debounce "^4.0.0"
+    lodash.throttle "^4.0.0"
 
 react-portal-tooltip@1.0.3:
   version "1.0.3"
@@ -3929,6 +4361,20 @@ react-qiniu@0.3.0:
     superagent "^1.2.0"
     superagent-bluebird-promise "^2.0.2"
 
+react-resizable@^1.4.2:
+  version "1.4.5"
+  resolved "https://registry.yarnpkg.com/react-resizable/-/react-resizable-1.4.5.tgz#b0f00244959bad9b003de5bf8f7d14dee5b6c2d3"
+  dependencies:
+    react-draggable "^2.1.0"
+
+react-responsive-mixin@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/react-responsive-mixin/-/react-responsive-mixin-0.4.0.tgz#9504218a17d49346d9a09a1f5945f629afdb624b"
+  dependencies:
+    can-use-dom "^0.1.0"
+    enquire.js "^2.1.1"
+    json2mq "^0.2.0"
+
 react-router-component@0.28.0:
   version "0.28.0"
   resolved "http://npm.weflex.org:2970/react-router-component/-/react-router-component-0.28.0.tgz#33deec79f31ef0150a3e2dd5fa92b44b585f38e0"
@@ -3937,6 +4383,16 @@ react-router-component@0.28.0:
     qs "^5.2.0"
     url-pattern "~0.10.2"
     urllite "~0.5.0"
+
+react-slick@~0.14.2:
+  version "0.14.5"
+  resolved "https://registry.yarnpkg.com/react-slick/-/react-slick-0.14.5.tgz#29e2e2d73653a786ac38de379c6e6f27ffa0b029"
+  dependencies:
+    classnames "^2.2.5"
+    json2mq "^0.2.0"
+    object-assign "^4.1.0"
+    react-responsive-mixin "^0.4.0"
+    slick-carousel "^1.6.0"
 
 react@0.14.7:
   version "0.14.7"
@@ -4127,9 +4583,34 @@ repeating@^2.0.0:
   dependencies:
     is-finite "^1.0.0"
 
-request@^2.45.0, request@^2.51.0, request@^2.75.0:
+request@^2.45.0, request@^2.75.0:
   version "2.76.0"
   resolved "http://npm.weflex.org:2970/request/-/request-2.76.0.tgz#be44505afef70360a0436955106be3945d95560e"
+  dependencies:
+    aws-sign2 "~0.6.0"
+    aws4 "^1.2.1"
+    caseless "~0.11.0"
+    combined-stream "~1.0.5"
+    extend "~3.0.0"
+    forever-agent "~0.6.1"
+    form-data "~2.1.1"
+    har-validator "~2.0.6"
+    hawk "~3.1.3"
+    http-signature "~1.1.0"
+    is-typedarray "~1.0.0"
+    isstream "~0.1.2"
+    json-stringify-safe "~5.0.1"
+    mime-types "~2.1.7"
+    node-uuid "~1.4.7"
+    oauth-sign "~0.8.1"
+    qs "~6.3.0"
+    stringstream "~0.0.4"
+    tough-cookie "~2.3.0"
+    tunnel-agent "~0.4.1"
+
+request@^2.51.0:
+  version "2.78.0"
+  resolved "https://registry.yarnpkg.com/request/-/request-2.78.0.tgz#e1c8dec346e1c81923b24acdb337f11decabe9cc"
   dependencies:
     aws-sign2 "~0.6.0"
     aws4 "^1.2.1"
@@ -4286,7 +4767,7 @@ sha.js@2.2.6:
   version "2.2.6"
   resolved "http://npm.weflex.org:2970/sha.js/-/sha.js-2.2.6.tgz#17ddeddc5f722fb66501658895461977867315ba"
 
-shallowequal@0.2.x:
+shallowequal@^0.2.2, shallowequal@0.2.x:
   version "0.2.2"
   resolved "http://npm.weflex.org:2970/shallowequal/-/shallowequal-0.2.2.tgz#1e32fd5bcab6ad688a4812cb0cc04efc75c7014e"
   dependencies:
@@ -4307,6 +4788,12 @@ single-line-log@^0.4.1:
 slash@^1.0.0:
   version "1.0.0"
   resolved "http://npm.weflex.org:2970/slash/-/slash-1.0.0.tgz#c41f2f6c39fc16d1cd17ad4b5d896114ae470d55"
+
+slick-carousel@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/slick-carousel/-/slick-carousel-1.6.0.tgz#780f378e470f4e6f6bec1aa2bae0475f4f9eb085"
+  dependencies:
+    jquery ">=1.7.2"
 
 slide@^1.1.5:
   version "1.1.6"
@@ -4425,6 +4912,10 @@ strict-uri-encode@^1.0.0:
 string_decoder@~0.10.25, string_decoder@~0.10.x:
   version "0.10.31"
   resolved "http://npm.weflex.org:2970/string_decoder/-/string_decoder-0.10.31.tgz#62e203bc41766c6c28c9fc84301dab1c5310fa94"
+
+string-convert@^0.2.0:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/string-convert/-/string-convert-0.2.1.tgz#6982cc3049fbb4cd85f8b24568b9d9bf39eeff97"
 
 string-template@^1.0.0:
   version "1.0.0"
@@ -4886,6 +5377,12 @@ vary@~1.1.0:
   version "1.1.0"
   resolved "http://npm.weflex.org:2970/vary/-/vary-1.1.0.tgz#e1e5affbbd16ae768dd2674394b9ad3022653140"
 
+velocity-animate@~1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/velocity-animate/-/velocity-animate-1.2.3.tgz#f8b7c66fef9cfd5acfa605cdf0adca8e302db728"
+  dependencies:
+    jquery ">= 1.4.3"
+
 vendors@^1.0.0:
   version "1.0.1"
   resolved "http://npm.weflex.org:2970/vendors/-/vendors-1.0.1.tgz#37ad73c8ee417fb3d580e785312307d274847f22"
@@ -4901,6 +5398,12 @@ vm-browserify@0.0.4:
   resolved "http://npm.weflex.org:2970/vm-browserify/-/vm-browserify-0.0.4.tgz#5d7ea45bbef9e4a6ff65f95438e0a87c357d5a73"
   dependencies:
     indexof "0.0.1"
+
+warning@^3.0.0, warning@~3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/warning/-/warning-3.0.0.tgz#32e5377cb572de4ab04753bdf8821c01ed605b7c"
+  dependencies:
+    loose-envify "^1.0.0"
 
 warning@2.1.0, warning@2.x:
   version "2.1.0"
@@ -4988,7 +5491,7 @@ websocket-extensions@>=0.1.1:
 
 weflex-ui@2.7.7:
   version "2.7.7"
-  resolved "http://npm.weflex.org:2970/weflex-ui/-/weflex-ui-2.7.7.tgz#5a9940391844e5303fd4b58a71d7ee49801cfbdb"
+  resolved "https://registry.yarnpkg.com/weflex-ui/-/weflex-ui-2.7.7.tgz#5a9940391844e5303fd4b58a71d7ee49801cfbdb"
   dependencies:
     classnames "2.2.3"
     css-animation "1.2.1"
@@ -5005,6 +5508,10 @@ weflex-ui@2.7.7:
 whatwg-fetch@^0.9.0:
   version "0.9.0"
   resolved "http://npm.weflex.org:2970/whatwg-fetch/-/whatwg-fetch-0.9.0.tgz#0e3684c6cb9995b43efc9df03e4c365d95fd9cc0"
+
+whatwg-fetch@>=0.10.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-1.0.0.tgz#01c2ac4df40e236aaa18480e3be74bd5c8eb798e"
 
 whet.extend@~0.9.9:
   version "0.9.9"
