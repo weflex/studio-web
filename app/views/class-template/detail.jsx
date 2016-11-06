@@ -7,6 +7,8 @@ import ImageCell from '../../components/image-cell';
 import ImageManager from '../../components/image-manager';
 import UIFramework from 'weflex-ui';
 import { client } from '../../api';
+import { Select } from 'antd';
+const Option = Select.Option;
 import './detail.css';
 
 class Detail extends React.Component {
@@ -24,6 +26,7 @@ class Detail extends React.Component {
         coverId: null,
         photoIds: [],
       },
+      classPackages: [],
       imageManagerMode: 'multiple',
       imageManagerVisibled: false,
     };
@@ -44,12 +47,18 @@ class Detail extends React.Component {
       },
       include: ['roles'],
     });
+    const classPackages = await client.classPackage.list({
+      where: {
+        venueId: venue.id
+      },
+    });
     const trainers = _.filter(members, (member) => {
       return _.includes(member.roleIds, 'trainer');
     });
     this.setState({
       trainers,
-      loading: false
+      loading: false,
+      classPackages,
     });
   }
   
@@ -229,6 +238,27 @@ class Detail extends React.Component {
             value={this.state.data.trainerId}
             options={trainerOptions}
           />
+        </UIFramework.Row>
+        <UIFramework.Row name="可用会卡" hint="可以用于预约该课程的会卡种类">
+          <Select multiple
+                  style={{width:'100%'}}
+                  value={this.state.data.paymentOptionIds}
+                  onSelect={(value) => {
+                    const paymentOptionIds = this.state.data.paymentOptionIds || [];                      
+                    paymentOptionIds.push(value);
+                    this.setState({data: Object.assign(this.state.data, {paymentOptionIds})});
+                  }}
+                  onDeselect={(value) => {
+                    const paymentOptionIds = this.state.data.paymentOptionIds;
+                    const index = paymentOptionIds.indexOf(value);
+                    if (index > -1) {
+                      paymentOptionIds.splice(index, 1);
+                      this.setState({data: Object.assign(this.state.data, {paymentOptionIds})});
+                    }}}>{
+            this.state.classPackages.map((membership, key) =>
+              <Option value={membership.id} key={key}>{membership.name}</Option>
+            )
+          }</Select>
         </UIFramework.Row>
         <UIFramework.Row name="课程描述" required={true}>
           <UIFramework.TextInput
