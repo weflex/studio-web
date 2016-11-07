@@ -47,11 +47,16 @@ class Detail extends React.Component {
       },
       include: ['roles'],
     });
-    const classPackages = await client.classPackage.list({
+    let classPackages = await client.classPackage.list({
       where: {
         venueId: venue.id
       },
     });
+    const anyClassPackage = {
+      id: '*',
+      name: '所有会卡'
+    };
+    classPackages = [anyClassPackage, ...classPackages];
     const trainers = _.filter(members, (member) => {
       return _.includes(member.roleIds, 'trainer');
     });
@@ -244,7 +249,7 @@ class Detail extends React.Component {
                   style={{width:'100%'}}
                   value={this.state.data.paymentOptionIds}
                   onSelect={(value) => {
-                    const paymentOptionIds = this.state.data.paymentOptionIds || [];                      
+                    const paymentOptionIds = this.state.data.paymentOptionIds || [];
                     paymentOptionIds.push(value);
                     this.setState({data: Object.assign(this.state.data, {paymentOptionIds})});
                   }}

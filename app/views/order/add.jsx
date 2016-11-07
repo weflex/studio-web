@@ -205,10 +205,14 @@ export default class extends React.Component {
     let membershipOptions = [{text: '未选择'}];
     if (this.state.memberships.length > 0) {
       membershipOptions = this.state.memberships.map((item) => {
+        const paymentOptionIds = this.state.paymentOptionIds;
+        const disabled = paymentOptionIds.indexOf('*') > -1 ?
+                         false :
+                         paymentOptionIds.indexOf(item.packageId) === -1;
         return {
           text: item.name,
           value: item.membershipId,
-          disabled: (-1 === this.state.paymentOptionIds.indexOf(item.packageId)),
+          disabled,
         };
       });
     }
