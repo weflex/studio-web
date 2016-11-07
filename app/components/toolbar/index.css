@@ -1,6 +1,7 @@
 
 .toolbar {
   width: calc(100% - 150px);
+  height: 52px;
   position: absolute;
   top: 0;
   left: 150px;
