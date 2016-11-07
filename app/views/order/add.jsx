@@ -24,6 +24,7 @@ export default class extends React.Component {
       // form validation
       isUserNotFound: false,
       isSpotsAvailable: true,
+      paymentOptionIds: [],
     };
   }
   async componentWillMount() {
@@ -99,6 +100,7 @@ export default class extends React.Component {
     });
     this.setState({
       isSpotsAvailable: aClass.spotsAvailable > 0,
+      paymentOptionIds: aClass.paymentOptionIds || [],
     });
   }
   async onSubmit() {
@@ -205,8 +207,9 @@ export default class extends React.Component {
       membershipOptions = this.state.memberships.map((item) => {
         return {
           text: item.name,
-          value: item.membershipId
-        }
+          value: item.membershipId,
+          disabled: (-1 === this.state.paymentOptionIds.indexOf(item.packageId)),
+        };
       });
     }
     return (
