@@ -30,3 +30,7 @@
   width: 49%;
   margin-right: 1%;
 }
+
+.ant-select-search__field {
+    display: none;
+}

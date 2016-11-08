@@ -9,3 +9,7 @@
   font-family: monospace;
   color: #555;
 }
+
+.ant-select-search__field {
+    display: none;
+}
