@@ -249,9 +249,18 @@ class Detail extends React.Component {
                   style={{width:'100%'}}
                   value={this.state.data.paymentOptionIds}
                   onSelect={(value) => {
-                    const paymentOptionIds = this.state.data.paymentOptionIds || [];
-                    paymentOptionIds.push(value);
-                    this.setState({data: Object.assign(this.state.data, {paymentOptionIds})});
+                      let paymentOptionIds;
+                      if ('*' === value) {
+                        paymentOptionIds = ['*'];
+                      } else {
+                        paymentOptionIds = this.state.data.paymentOptionIds || [];
+                        paymentOptionIds = paymentOptionIds.filter((opt) => opt !== '*');
+                        paymentOptionIds.push(value);
+                      }
+                      if (paymentOptionIds.length === this.state.classPackages.length - 1) {
+                        paymentOptionIds = ['*'];
+                      }
+                      this.setState({data: Object.assign(this.state.data, {paymentOptionIds})});
                   }}
                   onDeselect={(value) => {
                     const paymentOptionIds = this.state.data.paymentOptionIds;
