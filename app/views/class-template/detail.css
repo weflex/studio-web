@@ -1,5 +1,5 @@
 .class-template-loading {
-  text-align: center;
+n  text-align: center;
   padding: 30px 0px;
 }
 
@@ -29,8 +29,4 @@
   line-height: 100px;
   width: 49%;
   margin-right: 1%;
-}
-
-.ant-select-search__field {
-    display: none;
 }
