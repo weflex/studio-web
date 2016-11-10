@@ -34,7 +34,18 @@ export default class extends React.Component {
       where: {
         venueId: venue.id,
       },
-      include: ['classes']
+      include: [
+        {
+          relation: 'classes',
+          scope: {
+            where: {
+              trashedAt: {
+                exists: false
+              }
+            }
+          }
+        }
+      ]
     })).map((template) => {
       template.classes = template.classes.filter((item) => {
         return moment(item.date).isAfter(today);
