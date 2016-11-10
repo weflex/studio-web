@@ -5481,9 +5481,9 @@ websocket-extensions@>=0.1.1:
   version "0.1.1"
   resolved "http://npm.weflex.org:2970/websocket-extensions/-/websocket-extensions-0.1.1.tgz#76899499c184b6ef754377c2dbb0cd6cb55d29e7"
 
-weflex-ui@^2.8.1:
-  version "2.8.1"
-  resolved "http://npm.weflex.org:2970/weflex-ui/-/weflex-ui-2.8.1.tgz#594ee237fab85cc38b116b1cd598a9052757f800"
+weflex-ui@^2.8.2:
+  version "2.8.2"
+  resolved "https://registry.yarnpkg.com/weflex-ui/-/weflex-ui-2.8.2.tgz#4bd15bfc4e25d5dae089a6fa147aa3ab271f4f28"
   dependencies:
     classnames "2.2.3"
     css-animation "1.2.1"
