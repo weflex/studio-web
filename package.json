@@ -2,7 +2,7 @@
   "name": "@weflex/studio-desktop",
   "version": "1.14.1",
   "dependencies": {
-    "@weflex/gian": "1.28.0",
+    "@weflex/gian": "^1.28.2",
     "@weflex/passport.js": "1.2.0",
     "antd": "^2.3.0",
     "babel-polyfill": "6.3.14",
