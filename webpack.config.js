@@ -27,20 +27,12 @@ module.exports = {
         loader: 'ts-loader'
       },
       {
-        test: /\.jsx$/,
+        test: /\.jsx?$/,
         exclude: [/node_modules/, /server/],
         loader: 'babel',
         query: {
           presets: ['react', 'es2015', 'stage-1'],
           plugins: [['import', { style: 'css', libraryName: 'antd' }]],
-        }
-      },
-      {
-        test: /\.js$/,
-        exclude: [/node_modules/, /server/],
-        loader: 'babel',
-        query: {
-          presets: ['es2015', 'stage-1']
         }
       },
       {

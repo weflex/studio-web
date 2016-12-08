@@ -37,13 +37,13 @@ class OrderLine extends React.Component {
   render() {
     let userStatus;
     const ctx = this.props.ctx;
-    const orderId = this.props.data.id;
+    const order = this.props.data;
     if (this.state.status !== 'checkin' &&
       this.state.status !== 'cancel') {
       userStatus = (
         <div className="order-info-user-status">
-          <button onClick={() => {ctx.checkInOrder(orderId)}}>签到</button>
-          <button onClick={() => {ctx.cancelOrder(orderId)}}>取消</button>
+          <button onClick={() => {ctx.checkInOrder(order)}}>签到</button>
+          <button onClick={() => {ctx.cancelOrder(order)}}>取消</button>
         </div>
       );
     } else {
@@ -112,27 +112,35 @@ class ClassOverview extends React.Component {
 
   // MARK: - ClassOrderContext methods
 
-  async cancelOrder (id) {
+  async cancelOrder (order) {
+    const id = order.id;
     const {ctx, data} = this.props;
     const orders = data.orders;
     orders.filter((order) => {
       return order.id === id;
     })[0].cancelledAt = moment();
     data.orders = orders;
-    ctx.updateClass(data);
-    await client.order.cancelById(id);
+    if (order.isPT) {
+      await client.ptSession.cancelById(id);
+    } else {
+      await client.order.cancelById(id);
+    }
     UIFramework.Message.success('取消成功');
   }
 
-  async checkInOrder (id) {
+  async checkInOrder (order) {
+    const id = order.id;
     const {ctx, data} = this.props;
     const orders = data.orders;
     orders.filter((order) => {
       return order.id === id;
     })[0].checkedInAt = moment();
     data.orders = orders;
-    ctx.updateClass(data);
-    await client.order.checkInById(id);
+    if (order.isPT) {
+      await client.ptSession.checkInById(id);
+    } else {
+      await client.order.checkInById(id);
+    }
     UIFramework.Message.success('取消成功');
   }
 
@@ -151,6 +159,7 @@ class ClassOverview extends React.Component {
         </div>
         <div className="trainer">{trainerName}</div>
         <div className="btn-modify-class"
+          style={{display: this.props.data.isPT ? 'none' : 'block'}}
           onClick={() => this.setState({modalVisibled: true})}>修改课程</div>
         <OrdersInfo data={orders} ctx={this} />
         <UIFramework.Modal

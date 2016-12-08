@@ -17,6 +17,7 @@ import ClassList from './class-list';
 import Template from './components/template';
 import ResourcePanel from '../../components/resource-panel';
 import './index.css';
+import hourminute from 'hourminute';
 
 /**
  * @class WeflexCalendar
@@ -153,7 +154,41 @@ class WeflexCalendar extends React.Component {
       order: ['from.hour ASC', 'from.minute ASC']
     });
 
-    const schedule = new ClassList(classes);
+    const ptSessions = await client.ptSession.list({
+      where: {
+        startsAt: {
+          gt: startsAt.toDate(),
+          lt: endsAt.toDate(),
+        },
+        venueId: venue.id,
+        cancelledAt: {
+          exists: false,
+        },
+      },
+      include: [
+        'trainer',
+        'user',
+      ],
+    });
+
+    const ptSessionAsClasses = ptSessions.map((session) => {
+      const startsAt = moment(session.startsAt);
+      const endsAt = moment(startsAt).add(session.durationMinutes, 'minutes');
+      const trainerName = session.trainer.fullname.first + session.trainer.fullname.last;
+      return {
+        template: {
+          name: '私教 (' + trainerName + ')',
+        },
+        trainer: session.trainer,
+        date: moment(startsAt).startOf('day'),
+        from: hourminute({hour: startsAt.hour(), minute: startsAt.minute()}),
+        to: hourminute({hour: endsAt.hour(), minute: endsAt.minute()}),
+        orders: [Object.assign(session, {isPT: true})],
+        isPT: true,
+      };
+    });
+
+    const schedule = new ClassList(classes.concat(ptSessionAsClasses));
     this.setState({schedule});
   }
 

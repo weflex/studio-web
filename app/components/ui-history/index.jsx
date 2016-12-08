@@ -49,6 +49,7 @@ class UIHistory extends React.Component {
       lineHeight: '20px',
       verticalAlign: 'middle',
       fontSize: '12px',
+      boxSizing: 'content-box',
     },
     itemDot: {
       height: '12px',

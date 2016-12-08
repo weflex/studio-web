@@ -31,11 +31,6 @@ class SettingsIndex extends React.Component {
         title: '门店信息',
         component: require('./tabs/venue')
       },
-      {
-        id: 'team',
-        title: '团队管理',
-        component: require('./tabs/team')
-      }
     ];
   }
   render() {
