@@ -46,6 +46,7 @@ class TrainerSchedule extends React.Component {
         paymentOptionIds: this.state.schedule.paymentOptionIds,
       });
       this.props.onComplete();
+      this.props.onComplete(this.state.schedule);
     } catch (error) {
       console.error(error && error.message);
     }

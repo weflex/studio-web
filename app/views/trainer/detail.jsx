@@ -230,8 +230,12 @@ module.exports = class TrainerDetail extends React.Component {
           <TrainerSchedule
             schedule={ptSchedule}
             trainerId={this.props.id}
-            onComplete={() => {
-              this.setState({ptScheduleModalVisible: false});
+            onComplete={(ptSchedule) => {
+              const trainer = Object.assign({}, dataSource, {ptSchedule});
+              this.setState({
+                ptScheduleModalVisible: false,
+                dataSource: trainer,
+              });
             }}/>
         </UIFramework.Modal>
       </div>

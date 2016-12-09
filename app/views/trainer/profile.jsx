@@ -48,7 +48,7 @@ class TrainerProfile extends React.Component {
       }
 
       if (typeof this.props.onComplete === 'function') {
-        this.props.onComplete();
+        this.props.onComplete(this.state.trainer);
       }
     } catch (err) {
       alert(err.message);
