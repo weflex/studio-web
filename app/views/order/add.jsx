@@ -42,8 +42,14 @@ export default class extends React.Component {
     const trainers = await client.collaborator.list({
       where: {
         venueId: venue.id,
+        ptScheduleId: {
+          exists: true,
+          trashedAt: {
+            exists: false,
+          }
+        }
       },
-      include: ['ptSchedule']
+      include: ['ptSchedule'],
     });
     const templates = (await client.classTemplate.list({
       where: {
