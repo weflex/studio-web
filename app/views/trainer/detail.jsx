@@ -17,12 +17,16 @@ class PTSchedule extends React.Component {
     };
   }
   async componentDidMount () {
+    const venue = await client.user.getVenueById();
+    const wildcard = [{id: '*', name: '所有会卡'}];
     const classPackages = await client.classPackage.list({
       where: {
-        venueId: this.props.venueId,
+        venueId: venue.id,
       }
     });
-    this.setState({classPackages});
+    this.setState({
+      classPackages: wildcard.concat(classPackages),
+    });
   }
   render () {
     const ptSchedule = this.props.dataSource;
@@ -111,7 +115,15 @@ module.exports = class TrainerDetail extends React.Component {
             'user': ['avatar'],
           },
           {
-            'ptSchedule': ['paymentOptions'],
+            relation: 'ptSchedule',
+            scope: {
+              where: {
+                trashedAt: {
+                  exists: false,
+                },
+              },
+            },
+            include: ['paymentOptions'],
           },
         ],
       }
@@ -168,6 +180,22 @@ module.exports = class TrainerDetail extends React.Component {
             <h3>基本信息</h3>
             <ul className='actions'>
               <li>
+                <Button
+                  size='small'
+                  onClick={() => {
+                    UIFramework.Modal.confirm({
+                      title: '确认删除教练？',
+                      content: '删除后，请及时修改该教练的课程',
+                      onOk: async () => {
+                        await client.collaborator.delete(dataSource.id, dataSource.modifiedAt);
+                        location.href = '/trainer/';
+                      }
+                    });
+                  }}>
+                  删除教练
+                </Button>
+              </li>
+              <li>
                 <Button size='small'
                         onClick={this.triggerModal.bind(this, 'profileModal')}>
                   编辑
@@ -201,6 +229,31 @@ module.exports = class TrainerDetail extends React.Component {
           <div className='card-header'>
             <h3>私教排期</h3>
             <ul className='actions'>
+              {(() => {
+                if (ptSchedule) {
+                  return (
+                    <li>
+                      <Button
+                        size='small'
+                        onClick={() => {
+                          const context = this;
+                          UIFramework.Modal.confirm({
+                            title: '确认取消私教排期?',
+                            content: '取消私教排期后，将不能创建该教练的私教课程',
+                            onOk: async () => {
+                              await client.ptSchedule.delete(ptSchedule.id, ptSchedule.modifiedAt);
+                              const dataSource = context.state.dataSource;
+                              delete dataSource.ptSchedule;
+                              context.setState({dataSource});
+                            },
+                          });
+                        }}>
+                        取消
+                      </Button>
+                    </li>
+                  );
+                }
+              })()}
               <li>
                 <Button size='small'
                         onClick={this.triggerModal.bind(this, 'ptScheduleModal')}>
@@ -219,7 +272,13 @@ module.exports = class TrainerDetail extends React.Component {
           visible={this.state.profileModalVisible}>
           <TrainerProfile
             trainer={this.state.dataSource}
-            onComplete={() => this.setState({profileModalVisible: false})}/>
+            onComplete={(trainer) => {
+              const newTrainer = Object.assign({}, dataSource, trainer);
+              this.setState({
+                profileModalVisible: false,
+                dataSource: newTrainer,
+              });
+            }}/>
         </UIFramework.Modal>
         <UIFramework.Modal
           ref="ptScheduleModal"

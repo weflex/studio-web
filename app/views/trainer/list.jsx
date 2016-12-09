@@ -26,7 +26,16 @@ class TrainerList extends React.Component {
       include: [
         'roles',
         'venue',
-        'ptSchedule',
+        {
+          relation: 'ptSchedule',
+          scope: {
+            where: {
+              trashedAt: {
+                exists: false,
+              },
+            },
+          },
+        },
         {
           'user': ['avatar'],
         },
