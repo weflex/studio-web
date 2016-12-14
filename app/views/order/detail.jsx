@@ -95,7 +95,7 @@ class Detail extends React.Component {
         order.cancelledAt = new Date();
         this.setState({order});
         if (order.isPT) {
-          await client.ptSession.checkInById(order.id);
+          await client.ptSession.cancelById(order.id);
         } else {
           await client.order.cancelById(order.id);          
         }
