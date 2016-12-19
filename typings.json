@@ -1,6 +1,5 @@
 {
   "globalDependencies": {
-    "antd": "registry:dt/antd#0.12.10+20160326114918",
     "moment": "registry:dt/moment#2.11.1+20161010105546"
   },
   "dependencies": {
