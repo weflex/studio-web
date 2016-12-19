@@ -21,7 +21,14 @@ class TrainerSchedule extends React.Component {
       schedule: Object.assign({}, defaultSchedule, this.props.schedule),
       classPackages: [],
     }
-  } 
+  }
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.schedule) {
+      this.setState({
+        schedule: Object.assign({}, nextProps.schedule),
+      });
+    }
+  }
   async componentDidMount () {
     const venue = await client.user.getVenueById();
     const wildcard = [{id: '*', name: '所有会卡'}];
