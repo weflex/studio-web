@@ -60,12 +60,7 @@
     "build": "npm run prebuild && webpack -p --optimize-dedupe",
     "prebuild": "test -e dist || npm run staticAssets && test -e typings || npm run typings",
     "staticAssets": "cp -r assets dist",
-    "typings": "typings install",
-    "electron": "ELECTRON_MIRROR=https://npm.taobao.org/mirrors/electron electron-packager ./dist studio  --platform=darwin --arch=x64 --version=0.36.7 --overwrite"
-  },
-  "optionalDependencies": {
-    "appdmg": "0.3.6",
-    "electron-packager": "5.2.1"
+    "typings": "typings install"
   },
   "private": true
 }
