@@ -176,7 +176,10 @@ class List extends React.Component {
       item.title = item.class.template.name;
       item.member = item.payments[0].membership.member;
       return item;
-    }));
+    }))
+    .sort((a, b) => {
+      return a.id > b.id ? -1 : a.id < b.id ? 1 : 0;
+    });
   }
   onViewAddOrder() {
     this.setState({
