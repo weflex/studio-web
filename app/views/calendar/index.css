@@ -205,6 +205,10 @@
   float: left;
 }
 
+.class-card.private-training {
+  background-color: #e1fce8;
+}
+
 .class-card span {
   -webkit-user-select: none;
   -moz-user-select: none;

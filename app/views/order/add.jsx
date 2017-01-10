@@ -2,10 +2,13 @@
 
 import _ from 'lodash';
 import moment from 'moment';
+import hourminute from 'hourminute';
 import React from 'react';
 import UIFramework from 'weflex-ui';
+import {Tabs, DatePicker, TimePicker} from 'antd';
 import { client } from '../../api';
 import { getFormatTime } from '../calendar/util.js';
+const TabPane = Tabs.TabPane;
 
 export default class extends React.Component {
   constructor(props) {
@@ -25,11 +28,29 @@ export default class extends React.Component {
       isUserNotFound: false,
       isSpotsAvailable: true,
       paymentOptionIds: [],
+      trainers: [],
+      startsAtString: moment().format('hh:mm'),
+      trainerId: '',
+      hour: 0,
+      minute: 0,
+      activeTab: 'GroupTraining',
     };
   }
   async componentWillMount() {
     const today = moment().startOf('day');
     const venue = await client.user.getVenueById();
+    const trainers = await client.collaborator.list({
+      where: {
+        venueId: venue.id,
+        ptScheduleId: {
+          exists: true,
+          trashedAt: {
+            exists: false,
+          }
+        }
+      },
+      include: ['ptSchedule'],
+    });
     const templates = (await client.classTemplate.list({
       where: {
         venueId: venue.id,
@@ -54,7 +75,7 @@ export default class extends React.Component {
     }).filter((template) => {
       return template.classes.length > 0;
     });
-    this.setState({templates});
+    this.setState({templates, trainers});
   }
   async onPhoneInputChange(event) {
     const phone = event.target.value;
@@ -133,6 +154,24 @@ export default class extends React.Component {
       }
     } catch (err) {
       alert(err.message);
+    }
+  }
+  async onSubmitPrivateTraining() {
+    const startsAt = moment(this.state.date)
+      .hour(this.state.hour)
+      .minute(this.state.minute);
+    try {
+      await client.ptSession.create({
+        trainerId: this.state.trainerId,
+        userId: this.state.member.userId,
+        membershipId: this.state.membershipId,
+        startsAt: startsAt.toDate(),
+      });
+      if (typeof this.props.onComplete === 'function') {
+        this.props.onComplete();
+      }
+    } catch (error) {
+      console.error(error && error.message);
     }
   }
   renderUserSearch() {
@@ -214,9 +253,20 @@ export default class extends React.Component {
   }
   renderMemberships() {
     let membershipOptions = [{text: '未选择'}];
+    let paymentOptionIds = this.state.paymentOptionIds;
+    if ('PrivateTraining' === this.state.activeTab) {
+      const trainer = this.state.trainers.filter((trainer) => {
+        return trainer.id === this.state.trainerId
+      })[0];
+      if (trainer && trainer.ptSchedule && trainer.ptSchedule.paymentOptionIds) {
+        paymentOptionIds = trainer.ptSchedule.paymentOptionIds;
+      } else {
+        paymentOptionIds = [];
+      }      
+    }
+    console.log(paymentOptionIds);
     if (this.state.memberships.length > 0) {
       membershipOptions = this.state.memberships.map((item) => {
-        const paymentOptionIds = this.state.paymentOptionIds;
         const disabled = paymentOptionIds.indexOf('*') > -1 ?
                          false :
                          paymentOptionIds.indexOf(item.packageId) === -1;
@@ -237,28 +287,78 @@ export default class extends React.Component {
     );
   }
   render() {
+    const trainerOptions = this.state.trainers.map((trainer) => {
+      return {
+        text: trainer.fullname.first + trainer.fullname.last,
+        value: trainer.id,
+      }
+    });
     return (
-      <UIFramework className="order-add">
-        <UIFramework.Row name="手机号码" hint="预定课程用户的手机号码">
-          {this.renderUserSearch()}
-        </UIFramework.Row>
-        <UIFramework.Row name="课程" hint="预约课程的名称，日期和时间">
-          {this.renderClassPicker()}
-        </UIFramework.Row>
-        {
-          this.state.isSpotsAvailable ? '' : (
-            <UIFramework.Row>
-              <span style={{color: 'red'}}>此课程课位已满,无法创建新订单</span>
+      <Tabs defaultActiveKey='1'
+            onChange={(key) => {
+              const activeTab = ('2' === key) ? 'PrivateTraining' : 'GroupTraining';
+              this.setState({activeTab});
+            }}>
+        <TabPane tab='团课' key='1'>
+          <UIFramework className="order-add">
+            <UIFramework.Row name="手机号码" hint="预定课程用户的手机号码">
+              {this.renderUserSearch()}
             </UIFramework.Row>
-          )
-        }
-        <UIFramework.Row name="会卡" hint="用户需要会卡才能创建订单">
-          {this.renderMemberships()}
-        </UIFramework.Row>
-        <UIFramework.Row>
-          <UIFramework.Button text="创建订单" onClick={this.onSubmit.bind(this)} disabled={!this.state.isSpotsAvailable} />
-        </UIFramework.Row>
-      </UIFramework>
+            <UIFramework.Row name="课程" hint="预约课程的名称，日期和时间">
+              {this.renderClassPicker()}
+            </UIFramework.Row>
+            {
+              this.state.isSpotsAvailable ? '' : (
+                <UIFramework.Row>
+                  <span style={{color: 'red'}}>此课程课位已满,无法创建新订单</span>
+                </UIFramework.Row>
+              )
+            }
+            <UIFramework.Row name="会卡" hint="用户需要会卡才能创建订单">
+              {this.renderMemberships()}
+            </UIFramework.Row>
+            <UIFramework.Row>
+              <UIFramework.Button text="创建订单" onClick={this.onSubmit.bind(this)} disabled={!this.state.isSpotsAvailable} />
+            </UIFramework.Row>
+          </UIFramework>
+        </TabPane>
+        <TabPane tab='私教' key='2'>
+          <UIFramework className="order-add">
+            <UIFramework.Row name="手机号码" hint="预定会员的手机号码">
+              {this.renderUserSearch()}
+            </UIFramework.Row>
+            <UIFramework.Row name="教练" hint="">
+              <UIFramework.Select
+                bindStateCtx={this}
+                bindStateName='trainerId'
+                options={trainerOptions}
+                flex={1}/>
+            </UIFramework.Row>
+            <UIFramework.Row name='课程时间' hint='课程开始时间'>
+              <DatePicker
+                onChange={(date) => {
+                  this.setState({date: date.toDate()});
+                }}
+                flex={0.5}/>
+              <TimePicker
+                onChange={(time) => {
+                  this.setState({
+                    hour: time.hour(),
+                    minute: time.minute(),
+                  })
+                }}
+                format={'HH:mm'}
+                flex={0.5}/>
+            </UIFramework.Row>
+            <UIFramework.Row name='支付会卡'>
+              {this.renderMemberships()}
+            </UIFramework.Row>
+            <UIFramework.Row>
+              <UIFramework.Button text="创建订单" onClick={this.onSubmitPrivateTraining.bind(this)} disabled={!this.state.isSpotsAvailable} />
+            </UIFramework.Row>
+          </UIFramework>
+        </TabPane>
+      </Tabs>
     );
   }
 }

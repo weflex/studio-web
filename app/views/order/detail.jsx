@@ -37,6 +37,7 @@ class Detail extends React.Component {
           membership,
           reducedMembership,
           {
+            name: membership.package.name,
             lifetime: membership.package.lifetime,
             category: membership.package.category,
             passes: membership.package.passes,
@@ -71,7 +72,12 @@ class Detail extends React.Component {
     let {order} = this.state;
     order.checkedInAt = Date();
     this.setState({order});
-    await client.order.checkInById(order.id);
+    console.log(this.state);
+    if (order.isPT) {
+      await client.ptSession.checkInById(order.id);
+    } else {
+      await client.order.checkInById(order.id);
+    }
   }
   async onUncheck () {
     let {order} = this.state;
@@ -88,7 +94,11 @@ class Detail extends React.Component {
         let {order} = this.state;
         order.cancelledAt = new Date();
         this.setState({order});
-        await client.order.cancelById(order.id);
+        if (order.isPT) {
+          await client.ptSession.cancelById(order.id);
+        } else {
+          await client.order.cancelById(order.id);          
+        }
         // await self.props.updateMaster();
       }
     });
@@ -200,16 +210,16 @@ class Detail extends React.Component {
     const now = moment();
     let tags = [];
     if (now.isAfter(moment(date).hour(to.hour).minute(to.minute))) {
-      tags.push(<span className='status-tag green-bg'>课程已完成</span>);
+      tags.push(<span key='complete' className='status-tag green-bg'>课程已完成</span>);
     }
     if (order.checkedInAt) {
-      tags.push(<span className='status-tag green-bg'>已签到</span>);
+      tags.push(<span key='checkIn' className='status-tag green-bg'>已签到</span>);
     } else {
-      tags.push(<span className='status-tag'>尚未签到</span>);
+      tags.push(<span key='checkIn' className='status-tag'>尚未签到</span>);
     }
 
     if (order.cancelledAt) {
-      tags = [<span className='status-tag red-bg'>已取消</span>];
+      tags = [<span key='cancel' className='status-tag red-bg'>已取消</span>];
     }
               
     return (

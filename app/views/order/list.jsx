@@ -9,6 +9,7 @@ import UIFramework from 'weflex-ui';
 import { UIProfileListItem } from '../../components/ui-profile';
 import { client } from '../../api';
 import './list.css';
+import hourminute from 'hourminute';
 moment.locale('zh-cn');
 
 function _constructFilter (props) {
@@ -135,7 +136,35 @@ class List extends React.Component {
         'user'
       ]
     });
-    return (list || []).filter((item) => {
+
+    const ptSessions = await client.ptSession.list({
+      where: whereFilter,
+      include: [
+        'user',
+        'member',
+        'trainer',
+        {
+          payment: 'membership',
+        },
+      ],
+    });
+
+    return ptSessions.map((session) => {
+      const startsAt = moment(session.startsAt);
+      const endsAt = moment(startsAt).add(session.durationMinutes, 'minutes');
+      const trainerName = session.trainer.fullname.first + session.trainer.fullname.last;
+      session.class = {
+        template: {name: `私教 (${trainerName})`},
+        date: moment(startsAt).startOf('day'),
+        from: hourminute({hour: startsAt.hour(), minute: startsAt.minute()}),
+        to: hourminute({hour: endsAt.hour(), minute: endsAt.minute()}),
+        trainer: session.trainer,
+      };
+      session.title = session.class.template.name;
+      session.payments = [session.payment];
+      session.isPT = true;
+      return session;
+    }).concat((list || []).filter((item) => {
       var membership;
       try {
         membership = item.payments[0].membership;
@@ -147,6 +176,9 @@ class List extends React.Component {
       item.title = item.class.template.name;
       item.member = item.payments[0].membership.member;
       return item;
+    }))
+    .sort((a, b) => {
+      return a.id > b.id ? -1 : a.id < b.id ? 1 : 0;
     });
   }
   onViewAddOrder() {
