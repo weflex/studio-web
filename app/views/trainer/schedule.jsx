@@ -18,14 +18,23 @@ class TrainerSchedule extends React.Component {
       days: [],
     };
     this.state = {
-      schedule: Object.assign({}, defaultSchedule, this.props.schedule),
+      schedule: Object.assign(defaultSchedule, this.props.schedule),
       classPackages: [],
     }
   }
   componentWillReceiveProps (nextProps) {
+    const defaultSchedule = {
+      paymentOptions: [],
+      hours: [],
+      days: [],
+    };
     if (nextProps.schedule) {
       this.setState({
-        schedule: Object.assign({}, nextProps.schedule),
+        schedule: Object.assign(defaultSchedule, nextProps.schedule),
+      });
+    } else {
+      this.setState({
+        schedule: defaultSchedule,
       });
     }
   }
