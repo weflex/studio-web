@@ -5,7 +5,7 @@ import moment from 'moment';
 import React from 'react';
 import UIFramework from 'weflex-ui';
 import { NewClassTemplate } from './new';
-import { getFormatTime } from './util'
+import { getFormatTime } from './util';
 import { client } from '../../api';
 moment.locale('zh-cn');
 
@@ -28,10 +28,33 @@ class OrderLine extends React.Component {
     this.state = {status};
   }
 
-  componentWillReceiveProps(nextProps) {
+  async componentWillReceiveProps(nextProps) {
     const order = nextProps.data;
     const status = _orderStatus(order);
-    this.setState({status});
+    const {userId, venueId} = nextProps.data;
+    const members = await client.member.list({
+      where: {
+        userId,
+        venueId,
+      },
+    });
+    const nickname = members[0] && members[0].nickname || nextProps.data.user.nickname;
+    this.setState({
+      status,
+      nickname,
+    });
+  }
+
+  async componentDidMount() {
+    const {userId, venueId} = this.props.data;
+    const members = await client.member.list({
+      where: {
+        userId,
+        venueId,
+      },
+    });
+    const nickname = members[0] && members[0].nickname || this.props.data.user.nickname;
+    this.setState({nickname: nickname});
   }
 
   render() {
@@ -61,7 +84,7 @@ class OrderLine extends React.Component {
       <div className="order-info-user">
         <div className={userIconClassName.join(' ')}></div>
         <div className="order-info-user-name">
-          {this.props.data.user.nickname}
+          {this.state.nickname}
         </div>
         {userStatus}
       </div>
