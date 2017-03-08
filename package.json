@@ -15,6 +15,7 @@
     "object-assign": "4.0.1",
     "qrcode.react": "0.5.2",
     "qstringify": "1.4.2",
+    "query-string": "^4.3.2",
     "randomatic": "1.1.5",
     "react": "0.14.7",
     "react-addons-pure-render-mixin": "0.14.7",

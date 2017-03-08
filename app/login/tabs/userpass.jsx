@@ -16,14 +16,10 @@ class TabUserPass extends React.Component {
     };
   }
   async onLogin() {
-    try {
-      await client.user.login(
-        this.state.form.username,
-        this.state.form.password);
-      window.location.href = '/calendar';
-    } catch (err) {
-      alert(err && err.message);
-    }
+    const {username, password} = this.state.form;
+    await client.user.login(username, password);
+    await client.user.getCurrent();
+    window.location.href = '/calendar';
   }
   render() {
     return (
@@ -52,6 +48,7 @@ class TabUserPass extends React.Component {
             text="登录" 
             block={true} 
             level="primary" 
+            disabled={!(this.state.form.password && this.state.form.username)}
           />
         </UIFramework.Row>
       </UIFramework>

@@ -33,12 +33,16 @@ export default class LaunchScreen extends React.Component {
     let user;
     try {
       user = await client.user.getCurrent();
-      if (!user.collaborators || !user.collaborators.length) {
-        throw new Error('The user is not an organization user');
-      }
     } catch (error) {
       console.error(error && error.stack);
-      window.location.href = '/login?status=401';
+      user = {};
+    }
+    if (!user.collaborators || !user.collaborators.length) {
+       if(!document.referrer){
+         return window.location.href = '/login';
+       } else {
+         return window.location.href = '/login?msg=401';
+       }
     }
     clearInterval(intv1);
 

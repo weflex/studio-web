@@ -6,6 +6,8 @@ import ReactDOM from 'react-dom';
 import { client } from '../api';
 import '../layout/root-center.css';
 import './index.css';
+import UIFramework from 'weflex-ui';
+const queryString = require('query-string');
 
 const sourceTabs = [
   require('./tabs/smscode'),
@@ -28,11 +30,32 @@ class LoginIndex extends React.Component {
       selected: key
     });
   }
+  componentDidMount() {
+    const query = queryString.parse(location.search);
+    if (query.msg) {
+      let errorMessage;
+      switch(query.msg){
+        case '401':
+        errorMessage = '该账户不存在，请联系客服人员';
+        break;
+        case 'login failed':
+        errorMessage = '账号或密码错误，请重新登录';
+        break;
+        default:
+        errorMessage = '登录错误导致登录失败';
+        break;
+      }
+      UIFramework.Modal.error({
+        title: '登录失败',
+        content: errorMessage,
+        onOk: () => window.location.href = '/login'
+      });
+    }
+  }
   render() {
     let tabs = [];
     let content;
     sourceTabs.forEach((component, key) => {
-      if (!component.disabled) {
         let className;
         if (key === this.state.selected) {
           className = 'selected';
@@ -45,7 +68,6 @@ class LoginIndex extends React.Component {
             {component.title}
           </li>
         );
-      }
     });
     return (
       <div className="box-container">
