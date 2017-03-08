@@ -17,8 +17,14 @@ class TabSMSCode extends React.Component {
     client.user.smsRequest(this.state.phone);
   }
   async onLogin() {
-    const res = await client.user.smsLogin(
-      this.state.phone, this.state.smscode);
+    try {
+      const res = await client.user.smsLogin(this.state.phone, this.state.smscode);
+    } catch (err) {
+    UIFramework.Modal.error({
+      title: '登录失败',
+      content: '请输入正确的验证码',
+    });
+    }
     window.location.href = '/calendar';
   }
   render() {
