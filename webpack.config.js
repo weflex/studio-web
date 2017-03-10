@@ -54,6 +54,7 @@ module.exports = {
     inline: true,
     publicPath: '/',
     contentBase: 'assets',
+    host: '0.0.0.0',
     historyApiFallback: {
       rewrites: [
         {
