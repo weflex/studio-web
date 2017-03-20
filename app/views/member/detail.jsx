@@ -73,8 +73,7 @@ class UserProfileCard extends React.Component {
    */
   get actions() {
     return [
-      <a key="edit" onClick={this.viewModal.bind(this)}>编辑会员</a>,
-      <a key="dele" onClick={this.onDelete.bind(this)}>删除</a>,
+      <a key="edit" onClick={this.viewModal.bind(this)}>编辑会员</a>
     ];
   }
 
