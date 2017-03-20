@@ -8,7 +8,7 @@ import Importer from './importer';
 import ViewToAddMember from './add-member';
 import { UIProfileListItem } from '../../components/ui-profile';
 import { client } from '../../api';
-
+import {startOfDay, endOfDay} from 'date-fns';
 class List extends React.Component {
   static styles = {
     master: {
@@ -85,12 +85,23 @@ class List extends React.Component {
     };
   }
   async getMembers() {
+    const today = new Date();
     const venue = await client.user.getVenueById();
     return await client.member.list({
       where: {
         venueId: venue.id,
       },
       include: [
+        {
+          relation: 'checkIns',
+          scope:{
+            where: {
+              timestamp: {
+                between: [startOfDay(today), endOfDay(today)]
+              }
+            }
+          }
+        },
         {
           relation: 'memberships',
           scope: {

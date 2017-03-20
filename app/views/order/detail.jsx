@@ -70,13 +70,19 @@ class Detail extends React.Component {
   }
   async onCheckIn () {
     let {order} = this.state;
-    order.checkedInAt = Date();
     this.setState({order});
-    console.log(this.state);
-    if (order.isPT) {
-      await client.ptSession.checkInById(order.id);
-    } else {
-      await client.order.checkInById(order.id);
+    try {
+      await client.checkIn.create({
+        memberId: this.state.membership.memberId,
+      });
+      if (order.isPT) {
+        await client.ptSession.checkInById(order.id);
+      } else {
+        await client.order.checkInById(order.id);
+      }
+      order.checkedInAt = Date();
+    } catch (error) {
+      UIFramework.Message.error('签到失败')
     }
   }
   async onUncheck () {

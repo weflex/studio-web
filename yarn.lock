@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@weflex/gian@^1.28.2":
-  version "1.29.1"
-  resolved "https://registry.yarnpkg.com/@weflex/gian/-/gian-1.29.1.tgz#e8aac624cce91e9eb56e47b196e0794b49219842"
+"@weflex/gian@^1.31.1":
+  version "1.31.1"
+  resolved "https://registry.yarnpkg.com/@weflex/gian/-/gian-1.31.1.tgz#7f5679a034a246b0b1fac52f303545580af33ab0"
   dependencies:
     qstringify "^1.4.2"
     superagent "^1.8.0-beta.2"
@@ -1450,6 +1450,10 @@ dashdash@^1.12.0:
   resolved "https://registry.yarnpkg.com/dashdash/-/dashdash-1.14.1.tgz#853cfa0f7cbe2fed5de20326b8dd581035f6e2f0"
   dependencies:
     assert-plus "^1.0.0"
+
+date-fns@^1.28.1:
+  version "1.28.1"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-1.28.1.tgz#9e2325c77b1cb7da3a9fd9822ba52c188a4ce91b"
 
 date-now@^0.1.4:
   version "0.1.4"
@@ -3359,14 +3363,7 @@ qstringify@1.4.2, qstringify@^1.4.2:
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/qstringify/-/qstringify-1.4.2.tgz#630f17a3d95fc5e742fc6548849e84adcfc1806b"
 
-query-string@^4.1.0:
-  version "4.2.3"
-  resolved "https://registry.yarnpkg.com/query-string/-/query-string-4.2.3.tgz#9f27273d207a25a8ee4c7b8c74dcd45d556db822"
-  dependencies:
-    object-assign "^4.1.0"
-    strict-uri-encode "^1.0.0"
-
-query-string@^4.3.2:
+query-string@^4.1.0, query-string@^4.3.2:
   version "4.3.2"
   resolved "https://registry.yarnpkg.com/query-string/-/query-string-4.3.2.tgz#ec0fd765f58a50031a3968c2431386f8947a5cdd"
   dependencies:
@@ -4304,7 +4301,7 @@ superagent-promise@1.1.0, superagent-promise@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/superagent-promise/-/superagent-promise-1.1.0.tgz#baf22d8bbdd439a9b07dd10f8c08f54fe2503533"
 
-superagent@1.5.0:
+superagent@1.5.0, superagent@^1.2.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/superagent/-/superagent-1.5.0.tgz#2d704af87b4000a725b88b789afb3c817ac9b456"
   dependencies:
@@ -4320,7 +4317,7 @@ superagent@1.5.0:
     readable-stream "1.0.27-1"
     reduce-component "1.0.1"
 
-superagent@^1.2.0, superagent@^1.8.0-beta.2:
+superagent@^1.8.0-beta.2:
   version "1.8.4"
   resolved "https://registry.yarnpkg.com/superagent/-/superagent-1.8.4.tgz#68b2c8a400f1753ddb39410906899e42f420fd3a"
   dependencies:
