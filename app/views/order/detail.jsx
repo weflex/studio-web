@@ -58,9 +58,7 @@ class Detail extends React.Component {
     }
 
     let actions = [];
-    if (order.checkedInAt) {
-      actions.push(<a key="uncheck" onClick={this.onUncheck.bind(this)}>取消签到</a>);
-    } else {
+    if (!order.checkedInAt) {
       actions.push(<a key="checkin" onClick={this.onCheckIn.bind(this)}>签到</a>);
     }
     if (moment().isBefore(cancellableBefore)) {
