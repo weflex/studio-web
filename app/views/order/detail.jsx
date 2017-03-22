@@ -68,7 +68,6 @@ class Detail extends React.Component {
   }
   async onCheckIn () {
     let {order} = this.state;
-    this.setState({order});
     try {
       await client.checkIn.create({
         memberId: this.state.membership.memberId,
@@ -79,6 +78,7 @@ class Detail extends React.Component {
         await client.order.checkInById(order.id);
       }
       order.checkedInAt = Date();
+      this.setState({order});
     } catch (error) {
       UIFramework.Message.error('签到失败')
     }
