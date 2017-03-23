@@ -164,7 +164,7 @@ class ClassOverview extends React.Component {
     } else {
       await client.order.checkInById(id);
     }
-    UIFramework.Message.success('取消成功');
+    UIFramework.Message.success('签到成功');
   }
 
   // MARK: - Component lifecycle methods
