@@ -43,3 +43,19 @@
   padding: 10px;
   box-sizing: border-box;
 }
+
+.status-tag {
+  margin: 0 5px;
+  padding: 4px 6px;
+  background-color: #a1a2a3;
+  color: white;
+  border-radius: 2px;
+  box-sizing: border-box;
+}
+
+.green-bg {
+  background-color: #6ED4A4;
+}
+h3 {
+  display: inline-block;
+}

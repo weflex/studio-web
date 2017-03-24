@@ -58,9 +58,7 @@ class Detail extends React.Component {
     }
 
     let actions = [];
-    if (order.checkedInAt) {
-      actions.push(<a key="uncheck" onClick={this.onUncheck.bind(this)}>取消签到</a>);
-    } else {
+    if (!order.checkedInAt) {
       actions.push(<a key="checkin" onClick={this.onCheckIn.bind(this)}>签到</a>);
     }
     if (moment().isBefore(cancellableBefore)) {
@@ -70,13 +68,16 @@ class Detail extends React.Component {
   }
   async onCheckIn () {
     let {order} = this.state;
-    order.checkedInAt = Date();
-    this.setState({order});
-    console.log(this.state);
-    if (order.isPT) {
-      await client.ptSession.checkInById(order.id);
-    } else {
-      await client.order.checkInById(order.id);
+    try {
+      if (order.isPT) {
+        await client.ptSession.checkInById(order.id);
+      } else {
+        await client.order.checkInById(order.id);
+      }
+      order.checkedInAt = Date();
+      this.setState({order});
+    } catch (error) {
+      UIFramework.Message.error('签到失败');
     }
   }
   async onUncheck () {

@@ -53,6 +53,7 @@ class UserProfileCard extends React.Component {
     this.state = {
       modalVisibled: false,
       uptoken: null,
+      checkIns:props.checkIns,
     };
   }
 
@@ -71,11 +72,16 @@ class UserProfileCard extends React.Component {
   /**
    * @property {Array} actions - the buttons on the right top of this card
    */
-  get actions() {
-    return [
+  get actions() {  
+    let actions = [];
+    actions.push(
       <a key="edit" onClick={this.viewModal.bind(this)}>编辑会员</a>,
-      <a key="dele" onClick={this.onDelete.bind(this)}>删除</a>,
-    ];
+      <a key="dele" onClick={this.onDelete.bind(this)}>删除</a>
+    )
+    if (this.state.checkIns.length == 0) {
+      actions.unshift(<a key="chenkIns" onClick={this.createCheckIn.bind(this)}>进店登记</a>)
+    }
+    return actions;
   }
 
   /**
@@ -121,6 +127,23 @@ class UserProfileCard extends React.Component {
     });
   }
 
+  async createCheckIn() {
+    let checkIn ;
+    try {
+      checkIn = await client.checkIn.create({
+        memberId: this.props.id,
+      });
+      let checkIns = this.state.checkIns
+      checkIns.push(checkIn)
+      this.setState({
+        checkIns: checkIns,
+      })
+    } catch (error) {
+      console.error(error)
+      UIFramework.Message.error('登记失败')
+    }
+  }
+
   /**
    * view the modal to change the information of this card
    * @method viewModal
@@ -154,9 +177,11 @@ class UserProfileCard extends React.Component {
    * @method render
    */
   render() {
+    const {checkIns} = this.state
     return (
       <MasterDetail.Card actions={this.actions}>
         <h3>基础信息</h3>
+        <span key='checkIn' className={'status-tag'.concat(checkIns.length>0?' green-bg':'')}>{checkIns.length>0?'今日已登记':'今日未登记'}</span>
         <UIFramework>
           <UIFramework.Row>
             <UIFramework.Upload 
