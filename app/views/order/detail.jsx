@@ -69,9 +69,6 @@ class Detail extends React.Component {
   async onCheckIn () {
     let {order} = this.state;
     try {
-      await client.checkIn.create({
-        memberId: this.state.membership.memberId,
-      });
       if (order.isPT) {
         await client.ptSession.checkInById(order.id);
       } else {
@@ -80,7 +77,7 @@ class Detail extends React.Component {
       order.checkedInAt = Date();
       this.setState({order});
     } catch (error) {
-      UIFramework.Message.error('签到失败')
+      UIFramework.Message.error('签到失败');
     }
   }
   async onUncheck () {
