@@ -8,10 +8,11 @@ import { client } from '../../api';
 
 export default class extends React.Component {
   static propTypes = {
-    member: React.PropTypes.object,
-    data: React.PropTypes.object,
-    onComplete: React.PropTypes.func,
+    member      : React.PropTypes.object,
+    data        : React.PropTypes.object,
+    onComplete  : React.PropTypes.func,
   };
+
   constructor(props) {
     super(props);
     this.cachedPackages = {};
@@ -24,6 +25,7 @@ export default class extends React.Component {
       selected: null,
     };
   }
+
   async componentWillMount() {
     const venue = await client.user.getVenueById();
     const packages = await client.classPackage.list({
@@ -49,12 +51,14 @@ export default class extends React.Component {
       }),
     });
   }
+
   onChangePackage(event) {
     const curr = this.cachedPackages[this.state.form.packageId];
     let form = this.state.form;
     form.price = curr.price;
     this.forceUpdate();
   }
+
   async onSubmit() {
     const membership = {
       price: this.state.form.price,
@@ -73,6 +77,7 @@ export default class extends React.Component {
       await this.props.onComplete();
     }
   }
+
   onDelete() {
     let props = this.props;
     UIFramework.Modal.confirm({
@@ -94,6 +99,7 @@ export default class extends React.Component {
       }
     })
   }
+
   render() {
     let currentPackage = this.cachedPackages[this.state.form.packageId];
     let correction = {
@@ -135,8 +141,8 @@ export default class extends React.Component {
         correction.hint = currentPackage.name + '是次卡，可以修正可用次数';
         correction.view = [
           <UIFramework.Select
-            key="passes-op" 
-            flex={0.2} 
+            key="passes-op"
+            flex={0.2}
             bindStateCtx={this}
             bindStateName="form.correction.positive"
             bindStateType={Boolean}
