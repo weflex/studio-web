@@ -1,6 +1,6 @@
 'use strict';
 
-import _ from 'lodash';
+import {keyBy, intersectionBy} from 'lodash';
 import moment from 'moment';
 import React from 'react';
 import UIFramework from 'weflex-ui';
@@ -22,39 +22,58 @@ export default class extends React.Component {
         lifetime: {},
       }, props.data),
       packageOptions: [],
+      salesOptions: [],
       selected: null,
     };
   }
 
   async componentWillMount() {
+    let {form} = this.state;
+
     const venue = await client.user.getVenueById();
+
     const packages = await client.classPackage.list({
       where: {
         venueId: venue.id,
       }
     });
-    this.cachedPackages = _.keyBy(packages, 'id');
-    
-    const form = this.state.form;
-    const curr = this.cachedPackages[this.state.form.packageId];
+    this.cachedPackages = keyBy(packages, 'id');
+    const curr = this.cachedPackages[form.packageId];
     if (curr && curr.price) {
       form.price = curr.price;
     }
+    const packageOptions = packages.map((item) => {
+      return {
+        text: item.name,
+        value: item.id,
+        data: item,
+      };
+    });
+
+    const trainers = await client.collaborator.list({
+      where: {
+        venueId: venue.id,
+      }
+    });
+    const salesOptions = trainers.map((item) => {
+      return {
+        text  : item.fullname.first + item.fullname.last,
+        value : item.id,
+        data  : item,
+      };
+    });
+    salesOptions.unshift({ text: "（空）", value: null, data: null});
+
     this.setState({
       form,
-      packageOptions: packages.map((item) => {
-        return {
-          text: item.name,
-          value: item.id,
-          data: item,
-        };
-      }),
+      packageOptions,
+      salesOptions,
     });
   }
 
   onChangePackage(event) {
-    const curr = this.cachedPackages[this.state.form.packageId];
-    let form = this.state.form;
+    let {form} = this.state;
+    const curr = this.cachedPackages[form.packageId];
     form.price = curr.price;
     this.forceUpdate();
   }
@@ -66,7 +85,12 @@ export default class extends React.Component {
       memberId: this.props.member.id,
       correction: this.state.form.correction,
       createdAt: this.state.form.createdAt,
+      salesId: this.state.form.salesId,
     };
+    if(this.state.form.salesId === "（空）") {
+      delete membership.salesId
+    }
+
     if (this.props.data) {
       await client.membership.update(
         this.props.data.id, membership, this.props.data.modifiedAt);
@@ -207,12 +231,21 @@ export default class extends React.Component {
           />
         </UIFramework.Row>
         <UIFramework.Row name="实付价格">
-          <UIFramework.TextInput 
+          <UIFramework.TextInput
             flex={1}
             bindStateCtx={this}
             bindStateName="form.price"
             bindStateType={Number}
             value={this.state.form.price}
+          />
+        </UIFramework.Row>
+        <UIFramework.Row name="销售人">
+          <UIFramework.Select
+            flex={1}
+            bindStateCtx={this}
+            bindStateName="form.salesId"
+            value={this.state.form.salesId}
+            options={this.state.salesOptions}
           />
         </UIFramework.Row>
         <UIFramework.Row name={correction.name} hint={correction.hint}>
