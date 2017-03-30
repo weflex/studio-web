@@ -129,3 +129,11 @@
 .trainer-schedule label > .ant-checkbox + span {
     padding: 5px 0 5px 10px;
 }
+
+.trainerSalesList tr td {
+    padding: 11px 8px;
+}
+
+.trainerSalesList .red {
+    color: #ff0000;
+}
