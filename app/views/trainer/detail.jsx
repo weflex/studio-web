@@ -1,21 +1,25 @@
 import React from 'react';
 import hourminute from 'hourminute';
-import _ from 'lodash';
+import {range} from 'lodash';
 import moment from 'moment';
 import {client} from '../../api';
 import UIFramework from 'weflex-ui';
-import {Row, Col, Button, Input, Select} from 'antd';
+import {Row, Col, Button, Input, Select, Table, DatePicker} from 'antd';
 const Option = Select.Option;
+const { RangePicker } = DatePicker;
 import TrainerProfile from './profile';
 import TrainerSchedule from './schedule';
+import {startOfDay, endOfDay, format} from 'date-fns';
 
 class PTSchedule extends React.Component {
+
   constructor (props) {
     super(props);
     this.state = {
       classPackages: [],
     };
   }
+
   async componentDidMount () {
     const venue = await client.user.getVenueById();
     const wildcard = [{id: '*', name: '所有会卡'}];
@@ -28,6 +32,7 @@ class PTSchedule extends React.Component {
       classPackages: wildcard.concat(classPackages),
     });
   }
+
   render () {
     const ptSchedule = this.props.dataSource;
     const classPackages = this.state.classPackages;
@@ -38,7 +43,7 @@ class PTSchedule extends React.Component {
             <label>排课时间</label>
             <span>
               {
-                _.range(1, 8).map((day, key) => {
+                range(1, 8).map((day, key) => {
                   const dayString = moment().isoWeekday(day).format('ddd');
                   let className = 'day';
                   if (ptSchedule.days.indexOf(day) > -1) {
@@ -53,7 +58,7 @@ class PTSchedule extends React.Component {
             <label></label>
             <span>
               {
-                _.range(6, 23).map((hour, key) => {
+                range(6, 23).map((hour, key) => {
                   const hourString = hourminute({hour}).format();
                   let className = 'hour';
                   if (ptSchedule.hours.indexOf(hour) > -1) {
@@ -90,6 +95,177 @@ class PTSchedule extends React.Component {
     } else {
       return <span className='placeholder'>该教练暂时没有私教排期</span>;
     }
+  }
+}
+
+class TrainerSalesList extends React.Component {
+
+  constructor (props) {
+    super(props);
+
+    const { trainerId, trainerName } = props;
+
+    this.state = {
+      salesList    : [],
+      pageNumber   : 1,
+    }
+
+    this.cache = {
+      pageSize  : 7,
+      startDate : "",
+      endDate   : "",
+      columns   : [{
+        title     : '销售日期',
+        dataIndex : 'createDate',
+        key       : 'createDate',
+        width     : '25%'
+      }, {
+        title     : '会卡名称',
+        dataIndex : 'packageName',
+        key       : 'packageName',
+        width     : '25%'
+      }, {
+        title     : '金额',
+        dataIndex : 'price',
+        key       : 'price',
+        width     : '20%'
+      }, {
+        title     : '购买人',
+        dataIndex : 'memberName',
+        key       : 'memberName',
+        width     : '30%'
+      }],
+      accessToken : ( JSON.parse(localStorage["weflex.user"]) ).accessToken,
+    }
+
+    this.getSalesData();
+
+    this.onDateChange = this.onDateChange.bind(this);
+    this.onPageChange = this.onPageChange.bind(this);
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.trainerId !== this.props.trainerId) {
+      this.getSalesData(nextProps.trainerId);
+      this.setState({pageNumber: 1});
+    }
+  }
+
+  async getSalesData (trainerId) {
+    const {startDate, endDate} = this.cache;
+    const salesId = trainerId || this.props.trainerId;
+    if (!salesId) {
+      this.setState({salesList: []});
+      return;
+    }
+
+    let queryTerms = {
+      where: {
+        salesId,
+      },
+      include:[{
+        relation: 'member',
+      }, {
+        relation: 'package',
+      }]
+    }
+    if (startDate && endDate) {
+      queryTerms.where['createdAt'] = {between: [startOfDay(startDate), endOfDay(endDate)]};
+    }
+
+    const salesData = await client.membership.list(queryTerms);
+    this.updateSalesListToState(salesData);
+  }
+
+  updateSalesListToState (salesData) {
+    if (salesData.length < 1) {
+      this.setState({salesList: []});
+      return;
+    }
+
+    const salesList = this.toSalesList(salesData);
+    this.setState({salesList});
+  }
+
+  toSalesList (salesData) {
+    let salesList = salesData.map((item, i) => {
+      return {
+        key         : item.id,
+        createDate  : format(item.createdAt, "YYYY-MM-DD"),
+        packageName : !item.package ? "" :item.package.name,
+        price       : item.price,
+        memberName  : !item.member ? "" : item.member.nickname,
+        salesName   : this.props.trainerName,
+      }
+    })
+    return salesList;
+  }
+
+  renderButtonExport () {
+    const {trainerId, trainerName} = this.props;
+    const {salesList} = this.state;
+    const {accessToken, startDate, endDate} = this.cache;
+    let startsAt = "", endsAt = "";
+    let fileName = trainerName + "的销售记录" + format(new Date(),"YYYY.MM.DD") + ".xlsx";
+
+    if (startDate) {
+      startsAt = "&startsAt=" + startDate;
+      endsAt = "&endsAt=" + endDate;
+    } else {
+      startsAt = "&startsAt=2010-01-01";
+    }
+
+    const buttonExport = salesList.length > 0
+      ? <a className="ant-btn ant-btn-sm"
+        href={ "/api/collaborators/" + trainerId + "/sales/export?access_token=" + accessToken + startsAt + endsAt }
+        download={ fileName } >导 出</a>
+      : <Button size="small" onClick={() => {this.alertEmptyDataExport()}}>导 出</Button>
+
+    return buttonExport;
+  }
+
+  onDateChange (date, dateString) {
+    this.cache.startDate = dateString[0]? dateString[0] : "";
+    this.cache.endDate = dateString[1]? dateString[1] : "";
+    this.getSalesData();
+    this.setState({pageNumber:1});
+  }
+
+  onPageChange (page, pageSize) {
+    this.setState({pageNumber:page});
+  }
+
+  alertEmptyDataExport () {
+    UIFramework.Message.success('无数据可导出');
+  }
+
+  render () {
+    const {salesList, pageNumber} = this.state;
+    const {columns, pageSize} = this.cache;
+
+    return (
+      <Row>
+        <div className='card-header'>
+          <h3>销售记录</h3>
+          <ul className='actions'>
+            <li>
+              <RangePicker size='small' onChange={this.onDateChange} />
+            </li>
+            <li>
+              {this.renderButtonExport()}
+            </li>
+          </ul>
+        </div>
+        {
+          salesList.length === 0
+          ? <div>没有找到销售记录</div>
+          : <div className='trainerSalesList'>
+              <div>一共找到<b className="red">{salesList.length}</b>条销售记录</div>
+              <Table columns={columns} dataSource={salesList} pagination={{pageSize, onChange: this.onPageChange, current: pageNumber}}/>
+            </div>
+        }
+      </Row>
+    )
   }
 }
 
@@ -225,6 +401,7 @@ module.exports = class TrainerDetail extends React.Component {
             </div>
           </Col>
         </Row>
+
         <Row className='schedule'>
           <div className='card-header'>
             <h3>私教排期</h3>
@@ -264,6 +441,9 @@ module.exports = class TrainerDetail extends React.Component {
           </div>
           <PTSchedule dataSource={ptSchedule} venueId={dataSource.venueId}/>
         </Row>
+
+        <TrainerSalesList trainerId={dataSource.id} trainerName={dataSource.name}/>
+
         <UIFramework.Modal
           ref="profileModal"
           footer=""
