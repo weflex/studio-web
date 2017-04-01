@@ -79,17 +79,15 @@ export default class extends React.Component {
   }
 
   async onSubmit() {
+    let salesId = (this.state.form.salesId === "（空）") ? null : this.state.form.salesId;
     const membership = {
       price: this.state.form.price,
       packageId: this.state.form.packageId,
       memberId: this.props.member.id,
       correction: this.state.form.correction,
       createdAt: this.state.form.createdAt,
-      salesId: this.state.form.salesId,
+      salesId,
     };
-    if(this.state.form.salesId === "（空）") {
-      delete membership.salesId
-    }
 
     if (this.props.data) {
       await client.membership.update(
