@@ -77,8 +77,10 @@ class List extends React.Component {
         {name: '课程时间', key: 'class.date'},
         {name: '用户', key: 'member.nickname'},
       ],
-      onClickAdd: this.onViewAddOrder.bind(this),
-      addButtonText: '添加新订单',
+      onClickAdd: () => {
+        this.refs.masterDetail.updateMasterSource();
+      },
+      addButtonText: '加载更多订单',
     };
   }
   constructor(props) {
@@ -86,8 +88,12 @@ class List extends React.Component {
     const filter = _constructFilter(props);
     this.state = {
       modalVisibled: false,
+      skip: 0,
+      data: [],
       filter
     };
+  }
+  componentDidMount() {
   }
   componentWillReceiveProps(nextProps) {
     const filter = _constructFilter(nextProps);
@@ -96,10 +102,12 @@ class List extends React.Component {
   }
   async source() {
     const venue = await client.user.getVenueById();
-    const {filter} = this.state;
+    const {filter, skip} = this.state;
+    const limit = 50;
     const whereFilter = {
       venueId: venue.id
     };
+    let nextState = {};
     if (filter.orderStatus) {
       switch (filter.orderStatus) {
       case 'cancel':
@@ -116,6 +124,8 @@ class List extends React.Component {
         break;
       }
     }
+    nextState.skip = skip + limit;
+
     const list = await client.order.list({
       where: whereFilter,
       include: [
@@ -134,7 +144,9 @@ class List extends React.Component {
           'class': ['template', 'trainer']
         },
         'user'
-      ]
+      ],
+      limit,
+      skip,
     });
 
     const ptSessions = await client.ptSession.list({
@@ -147,9 +159,11 @@ class List extends React.Component {
           payment: 'membership',
         },
       ],
+      limit,
+      skip,
     });
 
-    return ptSessions.map((session) => {
+    const orders = ptSessions.map((session) => {
       const startsAt = moment(session.startsAt);
       const endsAt = moment(startsAt).add(session.durationMinutes, 'minutes');
       const trainerName = session.trainer.fullname.first + session.trainer.fullname.last;
@@ -180,6 +194,14 @@ class List extends React.Component {
     .sort((a, b) => {
       return a.id > b.id ? -1 : a.id < b.id ? 1 : 0;
     });
+
+    if (orders.length > 0) {
+      nextState.data = this.state.data.concat(orders);
+    }
+    if (Object.keys(nextState).length > 0) {
+      this.setState(nextState);
+    }
+    return nextState.data;
   }
   onViewAddOrder() {
     this.setState({
@@ -195,9 +217,6 @@ class List extends React.Component {
     if (instance && instance.title) {
       this.props.app.title(instance.title);
     }
-  }
-  async componentDidMount() {
-    let self = this;
   }
   componentWillUnmount() {
   }
