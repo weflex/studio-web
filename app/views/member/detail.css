@@ -59,3 +59,31 @@
 h3 {
   display: inline-block;
 }
+
+.member-operation {
+  position: relative;
+  display: block;
+  padding: 10px;
+  background-color: #fff;
+  box-sizing: border-box;
+  height: calc(100% + 9px);
+}
+
+.member-operation h3 {
+  width: 100%;
+  line-height: 40px;
+  border-bottom: 1px solid #ccc;
+}
+
+.member-operation-list {
+  height: calc(100% - 30px);
+  overflow-y: auto;
+}
+
+.member-operation-list ul {
+  margin-bottom: 30px;
+}
+
+.member-operation-list .high-light{
+  color: #80c7e8;
+}
