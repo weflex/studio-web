@@ -163,7 +163,7 @@ class List extends React.Component {
       skip,
     });
 
-    const orders = ptSessions.map((session) => {
+    const orders = (ptSessions || []).map((session) => {
       const startsAt = moment(session.startsAt);
       const endsAt = moment(startsAt).add(session.durationMinutes, 'minutes');
       const trainerName = session.trainer.fullname.first + session.trainer.fullname.last;
@@ -201,7 +201,7 @@ class List extends React.Component {
     if (Object.keys(nextState).length > 0) {
       this.setState(nextState);
     }
-    return nextState.data;
+    return nextState.data || this.state.data;
   }
   onViewAddOrder() {
     this.setState({
