@@ -3,7 +3,7 @@
  * @module views.member
  */
 
-import _ from 'lodash';
+import { flattenDeep } from 'lodash';
 import React from 'react';
 import UIFramework from 'weflex-ui';
 import MasterDetail from '../../components/master-detail';
@@ -13,6 +13,7 @@ import ViewToAddMember from './add-member';
 import ViewToAddMembership from './add-membership';
 import { client } from '../../api';
 import './detail.css';
+import { format, compareDesc } from 'date-fns';
 
 /**
  * @class UserProfileCard
@@ -448,51 +449,154 @@ class MembershipsCard extends React.Component {
   }
 }
 
+function toHighLightText (text) {
+  return <span className='high-light'>{text}</span>;
+}
+
+class MemberOperation extends React.Component {
+  constructor(props) {
+    super(props);
+
+    const { userId, memberId, venueId } = this.props;
+
+    this.state = {
+      operation: [],
+    };
+
+    this.cache = {
+      colors : {
+        classReserve     : "#80c7e8",
+        classCancel      : "#ff8ac2",
+        ptSessionReserve : "#80c7e8",
+        ptSessionCancel  : "#ff8ac2",
+        membershipCreate : "#6ed4a4",
+        membershipDelete : "#ff8ac2",
+      },
+    };
+  }
+
+  async componentWillMount() {
+    const { memberId, userId, venueId } = this.props;
+    const orderList = ( await client.order.list({
+      where   : { userId, venueId },
+      include : [
+        {
+          "class" : "template"
+        },
+        {
+          "payments": {"membership": "package"}
+        },
+      ],
+    }) ).map( this.toOrderItems );
+
+    const ptSessionList = ( await client.ptSession.list({
+      where   : { userId, venueId },
+      include : [
+        "trainer",
+        {
+          "payment": {"membership": "package"}
+        },
+      ],
+    }) ).map( this.toPTSessionItems );
+
+    const membershipList = ( await client.member.get( memberId, {
+      include : {"memberships": "package"},
+    }) )["memberships"].map( this.toMembershipItems );
+
+    let operation = flattenDeep([orderList, ptSessionList, membershipList]);
+    operation.sort((previousItem, nextItem)=>{ return compareDesc(previousItem.createdAt, nextItem.createdAt)});
+    this.setState({operation});
+  }
+
+  toOrderItems (orderItem) {
+    const className  = orderItem.class.template.name;
+    const membershipName = orderItem.payments[0].membership.package.name;
+
+    let orderItems = [{
+      status     : "classReserve",
+      createdAt  : orderItem.createdAt,
+      text       : <span>用户使用 { toHighLightText(membershipName) } 预定了课程 { toHighLightText(className) }</span>,
+    }];
+
+    if (orderItem.cancelledAt) {
+      orderItems.push({
+        status    : "classCancel",
+        createdAt : orderItem.cancelledAt,
+        text      : <span>用户取消了课程： { toHighLightText(className) } 所属会卡： { toHighLightText(membershipName) }</span>,
+      });
+    };
+
+    return orderItems;
+  }
+
+  toPTSessionItems (ptSessionItem) {
+    const trainerName  = ptSessionItem.trainer.fullname.first + ptSessionItem.trainer.fullname.last;
+    const membershipName = ptSessionItem.payment.membership.package.name;
+
+    let ptSessionItems = [{
+      status     : "ptSessionReserve",
+      createdAt  : ptSessionItem.createdAt,
+      text : <span>用户使用 { toHighLightText(membershipName) } 预定了 { toHighLightText(trainerName) } 的私教课程 </span>,
+    }];
+
+    if (ptSessionItem.cancelledAt) {
+      ptSessionItems.push({
+        status : "ptSessionCancel",
+        createdAt : ptSessionItem.cancelledAt,
+        text : <span>用户取消了 { toHighLightText(trainerName) } 的私教课程 所属会卡：{ toHighLightText(membershipName) }</span>,
+      });
+    };
+
+    return ptSessionItems;
+  }
+
+  toMembershipItems (membershipItem) {
+    const membershipName = membershipItem.package.name;
+
+    let membershipItems = [{
+      status     : "membershipCreate",
+      createdAt  : membershipItem.createdAt,
+      text       : <span>用户购买了会卡：{ toHighLightText(membershipName) }</span>,
+    }];
+
+    if (membershipItem.trashedAt) {
+      membershipItems.push({
+        status     : "membershipDelete",
+        createdAt  : membershipItem.trashedAt,
+        text       : <span>管理员删除了会卡：{ toHighLightText(membershipName) }</span>,
+      });
+    };
+
+    return membershipItems;
+  }
+
+  render () {
+    return (
+      <div className="member-operation">
+        <h3>操作记录</h3>
+        <div className="member-operation-list">
+          <UIHistory
+            colors={ this.cache.colors }
+            data={ this.state.operation }
+            description={ (item)=>{ return item.text } }
+          />
+        </div>
+      </div>
+    );
+  }
+}
+
 /**
  * @class Detail
  * @extends React.Component
  */
-export default class extends React.Component {
-  /**
-   * @constructor
-   */
+export default class Detail extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      orders: [],
-    };
   }
 
-  /**
-   * In this delegate, we fetched the order list
-   *
-   * @method componentWillMount
-   * @async
-   */
-  async componentWillMount() {
-    const orders = (await client.order.list({
-      where: {
-        userId: this.props.data.id,
-      },
-      include: {
-        'class': [
-          'trainer',
-          {
-            'template': 'trainer'
-          }
-        ]
-      },
-    })).filter((order) => {
-      return order.class;
-    });
-    this.setState({orders});
-  }
-
-  /**
-   * @method render
-   */
   render() {
-    let member = this.props.data;
+    const member = this.props.data;
     return (
       <div className="membership-detail-container">
         <MasterDetail.Cards position="left">
@@ -500,22 +604,10 @@ export default class extends React.Component {
           <MembershipsCard context={this} member={member} />
         </MasterDetail.Cards>
         <MasterDetail.Cards position="right">
-          <MasterDetail.Card>
-            <h3>订课记录</h3>
-            <UIHistory className="membership-orders"
-              data={this.state.orders.map((item) => {
-                item.createdAt = item.class.date;
-                return item;
-              })}
-              description={(item) => {
-                const title = item.class.template.name;
-                const trainer = item.class.trainer || item.class.template.trainer;
-                return `预定了${title}`;
-              }}
-            />
-          </MasterDetail.Card>
+          <MemberOperation memberId={member.id} userId={member.userId} venueId={member.venueId}/>
         </MasterDetail.Cards>
       </div>
     );
   }
+
 }
