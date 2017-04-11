@@ -42,7 +42,6 @@ class UIHistory extends React.Component {
     },
     item: {
       margin: '10px 0 10px -10px',
-      height: '20px',
     },
     itemSpan: {
       display: 'inline-block',
@@ -60,11 +59,13 @@ class UIHistory extends React.Component {
     },
     itemDateTime: {
       color: '#828282',
-      width: '100px',
+      width: '90px',
     },
     itemDescription: {
       color: '#4a4a4a',
       padding: '0 4px',
+      display: 'block',
+      marginLeft: '26px',
     }
   };
   componentWillMount() {
@@ -94,7 +95,7 @@ class UIHistory extends React.Component {
             <li key={key} style={UIHistory.styles.item}>
               <span style={Object.assign(dotStyle, UIHistory.styles.itemSpan, UIHistory.styles.itemDot)}></span>
               <span style={Object.assign({}, UIHistory.styles.itemSpan, UIHistory.styles.itemDateTime)}>
-                {date.format('MM[月]DD[日]')} {date.format('hh:mm')}
+                {date.format('MM[月]DD[日]')} {date.format('HH:mm')}
               </span>
               <span style={Object.assign({}, UIHistory.styles.itemSpan, UIHistory.styles.itemDescription)}>
                 {this.props.description(item)}
