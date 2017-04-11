@@ -139,8 +139,7 @@ class WeflexCalendar extends React.Component {
     const classes = await client.class.list({
       where: {
         date: {
-          gte: startsAt.format(dateFormat),
-          lte: endsAt.format(dateFormat)
+          between: [startsAt.format(dateFormat), endsAt.format(dateFormat)]
         },
         venueId: venue.id
       },
