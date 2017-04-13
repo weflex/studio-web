@@ -1,245 +1,207 @@
-"use strict";
-
-import moment from 'moment';
 import React from 'react';
-import MasterDetail from '../../components/master-detail';
-import Detail from './detail';
-import AddOrderView from './add';
-import UIFramework from 'weflex-ui';
-import { UIProfileListItem } from '../../components/ui-profile';
-import { client } from '../../api';
+import {Table, Pagination, Tabs} from 'antd';
+import {client} from '../../api';
+import {Link} from 'react-router-component';
+import {format} from 'date-fns';
+import {getFormatTime} from '../calendar/util.js';
+import {filter} from 'lodash';
 import './list.css';
-import hourminute from 'hourminute';
-moment.locale('zh-cn');
-
-function _constructFilter (props) {
-  let filter = {};
-  const query = props._query;
-  for (var param in query) {
-    switch (param) {
-    case 'classBefore':
-    case 'classAfter':
-      filter[param] = moment(query[param]);
-      break;
-    case 'orderStatus':
-      filter[param] = query[param];
-      break;
-    default:
-      continue;
-    }
-  }
-  return filter;
-}
-
+const TabPane = Tabs.TabPane;
 
 class List extends React.Component {
-  get title() {
-    return '订单管理';
-  }
-  get actions() {
-    return [
-      {
-        title: '创建订单',
-        onClick: this.onViewAddOrder.bind(this),
-        disableToggled: true,
-      }
-    ];
-  }
-  get search() {
-    return this.refs
-      .masterDetail
-      .onSearchInputChange
-      .bind(this.refs.masterDetail);
-  }
-  get config() {
-    return {
-      title: 'title',
-      master: (item, index) => {
-        return (
-          <UIProfileListItem avatar={item.member.avatar}
-            header={item.class.template.name}
-            labelText={item.member.nickname}>
-            <div className="order-class-duration">
-              {moment(item.class.date).format('MM[月]DD[日]')}
-            </div>
-            <div className="order-num">
-              订单号: {item.passcode}
-            </div>
-          </UIProfileListItem>
-        );
-      },
-      detail: {
-        component: Detail
-      },
-      iterated: true,
-      sortKeys: [
-        {name: '订单时间', key: 'createdAt'},
-        {name: '课程时间', key: 'class.date'},
-        {name: '用户', key: 'member.nickname'},
-      ],
-      onClickAdd: () => {
-        this.refs.masterDetail.updateMasterSource();
-      },
-      addButtonText: '加载更多订单',
-    };
-  }
   constructor(props) {
     super(props);
-    const filter = _constructFilter(props);
-    this.state = {
-      modalVisibled: false,
-      skip: 0,
-      data: [],
-      filter
-    };
-  }
-  componentDidMount() {
-  }
-  componentWillReceiveProps(nextProps) {
-    const filter = _constructFilter(nextProps);
-    this.setState({filter});
-    this.refs.masterDetail.updateMasterSource();
-  }
-  async source() {
-    const venue = await client.user.getVenueById();
-    const {filter, skip} = this.state;
-    const limit = 50;
-    const whereFilter = {
-      venueId: venue.id
-    };
-    let nextState = {};
-    if (filter.orderStatus) {
-      switch (filter.orderStatus) {
-      case 'cancel':
-        whereFilter.cancelledAt = {exists: true};
-        break;
-      case 'checkin':
-        whereFilter.checkedInAt = {exists: true};
-        break;
-      case 'signup':
-        whereFilter.checkedInAt = {exists: false};
-        whereFilter.cancelledAt = {exists: false};
-        break;
-      default:
-        break;
-      }
-    }
-    nextState.skip = skip + limit;
 
-    const list = await client.order.list({
-      where: whereFilter,
-      include: [
-        'history',
+    this.state = {
+      orderList           : [],
+      ptSessionList       : [],
+      orderTotal          : 0,
+      ptSessionTotal      : 0,
+    };
+
+    this.config = {
+      columns   : [{
+        title     : '订单号',
+        dataIndex : 'bookingNumber',
+        key       : 'bookingNumber',
+        width     : '8%',
+      }, {
+        title     : '订单状态',
+        dataIndex : 'bookingStatus',
+        key       : 'bookingStatus',
+        width     : '10%',
+      }, {
+        title     : '创建时间',
+        dataIndex : 'bookingTime',
+        key       : 'bookingTime',
+        width     : '15%',
+      }, {
+        title     : '会员名称',
+        dataIndex : 'nickName',
+        key       : 'nickName',
+        width     : '12%',
+      }, {
+        title     : '课程名称',
+        dataIndex : 'className',
+        key       : 'className',
+        width     : '17%',
+      }, {
+        title     : '课程时间',
+        dataIndex : 'classTime',
+        key       : 'classTime',
+        width     : '20%',
+      }, {
+        title     : '课程教练',
+        dataIndex : 'trainerName',
+        key       : 'trainerName',
+        width     : '18%',
+      }],
+      pageSize : 20,
+    };
+
+    this.cache = {
+      venueId             : '',
+      orderPageNumber     : 1,
+      ptSessionPageNumber : 1,
+    };
+
+    this.onOrderPageNumberChange = this.onOrderPageNumberChange.bind(this);
+    this.onPTSessionPageNumberChange = this.onPTSessionPageNumberChange.bind(this);
+    this.updateBooking();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.updateBooking();
+  }
+
+  async updateBooking() {
+    if(!this.cache.venueId) {
+      this.cache.venueId = ( await client.user.getVenueById() ).id;
+    };
+    this.updateOrderState();
+    this.updatePTSessionState();
+  }
+
+  async updateOrderState() {
+    const {orderPageNumber, venueId} = this.cache;
+    const {pageSize} = this.config;
+
+    const orderTotal = ( await client.order.count({where:{venueId}}) ).count;
+    const orderList = ( await client.order.list({
+      where   : {venueId},
+      include : [
         {
-          'payments': [
-            {
-              'membership': {
-                'member': ['avatar']
-              }
-            },
-            'order'
-          ]
+          'payments': {'membership': ['package', 'member']}
         },
         {
           'class': ['template', 'trainer']
         },
-        'user'
       ],
-      limit,
-      skip,
-    });
+      limit   : pageSize,
+      skip    : (orderPageNumber - 1) * pageSize,
+    }) ).map( (item, i)=>{
+      return {
+        key            : item.id,
+        bookingNumber  : <Link href={'/order?bookingType=order&bookingId='
+                           + item.id}>{item.passcode}</Link>,
+        bookingTime    : format(item.createdAt, 'YYYY.MM.DD HH:mm:ss'),
+        bookingStatus  : this.getStatusLabel(item),
+        nickName       : item.payments[0].membership
+                           ? item.payments[0].membership.member.nickname : '',
+        className      : item.class.template.name,
+        classTime      : format(item.class.date, 'YYYY.MM.DD ') + getFormatTime(item.class.from)
+                           + ' ~ ' + getFormatTime(item.class.to),
+        trainerName    : item.class.trainer.fullname.first + item.class.trainer.fullname.last,
+      };
+    } );
 
-    const ptSessions = await client.ptSession.list({
-      where: whereFilter,
-      include: [
-        'user',
+    this.setState({orderList, orderTotal});
+  }
+
+  async updatePTSessionState() {
+    const {ptSessionPageNumber, venueId} = this.cache;
+    const {pageSize} = this.config;
+
+    const ptSessionTotal = ( await client.ptSession.count({where: {venueId}}) ).count;
+    const ptSessionList = ( await client.ptSession.list({
+      where   : {venueId},
+      include : [
         'member',
         'trainer',
         {
-          payment: 'membership',
+          'payment': {'membership': 'package'}
         },
       ],
-      limit,
-      skip,
-    });
-
-    const orders = (ptSessions || []).map((session) => {
-      const startsAt = moment(session.startsAt);
-      const endsAt = moment(startsAt).add(session.durationMinutes, 'minutes');
-      const trainerName = session.trainer.fullname.first + session.trainer.fullname.last;
-      session.class = {
-        template: {name: `私教 (${trainerName})`},
-        date: moment(startsAt).startOf('day'),
-        from: hourminute({hour: startsAt.hour(), minute: startsAt.minute()}),
-        to: hourminute({hour: endsAt.hour(), minute: endsAt.minute()}),
-        trainer: session.trainer,
+      limit   : pageSize,
+      skip    : (ptSessionPageNumber - 1) * pageSize,
+    }) ).map( (item, i)=>{
+      return {
+        key            : item.id,
+        bookingNumber  : <Link href={'/order?bookingType=ptSession&bookingId='
+                           + item.id}>{item.passcode}</Link>,
+        bookingTime    : format(item.createdAt,'YYYY.MM.DD HH:mm:ss'),
+        bookingStatus  : this.getStatusLabel(item),
+        nickName       : item.member.nickname,
+        className      : `私教 (${item.trainer.fullname.first + item.trainer.fullname.last})`,
+        classTime      : format(item.startsAt, 'YYYY.MM.DD HH:mm')
+                           + format(item.endsAt, ' ~ HH:mm'),
+        trainerName    : item.trainer.fullname.first + item.trainer.fullname.last,
       };
-      session.title = session.class.template.name;
-      session.payments = [session.payment];
-      session.isPT = true;
-      return session;
-    }).concat((list || []).filter((item) => {
-      var membership;
-      try {
-        membership = item.payments[0].membership;
-      } catch (error) {
-        membership = undefined;
-      }
-      return item.class && membership && membership.member;
-    }).map((item) => {
-      item.title = item.class.template.name;
-      item.member = item.payments[0].membership.member;
-      return item;
-    }))
-    .sort((a, b) => {
-      return a.id > b.id ? -1 : a.id < b.id ? 1 : 0;
-    });
+    } );
 
-    if (orders.length > 0) {
-      nextState.data = this.state.data.concat(orders);
-    }
-    if (Object.keys(nextState).length > 0) {
-      this.setState(nextState);
-    }
-    return nextState.data || this.state.data;
+    this.setState({ptSessionList, ptSessionTotal});
   }
-  onViewAddOrder() {
-    this.setState({
-      modalVisibled: true,
-    });
+
+  getStatusLabel(item) {
+    let text = '未签到', color = '#CCC';
+    if(item.cancelledAt) {
+      text = '已取消';
+      color = '#FF8AC2';
+    } else if(item.checkedInAt) {
+      text = '已签到';
+      color = '#6ED4A4';
+    };
+    return <label className='booking-status'
+             style={{backgroundColor:color}}>{text}</label>;
   }
-  async onCompleteAddOrder() {
-    this.setState({
-      modalVisibled: false,
-    });
+
+  onOrderPageNumberChange(page, pageSize) {
+    this.cache.orderPageNumber = page;
+    this.updateOrderState();
   }
-  onRefDetail(instance) {
-    if (instance && instance.title) {
-      this.props.app.title(instance.title);
-    }
+
+  onPTSessionPageNumberChange(page, pageSize) {
+    this.cache.ptSessionPageNumber = page;
+    this.updatePTSessionState();
   }
-  componentWillUnmount() {
-  }
+
   render() {
+    const {orderList, orderTotal, ptSessionList, ptSessionTotal} = this.state;
+    const {columns, pageSize} = this.config;
+
     return (
-      <div style={{height: '100%'}}>
-        <MasterDetail 
-          ref="masterDetail"
-          pathname="order"
-          className="order"
-          refDetail={this.onRefDetail.bind(this)}
-          masterSource={this.source.bind(this)}
-          masterConfig={this.config}
-        />
-        <UIFramework.Modal
-          title="添加新订单"
-          footer=""
-          visible={this.state.modalVisibled}
-          onCancel={() => this.setState({modalVisibled: false})}>
-          <AddOrderView 
-            onComplete={this.onCompleteAddOrder.bind(this)}
-          />
-        </UIFramework.Modal>
+      <div className='wrap-booking-manager'>
+        <Tabs defaultActiveKey="1">
+          <TabPane tab="团课" key="1">
+            <Table columns={columns} dataSource={orderList} pagination={false} />
+            <Pagination className='pagination'
+              pageSize={pageSize}
+              total={orderTotal}
+              onChange={this.onOrderPageNumberChange}
+            />
+          </TabPane>
+          <TabPane tab="私教" key="2">
+            <Table columns={filter(columns, (item)=>{return item.dataIndex !== 'className'})}
+              dataSource={ptSessionList}
+              pagination={false}
+            />
+            <Pagination className='pagination'
+              pageSize={pageSize}
+              total={ptSessionTotal}
+              onChange={this.onPTSessionPageNumberChange}
+            />
+          </TabPane>
+        </Tabs>
       </div>
     );
   }

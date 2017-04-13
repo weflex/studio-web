@@ -1,118 +1,207 @@
-"use strict";
-
 import React from 'react';
 import moment from 'moment';
 import UIFramework from 'weflex-ui';
-import { client } from '../../api';
-import { UIHistory } from '../../components/ui-history';
+import {client} from '../../api';
+import {UIHistory} from '../../components/ui-history';
 import MasterDetail from '../../components/master-detail';
 import UIMembershipCard from '../../components/ui-membership-card';
-import { getFormatTime } from '../calendar/util.js';
+import {format, isAfter} from 'date-fns';
+import {getFormatTime} from '../calendar/util.js';
 import './detail.css';
 
 class Detail extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      order: props.data,
-      membership: null
-    };
-  }
-  async componentWillMount() {
-    const {order} = this.state;
-    const payment = order.payments && order.payments[0];
-    if (payment && payment.membership && payment.membership.id) {
-      const membership = await client.membership.get(payment.membership.id, {
-        include: ['package']
-      });
-      const reducedMemberships = await client.middleware('/transaction/reduce-memberships', {
-        userId: order.userId,
-        venueId: order.class.template.venueId
-      });
-      const reducedMembership = _.find(reducedMemberships, (reduced) => {
-        return reduced.membershipId === membership.id
-      });
-      this.setState({
-        membership: Object.assign(
-          membership,
-          reducedMembership,
-          {
-            name: membership.package.name,
-            lifetime: membership.package.lifetime,
-            category: membership.package.category,
-            passes: membership.package.passes,
-            color: membership.package.color,
-          }
-        )
-      });
-    }
-  }
-  get actions() {
-    let {order} = this.state;
-    let cancellableBefore = moment(order.class.date)
-        .hour(order.class.from.hour)
-        .minute(order.class.from.minute);
+    const {bookingType, bookingId} = props;
 
-    if (order.cancelledAt) {
+    this.state = {
+      memberAvatar     : '',
+      memberName       : '',
+      memberEmail      : '',
+      memberPhone      : '',
+      bookingTime      : '',
+      bookingPasscode  : '',
+      className        : '',
+      classDescription : '',
+      trainerName      : '',
+      status           : [],
+      startsAt         : '',
+      endsAt           : '',
+      payment          : {},
+    };
+
+    bookingType === 'order'
+      ? this.getOrderById(bookingId)
+      : this.getPTSessionById(bookingId);
+  }
+
+  async getOrderById(id) {
+    const order = await client.order.get(id, {
+      include: [
+        {
+          'payments': {
+            'membership': [
+              {'member': 'avatar'},
+              'package',
+            ]
+          }
+        },
+        {
+          'class': ['template', 'trainer'],
+        }
+      ]
+    });
+
+    let membership = order.payments[0].membership,
+      memberAvatar = '',
+      memberName = '',
+      memberEmail = '',
+      memberPhone = '';
+    if(membership) {
+      memberAvatar = <UIFramework.Image size={80} src={membership.member.avatar} />;
+      memberName = membership.member.nickname;
+      memberEmail = membership.member.email;
+      memberPhone = membership.member.phone;
+    };
+    this.setState({
+      memberAvatar,
+      memberName,
+      memberEmail,
+      memberPhone,
+      bookingTime   : format(order.createdAt, 'YYYY年MM月DD日 HH:mm:ss'),
+      bookingPasscode  : order.passcode,
+      className     : order.class.template.name,
+      classDescription : order.class.template.description,
+      trainerName   : order.class.trainer.fullname.first
+                        + order.class.trainer.fullname.last,
+      status        : this.getStatus(order),
+      startsAt      : format(order.class.date, 'YYYY-MM-DD ')
+                        + getFormatTime(order.class.from),
+      endsAt        : format(order.class.date, 'YYYY-MM-DD ')
+                        + getFormatTime(order.class.to),
+      payment       : order.payments[0],
+    });
+  }
+
+  async getPTSessionById(id) {
+    let ptSession = await client.ptSession.get(id, {
+      include: [
+        {'member': 'avatar'},
+        'trainer',
+        {'payment': {'membership': 'package'}},
+      ],
+    });
+
+    const trainerName = ptSession.trainer.fullname.first + ptSession.trainer.fullname.last;
+    this.setState({
+      memberAvatar  : <UIFramework.Image size={80} src={ptSession.member.avatar} />,
+      memberName    : ptSession.member.nickname,
+      memberEmail   : ptSession.member.email,
+      memberPhone   : ptSession.member.phone,
+      bookingTime      : format(ptSession.createdAt, 'YYYY年MM月DD日 HH:mm:ss'),
+      bookingPasscode  : ptSession.passcode,
+      className     : `私教 (${trainerName})`,
+      classDescription : '',
+      trainerName,
+      status        : this.getStatus(ptSession),
+      startsAt      : ptSession.startsAt,
+      endsAt        : ptSession.endsAt,
+      payment       : ptSession.payment,
+    });
+  }
+
+  getStatus(item) {
+    let status = {'createdAt': item.createdAt};
+
+    if(item.cancelledAt) {
+      status['cancelledAt'] = item.cancelledAt;
+    } else if(item.checkedInAt) {
+      status['checkedInAt'] = item.checkedInAt;
+    };
+    return status;
+  }
+
+  getStatusTags() {
+    const {status, endsAt} = this.state;
+
+    if(status.cancelledAt) {
+      return [<span key='cancel' className='status-tag red-bg'>已取消</span>];
+    };
+
+    let tags = [];
+    if( isAfter(new Date(), endsAt) ) {
+      tags.push(<span key='complete' className='status-tag green-bg'>课程已完成</span>);
+    };
+
+    status.checkedInAt
+      ? tags.push(<span key='checkIn' className='status-tag green-bg'>已签到</span>)
+      : tags.push(<span key='checkIn' className='status-tag'>尚未签到</span>);
+
+    return tags;
+  }
+
+  getActions() {
+    const {status, startsAt} = this.state;
+    if (status.cancelledAt) {
       return [];
-    }
+    };
 
     let actions = [];
-    if (!order.checkedInAt) {
+    if (!status.checkedInAt) {
       actions.push(<a key="checkin" onClick={this.onCheckIn.bind(this)}>签到</a>);
-    }
-    if (moment().isBefore(cancellableBefore)) {
-      actions.push(<a key="cancel" onClick={this.onCancel.bind(this)}>取消</a>);
-    }
+    };
+    if ( isAfter(startsAt, new Date()) ) {
+      actions.push(<a key="cancel" onClick={this.onCancel.bind(this)}>取消订单</a>);
+    };
     return actions;
   }
+
   async onCheckIn () {
-    let {order} = this.state;
+    let {status} = this.state;
+    const{bookingId, bookingType} = this.props;
     try {
-      if (order.isPT) {
-        await client.ptSession.checkInById(order.id);
+      if (bookingType === 'order') {
+        await client.order.checkInById(bookingId);
       } else {
-        await client.order.checkInById(order.id);
+        await client.ptSession.checkInById(bookingId);
       }
-      order.checkedInAt = Date();
-      this.setState({order});
+      status.checkedInAt = new Date();
+      this.setState({status});
     } catch (error) {
       UIFramework.Message.error('签到失败');
     }
   }
-  async onUncheck () {
-    let {order} = this.state;
-    delete order.checkedInAt;
-    this.setState({order});
-    await client.order.uncheckById(order.id);
-  }
+
   async onCancel() {
     let self = this;
     UIFramework.Modal.confirm({
       title: '确认取消该订单?',
       content: '确认取消该订单?',
       onOk: async () => {
-        let {order} = this.state;
-        order.cancelledAt = new Date();
-        this.setState({order});
-        if (order.isPT) {
-          await client.ptSession.cancelById(order.id);
-        } else {
-          await client.order.cancelById(order.id);          
+        let {status} = this.state;
+        const{bookingId, bookingType} = this.props;
+        try {
+          if (bookingType === 'order') {
+            await client.order.cancelById(bookingId);
+          } else {
+            await client.ptSession.cancelById(bookingId);
+          }
+          status.cancelledAt = new Date();
+          this.setState({status});
+        } catch (error) {
+          UIFramework.Message.error('取消失败');
         }
-        // await self.props.updateMaster();
       }
     });
   }
-  payment(payments) {
+
+  renderPayment(payment) {
     let description = '未知方式支付';
     let preview = null;
     let metadata = null;
-    const data = payments && payments[0];
-    if (this.state.membership) {
-      const membership = this.state.membership;
-
-      description = `使用 ${membership.name} 抵扣 ${payments[0].fee} 元`;
+    if(payment.membership) {
+      const membership = Object.assign(payment.membership.package, payment.membership);
+      description = `使用 ${membership.name} 抵扣 ${payment.fee} 元`;
       preview = <UIMembershipCard data={membership} type="membership"/>;
       metadata = (
         <div className="order-payment-metadata-container">
@@ -136,26 +225,24 @@ class Detail extends React.Component {
           }
           <div className="detail-card-row">
             <label>开卡时间</label>
-            <span>{moment(membership.createdAt).format('YYYY[年]MM[月]DD[日]')}</span>
+            <span>{format(membership.createdAt, 'YYYY年MM月DD日')}</span>
           </div>
           {
             'expiredAt' in membership ?
             <div className="detail-card-row">
               <label>到期时间</label>
               <span>
-                {moment(membership.expiredAt).format('YYYY[年]MM[月]DD[日]')}
+                {format(membership.expiredAt, 'YYYY年MM月DD日')}
               </span>
             </div> : null
           }
         </div>
       );
-    } else if (data && data._raw) {
-      if (data._raw.method === 'wechat') {
-        description = `使用微信支付：${data.fee} ${data._raw.currency}`;
-      } else {
-        description = `使用支付宝支付：${data.fee} ${data._raw.currency}`;
-      }
-    }
+    } else if (payment && payment._raw) {
+      description = (payment._raw.method === 'wechat')
+        ? `使用微信支付：${payment.fee} ${payment._raw.currency}`
+        : `使用支付宝支付：${payment.fee} ${payment._raw.currency}`;
+    };
     return (
       <div className="detail-card order-payment">
         <h3>费用支付</h3>
@@ -165,114 +252,113 @@ class Detail extends React.Component {
       </div>
     );
   }
-  history(order) {
+
+  renderHistory(status) {
     var logs = [];
     ['cancelledAt', 'checkedInAt', 'createdAt'].map((field) => {
-      var status;
-      if (order[field]) {
+      let statu;
+      if (status[field]) {
         switch (field) {
         case 'cancelledAt':
-          status = 'cancel';
+          statu = 'cancel';
           break;
         case 'checkedInAt':
-          status = 'checkin';
+          statu = 'checkin';
           break;
         default:
-          status = 'paid';
+          statu = 'create';
           break;
         }
-        logs.push({status: status, createdAt: order[field]});
-      }        
+        logs.push({status: statu, createdAt: status[field]});
+      }
     });
     return (
       <div className="detail-card detail-card-right">
         <h3>订单历史记录</h3>
-        <UIHistory 
+        <UIHistory
           data={logs}
           colors={{
-            paid: '#80c7e8',
-            cancel: '#ff8ac2',
-            checkin: '#6ed4a4',
+            create   : '#80c7e8',
+            cancel   : '#ff8ac2',
+            checkin  : '#6ed4a4',
           }}
           description={(item) => {
             switch (item.status) {
-              case 'paid'   : return '用户预定了课程'; break;
-              case 'cancel' : return '用户取消了预定'; break;
-              case 'checkin': return '用户签到了课程'; break;
+              case 'create'   : return '用户预定了课程';
+              case 'cancel'   : return '用户取消了预定';
+              case 'checkin'  : return '用户签到了课程';
             }
           }}
         />
       </div>
     );
   }
-  render() {
-    const {order} = this.state;
-    const { date, from, to, trainer } = order.class;
-    const now = moment();
-    let tags = [];
-    if (now.isAfter(moment(date).hour(to.hour).minute(to.minute))) {
-      tags.push(<span key='complete' className='status-tag green-bg'>课程已完成</span>);
-    }
-    if (order.checkedInAt) {
-      tags.push(<span key='checkIn' className='status-tag green-bg'>已签到</span>);
-    } else {
-      tags.push(<span key='checkIn' className='status-tag'>尚未签到</span>);
-    }
 
-    if (order.cancelledAt) {
-      tags = [<span key='cancel' className='status-tag red-bg'>已取消</span>];
-    }
-              
+  render() {
+    const {memberAvatar, memberName, memberEmail, memberPhone, bookingTime,
+      bookingPasscode, className, classDescription, trainerName, status,
+      startsAt, endsAt, payment} = this.state;
+
     return (
-      <div className="detail-cards order-detail-container">
+      <div className="detail-cards order-detail-container detail">
         <div className="detail-cards-left">
-          <MasterDetail.Card actions={this.actions}>
+          <MasterDetail.Card actions={this.getActions()}>
             <div className="detail-card" style={{height: '100%'}}>
               <h3>订单主要信息</h3>
-              {tags}
+              {this.getStatusTags()}
               <div className="order-member">
-                <UIFramework.Image size={80} src={order.member.avatar} />
+                {memberAvatar}
+                <div className="detail-card-row">
+                  <label>订单号</label>
+                  <span>{bookingPasscode}</span>
+                </div>
+                <div className="detail-card-row">
+                  <label>订单时间</label>
+                  <span>{bookingTime}</span>
+                </div>
                 <div className="detail-card-row">
                   <label>用户</label>
-                  <span>{order.member.nickname}</span>
+                  <span>{memberName}</span>
                 </div>
                 <div className="detail-card-row">
                   <label>手机号码</label>
-                  <span>{order.member.phone}</span>
+                  <span>{memberPhone}</span>
                 </div>
                 <div className="detail-card-row">
                   <label>电子邮箱</label>
-                  {order.user.email.endsWith('theweflex.com') ? <span>未设置</span> : <a href={'`mailto:' + order.user.email}>{order.user.email}</a>}
+                  {
+                    memberEmail.endsWith('theweflex.com')
+                      ? <span>未设置</span>
+                      : <a href={'mailto:' + memberEmail}>{memberEmail}</a>
+                  }
                 </div>
               </div>
               <div className="order-class">
                 <div className="detail-card-row">
                   <label>报名课程</label>
-                  <span>{order.class.template.name}</span>
+                  <span>{className}</span>
                 </div>
                 <div className="detail-card-row">
                   <label>课程教练</label>
-                  <span>{trainer.fullname.first} {trainer.fullname.last}</span>
-                </div>
-                <div className="detail-card-row">
-                  <label>课程日期</label>
-                  <span>{moment(date).format('MM[月]DD[日]')}</span>
+                  <span>{trainerName}</span>
                 </div>
                 <div className="detail-card-row">
                   <label>课程时间</label>
-                  <span>{getFormatTime(from)} - {getFormatTime(to)}</span>
+                  <span>
+                    {format(startsAt, 'YYYY年MM月DD日 HH:ss ~ ') + format(endsAt, 'HH:ss')}
+                  </span>
                 </div>
                 <div className="detail-card-row">
                   <label>课程详情</label>
-                  <span>{order.class.template.description || '这个人很懒，无课程详情'}</span>
+                  <span>{classDescription || '无课程详情'}</span>
                 </div>
               </div>
             </div>
           </MasterDetail.Card>
         </div>
         <div className="detail-cards-right">
-          {this.payment(order.payments)}
-          {this.history(order)}
+          {this.renderPayment(payment)}
+          {this.renderHistory(status)}
         </div>
       </div>
     );

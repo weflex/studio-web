@@ -264,7 +264,7 @@ export default class extends React.Component {
         paymentOptionIds = [];
       }      
     }
-    console.log(paymentOptionIds);
+
     if (this.state.memberships.length > 0) {
       membershipOptions = this.state.memberships.map((item) => {
         const disabled = paymentOptionIds.indexOf('*') > -1 ?
