@@ -4,7 +4,7 @@ import {range} from 'lodash';
 import moment from 'moment';
 import {client} from '../../api';
 import UIFramework from 'weflex-ui';
-import {Row, Col, Button, Input, Select, Table, DatePicker} from 'antd';
+import {Row, Col, Button, Input, Select, Table, DatePicker, Pagination} from 'antd';
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 import TrainerProfile from './profile';
@@ -99,19 +99,19 @@ class PTSchedule extends React.Component {
 }
 
 class TrainerSalesList extends React.Component {
-
   constructor (props) {
     super(props);
-
     const { trainerId, trainerName } = props;
 
     this.state = {
-      salesList    : [],
-      pageNumber   : 1,
+      salesList  : [],
+      salesTotal : 0,
+      pageNumber : 1,
     }
 
     this.cache = {
       pageSize  : 7,
+      pageNumber: 1,
       startDate : "",
       endDate   : "",
       columns   : [{
@@ -138,7 +138,7 @@ class TrainerSalesList extends React.Component {
       accessToken : ( JSON.parse(localStorage["weflex.user"]) ).accessToken,
     }
 
-    this.getSalesData();
+    this.updateSalesList(props.trainerId);
 
     this.onDateChange = this.onDateChange.bind(this);
     this.onPageChange = this.onPageChange.bind(this);
@@ -146,49 +146,32 @@ class TrainerSalesList extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.trainerId !== this.props.trainerId) {
-      this.getSalesData(nextProps.trainerId);
-      this.setState({pageNumber: 1});
-    }
+      this.cache.pageNumber = 1;
+      this.updateSalesList(nextProps.trainerId);
+    };
   }
 
-  async getSalesData (trainerId) {
-    const {startDate, endDate} = this.cache;
-    const salesId = trainerId || this.props.trainerId;
-    if (!salesId) {
+  async updateSalesList (trainerId) {
+    const {startDate, endDate, pageSize, pageNumber} = this.cache;
+    if (!trainerId) {
       this.setState({salesList: []});
       return;
-    }
+    };
 
     let queryTerms = {
       where: {
-        salesId,
+        salesId: trainerId,
       },
-      include:[{
-        relation: 'member',
-      }, {
-        relation: 'package',
-      }]
-    }
+      include:['member', 'package'],
+      limit: pageSize,
+      skip: (pageNumber - 1) * pageSize,
+    };
     if (startDate && endDate) {
       queryTerms.where['createdAt'] = {between: [startOfDay(startDate), endOfDay(endDate)]};
-    }
+    };
 
-    const salesData = await client.membership.list(queryTerms);
-    this.updateSalesListToState(salesData);
-  }
-
-  updateSalesListToState (salesData) {
-    if (salesData.length < 1) {
-      this.setState({salesList: []});
-      return;
-    }
-
-    const salesList = this.toSalesList(salesData);
-    this.setState({salesList});
-  }
-
-  toSalesList (salesData) {
-    let salesList = salesData.map((item, i) => {
+    const salesTotal = ( await client.membership.count(queryTerms) ).count;
+    const salesList = ( await client.membership.list(queryTerms) ).map((item, i) => {
       return {
         key         : item.id,
         createDate  : format(item.createdAt, "YYYY-MM-DD"),
@@ -196,14 +179,17 @@ class TrainerSalesList extends React.Component {
         price       : item.price,
         memberName  : !item.member ? "" : item.member.nickname,
         salesName   : this.props.trainerName,
-      }
-    })
-    return salesList;
+      };
+    });
+
+    salesTotal > 0
+      ? this.setState({salesList, salesTotal, pageNumber})
+      : this.setState({salesList: [], salesTotal: 0, pageNumber: 1});
   }
 
   renderButtonExport () {
     const {trainerId, trainerName} = this.props;
-    const {salesList} = this.state;
+    const {salesTotal} = this.state;
     const {accessToken, startDate, endDate} = this.cache;
     let startsAt = "", endsAt = "";
     let fileName = trainerName + "的销售记录" + format(new Date(),"YYYY.MM.DD") + ".xlsx";
@@ -213,13 +199,13 @@ class TrainerSalesList extends React.Component {
       endsAt = "&endsAt=" + endDate;
     } else {
       startsAt = "&startsAt=2010-01-01";
-    }
+    };
 
-    const buttonExport = salesList.length > 0
+    const buttonExport = salesTotal > 0
       ? <a className="ant-btn ant-btn-sm"
         href={ "/api/collaborators/" + trainerId + "/sales/export?access_token=" + accessToken + startsAt + endsAt }
-        download={ fileName } >导 出</a>
-      : <Button size="small" onClick={() => {this.alertEmptyDataExport()}}>导 出</Button>
+        download={fileName} >导 出</a>
+      : <Button size="small" disabled>导 出</Button>;
 
     return buttonExport;
   }
@@ -227,20 +213,17 @@ class TrainerSalesList extends React.Component {
   onDateChange (date, dateString) {
     this.cache.startDate = dateString[0]? dateString[0] : "";
     this.cache.endDate = dateString[1]? dateString[1] : "";
-    this.getSalesData();
-    this.setState({pageNumber:1});
+    this.cache.pageNumber = 1;
+    this.updateSalesList(this.props.trainerId);
   }
 
   onPageChange (page, pageSize) {
-    this.setState({pageNumber:page});
-  }
-
-  alertEmptyDataExport () {
-    UIFramework.Message.success('无数据可导出');
+    this.cache.pageNumber = page;
+    this.updateSalesList(this.props.trainerId);
   }
 
   render () {
-    const {salesList, pageNumber} = this.state;
+    const {salesList, salesTotal, pageNumber} = this.state;
     const {columns, pageSize} = this.cache;
 
     return (
@@ -257,12 +240,19 @@ class TrainerSalesList extends React.Component {
           </ul>
         </div>
         {
-          salesList.length === 0
-          ? <div>没有找到销售记录</div>
-          : <div className='trainerSalesList'>
-              <div>一共找到<b className="red">{salesList.length}</b>条销售记录</div>
-              <Table columns={columns} dataSource={salesList} pagination={{pageSize, onChange: this.onPageChange, current: pageNumber}}/>
-            </div>
+          salesTotal === 0
+            ? <div>没有找到销售记录</div>
+            : <div className='trainerSalesList'>
+                <div>一共找到<b className="red">{salesTotal}</b>条销售记录</div>
+                <Table columns={columns} dataSource={salesList} pagination={false}/>
+                <Pagination
+                  style={{marginTop:'20px', float:'right'}}
+                  current={pageNumber}
+                  total={salesTotal}
+                  pageSize={pageSize}
+                  onChange={this.onPageChange}
+                />
+              </div>
         }
       </Row>
     )
