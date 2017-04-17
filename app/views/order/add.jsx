@@ -82,7 +82,12 @@ export default class extends React.Component {
     const venue = await client.user.getVenueById();
     if (phone.length === 11) {
       const members = await client.member.list({
-        where: {phone},
+        where: {
+          phone,
+          trashedAt: {
+            exists: false
+          }
+        },
         include: ['avatar']
       });
       if (members.length === 0) {
@@ -94,7 +99,7 @@ export default class extends React.Component {
         try {
           memberships = await client.context.requestMiddleware('/transaction/reduce-memberships', {
             userId: member.userId,
-            venueId: venue.id,
+            memeberId: member.id
           });
         } catch (error) {
           console.error(error);
