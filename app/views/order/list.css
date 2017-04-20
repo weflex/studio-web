@@ -6,6 +6,15 @@
   padding: 0 20px;
 }
 
+.wrap-button-booking {
+  overflow: hidden;
+}
+
+.wrap-button-booking > Button {
+  float: right;
+  margin-top: 15px;
+}
+
 .wrap-booking-manager tr td {
   padding: 8px 8px;
 }
@@ -22,4 +31,12 @@
   width: 45px;
   font-weight: normal;
   text-align: center;
+}
+
+.wrap-booking-manager .ant-menu-item-selected a {
+  color: #108ee9;
+}
+
+.booking-menu {
+  margin-bottom: 10px;
 }

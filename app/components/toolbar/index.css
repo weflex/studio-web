@@ -20,6 +20,7 @@
   margin: 0;
   height: 52px;
   line-height: 52px;
+  min-width: 320px;
 }
 
 .toolbar > ul, .toolbar > div {

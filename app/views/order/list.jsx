@@ -1,26 +1,28 @@
 import React from 'react';
-import {Table, Pagination, Tabs} from 'antd';
+import {Table, Pagination, Menu, Button} from 'antd';
 import {client} from '../../api';
 import {Link} from 'react-router-component';
 import {format} from 'date-fns';
 import {getFormatTime} from '../calendar/util.js';
 import {filter} from 'lodash';
+import {find} from 'lodash';
+import UIFramework from 'weflex-ui';
+import AddBookingView from './add';
 import './list.css';
-const TabPane = Tabs.TabPane;
 
 class List extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      orderList           : [],
-      ptSessionList       : [],
-      orderTotal          : 0,
-      ptSessionTotal      : 0,
+      bookingList    : [],
+      bookingTotal   : 0,
+      showAddBooking : false,
+      pageNumber     : 1,
     };
 
     this.config = {
-      columns   : [{
+      orderColumns     : [{
         title     : '订单号',
         dataIndex : 'bookingNumber',
         key       : 'bookingNumber',
@@ -58,32 +60,38 @@ class List extends React.Component {
       }],
       pageSize : 20,
     };
+    this.config.ptSessionColumns = filter(this.config.orderColumns,
+      (item)=>{return item.dataIndex !== 'className'});
 
     this.cache = {
-      venueId             : '',
-      orderPageNumber     : 1,
-      ptSessionPageNumber : 1,
+      venueId    : '',
+      pageNumber : 1,
     };
 
-    this.onOrderPageNumberChange = this.onOrderPageNumberChange.bind(this);
-    this.onPTSessionPageNumberChange = this.onPTSessionPageNumberChange.bind(this);
+    this.onPageNumberChange = this.onPageNumberChange.bind(this);
+    this.bookSuccess = this.bookSuccess.bind(this);
+    this.showViewAddBooking = this.showViewAddBooking.bind(this);
     this.updateBooking();
   }
 
   componentWillReceiveProps(nextProps) {
-    this.updateBooking();
+    this.cache.pageNumber = 1;
+    this.updateBooking(nextProps.bookingType);
   }
 
-  async updateBooking() {
+  async updateBooking(bookingType) {
+    bookingType = bookingType || this.props.bookingType  || 'order';
+
     if(!this.cache.venueId) {
       this.cache.venueId = ( await client.user.getVenueById() ).id;
     };
-    this.updateOrderState();
-    this.updatePTSessionState();
+    bookingType === 'order'
+      ? this.updateOrderState()
+      : this.updatePTSessionState();
   }
 
   async updateOrderState() {
-    const {orderPageNumber, venueId} = this.cache;
+    const {pageNumber, venueId} = this.cache;
     const {pageSize} = this.config;
 
     const orderTotal = ( await client.order.count({where:{venueId}}) ).count;
@@ -91,23 +99,26 @@ class List extends React.Component {
       where   : {venueId},
       include : [
         {
-          'payments': {'membership': ['package', 'member']}
+          'class': ['template', 'trainer']
         },
         {
-          'class': ['template', 'trainer']
+          'user': {'members': 'avatar'},
         },
       ],
       limit   : pageSize,
-      skip    : (orderPageNumber - 1) * pageSize,
+      skip    : (pageNumber - 1) * pageSize,
     }) ).map( (item, i)=>{
+      const nickName = ( find(item.user.members, (member) => {
+        return item.venueId === member.venueId && !member.trashedAt;
+      }) || find(item.user.members, (member) => {
+        return item.venueId === member.venueId;
+      }) ).nickname;
       return {
         key            : item.id,
-        bookingNumber  : <Link href={'/order?bookingType=order&bookingId='
-                           + item.id}>{item.passcode}</Link>,
+        bookingNumber  : <Link href={'/order/order/' + item.id}>{item.passcode}</Link>,
         bookingTime    : format(item.createdAt, 'YYYY.MM.DD HH:mm:ss'),
         bookingStatus  : this.getStatusLabel(item),
-        nickName       : item.payments[0].membership
-                           ? item.payments[0].membership.member.nickname : '',
+        nickName,
         className      : item.class.template.name,
         classTime      : format(item.class.date, 'YYYY.MM.DD ') + getFormatTime(item.class.from)
                            + ' ~ ' + getFormatTime(item.class.to),
@@ -115,11 +126,11 @@ class List extends React.Component {
       };
     } );
 
-    this.setState({orderList, orderTotal});
+    this.setState({bookingList: orderList, bookingTotal: orderTotal, pageNumber});
   }
 
   async updatePTSessionState() {
-    const {ptSessionPageNumber, venueId} = this.cache;
+    const {pageNumber, venueId} = this.cache;
     const {pageSize} = this.config;
 
     const ptSessionTotal = ( await client.ptSession.count({where: {venueId}}) ).count;
@@ -133,12 +144,11 @@ class List extends React.Component {
         },
       ],
       limit   : pageSize,
-      skip    : (ptSessionPageNumber - 1) * pageSize,
+      skip    : (pageNumber - 1) * pageSize,
     }) ).map( (item, i)=>{
       return {
         key            : item.id,
-        bookingNumber  : <Link href={'/order?bookingType=ptSession&bookingId='
-                           + item.id}>{item.passcode}</Link>,
+        bookingNumber  : <Link href={'/order/ptSession/' + item.id}>{item.passcode}</Link>,
         bookingTime    : format(item.createdAt,'YYYY.MM.DD HH:mm:ss'),
         bookingStatus  : this.getStatusLabel(item),
         nickName       : item.member.nickname,
@@ -149,7 +159,7 @@ class List extends React.Component {
       };
     } );
 
-    this.setState({ptSessionList, ptSessionTotal});
+    this.setState({bookingList: ptSessionList, bookingTotal: ptSessionTotal, pageNumber});
   }
 
   getStatusLabel(item) {
@@ -165,43 +175,61 @@ class List extends React.Component {
              style={{backgroundColor:color}}>{text}</label>;
   }
 
-  onOrderPageNumberChange(page, pageSize) {
-    this.cache.orderPageNumber = page;
-    this.updateOrderState();
+  onPageNumberChange(page, pageSize) {
+    this.cache.pageNumber = page;
+    this.updateBooking();
   }
 
-  onPTSessionPageNumberChange(page, pageSize) {
-    this.cache.ptSessionPageNumber = page;
-    this.updatePTSessionState();
+  showViewAddBooking() {
+    this.setState({showAddBooking: true});
+  }
+
+  bookSuccess() {
+    this.cache.pageNumber = 1;
+    this.setState({showAddBooking: false})
+    this.updateBooking();
   }
 
   render() {
-    const {orderList, orderTotal, ptSessionList, ptSessionTotal} = this.state;
-    const {columns, pageSize} = this.config;
+    const {bookingList, bookingTotal, showAddBooking, pageNumber} = this.state;
+    const {orderColumns, ptSessionColumns, pageSize} = this.config;
+    const {bookingType} = this.props;
 
     return (
       <div className='wrap-booking-manager'>
-        <Tabs defaultActiveKey="1">
-          <TabPane tab="团课" key="1">
-            <Table columns={columns} dataSource={orderList} pagination={false} />
-            <Pagination className='pagination'
-              pageSize={pageSize}
-              total={orderTotal}
-              onChange={this.onOrderPageNumberChange}
-            />
-          </TabPane>
-          <TabPane tab="私教" key="2">
-            <Table columns={filter(columns, (item)=>{return item.dataIndex !== 'className'})}
-              dataSource={ptSessionList}
-              pagination={false}
-            />
-            <Pagination className='pagination'
-              pageSize={pageSize}
-              total={ptSessionTotal}
-              onChange={this.onPTSessionPageNumberChange}
-            />
-          </TabPane>
-        </Tabs>
+        <div className='wrap-button-booking'>
+          <Button onClick={this.showViewAddBooking}>创建订单</Button>
+        </div>
+
+        <Menu className='booking-menu' selectedKeys={[bookingType]} mode="horizontal">
+          <Menu.Item key="order">
+            <Link href={'/order/order'}>团课</Link>
+          </Menu.Item>
+          <Menu.Item key="ptSession">
+            <Link href={'/order/ptSession'}>私教</Link>
+          </Menu.Item>
+        </Menu>
+
+        <Table
+          columns={bookingType ==='order' ? orderColumns : ptSessionColumns}
+          dataSource={bookingList}
+          pagination={false}
+        />
+        <Pagination
+          className='pagination'
+          current={pageNumber}
+          pageSize={pageSize}
+          total={bookingTotal}
+          onChange={this.onPageNumberChange}
+        />
+
+        <UIFramework.Modal
+          title="添加新订单"
+          footer=""
+          visible={showAddBooking}
+          onCancel={ () => {this.setState({showAddBooking: false});} }>
+          <AddBookingView onComplete={this.bookSuccess}/>
+        </UIFramework.Modal>
       </div>
     );
   }
