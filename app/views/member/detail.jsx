@@ -477,8 +477,16 @@ class MemberOperation extends React.Component {
 
   async componentWillMount() {
     const { memberId, userId, venueId } = this.props;
+    const memberCreatedAt = ( await client.member.get(memberId) ).createdAt
+
     const orderList = ( await client.order.list({
-      where   : { userId, venueId },
+      where   : {
+        userId,
+        venueId,
+        createdAt: {
+          gt: memberCreatedAt,
+        }
+      },
       include : [
         {
           "class" : "template"
@@ -490,7 +498,7 @@ class MemberOperation extends React.Component {
     }) ).map( this.toOrderItems );
 
     const ptSessionList = ( await client.ptSession.list({
-      where   : { userId, venueId },
+      where   : { memberId },
       include : [
         "trainer",
         {
