@@ -1,24 +1,24 @@
-.detail .order-user {
+.detail .booking-user {
   padding-bottom: 5px;
   margin-bottom: 10px;
   border-bottom: 1px solid #E8E8E8;
 }
 
-.detail .order-payment fieldset {
+.detail .booking-payment fieldset {
   border: 0;
   border-top: 1px solid #E8E8E8;
   text-align: center;
   margin: 10px 0;
 }
 
-.detail .order-payment fieldset legend {
+.detail .booking-payment fieldset legend {
   font-size: 12px;
   color: #9B9B9B;
   padding: 0 5px;
   box-sizing: border-box;
 }
 
-.detail .order-payment-description {
+.detail .booking-payment-description {
   color: #9B9B9B;
   font-size: 14px;
   font-family: 'PingFang SC', 'Open Sans', sans-serif;
@@ -26,11 +26,11 @@
   margin: 10px 0;
 }
 
-.order-detail-container h3 {
+.booking-detail-container h3 {
   display: inline-block;
 }
 
-.order-detail-container .status-tag {
+.booking-detail-container .status-tag {
   margin: 0 5px;
   padding: 4px 6px;
   background-color: #a1a2a3;
@@ -39,10 +39,10 @@
   box-sizing: border-box;
 }
 
-.order-detail-container .green-bg {
+.booking-detail-container .green-bg {
   background-color: #6ED4A4;
 }
 
-.order-detail-container .red-bg {
+.booking-detail-container .red-bg {
   background-color: #FF8AC2;
 }
