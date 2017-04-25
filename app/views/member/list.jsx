@@ -122,18 +122,13 @@ class List extends React.Component {
     return this.members;
   }
   async componentDidMount() {
-    let self = this;
-    let members = await self.getMembers();
-    if (members.length) {
-      self.onMemberChange = async (data) => {
-        if (data.model === 'Member') {
-          // TODO(yorkie): doesn't handle with refreshing when deleting to zero.
-          await self.refs.masterDetail.updateMasterSource();
-        }
-      };
-    }
-    self.setState({
-      showImporter: !members.length,
+    const venueId = ( await client.user.getVenueById() ).id;
+    const memberCount = ( await client.member.count({
+      where: {venueId}
+    }) ).count;
+
+    this.setState({
+      showImporter: !memberCount,
     });
   }
   componentWillUnmount() {
@@ -149,12 +144,13 @@ class List extends React.Component {
     });
   }
   async onAddMemberDone() {
+    await this.refs.masterDetail.updateMasterSource();
     this.hideModal();
   }
   render() {
     return (
       <div style={{height: '100%'}}>
-        {this.state.showImporter ? <Importer />:<MasterDetail 
+        {this.state.showImporter ? <Importer />:<MasterDetail
           ref="masterDetail"
           pathname="member"
           className="membership"
@@ -166,7 +162,7 @@ class List extends React.Component {
           onCancel={this.hideModal.bind(this)}
           title="邀请新会员"
           footer="">
-          <ViewToAddMember 
+          <ViewToAddMember
             onComplete={this.onAddMemberDone.bind(this)}
           />
         </UIFramework.Modal>
