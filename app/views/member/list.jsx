@@ -124,7 +124,12 @@ class List extends React.Component {
   async componentDidMount() {
     const venueId = ( await client.user.getVenueById() ).id;
     const memberCount = ( await client.member.count({
-      where: {venueId}
+      where: {
+        venueId,
+        trashedAt: {
+          exists: false
+        }
+      }
     }) ).count;
 
     this.setState({

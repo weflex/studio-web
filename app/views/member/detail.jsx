@@ -333,6 +333,8 @@ class MembershipsCard extends React.Component {
      * @property {Detail} context - the context
      */
     context: React.PropTypes.object,
+
+    onComplete: React.PropTypes.func,
   };
 
   /**
@@ -350,20 +352,12 @@ class MembershipsCard extends React.Component {
     };
   }
 
-  /**
-   * In this default delegate, we sync the member object by including
-   * memberships and its payments and package
-   *
-   * @method componentDidMount
-   * @async
-   */
-  async componentDidMount() {
-    let self = this;
-    await self.refresh();
-
+  componentDidMount() {
+    this.refresh();
   }
 
-  componentWillUnmount() {
+  componentWillReceiveProps(nextProps) {
+    this.refresh();
   }
 
   /**
@@ -421,14 +415,14 @@ class MembershipsCard extends React.Component {
         key={key}
         width={width}
         data={data}
-        onComplete={this.refresh.bind(this)}
+        onComplete={this.props.onComplete}
         member={this.state.member}
       />;
     }).concat(
       <MembershipCard
         key="add"
         width={width}
-        onComplete={this.refresh.bind(this)}
+        onComplete={this.props.onComplete}
         member={this.state.member}
       />
     );
@@ -473,18 +467,23 @@ class MemberOperation extends React.Component {
         membershipDelete : "#ff8ac2",
       },
     };
+
+    this.updateOperationList();
   }
 
-  async componentWillMount() {
+  componentWillReceiveProps(nextProps) {
+    this.updateOperationList();
+  }
+
+  async updateOperationList() {
     const { memberId, userId, venueId } = this.props;
-    const memberCreatedAt = ( await client.member.get(memberId) ).createdAt
 
     const orderList = ( await client.order.list({
       where   : {
         userId,
         venueId,
         createdAt: {
-          gt: memberCreatedAt,
+          gt: this.props.memberCreatedAt,
         }
       },
       include : [
@@ -601,6 +600,12 @@ class MemberOperation extends React.Component {
 export default class Detail extends React.Component {
   constructor(props) {
     super(props);
+
+    this.updateDetailView = this.updateDetailView.bind(this);
+  }
+
+  updateDetailView() {
+    this.setState({});
   }
 
   render() {
@@ -609,10 +614,10 @@ export default class Detail extends React.Component {
       <div className="membership-detail-container">
         <MasterDetail.Cards position="left">
           <UserProfileCard context={this} {...member} />
-          <MembershipsCard context={this} member={member} />
+          <MembershipsCard context={this} member={member} onComplete={this.updateDetailView} />
         </MasterDetail.Cards>
         <MasterDetail.Cards position="right">
-          <MemberOperation memberId={member.id} userId={member.userId} venueId={member.venueId}/>
+          <MemberOperation memberId={member.id} memberCreatedAt={member.createdAt} userId={member.userId} venueId={member.venueId}/>
         </MasterDetail.Cards>
       </div>
     );
