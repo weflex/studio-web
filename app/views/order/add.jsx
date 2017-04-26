@@ -99,7 +99,7 @@ export default class extends React.Component {
         try {
           memberships = await client.context.requestMiddleware('/transaction/reduce-memberships', {
             userId: member.userId,
-            memeberId: member.id
+            memberId: member.id
           });
         } catch (error) {
           console.error(error);
@@ -269,7 +269,6 @@ export default class extends React.Component {
         paymentOptionIds = [];
       }      
     }
-    console.log(paymentOptionIds);
     if (this.state.memberships.length > 0) {
       membershipOptions = this.state.memberships.map((item) => {
         const disabled = paymentOptionIds.indexOf('*') > -1 ?
