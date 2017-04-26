@@ -13,15 +13,22 @@ class TrainerList extends React.Component {
     this.state = {
       dataSource: [],
     };
+
+    this.cache = {
+      venueId: '',
+    };
+
+    this.updateTrainerList();
   }
 
-  // component lifecycle functions
+  async updateTrainerList () {
+    if(!this.cache.venueId) {
+      this.cache.venueId = ( await client.user.getVenueById() ).id;
+    }
 
-  async componentDidMount () {
-    const venue = await client.user.getVenueById();
     const trainers = await client.collaborator.list({
       where: {
-        venueId: venue.id,
+        venueId: this.cache.venueId,
       },
       include: [
         'roles',
@@ -107,6 +114,11 @@ class TrainerList extends React.Component {
     this.setState({[refName + 'Visible']: false});
   }
 
+  onAddTrainerDone () {
+    this.updateTrainerList();
+    this.setState({profileModalVisible: false});
+  }
+
   triggerModal (refName) {
     this.setState({[refName + 'Visible']: true});
   }
@@ -131,7 +143,7 @@ class TrainerList extends React.Component {
           visible={this.state.profileModalVisible}>
           <TrainerProfile
             trainer={{}}
-            onComplete={this.dismissModal.bind(this, 'profileModal')}/>
+            onComplete={this.onAddTrainerDone.bind(this)}/>
         </UIFramework.Modal>
         <UIFramework.Modal
           ref="ptScheduleModal"
