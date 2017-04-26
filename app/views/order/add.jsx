@@ -5,7 +5,7 @@ import moment from 'moment';
 import hourminute from 'hourminute';
 import React from 'react';
 import UIFramework from 'weflex-ui';
-import {Tabs, DatePicker, TimePicker} from 'antd';
+import { Tabs, DatePicker, TimePicker } from 'antd';
 import { client } from '../../api';
 import { getFormatTime } from '../calendar/util.js';
 const TabPane = Tabs.TabPane;
@@ -75,7 +75,7 @@ export default class extends React.Component {
     }).filter((template) => {
       return template.classes.length > 0;
     });
-    this.setState({templates, trainers});
+    this.setState({ templates, trainers });
   }
   async onPhoneInputChange(event) {
     const phone = event.target.value;
@@ -84,7 +84,7 @@ export default class extends React.Component {
       const members = await client.member.list({
         where: {
           phone,
-          venueId:venue.id,
+          venueId: venue.id,
           trashedAt: {
             exists: false
           }
@@ -92,7 +92,7 @@ export default class extends React.Component {
         include: ['avatar']
       });
       if (members.length === 0) {
-        this.setState({isUserNotFound: true});
+        this.setState({ isUserNotFound: true });
       } else {
         // find a user
         const member = members[0];
@@ -127,12 +127,12 @@ export default class extends React.Component {
     }).classes;
     classes = _.sortBy(classes, [
       'date',
-      (item)=>item['from']['hour'],
-      (item)=>item['from']['minute']
+      (item) => item['from']['hour'],
+      (item) => item['from']['minute']
     ]);
-    this.setState({classes});
+    this.setState({ classes });
   }
-   onClassChange(event) {
+  onClassChange(event) {
     let aClass = _.find(this.state.classes, {
       id: event.target.value
     });
@@ -201,7 +201,7 @@ export default class extends React.Component {
               circle={true}
               src={member.avatar}
               size={20}
-              style={{marginRight: 10}} />
+              style={{ marginRight: 10 }} />
           </UIFramework.Cell>
           <UIFramework.Cell flex={0.8}>
             <UIFramework.Text text={member.nickname} />
@@ -218,8 +218,8 @@ export default class extends React.Component {
     return view;
   }
   renderClassPicker() {
-    let templateOptions = [{text: '未选择'}];
-    let classOptions = [{text: '未选择'}];
+    let templateOptions = [{ text: '未选择' }];
+    let classOptions = [{ text: '未选择' }];
     if (this.state.templates.length > 0) {
       templateOptions = this.state.templates.map((item) => {
         return {
@@ -239,7 +239,7 @@ export default class extends React.Component {
       });
     }
     return [
-      <UIFramework.Select 
+      <UIFramework.Select
         flex={0.6}
         key="template"
         bindStateCtx={this}
@@ -258,7 +258,7 @@ export default class extends React.Component {
     ];
   }
   renderMemberships() {
-    let membershipOptions = [{text: '未选择'}];
+    let membershipOptions = [{ text: '未选择' }];
     let paymentOptionIds = this.state.paymentOptionIds;
     if ('PrivateTraining' === this.state.activeTab) {
       const trainer = this.state.trainers.filter((trainer) => {
@@ -268,13 +268,13 @@ export default class extends React.Component {
         paymentOptionIds = trainer.ptSchedule.paymentOptionIds;
       } else {
         paymentOptionIds = [];
-      }      
+      }
     }
     if (this.state.memberships.length > 0) {
       membershipOptions = this.state.memberships.map((item) => {
         const disabled = paymentOptionIds.indexOf('*') > -1 ?
-                         false :
-                         paymentOptionIds.indexOf(item.packageId) === -1;
+          false :
+          paymentOptionIds.indexOf(item.packageId) === -1;
         return {
           text: item.name,
           value: item.membershipId,
@@ -300,10 +300,10 @@ export default class extends React.Component {
     });
     return (
       <Tabs defaultActiveKey='1'
-            onChange={(key) => {
-              const activeTab = ('2' === key) ? 'PrivateTraining' : 'GroupTraining';
-              this.setState({activeTab});
-            }}>
+        onChange={(key) => {
+          const activeTab = ('2' === key) ? 'PrivateTraining' : 'GroupTraining';
+          this.setState({ activeTab });
+        }}>
         <TabPane tab='团课' key='1'>
           <UIFramework className="order-add">
             <UIFramework.Row name="手机号码" hint="预定课程用户的手机号码">
@@ -315,7 +315,7 @@ export default class extends React.Component {
             {
               this.state.isSpotsAvailable ? '' : (
                 <UIFramework.Row>
-                  <span style={{color: 'red'}}>此课程课位已满,无法创建新订单</span>
+                  <span style={{ color: 'red' }}>此课程课位已满,无法创建新订单</span>
                 </UIFramework.Row>
               )
             }
@@ -337,14 +337,14 @@ export default class extends React.Component {
                 bindStateCtx={this}
                 bindStateName='trainerId'
                 options={trainerOptions}
-                flex={1}/>
+                flex={1} />
             </UIFramework.Row>
             <UIFramework.Row name='课程时间' hint='课程开始时间'>
               <DatePicker
                 onChange={(date) => {
-                  this.setState({date: date.toDate()});
+                  this.setState({ date: date.toDate() });
                 }}
-                flex={0.5}/>
+                flex={0.5} />
               <TimePicker
                 onChange={(time) => {
                   this.setState({
@@ -353,7 +353,7 @@ export default class extends React.Component {
                   })
                 }}
                 format={'HH:mm'}
-                flex={0.5}/>
+                flex={0.5} />
             </UIFramework.Row>
             <UIFramework.Row name='支付会卡'>
               {this.renderMemberships()}
