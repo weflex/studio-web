@@ -8,13 +8,16 @@ import { client } from '../../api';
 class TrainerProfile extends React.Component {
   constructor(props) {
     super(props);
-    const trainer = Object.assign({}, this.props.trainer || {fullname: {}});
-    const venueId = this.props.trainer && this.props.trainer.venueId || '';
-    const orgId = this.props.trainer && this.props.trainer.orgId || '';
+
+    let trainer = Object.assign({}, props.trainer || {fullname: {}});
     this.state = {
       trainer,
-      venueId,
-      orgId
+      venueId: trainer && trainer.venueId || '',
+      orgId: trainer && trainer.orgId || '',
+    };
+
+    this.cache = {
+      phoneDisable: ( Object.keys(props.trainer) ).length > 0,
     };
   }
   async componentDidMount () {
@@ -26,25 +29,29 @@ class TrainerProfile extends React.Component {
   } 
   async onSubmit() {
     const isNewInstance = (undefined === this.state.trainer.id);
+    const {id, phone, name, description, employmentStatus, modifiedAt} = this.state.trainer;
     try {
       if (isNewInstance) {
         await client.middleware('/transaction/invite/trainer', {
           orgId: client.user.org.id,
           venueId: this.state.venueId,
-          phone: this.state.trainer.phone,
+          phone,
           fullname: {
-            first: this.state.trainer.name,
-            last: ''
+            first: name,
+            last: '',
           },
-          description: this.state.trainer.description,
-          employmentStatus: this.state.trainer.employmentStatus,
+          employmentStatus,
+          description,
         }, 'post');
       } else {
-        await client.collaborator.update(
-          this.state.trainer.id,
-          this.state.trainer,
-          this.state.trainer.modifiedAt
-        );
+        await client.collaborator.update(id, {
+          fullname: {
+            first: name,
+            last: '',
+          },
+          employmentStatus,
+          description,
+        }, modifiedAt);
       }
 
       if (typeof this.props.onComplete === 'function') {
@@ -84,6 +91,7 @@ class TrainerProfile extends React.Component {
             bindStateCtx={this}
             bindStateName="trainer.phone"
             placeholder="11位手机号码"
+            disabled={this.cache.phoneDisable}
           />
         </UIFramework.Row>
         <UIFramework.Row name="教练姓名" hint="教练的名字">
