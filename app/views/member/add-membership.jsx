@@ -85,7 +85,7 @@ export default class extends React.Component {
       packageId: this.state.form.packageId,
       memberId: this.props.member.id,
       correction: this.state.form.correction,
-      createdAt: this.state.form.createdAt,
+      startsAt: this.state.form.startsAt,
       salesId,
     };
 
@@ -224,8 +224,8 @@ export default class extends React.Component {
           <UIFramework.DateInput
             flex={0.5}
             bindStateCtx={this}
-            bindStateName="form.createdAt"
-            value={moment(this.state.form.createdAt).format('YYYY-MM-DD')}
+            bindStateName="form.startsAt"
+            value={moment(this.state.form.startsAt).format('YYYY-MM-DD')}
           />
         </UIFramework.Row>
         <UIFramework.Row name="实付价格">
@@ -270,7 +270,7 @@ export default class extends React.Component {
                 key="save"
                 text={text}
                 onClick={this.onSubmit.bind(this)}
-                disabled={!this.state.form.createdAt}
+                disabled={!this.state.form.startsAt}
               />
             );
             return btns

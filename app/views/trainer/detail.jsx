@@ -174,7 +174,7 @@ class TrainerSalesList extends React.Component {
     const salesList = ( await client.membership.list(queryTerms) ).map((item, i) => {
       return {
         key         : item.id,
-        createDate  : format(item.createdAt, "YYYY-MM-DD"),
+        createDate  : format(item.createdAt, "YYYY-MM-DD HH:ss"),
         packageName : !item.package ? "" :item.package.name,
         price       : item.price,
         memberName  : !item.member ? "" : item.member.nickname,

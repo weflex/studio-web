@@ -102,7 +102,7 @@ export default class UIMembershipCard extends React.Component {
           <li key="multiple-expires">
             <header style={UIMembershipCard.styles.basicName}>到期时间</header>
             <section style={UIMembershipCard.styles.basicValue}>
-              {moment(this.props.data.createdAt).add(lifetime.value, lifetime.scale).format('YYYY-MM-DD')}
+              {moment(this.props.data.startsAt).add(lifetime.value, lifetime.scale).format('YYYY-MM-DD')}
             </section>
           </li>
         ]);
@@ -117,7 +117,7 @@ export default class UIMembershipCard extends React.Component {
           <li key="unlimited-end-time">
             <header style={UIMembershipCard.styles.basicName}>到期时间</header>
             <section style={UIMembershipCard.styles.basicValue}>
-              {moment(this.props.data.createdAt).add(lifetime.value + correctVal, lifetime.scale).format('YYYY-MM-DD')}
+              {moment(this.props.data.startsAt).add(lifetime.value + correctVal, lifetime.scale).format('YYYY-MM-DD')}
             </section>
           </li>
         ]);
