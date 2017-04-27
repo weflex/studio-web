@@ -90,10 +90,13 @@ class List extends React.Component {
       modalVisibled: false,
       skip: 0,
       data: [],
-      filter
+      filter,
+      isMounted: false,
     };
   }
-  componentDidMount() {
+  async componentDidMount() {
+    await this.setState({isMounted: true});
+    await this.refs.masterDetail.updateMasterSource();
   }
   componentWillReceiveProps(nextProps) {
     const filter = _constructFilter(nextProps);
@@ -101,6 +104,10 @@ class List extends React.Component {
     this.refs.masterDetail.updateMasterSource();
   }
   async source() {
+    if (!this.state.isMounted) {
+      return [];
+    }
+
     const venue = await client.user.getVenueById();
     const {filter, skip} = this.state;
     const limit = 50;
