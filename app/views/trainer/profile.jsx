@@ -9,15 +9,12 @@ class TrainerProfile extends React.Component {
   constructor(props) {
     super(props);
 
-    let trainer = Object.assign({}, props.trainer || {fullname: {}});
+    const trainer = props.trainer || {};
     this.state = {
       trainer,
       venueId: trainer && trainer.venueId || '',
       orgId: trainer && trainer.orgId || '',
-    };
-
-    this.cache = {
-      phoneDisable: ( Object.keys(props.trainer) ).length > 0,
+      phoneInputDisable: ( Object.keys(props.trainer) ).length > 0,
     };
   }
   async componentDidMount () {
@@ -26,7 +23,7 @@ class TrainerProfile extends React.Component {
       venueId: venue.id,
       orgId: venue.orgId,
     });
-  } 
+  }
   async onSubmit() {
     const isNewInstance = (undefined === this.state.trainer.id);
     const {id, phone, name, description, employmentStatus, modifiedAt} = this.state.trainer;
@@ -73,12 +70,12 @@ class TrainerProfile extends React.Component {
     const employmentStatuses = [
       {
         text: '全职',
-        value: 'fulltime',
+        value: '全职',
         key: 1,
       },
       {
         text: '兼职',
-        value: 'parttime',
+        value: '兼职',
         key: 2,
       },
     ];
@@ -91,7 +88,7 @@ class TrainerProfile extends React.Component {
             bindStateCtx={this}
             bindStateName="trainer.phone"
             placeholder="11位手机号码"
-            disabled={this.cache.phoneDisable}
+            disabled={this.state.phoneInputDisable}
           />
         </UIFramework.Row>
         <UIFramework.Row name="教练姓名" hint="教练的名字">

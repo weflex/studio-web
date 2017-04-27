@@ -301,7 +301,7 @@ module.exports = class TrainerDetail extends React.Component {
       description: trainer.description || '暂无教练简介',
       phone: trainer.user.phone,
       sex: trainer.sex === 'male' ? '男' : '女',
-      employmentStatus: trainer.employmentStatus === 'parttime' ? '兼职' : '全职',
+      employmentStatus: trainer.employmentStatus,
       ptSchedule: trainer.ptSchedule,
       venueId: trainer.venueId,
       orgId: trainer.orgId,

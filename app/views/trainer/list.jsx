@@ -57,7 +57,7 @@ class TrainerList extends React.Component {
           id: trainer.id,
           name: <Link href={URL}>{name}</Link>,
           phone: trainer.user.phone,
-          employmentStatus: '全职',
+          employmentStatus: trainer.employmentStatus,
           avatar: trainer.user.avatar || defaultAvatar,
           ptSchedule: trainer.ptSchedule,
         };
