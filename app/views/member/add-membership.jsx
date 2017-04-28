@@ -5,6 +5,7 @@ import moment from 'moment';
 import React from 'react';
 import UIFramework from 'weflex-ui';
 import { client } from '../../api';
+import { startOfDay } from 'date-fns';
 
 export default class extends React.Component {
   static propTypes = {
@@ -85,10 +86,9 @@ export default class extends React.Component {
       packageId: this.state.form.packageId,
       memberId: this.props.member.id,
       correction: this.state.form.correction,
-      startsAt: this.state.form.startsAt,
+      startsAt: startOfDay(this.state.form.startsAt),
       salesId,
     };
-
     if (this.props.data) {
       await client.membership.update(
         this.props.data.id, membership, this.props.data.modifiedAt);
