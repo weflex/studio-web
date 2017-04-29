@@ -153,6 +153,7 @@ export default class extends React.Component {
         classId: this.state.classId,
         userId: this.state.member.userId,
         membershipId: this.state.membershipId,
+        memberId: this.state.member.id,
       }, 'post');
       if (typeof this.props.onComplete === 'function') {
         this.props.onComplete();
@@ -171,6 +172,7 @@ export default class extends React.Component {
         userId: this.state.member.userId,
         membershipId: this.state.membershipId,
         startsAt: startsAt.toDate(),
+        memberId: this.state.member.id,
       });
       if (typeof this.props.onComplete === 'function') {
         this.props.onComplete();
