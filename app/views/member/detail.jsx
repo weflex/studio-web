@@ -408,6 +408,7 @@ class MembershipsCard extends React.Component {
         'package': Object.assign({}, membership.package, {
           price: membership.price || membership.package.price,
           createdAt: membership.createdAt,
+          startsAt: membership.startsAt,
           correction: membership.correction
         })
       });
