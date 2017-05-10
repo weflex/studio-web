@@ -106,10 +106,24 @@ class Detail extends React.Component {
   async onSave() {
     let shouldRefresh = false;
     let resp;
-    if (this.state.data.spot <= 0) {
-      alert('课位必须大于 0');
-      return;
+    const {name, spot, price, description} = this.state.data;
+    const errorMessage = [];
+    if (!name) {
+      errorMessage.push('`课程名`');
     }
+    if (!Number.isInteger(spot) || spot <= 0) {
+      errorMessage.push('`课位`');
+    }
+    if (!Number.isInteger(price) || price < 0) {
+      errorMessage.push('`价格`');
+    }
+    if (!description) {
+      errorMessage.push('`课程描述`');
+    }
+    if(errorMessage.length > 0){
+      return UIFramework.Message.error('请正确输入' + errorMessage.join('和') + '后确认保存。');
+    }
+
     try {
       resp = await client.classTemplate.upsert(Object.assign({}, this.state.data));
     } catch (err) {
