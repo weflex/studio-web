@@ -87,6 +87,24 @@ class CardDetail extends React.Component {
   }
   async onSubmit(event) {
     let shouldRefreshPage = false;
+    const {data} = this.state;
+    let errorMessage = [];
+    if(!data.name) {
+      errorMessage.push('`名字`');
+    }
+    if(!Number.isInteger(data.price) || data.price < 0) {
+      errorMessage.push('`价格`');
+    }
+    if(!Number.isInteger(data.lifetime.value) || data.lifetime.value <= 0) {
+      errorMessage.push('`有效时间`');
+    }
+    if(data.accessType === "multiple" && ( !Number.isInteger(data.passes) || data.passes <= 0 ) ) {
+      errorMessage.push('`有效次数`');
+    }
+    if(errorMessage.length > 0) {
+      return UIFramework.Message.error('请正确输入 ' + errorMessage.join('和') + '后确认保存。');
+    }
+
     try {
       await client.classPackage.upsert(this.state.data);
     } catch (err) {
