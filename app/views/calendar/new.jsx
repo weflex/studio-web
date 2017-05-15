@@ -13,6 +13,7 @@ import {
   getFormatTime,
 } from './util';
 import './new.css';
+import { addMinutes, format } from 'date-fns';
 
 class NewClassTemplate extends React.Component {
   constructor(props) {
@@ -25,10 +26,14 @@ class NewClassTemplate extends React.Component {
       templates: [],
       classPackages: [],
     };
+    this.updateTimeBox = this.updateTimeBox.bind(this);
   }
 
   static constructState (nextProps) {
-    const {from, to, template} = nextProps.data;
+    const {from, to, template, date} = nextProps.data;
+    const startsAt = new Date(date);
+    startsAt.setHours(from.hour);
+    startsAt.setMinutes(from.minute);
     const newData = Object.assign(
       {
         template: {},
@@ -36,6 +41,10 @@ class NewClassTemplate extends React.Component {
         trainer: {},
         trainerId: template.trainerId,
         paymentOptionIds: template.paymentOptionIds,
+        price: template.price,
+        duration: template.duration,
+        startsAt,
+        endsAt: addMinutes(startsAt, template.duration),
       },
       nextProps.data,
       {
@@ -95,25 +104,32 @@ class NewClassTemplate extends React.Component {
   }
 
   onCreateClass() {
+    const {data} = this.state;
+    let errorMessages = [];
+    if(!data.price || data.price < 0) {
+      errorMessages.push('`价格`');
+    }
+    if(!data.date || !data.from) {
+      errorMessages.push('`上课时间`');
+    }
+    if(!data.duration || data.duration < 15) {
+      errorMessages.push('`课程时长`');
+    }
+    if(!data.spot || data.spot <= 0) {
+      errorMessages.push('`课位`');
+    }
+    if(errorMessages.length > 0) {
+      return UIFramework.Message.error('请正确输入 ' + errorMessages.join('和') + '后确认保存。');
+    }
+
     const newData = Object.assign({}, this.state.data, {
-      from: getTime(this.state.data.from),
-      to: getTime(this.state.data.to),
       template: this.template,
     });
-    const getMinutes = (time) => {
-      return time.hour * 60 + time.minute;
-    };
 
-    if (newData.spot <= 0) {
-      alert('课位必须大于 0');
-    } else if (getMinutes(newData.to) - getMinutes(newData.from) < 15) {
-      alert('每节课程时长必须大于15分钟');
+    if (this.props.ctx) {
+      this.props.ctx.createClass(newData);
     } else {
-      if (this.props.ctx) {
-        this.props.ctx.createClass(newData);
-      } else {
-        this.props.onCreateClass(newData);
-      }
+      this.props.onCreateClass(newData);
     }
   }
 
@@ -125,6 +141,24 @@ class NewClassTemplate extends React.Component {
     return _.find(this.state.templates, {
       id: this.state.data.templateId
     }) || {};
+  }
+
+  updateTimeBox() {
+    let data = this.state.data;
+    if(!data.date || !data.from || !data.duration) {
+      data.endsAt = '';
+      this.setState({data});
+    }
+
+    const from = getTime(data.from);
+    const startsAt = new Date(data.date);
+    startsAt.setHours(from.hour);
+    startsAt.setMinutes(from.minute);
+
+    data.startsAt = startsAt;
+    data.endsAt = addMinutes(startsAt, data.duration);
+
+    this.setState({data});
   }
 
   render() {
@@ -153,8 +187,8 @@ class NewClassTemplate extends React.Component {
           </UIFramework.Row>
           <UIFramework.Row name="价格" hint="课程模版的价格">
             <UIFramework.TextInput
-              flex={1} 
-              value={template.price}
+              flex={1}
+              value={this.state.data.price}
               disabled={true}
             />
           </UIFramework.Row>
@@ -178,6 +212,46 @@ class NewClassTemplate extends React.Component {
               bindStateType={Number}
               bindStateName="data.spot"
             />
+          </UIFramework.Row>
+          <UIFramework.Row name="课程时长" hint="课程时长不得少于15分钟" required={true}>
+            <UIFramework.TextInput
+              flex={0.8}
+              value={this.state.data.duration}
+              bindStateCtx={this}
+              bindStateType={Number}
+              bindStateName="data.duration"
+              onChange={this.updateTimeBox}
+            />
+            <UIFramework.TextInput
+              flex={0.2}
+              value={"分钟"}
+              className="disable-background"
+              disabled
+            />
+          </UIFramework.Row>
+          <UIFramework.Row name="选择上课时间" required={true}>
+            <UIFramework.DateInput
+              flex={0.4}
+              bindStateCtx={this}
+              bindStateName="data.date"
+              value={this.formatDate(this.state.data.date)}
+              onChange={this.updateTimeBox}
+            />
+            <UIFramework.TimeInput
+              flex={0.27}
+              bindStateCtx={this}
+              bindStateName="data.from"
+              value={this.state.data.from}
+              onChange={this.updateTimeBox}
+            />
+            <div id="wrapEndsAt">
+              <UIFramework.TextInput
+                flex={0.82}
+                value={format(this.state.data.endsAt, 'HH:mm')}
+                className="disable-background"
+                disabled
+              />
+            </div>
           </UIFramework.Row>
           <UIFramework.Row name="可用会卡" hint="可以用于预约该课程的会卡种类">
             <Select multiple
@@ -215,26 +289,6 @@ class NewClassTemplate extends React.Component {
               value={template.description}
               multiline={true}
               disabled={true}
-            />
-          </UIFramework.Row>
-          <UIFramework.Row name="选择上课时间" required={true}>
-            <UIFramework.DateInput
-              flex={0.4}
-              bindStateCtx={this}
-              bindStateName="data.date"
-              value={this.formatDate(this.state.data.date)}
-            />
-            <UIFramework.TimeInput
-              flex={0.3}
-              bindStateCtx={this}
-              bindStateName="data.from"
-              value={this.state.data.from}
-            />
-            <UIFramework.TimeInput
-              flex={0.3}
-              bindStateCtx={this}
-              bindStateName="data.to"
-              value={this.state.data.to}
             />
           </UIFramework.Row>
           <UIFramework.Row>
