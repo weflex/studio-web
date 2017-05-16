@@ -9,6 +9,7 @@ import MasterDetail from '../../components/master-detail';
 import UIMembershipCard from '../../components/ui-membership-card';
 import { getFormatTime } from '../calendar/util.js';
 import './detail.css';
+import {isBefore, isAfter, format} from 'date-fns';
 
 class Detail extends React.Component {
   constructor(props) {
@@ -49,9 +50,6 @@ class Detail extends React.Component {
   }
   get actions() {
     let {order} = this.state;
-    let cancellableBefore = moment(order.class.date)
-        .hour(order.class.from.hour)
-        .minute(order.class.from.minute);
 
     if (order.cancelledAt) {
       return [];
@@ -61,7 +59,7 @@ class Detail extends React.Component {
     if (!order.checkedInAt) {
       actions.push(<a key="checkin" onClick={this.onCheckIn.bind(this)}>签到</a>);
     }
-    if (moment().isBefore(cancellableBefore)) {
+    if (isBefore(new Date(), order.class.startsAt)) {
       actions.push(<a key="cancel" onClick={this.onCancel.bind(this)}>取消</a>);
     }
     return actions;
@@ -207,10 +205,10 @@ class Detail extends React.Component {
   }
   render() {
     const {order} = this.state;
-    const { date, from, to, trainer } = order.class;
+    const { date, startsAt, endsAt, trainer } = order.class;
     const now = moment();
     let tags = [];
-    if (now.isAfter(moment(date).hour(to.hour).minute(to.minute))) {
+    if (isAfter(new Date(), endsAt)) {
       tags.push(<span key='complete' className='status-tag green-bg'>课程已完成</span>);
     }
     if (order.checkedInAt) {
@@ -256,11 +254,11 @@ class Detail extends React.Component {
                 </div>
                 <div className="detail-card-row">
                   <label>课程日期</label>
-                  <span>{moment(date).format('MM[月]DD[日]')}</span>
+                  <span>{format(startsAt, 'MM[月]DD[日]')}</span>
                 </div>
                 <div className="detail-card-row">
                   <label>课程时间</label>
-                  <span>{getFormatTime(from)} - {getFormatTime(to)}</span>
+                  <span>{format(startsAt, 'HH:mm - ') + format(endsAt, 'HH:mm')}</span>
                 </div>
                 <div className="detail-card-row">
                   <label>课程详情</label>

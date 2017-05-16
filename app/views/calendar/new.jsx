@@ -13,7 +13,7 @@ import {
   getFormatTime,
 } from './util';
 import './new.css';
-import { addMinutes, format } from 'date-fns';
+import { addMinutes, format, differenceInMinutes } from 'date-fns';
 
 class NewClassTemplate extends React.Component {
   constructor(props) {
@@ -31,9 +31,15 @@ class NewClassTemplate extends React.Component {
 
   static constructState (nextProps) {
     const {from, to, template, date} = nextProps.data;
-    const startsAt = new Date(date);
-    startsAt.setHours(from.hour);
-    startsAt.setMinutes(from.minute);
+    let startsAt = nextProps.data.startsAt;
+    let duration = differenceInMinutes(nextProps.data.endsAt, startsAt);
+    if(!startsAt) {
+      startsAt = new Date(date);
+      startsAt.setHours(from.hour);
+      startsAt.setMinutes(from.minute);
+      duration = template.duration;
+    }
+
     const newData = Object.assign(
       {
         template: {},
@@ -42,7 +48,7 @@ class NewClassTemplate extends React.Component {
         trainerId: template.trainerId,
         paymentOptionIds: template.paymentOptionIds,
         price: template.price,
-        duration: template.duration,
+        duration,
         startsAt,
         endsAt: addMinutes(startsAt, template.duration),
       },
@@ -106,7 +112,7 @@ class NewClassTemplate extends React.Component {
   onCreateClass() {
     const {data} = this.state;
     let errorMessages = [];
-    if(!data.price || data.price < 0) {
+    if( data.price != 0 && (!data.price || data.price < 0) ) {
       errorMessages.push('`价格`');
     }
     if(!data.date || !data.from) {
@@ -125,6 +131,9 @@ class NewClassTemplate extends React.Component {
     const newData = Object.assign({}, this.state.data, {
       template: this.template,
     });
+
+    newData.from = getTime(newData.from);
+    newData.to = getTime(newData.to);
 
     if (this.props.ctx) {
       this.props.ctx.createClass(newData);
@@ -157,6 +166,7 @@ class NewClassTemplate extends React.Component {
 
     data.startsAt = startsAt;
     data.endsAt = addMinutes(startsAt, data.duration);
+    data.to = format(data.endsAt, 'HH:mm');
 
     this.setState({data});
   }
