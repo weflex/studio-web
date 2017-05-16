@@ -9,6 +9,7 @@ import {Tabs, DatePicker, TimePicker} from 'antd';
 import { client } from '../../api';
 import { getFormatTime } from '../calendar/util.js';
 const TabPane = Tabs.TabPane;
+import {format} from 'date-fns';
 
 export default class extends React.Component {
   constructor(props) {
@@ -125,9 +126,7 @@ export default class extends React.Component {
       id: event.target.value
     }).classes;
     classes = _.sortBy(classes, [
-      'date',
-      (item)=>item['from']['hour'],
-      (item)=>item['from']['minute']
+      (item)=>item['startsAt']
     ]);
     this.setState({classes});
   }
@@ -231,10 +230,8 @@ export default class extends React.Component {
     }
     if (this.state.classes.length) {
       classOptions = this.state.classes.map((item) => {
-        const from = getFormatTime(item.from);
-        const to = getFormatTime(item.to);
         return {
-          text: moment(item.date).format('MM[月]DD[日]') + ` (${from} - ${to})`,
+          text: format(item.startsAt, 'MM月DD日 HH:mm - ') + format(item.endsAt, 'HH:mm'),
           value: item.id
         };
       });

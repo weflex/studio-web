@@ -11,6 +11,7 @@ import { client } from '../../api';
 import './list.css';
 import hourminute from 'hourminute';
 moment.locale('zh-cn');
+import {startOfDay, format, getHours, getMinutes} from 'date-fns';
 
 function _constructFilter (props) {
   let filter = {};
@@ -60,7 +61,7 @@ class List extends React.Component {
             header={item.class.template.name}
             labelText={item.member.nickname}>
             <div className="order-class-duration">
-              {moment(item.class.date).format('MM[月]DD[日]')}
+              {format(item.class.startsAt, 'MM月DD日')}
             </div>
             <div className="order-num">
               订单号: {item.passcode}
@@ -74,7 +75,7 @@ class List extends React.Component {
       iterated: true,
       sortKeys: [
         {name: '订单时间', key: 'createdAt'},
-        {name: '课程时间', key: 'class.date'},
+        {name: '课程时间', key: 'class.startsAt'},
         {name: '用户', key: 'member.nickname'},
       ],
       onClickAdd: () => {
@@ -192,6 +193,10 @@ class List extends React.Component {
       } catch (error) {
         membership = undefined;
       }
+      const {startsAt, endsAt} = item.class;
+      item.class.date = startOfDay(startsAt);
+      item.class.from = {hour: getHours(startsAt), minute: getMinutes(startsAt)};
+      item.class.to = {hour: getHours(endsAt), minute: getMinutes(endsAt)};
       return item.class && membership && membership.member;
     }).map((item) => {
       item.title = item.class.template.name;

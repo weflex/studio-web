@@ -18,6 +18,7 @@ import Template from './components/template';
 import ResourcePanel from '../../components/resource-panel';
 import './index.css';
 import hourminute from 'hourminute';
+import {startOfDay, endOfDay} from 'date-fns';
 
 /**
  * @class WeflexCalendar
@@ -135,11 +136,10 @@ class WeflexCalendar extends React.Component {
 
   async listClasses(startsAt, endsAt) {
     const venue = await client.user.getVenueById();
-    const dateFormat = 'YYYY[-]MM[-]DD';
-    const classes = await client.class.list({
+    const classes = ( await client.class.list({
       where: {
-        date: {
-          between: [startsAt.format(dateFormat), endsAt.format(dateFormat)]
+        startsAt: {
+          between: [startOfDay(startsAt), endOfDay(endsAt)]
         },
         venueId: venue.id
       },
@@ -150,7 +150,14 @@ class WeflexCalendar extends React.Component {
           'orders': ['user']
         },
       ],
-      order: ['from.hour ASC', 'from.minute ASC']
+      order: 'startsAt ASC'
+    }) ).map( (item) => {
+      const startsAt = moment(item.startsAt);
+      const endsAt = moment(item.endsAt);
+      item.date = moment(startsAt).startOf('day');
+      item.from = hourminute({hour: startsAt.hour(), minute: startsAt.minute()});
+      item.to = hourminute({hour: endsAt.hour(), minute: endsAt.minute()});
+      return item;
     });
 
     const ptSessions = await client.ptSession.list({
