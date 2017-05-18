@@ -99,6 +99,12 @@ export default class UIMembershipCard extends React.Component {
               {this.props.data.passes + correctVal}次
             </section>
           </li>,
+          <li key="multiple-available">
+            <header style={UIMembershipCard.styles.basicName}>剩余次数</header>
+            <section style={UIMembershipCard.styles.basicValue}>
+              {this.props.data.available}次
+            </section>
+          </li>,
           <li key="multiple-expires">
             <header style={UIMembershipCard.styles.basicName}>到期时间</header>
             <section style={UIMembershipCard.styles.basicValue}>
