@@ -14,6 +14,7 @@ import ViewToAddMembership from './add-membership';
 import { client } from '../../api';
 import './detail.css';
 import { format, compareDesc } from 'date-fns';
+import { keyBy } from 'lodash';
 
 /**
  * @class UserProfileCard
@@ -302,7 +303,7 @@ class MembershipCard extends React.Component {
           type="membership"
           onClick={this.viewModal.bind(this)}
           width={this.props.width}
-          data={this.props.data && this.props.data.package}
+          data={this.props.data}
         />
         <UIFramework.Modal 
           title="会卡"
@@ -386,6 +387,20 @@ class MembershipsCard extends React.Component {
         ]
       }
     );
+
+    if(member.memberships.length > 0) {
+      let reduceMemberships = await client.middleware('/transaction/reduce-memberships', {
+        userId: member.userId,
+        venueId: member.venueId,
+        memberId: member.id,
+      });
+
+      reduceMemberships = keyBy(reduceMemberships, 'membershipId');
+      member.memberships.map( (item)=>{
+        return Object.assign(item, item.package, reduceMemberships[item.id]);
+      } );
+    };
+
     this.setState({member});
   }
 
