@@ -21,7 +21,7 @@ export default class UIMembershipCard extends React.Component {
     },
     basicItem: {
       display: 'inline-block',
-      lineHeight: '30px',
+      lineHeight: '25px',
     },
     get basicName() {
       return Object.assign({
