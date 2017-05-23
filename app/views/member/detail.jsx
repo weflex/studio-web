@@ -366,7 +366,7 @@ class MembershipsCard extends React.Component {
    * @async
    */
   async refresh() {
-    const member = await client.member.get(
+    let member = await client.member.get(
       this.props.member.id,
       {
         include: [
@@ -397,7 +397,7 @@ class MembershipsCard extends React.Component {
 
       reduceMemberships = keyBy(reduceMemberships, 'membershipId');
       member.memberships.map( (item)=>{
-        return Object.assign(item, item.package, reduceMemberships[item.id]);
+        return Object.assign(item, item.package, reduceMemberships[item.id], {id: item.id, modifiedAt: item.modifiedAt});
       } );
     };
 
