@@ -297,6 +297,7 @@ class MembershipCard extends React.Component {
    * @method render - render function
    */
   render() {
+    const props = JSON.parse( JSON.stringify(this.props) );
     return (
       <span style={{display: 'inline-block', marginBottom: '10px'}}>
         <UIMembershipCard
@@ -311,7 +312,7 @@ class MembershipCard extends React.Component {
           onCancel={() => this.setState({visible: false})}
           footer="">
           <ViewToAddMembership
-	    {...this.props}
+	    {...props}
 	    onComplete={this.onComplete.bind(this)}
 	  />
         </UIFramework.Modal>
