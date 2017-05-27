@@ -67,6 +67,12 @@ class TrainerSchedule extends React.Component {
       console.error(error && error.message);
     }
   }
+  get submitDisabled() {
+    return !(this.state.schedule.days.length > 0 &&
+      this.state.schedule.hours.length > 0 &&
+      this.state.schedule.durationMinutes &&
+      this.state.schedule.paymentOptionIds.length > 0);
+  }
   render () {
     const ptSchedule = this.state.schedule;
     const hours = _.range(6, 23).map((hour) => {
@@ -132,7 +138,9 @@ class TrainerSchedule extends React.Component {
             }
           </Select>
         </UIFramework.Row>
-        <UIFramework.Button onClick={() => this.onSubmit()}>
+        <UIFramework.Button
+          onClick={() => this.onSubmit()}
+          disabled={this.submitDisabled}>
           保存
         </UIFramework.Button>
       </UIFramework>
