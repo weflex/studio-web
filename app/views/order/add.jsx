@@ -289,6 +289,24 @@ export default class extends React.Component {
       />
     );
   }
+
+  get submitDisabled() {
+    if (this.state.activeTab.indexOf("GroupTraining") > -1) {
+      return !(this.state.isSpotsAvailable &&
+        this.state.phone.length == 11 &&
+        this.state.date &&
+        this.state.membershipId);
+    } else {
+      return !(this.state.isSpotsAvailable &&
+        this.state.phone.length == 11 &&
+        this.state.date &&
+        this.state.membershipId &&
+        this.state.trainerId &&
+        this.state.hour &&
+        this.state.minute);
+    }
+  }
+  
   render() {
     const trainerOptions = this.state.trainers.map((trainer) => {
       return {
@@ -321,7 +339,7 @@ export default class extends React.Component {
               {this.renderMemberships()}
             </UIFramework.Row>
             <UIFramework.Row>
-              <UIFramework.Button text="创建订单" onClick={this.onSubmit.bind(this)} disabled={!this.state.isSpotsAvailable} />
+              <UIFramework.Button text="创建订单" onClick={this.onSubmit.bind(this)} disabled={this.submitDisabled} />
             </UIFramework.Row>
           </UIFramework>
         </TabPane>
@@ -357,7 +375,7 @@ export default class extends React.Component {
               {this.renderMemberships()}
             </UIFramework.Row>
             <UIFramework.Row>
-              <UIFramework.Button text="创建订单" onClick={this.onSubmitPrivateTraining.bind(this)} disabled={!this.state.isSpotsAvailable} />
+              <UIFramework.Button text="创建订单" onClick={this.onSubmitPrivateTraining.bind(this)} disabled={this.submitDisabled} />
             </UIFramework.Row>
           </UIFramework>
         </TabPane>
