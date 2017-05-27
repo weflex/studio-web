@@ -16,11 +16,11 @@ class SettingsIndex extends React.Component {
   }
   settings() {
     return [
-      {
-        id: 'profile',
-        title: '个人信息',
-        component: require('./tabs/profile'),
-      },
+      // {
+      //   id: 'profile',
+      //   title: '个人信息',
+      //   component: require('./tabs/profile'),
+      // },
       {
         id: 'basic',
         title: '基本信息',
