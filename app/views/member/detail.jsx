@@ -389,8 +389,9 @@ class MembershipsCard extends React.Component {
       }
     );
 
+    let reduceMemberships = []
     if(member.memberships.length > 0) {
-      let reduceMemberships = await client.middleware('/transaction/reduce-memberships', {
+      reduceMemberships = await client.middleware('/transaction/reduce-memberships', {
         userId: member.userId,
         venueId: member.venueId,
         memberId: member.id,
@@ -398,7 +399,7 @@ class MembershipsCard extends React.Component {
 
       reduceMemberships = keyBy(reduceMemberships, 'membershipId');
       member.memberships.map( (item)=>{
-        return Object.assign(item, item.package, reduceMemberships[item.id], {id: item.id, modifiedAt: item.modifiedAt});
+        return Object.assign(item, item.package, reduceMemberships[item.id], {id: item.id, modifiedAt: item.modifiedAt, startsAt:item.startsAt, createdAt:item.createdAt});
       } );
     };
 
