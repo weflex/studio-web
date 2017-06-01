@@ -1,6 +1,5 @@
 "use strict";
-
-import moment from 'moment';
+import './list.css';
 import React from 'react';
 import MasterDetail from '../../components/master-detail';
 import Detail from './detail';
@@ -8,9 +7,6 @@ import AddOrderView from './add';
 import UIFramework from 'weflex-ui';
 import { UIProfileListItem } from '../../components/ui-profile';
 import { client } from '../../api';
-import './list.css';
-import hourminute from 'hourminute';
-moment.locale('zh-cn');
 import {startOfDay, format, getHours, getMinutes} from 'date-fns';
 
 function _constructFilter (props) {
@@ -20,7 +16,7 @@ function _constructFilter (props) {
     switch (param) {
     case 'classBefore':
     case 'classAfter':
-      filter[param] = moment(query[param]);
+      filter[param] = new Date(query[param]);
       break;
     case 'orderStatus':
       filter[param] = query[param];
@@ -172,14 +168,12 @@ class List extends React.Component {
     });
 
     const orders = (ptSessions || []).map((session) => {
-      const startsAt = moment(session.startsAt);
-      const endsAt = moment(startsAt).add(session.durationMinutes, 'minutes');
-      const trainerName = session.trainer.fullname.first + session.trainer.fullname.last;
+      const {startsAt, endsAt, trainer} = session;
+      const trainerName = trainer.fullname.first + trainer.fullname.last;
       session.class = {
         template: {name: `私教 (${trainerName})`},
-        date: moment(startsAt).startOf('day'),
-        from: hourminute({hour: startsAt.hour(), minute: startsAt.minute()}),
-        to: hourminute({hour: endsAt.hour(), minute: endsAt.minute()}),
+        startsAt,
+        endsAt,
         trainer: session.trainer,
       };
       session.title = session.class.template.name;
@@ -193,10 +187,6 @@ class List extends React.Component {
       } catch (error) {
         membership = undefined;
       }
-      const {startsAt, endsAt} = item.class;
-      item.class.date = startOfDay(startsAt);
-      item.class.from = {hour: getHours(startsAt), minute: getMinutes(startsAt)};
-      item.class.to = {hour: getHours(endsAt), minute: getMinutes(endsAt)};
       return item.class && membership && membership.member;
     }).map((item) => {
       item.title = item.class.template.name;
