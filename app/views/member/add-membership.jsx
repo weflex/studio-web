@@ -1,62 +1,83 @@
 'use strict';
 
-import {keyBy, intersectionBy} from 'lodash';
-import moment from 'moment';
 import React from 'react';
 import UIFramework from 'weflex-ui';
 import { client } from '../../api';
-import { startOfDay } from 'date-fns';
+import { keyBy, intersectionBy } from 'lodash';
+import { format, startOfDay, endOfDay, addMilliseconds, addDays, addMonths, addYears } from 'date-fns';
 
 export default class extends React.Component {
   static propTypes = {
-    member      : React.PropTypes.object,
+    operation   : React.PropTypes.string,
+    member      : React.PropTypes.object.isRequired,
     data        : React.PropTypes.object,
     onComplete  : React.PropTypes.func,
   };
 
   constructor(props) {
     super(props);
-    this.cachedPackages = {};
+
+    let operation = 'add';
+    let form = {
+      memberName: props.member.nickname,
+      name: null,
+      accessType: null,
+      price: null,
+      available: null,
+      startsAt: null,
+      expiresAt: null,
+      packageId: null,
+      salesId: null,
+      venueId: props.member.venueId,
+      memberId: props.member.id,
+    };
+
+    if(props.data) {
+      operation = 'edt';
+      form = Object.assign(form, props.data)
+    }
+
     this.state = {
-      form: Object.assign({
-        correction: {},
-        lifetime: {},
-      }, props.data),
+      operation,
+      form,
       packageOptions: [],
       salesOptions: [],
-      selected: null,
     };
+    this.cache = {
+      packages: {},
+    };
+
+    this.onSubmit = this.onSubmit.bind(this);
+    this.onDelete = this.onDelete.bind(this);
+    this.onChangePackage = this.onChangePackage.bind(this);
+    this.onChangeStartsAt = this.onChangeStartsAt.bind(this);
   }
 
   async componentWillMount() {
-    let {form} = this.state;
+    const { operation } = this.state;
+    let { form } = this.state;
+    let { packages } = this.cache;
+    const venueId = form.venueId;
 
-    const venue = await client.user.getVenueById();
-
-    const packages = await client.classPackage.list({
+    const packageList = await client.classPackage.list({
       where: {
-        venueId: venue.id,
+        venueId,
       }
     });
-    this.cachedPackages = keyBy(packages, 'id');
-    const curr = this.cachedPackages[form.packageId];
-    if (curr && curr.price) {
-      form.price = curr.price;
-    }
-    const packageOptions = packages.map((item) => {
+    const packageOptions = packageList.map((item) => {
       return {
         text: item.name,
         value: item.id,
         data: item,
       };
     });
+    this.cache.packages = keyBy(packageList, 'id');
 
-    const trainers = await client.collaborator.list({
+    const salesOptions = ( await client.collaborator.list({
       where: {
-        venueId: venue.id,
+        venueId
       }
-    });
-    const salesOptions = trainers.map((item) => {
+    }) ).map((item) => {
       return {
         text  : item.fullname.first + item.fullname.last,
         value : item.id,
@@ -72,160 +93,116 @@ export default class extends React.Component {
     });
   }
 
+  getExpiresAt(startsAt, lifetime) {
+    let expiresAt = null;
+
+    switch(lifetime.scale) {
+      case 'day':
+        expiresAt = addDays(startsAt, lifetime.value);
+        break;
+      case 'month':
+        expiresAt = addMonths(startsAt, lifetime.value);
+        break;
+      case 'year':
+        expiresAt = addYears(startsAt, lifetime.value);
+        break;
+    };
+    return addDays(expiresAt, -1);
+  }
+
   onChangePackage(event) {
     let {form} = this.state;
-    const curr = this.cachedPackages[form.packageId];
+    const curr = this.cache.packages[form.packageId];
+
+    form.name = curr.name;
+    form.accessType = curr.accessType;
     form.price = curr.price;
+    form.available = curr.passes;
+    form.startsAt = new Date();
+    form.expiresAt = this.getExpiresAt(form.startsAt, curr.lifetime);
+
+    this.setState({form});
+    this.forceUpdate();
+  }
+
+  onChangeStartsAt(event) {
+    let {form} = this.state;
+    const curr = this.cache.packages[form.packageId];
+
+    form.expiresAt = this.getExpiresAt(form.startsAt, curr.lifetime);
+    this.setState({form});
     this.forceUpdate();
   }
 
   async onSubmit() {
-    let salesId = (this.state.form.salesId === "（空）") ? null : this.state.form.salesId;
+    const { operation, form } = this.state;
+    const { data, onComplete } = this.props;
+
     const membership = {
-      price: this.state.form.price,
-      packageId: this.state.form.packageId,
-      memberId: this.props.member.id,
-      correction: this.state.form.correction,
-      startsAt: startOfDay(this.state.form.startsAt),
-      salesId,
+      memberName: form.memberName,
+      name: form.name,
+      accessType: form.accessType,
+      price: form.price,
+      available: form.available,
+      startsAt: startOfDay(form.startsAt),
+      expiresAt: endOfDay(form.expiresAt),
+      packageId: form.packageId,
+      salesId: (form.salesId === "（空）")? null : form.salesId,
+      venueId: form.venueId,
+      memberId: form.memberId,
     };
-    if (this.props.data) {
-      await client.membership.update(
-        this.props.data.id, membership, this.props.data.modifiedAt);
-    } else {
+    if (operation === 'edt') {
+      await client.membership.update(data.id, membership, data.modifiedAt);
+    } else if(operation === 'add') {
       await client.membership.create(membership);
     }
-    if (typeof this.props.onComplete === 'function') {
-      await this.props.onComplete();
+
+    if (typeof onComplete === 'function') {
+      await onComplete();
     }
   }
 
   onDelete() {
-    let props = this.props;
+    const { data, onComplete } = this.props;
+    const { memberName } = this.state.form;
+
     UIFramework.Modal.confirm({
       title: '确认删除会卡信息？',
-      content: `您正在删除会员 ${this.props.member.nickname} 的会卡，删除后将无法返回`,
+      content: `您正在删除会员 ${memberName} 的会卡，删除后将无法返回`,
       onOk: async () => {
         try {
-          await client.membership.delete(props.data.id, props.data.modifiedAt);
-          if (typeof props.onComplete === 'function') {
-            props.onComplete();
+          await client.membership.delete(data.id, data.modifiedAt);
+          if (typeof onComplete === 'function') {
+            onComplete();
           }
-        } catch (err) {
-          if (err.code === 'RESOURCE_EXPIRED') {
+        } catch (error) {
+          if (error.code === 'RESOURCE_EXPIRED') {
+            UIFramework.Message.error('资源过期');
           } else {
-            UIFramework.Message.error('我们遇到了一个错误');
-            console.error(err);
+            UIFramework.Message.error('未知错误');
           }
+          console.error(error);
         }
       }
-    })
+    });
   }
 
   render() {
-    let currentPackage = this.cachedPackages[this.state.form.packageId];
-    let correction = {
-      name: null,
-      hint: null,
-      view: null,
-    }
-    if (currentPackage) {
-      if (currentPackage.accessType === 'unlimited') {
-        correction.name = '修正有效期';
-        correction.hint = currentPackage.name + '是不限次卡，可以修正有效期';
-        correction.view = [
-          <UIFramework.Select
-            bindStateCtx={this}
-            bindStateName="form.correction.positive"
-            bindStateType={Boolean}
-            value={this.state.form.correction.positive}
-            key="lifetime-op" flex={0.2} options={[
-              {text: '加', value: true},
-              {text: '减', value: false},
-            ]}
-          />,
-          <UIFramework.TextInput
-            key="lifetime-value"
-            flex={0.6}
-            bindStateCtx={this}
-            bindStateType={Number}
-            bindStateName="form.correction.value"
-            value={this.state.form.correction.value}
-          />,
-          <UIFramework.Select
-            key="lifetime-scale" flex={0.2} disabled={true} options={[
-              {text: '天', value: 'day'},
-            ]}
-          />
-        ];
-      } else {
-        correction.name = '修正可用次数';
-        correction.hint = currentPackage.name + '是次卡，可以修正可用次数';
-        correction.view = [
-          <UIFramework.Select
-            key="passes-op"
-            flex={0.2}
-            bindStateCtx={this}
-            bindStateName="form.correction.positive"
-            bindStateType={Boolean}
-            value={this.state.form.correction.positive}
-            options={[
-              {text: '加', value: true},
-              {text: '减', value: false},
-            ]}
-          />,
-          <UIFramework.TextInput
-            key="passes"
-            flex={0.6}
-            bindStateCtx={this}
-            bindStateType={Number}
-            bindStateName="form.correction.value"
-            value={this.state.form.correction.value}
-          />,
-          <UIFramework.Select
-            key="passes-unit" flex={0.2} disabled={true} options={[
-              {text: '次'}
-            ]}
-          />
-        ];
-      }
-    }
-
+    const { operation, form, packageOptions, salesOptions } = this.state;
+     
     return (
       <UIFramework>
         <UIFramework.Row name="会员姓名">
-          <UIFramework.TextInput 
-            flex={1} value={this.props.member.nickname} disabled />
+          <UIFramework.TextInput flex={1} value={this.props.member.nickname} disabled />
         </UIFramework.Row>
         <UIFramework.Row name="会卡" hint="会员需要会卡才能预定课程">
-          {(() => {
-            if (!this.state.packageOptions.length) {
-              return (
-                <UIFramework.Select
-                  flex={0.5}
-                  options={[
-                    {text: '未选择'}
-                  ]}
-                />
-              );
-            } else {
-              return (
-                <UIFramework.Select
-                  flex={0.5}
-                  bindStateCtx={this}
-                  bindStateName="form.packageId"
-                  value={this.state.form.packageId}
-                  options={this.state.packageOptions}
-                  onChange={this.onChangePackage.bind(this)}
-                />
-              );
-            }
-          })()}
-          <UIFramework.DateInput
-            flex={0.5}
+          <UIFramework.Select
+            flex={1}
             bindStateCtx={this}
-            bindStateName="form.startsAt"
-            value={moment(this.state.form.startsAt).format('YYYY-MM-DD')}
+            bindStateName="form.packageId"
+            value={form.packageId}
+            options={packageOptions}
+            onChange={this.onChangePackage}
           />
         </UIFramework.Row>
         <UIFramework.Row name="实付价格">
@@ -234,7 +211,36 @@ export default class extends React.Component {
             bindStateCtx={this}
             bindStateName="form.price"
             bindStateType={Number}
-            value={this.state.form.price}
+            value={form.price}
+          />
+        </UIFramework.Row>
+        {
+          (form.accessType === 'multiple')
+          ? <UIFramework.Row name="剩余次数" hint="xxxx">
+              <UIFramework.TextInput
+                flex={1}
+                bindStateCtx={this}
+                bindStateType={Number}
+                bindStateName="form.available"
+                value={form.available}
+              />
+            </UIFramework.Row>
+          : ''
+        }
+        <UIFramework.Row name="有效期" hint="xxxx">
+          <UIFramework.DateInput
+            flex={0.45}
+            bindStateCtx={this}
+            bindStateName="form.startsAt"
+            onChange={this.onChangeStartsAt}
+            value={ format(form.startsAt, 'YYYY-MM-DD') }
+          />
+          <span style={{'display': 'inline-block', 'width': '8%', 'lineHeight': '30px', 'textAlign': 'center', 'marginRight': '5px'}}>到</span>
+          <UIFramework.DateInput
+            flex={0.45}
+            bindStateCtx={this}
+            bindStateName="form.expiresAt"
+            value={ format(form.expiresAt, 'YYYY-MM-DD') }
           />
         </UIFramework.Row>
         <UIFramework.Row name="销售人">
@@ -242,40 +248,26 @@ export default class extends React.Component {
             flex={1}
             bindStateCtx={this}
             bindStateName="form.salesId"
-            value={this.state.form.salesId}
-            options={this.state.salesOptions}
+            value={form.salesId}
+            options={salesOptions}
           />
         </UIFramework.Row>
-        <UIFramework.Row name={correction.name} hint={correction.hint}>
-          {correction.view}
-        </UIFramework.Row>
         <UIFramework.Row>
-          {(() => {
-            let text;
-            let btns = [];
-            if (this.props.data) {
-              text = '保存会员信息';
-              btns.push(
-                <UIFramework.Button 
-                  key="del"
-                  text="删除会卡"
-                  onClick={this.onDelete.bind(this)} 
-                />
-              );
-            } else {
-              text = '确认添加';
-            }
-            btns.push(
-              <UIFramework.Button 
-                key="save"
-                text={text}
-                onClick={this.onSubmit.bind(this)}
-                disabled={!this.state.form.startsAt}
+          <UIFramework.Button
+            key="save"
+            text={operation === 'add'? "确认添加": "保存会员信息"}
+            onClick={this.onSubmit}
+            disabled={!( form.packageId && form.price && form.available && form.startsAt && form.expiresAt)}
+          />
+          {
+            (operation === 'edt')
+            ? <UIFramework.Button
+                key="del"
+                text="删除会卡"
+                onClick={this.onDelete}
               />
-            );
-            return btns
-
-          })()}
+            : ""
+          }
         </UIFramework.Row>
       </UIFramework>
     );
