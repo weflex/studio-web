@@ -297,7 +297,6 @@ class MembershipCard extends React.Component {
    * @method render - render function
    */
   render() {
-    const props = JSON.parse( JSON.stringify(this.props) );
     return (
       <span style={{display: 'inline-block', marginBottom: '10px'}}>
         <UIMembershipCard
@@ -312,7 +311,7 @@ class MembershipCard extends React.Component {
           onCancel={() => this.setState({visible: false})}
           footer="">
           <ViewToAddMembership
-	    {...props}
+	    {...this.props}
 	    onComplete={this.onComplete.bind(this)}
 	  />
         </UIFramework.Modal>
@@ -389,19 +388,9 @@ class MembershipsCard extends React.Component {
       }
     );
 
-    let reduceMemberships = []
-    if(member.memberships.length > 0) {
-      reduceMemberships = await client.middleware('/transaction/reduce-memberships', {
-        userId: member.userId,
-        venueId: member.venueId,
-        memberId: member.id,
-      });
-
-      reduceMemberships = keyBy(reduceMemberships, 'membershipId');
-      member.memberships.map( (item)=>{
-        return Object.assign(item, item.package, reduceMemberships[item.id], {id: item.id, modifiedAt: item.modifiedAt, startsAt:item.startsAt, createdAt:item.createdAt});
-      } );
-    };
+    member.memberships = member.memberships.map( (item)=>{
+      return Object.assign(item.package, item);
+    } );
 
     this.setState({member});
   }
@@ -426,7 +415,7 @@ class MembershipsCard extends React.Component {
           price: membership.price || membership.package.price,
           createdAt: membership.createdAt,
           startsAt: membership.startsAt,
-          correction: membership.correction
+          expiresAt: membership.expiresAt,
         })
       });
       return <MembershipCard

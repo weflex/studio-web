@@ -1,10 +1,8 @@
-'use strict';
-
 import React from 'react';
 import UIFramework from 'weflex-ui';
 import { client } from '../../api';
 import { keyBy, intersectionBy } from 'lodash';
-import { format, startOfDay, endOfDay, addMilliseconds, addDays, addMonths, addYears } from 'date-fns';
+import { format, startOfDay, endOfDay, addDays, addMonths, addYears } from 'date-fns';
 
 export default class extends React.Component {
   static propTypes = {
@@ -34,7 +32,7 @@ export default class extends React.Component {
 
     if(props.data) {
       operation = 'edt';
-      form = Object.assign(form, props.data)
+      form = Object.assign(form, props.data);
     }
 
     this.state = {
@@ -117,7 +115,7 @@ export default class extends React.Component {
     form.name = curr.name;
     form.accessType = curr.accessType;
     form.price = curr.price;
-    form.available = curr.passes;
+    form.available = curr.passes || null;
     form.startsAt = new Date();
     form.expiresAt = this.getExpiresAt(form.startsAt, curr.lifetime);
 
@@ -257,7 +255,7 @@ export default class extends React.Component {
             key="save"
             text={operation === 'add'? "确认添加": "保存会员信息"}
             onClick={this.onSubmit}
-            disabled={!( form.packageId && form.price && form.available && form.startsAt && form.expiresAt)}
+            disabled={!( form.packageId && form.price && form.startsAt && form.expiresAt)}
           />
           {
             (operation === 'edt')
