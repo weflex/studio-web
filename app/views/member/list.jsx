@@ -166,7 +166,8 @@ class List extends React.Component {
           visible={this.state.modalVisibled}
           onCancel={this.hideModal.bind(this)}
           title="邀请新会员"
-          footer="">
+          footer=""
+        >
           <ViewToAddMember
             onComplete={this.onAddMemberDone.bind(this)}
           />

@@ -1,11 +1,19 @@
 "use strict";
 
-import moment from 'moment';
+import './index.css';
 import React from 'react';
 import UIIdentificationCard from 'react-identification-card';
-import './index.css';
+import { format } from 'date-fns';
 
 export default class UIMembershipCard extends React.Component {
+  static propTypes = {
+    type      : React.PropTypes.string,
+    className : React.PropTypes.string,
+    width     : React.PropTypes.number,
+    data      : React.PropTypes.object,
+    onClick   : React.PropTypes.func,
+  };
+
   static styles = {
     container: {
       position: 'absolute',
@@ -23,6 +31,15 @@ export default class UIMembershipCard extends React.Component {
       display: 'inline-block',
       lineHeight: '25px',
     },
+    price: {
+      position: 'absolute',
+      right: 0,
+      bottom: 0,
+    },
+    priceValue: {
+      fontSize: '24px',
+      fontWeight: 'normal',
+    },
     get basicName() {
       return Object.assign({
         marginRight: '15px',
@@ -34,31 +51,16 @@ export default class UIMembershipCard extends React.Component {
         // TO BE ADDED
       }, this.basicItem);
     },
-    price: {
-      position: 'absolute',
-      right: 0,
-      bottom: 0,
-    },
-    priceValue: {
-      fontSize: '24px',
-      fontWeight: 'normal',
-    },
   };
 
-  render() {
-    return (
-      <UIIdentificationCard
-        className={this.props.className}
-        width={this.props.width || 236}
-        viewMetadata={this.contents.bind(this)}
-        color={this.props.data && this.props.data.color}
-        isEmpty={!!this.props.data}
-        onClick={this.props.onClick}
-      />
-    );
+  constructor(props) {
+    super(props);
+    this.contents = this.contents.bind(this);
   }
 
   contents() {
+    const { name, accessType, available, passes, startsAt, expiresAt, price } = this.props.data;
+
     const wrapper = (children) => {
       return (
         <div style={UIMembershipCard.styles.container}>
@@ -66,108 +68,70 @@ export default class UIMembershipCard extends React.Component {
             <li>
               <header style={UIMembershipCard.styles.basicName}>会卡名称</header>
               <section style={UIMembershipCard.styles.basicValue}>
-                {this.props.data.name}
+                { name }
               </section>
             </li>
-            {children}
+            { children }
           </ul>
           <div style={UIMembershipCard.styles.price}>
-            <div style={UIMembershipCard.styles.priceValue}>{this.props.data.price}</div>
+            <div style={UIMembershipCard.styles.priceValue}>{ price }</div>
             <div style={UIMembershipCard.styles.priceUnit}>CNY</div>
           </div>
         </div>
       );
     };
 
-    const { lifetime } = this.props.data;
-
-    if (this.props.type === 'membership') {
-      let correctVal = 0;
-      if (this.props.data.correction) {
-        const { positive, value } = this.props.data.correction;
-        if (isFinite(value)) {
-          correctVal = positive ? value : -value;
-        } else {
-          correctVal = 0;
-        } 
-      }
-      if (this.props.data.accessType === 'multiple') {
-        return wrapper([
-          <li key="multiple-passes">
-            <header style={UIMembershipCard.styles.basicName}>有效次数</header>
-            <section style={UIMembershipCard.styles.basicValue}>
-              {this.props.data.passes + correctVal}次
-            </section>
-          </li>,
-          <li key="multiple-available">
-            <header style={UIMembershipCard.styles.basicName}>剩余次数</header>
-            <section style={UIMembershipCard.styles.basicValue}>
-              {this.props.data.available}次
-            </section>
-          </li>,
-          <li key="multiple-expires">
-            <header style={UIMembershipCard.styles.basicName}>到期时间</header>
-            <section style={UIMembershipCard.styles.basicValue}>
-              {moment(this.props.data.startsAt).add(lifetime.value, lifetime.scale).format('YYYY-MM-DD')}
-            </section>
-          </li>
-        ]);
-      } else {
-        return wrapper([
-          <li key="unlimited-start-time">
-            <header style={UIMembershipCard.styles.basicName}>开卡时间</header>
-            <section style={UIMembershipCard.styles.basicValue}>
-              {moment(this.props.data.createdAt).format('YYYY-MM-DD')}
-            </section>
-          </li>,
-          <li key="unlimited-end-time">
-            <header style={UIMembershipCard.styles.basicName}>到期时间</header>
-            <section style={UIMembershipCard.styles.basicValue}>
-              {moment(this.props.data.startsAt).add(lifetime.value + correctVal, lifetime.scale).format('YYYY-MM-DD')}
-            </section>
-          </li>
-        ]);
-      }
+    if (accessType === 'multiple') {
+      return wrapper([
+        <li key="multiple-passes">
+          <header style={UIMembershipCard.styles.basicName}>总次数</header>
+          <section style={UIMembershipCard.styles.basicValue}>
+            {passes}次
+          </section>
+        </li>,
+        <li key="multiple-available">
+          <header style={UIMembershipCard.styles.basicName}>剩余次数</header>
+          <section style={UIMembershipCard.styles.basicValue}>
+            {available}次
+          </section>
+        </li>,
+        <li key="multiple-expires">
+          <header style={UIMembershipCard.styles.basicName}>到期时间</header>
+          <section style={UIMembershipCard.styles.basicValue}>
+            {format(expiresAt, 'YYYY-MM-DD')}
+          </section>
+        </li>
+      ]);
     } else {
-      let lifetimeString = (lifetime) => {
-        switch (lifetime.scale) {
-          case 'day'  : return `${lifetime.value}天`;
-          case 'month': return `${lifetime.value}个月`;
-          case 'year' : return `${lifetime.value}年`;
-          default     : return '';
-        }
-      }
-      if (this.props.data.accessType === 'multiple') {
-        return wrapper([
-          <li key="multiple-passes">
-            <header style={UIMembershipCard.styles.basicName}>有效次数</header>
-            <section style={UIMembershipCard.styles.basicValue}>
-              {this.props.data.passes}次
-            </section>
-          </li>,
-          <li key="multiple-expires">
-            <header style={UIMembershipCard.styles.basicName}>有效时间</header>
-            <section style={UIMembershipCard.styles.basicValue}>
-              {lifetimeString(lifetime)}
-            </section>
-          </li>
-        ]);
-      } else {
-        return wrapper([
-          <li key="unlimited-start-time">
-            <header style={UIMembershipCard.styles.basicName}>有效次数</header>
-            <section style={UIMembershipCard.styles.basicValue}>
-              不限次
-            </section>
-          </li>,
-          <li key="unlimited-end-time">
-            <header style={UIMembershipCard.styles.basicName}>有效时间</header>
-            <section style={UIMembershipCard.styles.basicValue}>
-              {lifetimeString(lifetime)}
-            </section>
-          </li>
-        ]);
-      }
+      return wrapper([
+        <li key="unlimited-startsAt">
+          <header style={UIMembershipCard.styles.basicName}>生效时间</header>
+          <section style={UIMembershipCard.styles.basicValue}>
+            {format(startsAt, 'YYYY-MM-DD')}
+          </section>
+        </li>,
+        <li key="unlimited-expiresAt">
+          <header style={UIMembershipCard.styles.basicName}>到期时间</header>
+          <section style={UIMembershipCard.styles.basicValue}>
+            {format(expiresAt, 'YYYY-MM-DD')}
+          </section>
+        </li>
+      ]);
     }
   }
+
+  render() {
+    const { className, width, data, onClick } = this.props;
+    return (
+      <UIIdentificationCard
+        className={className}
+        width={width || 236}
+        viewMetadata={this.contents}
+        color={data && data.color}
+        isEmpty={!!data}
+        onClick={onClick}
+      />
+    );
+  }
+
 }
