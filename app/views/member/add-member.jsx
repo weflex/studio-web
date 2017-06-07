@@ -7,7 +7,6 @@ export default class extends React.Component {
     super(props);
     this.state = {
       form: Object.assign({
-        correction: {},
         lifetime: {},
       }, props.member),
     };
@@ -35,7 +34,6 @@ export default class extends React.Component {
       // empty the form if submit successfully
       this.setState({
         form: {
-          correction: {},
           lifetime: {},
         },
       });

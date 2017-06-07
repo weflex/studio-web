@@ -188,7 +188,7 @@ class CardDetail extends React.Component {
           <UIFramework.TextInput 
             flex={0.9}
             bindStateCtx={this}
-            bindStateType={Number} 
+            bindStateType={Number}
             bindStateName="data.price" 
             value={this.state.data.price}
           />
@@ -247,7 +247,7 @@ class CardDetail extends React.Component {
           <div className="detail-card class-package-detail-preview">
             <h3>预览</h3>
             <div className="class-package-detail-preview-card">
-              <UIMembershipCard data={this.state.data} />
+              <UIMembershipCard data={Object.assign(this.state.data, {type: 'package'})} />
             </div>
           </div>
         </div>
