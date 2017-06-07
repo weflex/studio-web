@@ -93,7 +93,7 @@ class ClassPackageList extends React.Component {
               return (
                 <UIMembershipCard 
                   className="grid-item" 
-                  data={data} 
+                  data={ Object.assign(data, {type: 'package'}) } 
                   key={key}
                   onClick={this.onClickCard.bind(this, data)}
                 />

@@ -58,8 +58,18 @@ export default class UIMembershipCard extends React.Component {
     this.contents = this.contents.bind(this);
   }
 
+  getStringLifetime(lifetime) {
+    const timeUnit = {
+      'day': '天',
+      'month': '月',
+      'year': '年',
+    };
+
+    return lifetime.value + timeUnit[lifetime.scale];
+  }
+
   contents() {
-    const { name, accessType, available, passes, startsAt, expiresAt, price } = this.props.data;
+    const { type, lifetime, name, accessType, available, passes, startsAt, expiresAt, price } = this.props.data;
 
     const wrapper = (children) => {
       return (
@@ -81,42 +91,59 @@ export default class UIMembershipCard extends React.Component {
       );
     };
 
-    if (accessType === 'multiple') {
+    if(type === 'package') {
       return wrapper([
-        <li key="multiple-passes">
-          <header style={UIMembershipCard.styles.basicName}>总次数</header>
-          <section style={UIMembershipCard.styles.basicValue}>
-            {passes}次
-          </section>
-        </li>,
         <li key="multiple-available">
-          <header style={UIMembershipCard.styles.basicName}>剩余次数</header>
+          <header style={UIMembershipCard.styles.basicName}>有效次数</header>
           <section style={UIMembershipCard.styles.basicValue}>
-            {available}次
+            {(accessType === 'multiple')? passes: '不限'}次
           </section>
         </li>,
-        <li key="multiple-expires">
-          <header style={UIMembershipCard.styles.basicName}>到期时间</header>
+        <li key="unlimited-startsAt">
+          <header style={UIMembershipCard.styles.basicName}>有效时间</header>
           <section style={UIMembershipCard.styles.basicValue}>
-            {format(expiresAt, 'YYYY-MM-DD')}
+            {this.getStringLifetime(lifetime)}
           </section>
         </li>
       ]);
     } else {
-      return wrapper([
-        <li key="unlimited-startsAt">
-          <header style={UIMembershipCard.styles.basicName}>生效时间</header>
-          <section style={UIMembershipCard.styles.basicValue}>
-            {format(startsAt, 'YYYY-MM-DD')}
-          </section>
-        </li>,
-        <li key="unlimited-expiresAt">
-          <header style={UIMembershipCard.styles.basicName}>到期时间</header>
-          <section style={UIMembershipCard.styles.basicValue}>
-            {format(expiresAt, 'YYYY-MM-DD')}
-          </section>
-        </li>
-      ]);
+      if (accessType === 'multiple') {
+        return wrapper([
+          <li key="multiple-available">
+            <header style={UIMembershipCard.styles.basicName}>剩余次数</header>
+            <section style={UIMembershipCard.styles.basicValue}>
+              {available + ' / ' + passes}次
+            </section>
+          </li>,
+          <li key="unlimited-startsAt">
+            <header style={UIMembershipCard.styles.basicName}>生效时间</header>
+            <section style={UIMembershipCard.styles.basicValue}>
+              {format(startsAt, 'YYYY-MM-DD')}
+            </section>
+          </li>,
+          <li key="multiple-expiresAt">
+            <header style={UIMembershipCard.styles.basicName}>到期时间</header>
+            <section style={UIMembershipCard.styles.basicValue}>
+              {format(expiresAt, 'YYYY-MM-DD')}
+            </section>
+          </li>
+        ]);
+      } else {
+        return wrapper([
+          <li key="unlimited-startsAt">
+            <header style={UIMembershipCard.styles.basicName}>生效时间</header>
+            <section style={UIMembershipCard.styles.basicValue}>
+              {format(startsAt, 'YYYY-MM-DD')}
+            </section>
+          </li>,
+          <li key="unlimited-expiresAt">
+            <header style={UIMembershipCard.styles.basicName}>到期时间</header>
+            <section style={UIMembershipCard.styles.basicValue}>
+              {format(expiresAt, 'YYYY-MM-DD')}
+            </section>
+          </li>
+        ]);
+      }
     }
   }
 

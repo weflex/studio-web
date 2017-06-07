@@ -141,7 +141,6 @@ export default class extends React.Component {
       name: form.name,
       accessType: form.accessType,
       price: form.price,
-      available: form.available,
       startsAt: startOfDay(form.startsAt),
       expiresAt: endOfDay(form.expiresAt),
       packageId: form.packageId,
@@ -149,6 +148,10 @@ export default class extends React.Component {
       venueId: form.venueId,
       memberId: form.memberId,
     };
+    if(form.available) {
+      membership.available = form.available;
+    }
+
     if (operation === 'edt') {
       await client.membership.update(data.id, membership, data.modifiedAt);
     } else if(operation === 'add') {
@@ -191,7 +194,7 @@ export default class extends React.Component {
     return (
       <UIFramework>
         <UIFramework.Row name="会员姓名">
-          <UIFramework.TextInput flex={1} value={this.props.member.nickname} disabled />
+          <UIFramework.TextInput flex={1} value={form.memberName} disabled />
         </UIFramework.Row>
         <UIFramework.Row name="会卡" hint="会员需要会卡才能预定课程">
           <UIFramework.Select
@@ -201,6 +204,7 @@ export default class extends React.Component {
             value={form.packageId}
             options={packageOptions}
             onChange={this.onChangePackage}
+            disabled={operation==='edt'}
           />
         </UIFramework.Row>
         <UIFramework.Row name="实付价格">
@@ -212,9 +216,18 @@ export default class extends React.Component {
             value={form.price}
           />
         </UIFramework.Row>
+        <UIFramework.Row name="销售人">
+          <UIFramework.Select
+            flex={1}
+            bindStateCtx={this}
+            bindStateName="form.salesId"
+            value={form.salesId}
+            options={salesOptions}
+          />
+        </UIFramework.Row>
         {
           (form.accessType === 'multiple')
-          ? <UIFramework.Row name="剩余次数" hint="xxxx">
+          ? <UIFramework.Row name={operation==='add'? "有效次数": "剩余次数"}>
               <UIFramework.TextInput
                 flex={1}
                 bindStateCtx={this}
@@ -225,7 +238,7 @@ export default class extends React.Component {
             </UIFramework.Row>
           : ''
         }
-        <UIFramework.Row name="有效期" hint="xxxx">
+        <UIFramework.Row name="有效期" hint="该会卡生效时间及到期时间">
           <UIFramework.DateInput
             flex={0.45}
             bindStateCtx={this}
@@ -241,21 +254,12 @@ export default class extends React.Component {
             value={ format(form.expiresAt, 'YYYY-MM-DD') }
           />
         </UIFramework.Row>
-        <UIFramework.Row name="销售人">
-          <UIFramework.Select
-            flex={1}
-            bindStateCtx={this}
-            bindStateName="form.salesId"
-            value={form.salesId}
-            options={salesOptions}
-          />
-        </UIFramework.Row>
         <UIFramework.Row>
           <UIFramework.Button
             key="save"
             text={operation === 'add'? "确认添加": "保存会员信息"}
             onClick={this.onSubmit}
-            disabled={!( form.packageId && form.price && form.startsAt && form.expiresAt)}
+            disabled={!( form.packageId && (form.price === 0 || form.price ) && form.startsAt && form.expiresAt)}
           />
           {
             (operation === 'edt')
