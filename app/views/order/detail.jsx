@@ -26,25 +26,9 @@ class Detail extends React.Component {
       const membership = await client.membership.get(payment.membership.id, {
         include: ['package']
       });
-      const reducedMemberships = await client.middleware('/transaction/reduce-memberships', {
-        userId: order.userId,
-        venueId: order.class.template.venueId
-      });
-      const reducedMembership = _.find(reducedMemberships, (reduced) => {
-        return reduced.membershipId === membership.id
-      });
+
       this.setState({
-        membership: Object.assign(
-          membership,
-          reducedMembership,
-          {
-            name: membership.package.name,
-            lifetime: membership.package.lifetime,
-            category: membership.package.category,
-            passes: membership.package.passes,
-            color: membership.package.color,
-          }
-        )
+        membership: Object.assign(membership.package, membership)
       });
     }
   }
@@ -137,11 +121,11 @@ class Detail extends React.Component {
             <span>{moment(membership.createdAt).format('YYYY[年]MM[月]DD[日]')}</span>
           </div>
           {
-            'expiredAt' in membership ?
+            'expiresAt' in membership ?
             <div className="detail-card-row">
               <label>到期时间</label>
               <span>
-                {moment(membership.expiredAt).format('YYYY[年]MM[月]DD[日]')}
+                {moment(membership.expiresAt).format('YYYY[年]MM[月]DD[日]')}
               </span>
             </div> : null
           }

@@ -85,6 +85,7 @@ export default class extends React.Component {
       const members = await client.member.list({
         where: {
           phone,
+          venueId: venue.id,
           trashedAt: {
             exists: false
           }
@@ -96,19 +97,26 @@ export default class extends React.Component {
       } else {
         // find a user
         const member = members[0];
+
         let memberships;
         try {
-          memberships = await client.context.requestMiddleware('/transaction/reduce-memberships', {
-            userId: member.userId,
-            memberId: member.id
-          });
+          const now = new Date();
+          memberships = ( await client.membership.list({
+            where: {
+              'memberId': member.id,
+              'startsAt': {lte: now},
+              'expiresAt': {gte: now},
+            },
+            include: 'package'
+          }) ).filter(item =>
+            item.accessType === 'unlimited' || (item.accessType === 'multiple' && item.available > 0) );
         } catch (error) {
           console.error(error);
           memberships = [];
         } finally {
           this.setState({
             isUserNotFound: false,
-            memberships: _.filter(memberships, _.property('isValid')),
+            memberships,
             member,
           });
         }
