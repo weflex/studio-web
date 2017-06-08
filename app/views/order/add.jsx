@@ -283,7 +283,7 @@ export default class extends React.Component {
                          paymentOptionIds.indexOf(item.packageId) === -1;
         return {
           text: item.name,
-          value: item.membershipId,
+          value: item.id,
           disabled,
         };
       });
