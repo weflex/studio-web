@@ -4,6 +4,7 @@
   "dependencies": {
     "@weflex/gian": "^1.32.1",
     "@weflex/passport.js": "1.2.0",
+    "@weflex/weflex-ui": "^2.8.4",
     "antd": "^2.3.0",
     "babel-polyfill": "6.3.14",
     "dataurl": "^0.1.0",
@@ -31,8 +32,7 @@
     "scroller": "0.0.3",
     "superagent": "1.5.0",
     "superagent-prefix": "0.0.2",
-    "superagent-promise": "1.1.0",
-    "weflex-ui": "^2.8.2"
+    "superagent-promise": "1.1.0"
   },
   "devDependencies": {
     "babel-core": "6.3.21",
