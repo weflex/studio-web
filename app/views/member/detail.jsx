@@ -5,7 +5,7 @@
 
 import { flattenDeep } from 'lodash';
 import React from 'react';
-import UIFramework from 'weflex-ui';
+import UIFramework from '@weflex/weflex-ui';
 import MasterDetail from '../../components/master-detail';
 import UIMembershipCard from '../../components/ui-membership-card';
 import { UIHistory } from '../../components/ui-history';

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { client } from '../../api';
-import UIFramework from 'weflex-ui';
+import UIFramework from '@weflex/weflex-ui';
 import UIMembershipCard from '../../components/ui-membership-card';
 import './detail.css';
 

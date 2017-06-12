@@ -11,7 +11,7 @@ import {
   getCellHeight,
   getFormatTime,
 } from './util.js';
-import UIFramework from 'weflex-ui';
+import UIFramework from '@weflex/weflex-ui';
 import { client } from '../../api';
 import ClassList from './class-list';
 import Template from './components/template';

@@ -1,7 +1,7 @@
 "use strict";
 
 import React from 'react';
-import UIFramework from 'weflex-ui';
+import UIFramework from '@weflex/weflex-ui';
 import ImageCell from '../image-cell';
 import randomize from 'randomatic';
 import { client } from '../../api';

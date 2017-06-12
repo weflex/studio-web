@@ -1,7 +1,7 @@
 "use strict";
 
 import React from 'react';
-import UIFramework from 'weflex-ui';
+import UIFramework from '@weflex/weflex-ui';
 import { client } from '../../api';
 
 class TabSMSCode extends React.Component {

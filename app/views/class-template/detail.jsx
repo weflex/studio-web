@@ -5,7 +5,7 @@ import _ from 'lodash';
 import { ClipLoader } from 'halogen';
 import ImageCell from '../../components/image-cell';
 import ImageManager from '../../components/image-manager';
-import UIFramework from 'weflex-ui';
+import UIFramework from '@weflex/weflex-ui';
 import { client } from '../../api';
 import { Select } from 'antd';
 const Option = Select.Option;

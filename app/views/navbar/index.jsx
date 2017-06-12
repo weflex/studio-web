@@ -4,7 +4,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import React from 'react';
 import { Link } from 'react-router-component';
-import UIFramework from 'weflex-ui';
+import UIFramework from '@weflex/weflex-ui';
 import { client } from '../../api';
 import './index.css';
 const qstringify = require('qstringify');

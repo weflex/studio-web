@@ -3,7 +3,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 import React from 'react';
-import UIFramework from 'weflex-ui';
+import UIFramework from '@weflex/weflex-ui';
 import { NewClassTemplate } from './new';
 import { getFormatTime } from './util';
 import { client } from '../../api';

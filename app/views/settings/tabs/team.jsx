@@ -2,7 +2,7 @@
 
 import _ from 'lodash';
 import React from 'react';
-import UIFramework from 'weflex-ui';
+import UIFramework from '@weflex/weflex-ui';
 import InviteTrainerView from '../components/invite-trainer';
 import EditTrainerView from '../components/edit-trainer';
 import { client } from '../../../api';

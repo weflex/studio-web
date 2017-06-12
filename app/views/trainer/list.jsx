@@ -1,5 +1,5 @@
 import React from 'react';
-import UIFramework from 'weflex-ui';
+import UIFramework from '@weflex/weflex-ui';
 import {Table, Button} from 'antd';
 import {client} from '../../api';
 import {Link} from 'react-router-component';
