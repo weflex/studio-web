@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import UIFramework from 'weflex-ui';
+import UIFramework from '@weflex/weflex-ui';
 const DEFAULT_AVATAR = 'http://static.theweflex.com/default-avatar-male.png';
 
 /**

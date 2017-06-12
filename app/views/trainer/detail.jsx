@@ -3,7 +3,7 @@ import hourminute from 'hourminute';
 import {range} from 'lodash';
 import moment from 'moment';
 import {client} from '../../api';
-import UIFramework from 'weflex-ui';
+import UIFramework from '@weflex/weflex-ui';
 import {Row, Col, Button, Input, Select, Table, DatePicker, Pagination} from 'antd';
 const Option = Select.Option;
 const { RangePicker } = DatePicker;

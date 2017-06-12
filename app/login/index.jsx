@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom';
 import { client } from '../api';
 import '../layout/root-center.css';
 import './index.css';
-import UIFramework from 'weflex-ui';
+import UIFramework from '@weflex/weflex-ui';
 const queryString = require('query-string');
 
 const sourceTabs = [

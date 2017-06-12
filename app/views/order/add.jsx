@@ -4,7 +4,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import hourminute from 'hourminute';
 import React from 'react';
-import UIFramework from 'weflex-ui';
+import UIFramework from '@weflex/weflex-ui';
 import {Tabs, DatePicker, TimePicker} from 'antd';
 import { client } from '../../api';
 import { getFormatTime } from '../calendar/util.js';

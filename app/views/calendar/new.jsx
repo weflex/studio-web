@@ -4,7 +4,7 @@ import moment from 'moment';
 import React from 'react';
 import { ClipLoader } from 'halogen';
 import { client } from '../../api';
-import UIFramework from 'weflex-ui';
+import UIFramework from '@weflex/weflex-ui';
 import { Select } from 'antd';
 const Option = Select.Option;
 import _ from 'lodash';

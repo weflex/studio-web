@@ -6,7 +6,7 @@
 
 import React from 'react';
 import moment from 'moment';
-import UIFramework from 'weflex-ui';
+import UIFramework from '@weflex/weflex-ui';
 import ClassCard from '../card';
 import { NewClassTemplate } from '../new';
 import { client } from '../../../api';

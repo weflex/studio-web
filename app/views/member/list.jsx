@@ -1,7 +1,7 @@
 "use strict";
 
 import React from 'react';
-import UIFramework from 'weflex-ui';
+import UIFramework from '@weflex/weflex-ui';
 import MasterDetail from '../../components/master-detail';
 import Detail from './detail';
 import Importer from './importer';

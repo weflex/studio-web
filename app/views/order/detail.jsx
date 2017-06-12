@@ -2,7 +2,7 @@
 
 import React from 'react';
 import moment from 'moment';
-import UIFramework from 'weflex-ui';
+import UIFramework from '@weflex/weflex-ui';
 import { client } from '../../api';
 import { UIHistory } from '../../components/ui-history';
 import MasterDetail from '../../components/master-detail';

@@ -4,7 +4,7 @@ import React from 'react';
 import MasterDetail from '../../components/master-detail';
 import Detail from './detail';
 import AddOrderView from './add';
-import UIFramework from 'weflex-ui';
+import UIFramework from '@weflex/weflex-ui';
 import { UIProfileListItem } from '../../components/ui-profile';
 import { client } from '../../api';
 import {startOfDay, format, getHours, getMinutes} from 'date-fns';

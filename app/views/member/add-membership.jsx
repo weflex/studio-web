@@ -1,5 +1,5 @@
 import React from 'react';
-import UIFramework from 'weflex-ui';
+import UIFramework from '@weflex/weflex-ui';
 import { client } from '../../api';
 import { keyBy, intersectionBy } from 'lodash';
 import { format, startOfDay, endOfDay, addDays, addMonths, addYears } from 'date-fns';
