@@ -9,14 +9,22 @@ export default class extends React.Component {
       form: Object.assign({
         lifetime: {},
       }, props.member),
+      hasPhone: 'none'
     };
+    this.cache = {
+      venueId: null
+    }
   }
+
+  async componentDidMount() {
+    this.cache.venueId = ( await client.user.getVenueById() ).id;
+  }
+
   async onSubmit() {
     try {
-      const venue = await client.user.getVenueById();
       if (!this.props.member) {
         const response = await client.middleware('/transaction/add-member', Object.assign({
-          venueId: venue.id,
+          venueId: this.cache.venueId || ( await client.user.getVenueById() ).id,
         }, this.state.form), 'post');
         if (!response || !response.user) {
           throw new Error('Internal Server Error');
@@ -51,27 +59,65 @@ export default class extends React.Component {
   get submitDisabled() {
     return !(this.state.form.nickname &&
       this.state.form.phone &&
+      this.state.hasPhone &&
       this.state.form.phone.length === 11);
   }
+
   async onChangePhone(event) {
-    if (this.props.member) {
-      return null;
-    }
+    // 规则：由于member和user表里面的phone字段是相互独立的，
+    // 先判断该手机号在该场馆有没有会员，如果有会员则判定错误。
+    // 如果通过条件，再判断该手机号是不是在user中有，并判断user中的手机号是否在该场馆关联的有会员，
+    // 关联有会员的情况下判定错误
     const keyword = event.target.value;
-    if (keyword.length > 7) {
-      let users = await client.middleware('/search/users?phone=' + keyword);
-      let formData = this.state.form;
-      if (users.length >= 1) {
-        let userData = users[0];
-        formData.email = userData.email;
-        formData.nickname = userData.nickname;
-        formData.source = userData.source;
+    if (keyword.length == 11) {
+      const venueId = this.cache.venueId || ( await client.user.getVenueById() ).id;
+
+      const memberList = await client.member.list({
+        where: {
+          venueId,
+          phone: keyword,
+        }
+      });
+
+      let {form, hasPhone } = this.state;
+
+      if(memberList.length <= 0 || (memberList.length > 0 && this.props.member && memberList[0].phone === this.props.member.phone) ){
+        const userList = await client.user.list({
+          where: {
+            phone: keyword,
+          },
+          include: {
+            relation: 'members',
+            scope: {
+              where: {
+                venueId,
+                trashedAt: { exists: false }
+              }
+            }
+          }
+        });
+
+        if(userList.length > 0) {
+          const user = userList[0];
+          if(user.members.length > 0 && user.members[0].phone !== keyword) {
+            hasPhone = '';
+          } else {
+            form.email = user.email;
+            form.nickname = user.nickname;
+            form.source = user.source;
+            hasPhone = 'none';
+          }
+        } else {
+          form.email = '';
+          form.nickname = '';
+          form.source = '';
+          hasPhone = 'none';
+        }
       } else {
-        formData.email = '';
-        formData.nickname = '';
-        formData.source = '';
+        hasPhone = '';
       }
-      this.setState({form: formData});
+
+      this.setState({form, hasPhone});
     }
   }
   render() {
@@ -93,6 +139,7 @@ export default class extends React.Component {
             value={this.state.form.email}
             placeholder="可选填：example@getweflex.com"
           />
+          <span style={{color:'#f00', display: this.state.hasPhone}}>会员手机号已存在</span>
         </UIFramework.Row>
         <UIFramework.Row name="会员姓名" hint="会员的名字">
           <UIFramework.TextInput
