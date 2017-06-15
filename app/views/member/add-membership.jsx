@@ -153,9 +153,26 @@ export default class extends React.Component {
     }
 
     if (operation === 'edt') {
+      let memberOperation = {
+        memberId: membership.memberId,
+        membershipId: form.id,
+        record: '管理员编辑了会卡：' + membership.name,
+      }
+      if(membership.available) {
+        memberOperation.record += ' 剩余次数：' + membership.available;
+      };
       await client.membership.update(data.id, membership, data.modifiedAt);
+      await client.operation.create(memberOperation);
     } else if(operation === 'add') {
+      let memberOperation = {
+        memberId: membership.memberId,
+        record: '用户购买了会卡：' + membership.name,
+      }
+      if(membership.available) {
+        memberOperation.record += ' 有效次数：' + membership.available;
+      };
       await client.membership.create(membership);
+      await client.operation.create(memberOperation);
     }
 
     if (typeof onComplete === 'function') {
