@@ -112,7 +112,7 @@ export default class UIMembershipCard extends React.Component {
           <li key="multiple-available">
             <header style={UIMembershipCard.styles.basicName}>剩余次数</header>
             <section style={UIMembershipCard.styles.basicValue}>
-              {available + ' / ' + passes}次
+              {available + '/' + passes}次
             </section>
           </li>,
           <li key="unlimited-startsAt">

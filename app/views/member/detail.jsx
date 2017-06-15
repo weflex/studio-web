@@ -517,7 +517,6 @@ class MemberOperation extends React.Component {
       }
       return operationItem;
     });
-    console.log(operationList)
 
     const orderList = ( await client.order.list({
       where   : {

@@ -148,21 +148,22 @@ export default class extends React.Component {
       venueId: form.venueId,
       memberId: form.memberId,
     };
-    if(form.available) {
+    if(form.available || form.available === 0) {
       membership.available = form.available;
     }
 
     if (operation === 'edt') {
-      let memberOperation = {
-        memberId: membership.memberId,
-        membershipId: form.id,
-        record: '管理员编辑了会卡：' + membership.name,
-      }
-      if(membership.available) {
-        memberOperation.record += ' 剩余次数：' + membership.available;
-      };
       await client.membership.update(data.id, membership, data.modifiedAt);
-      await client.operation.create(memberOperation);
+
+      if(membership.available && membership.available !== data.available){
+        let memberOperation = {
+          memberId: membership.memberId,
+          membershipId: form.id,
+          record: '管理员编辑了会卡：' + membership.name + ' 剩余次数：' + data.available + '次变更为' + membership.available + '次',
+        }
+
+        await client.operation.create(memberOperation);
+      }
     } else if(operation === 'add') {
       let memberOperation = {
         memberId: membership.memberId,
