@@ -472,6 +472,7 @@ class MemberOperation extends React.Component {
         ptSessionCancel  : "#ff8ac2",
         membershipCreate : "#6ed4a4",
         membershipDelete : "#ff8ac2",
+        membershipUpdate : "#f0ab51",
       },
     };
 
@@ -484,6 +485,39 @@ class MemberOperation extends React.Component {
 
   async updateOperationList() {
     const { memberId, userId, venueId } = this.props;
+
+    const operationList = ( await client.operation.list({
+      where :{
+        memberId,
+        or: [
+          {record: { like: '编辑了会卡'} },
+          //{record: { like: '删除了会卡'} },
+          {record: { like: '购买了会卡'} },
+        ]
+      }
+    }) ).map(item => {
+      let operationItem = {
+        createdAt : item.createdAt,
+      };
+      const operationType = {
+        '删除了会卡': 'membershipDelete', '编辑了会卡': 'membershipUpdate', '购买了会卡': 'membershipCreate'
+      };
+      for(let key in operationType) {
+        if(item.record.indexOf(key) > 0) {
+          let text = item.record;
+          let index1 = (text.indexOf('：') > 0) ? text.indexOf('：') + 1: text.indexOf(':') + 1;
+          let index2 = (operationType[key] === 'membershipUpdate') ?  text.indexOf('剩余') - 1: text.indexOf('有效') - 1;
+
+          text = <span>{ text.slice(0, index1) }{ (index2 > 5)? toHighLightText(text.slice( index1, index2 )): toHighLightText(text.slice(index1)) } { (index2 > 5)? text.slice(index2): '' }</span>
+
+          operationItem.text = text;
+          operationItem.status = operationType[key];
+          break;
+        }
+      }
+      return operationItem;
+    });
+    console.log(operationList)
 
     const orderList = ( await client.order.list({
       where   : {
@@ -517,7 +551,7 @@ class MemberOperation extends React.Component {
       include : {"memberships": "package"},
     }) )["memberships"].map( this.toMembershipItems );
 
-    let operation = flattenDeep([orderList, ptSessionList, membershipList]);
+    let operation = flattenDeep([orderList, ptSessionList, membershipList, operationList]);
     operation.sort((previousItem, nextItem)=>{ return compareDesc(previousItem.createdAt, nextItem.createdAt)});
     this.setState({operation});
   }
@@ -567,12 +601,12 @@ class MemberOperation extends React.Component {
   toMembershipItems (membershipItem) {
     const membershipName = membershipItem.package.name;
 
-    let membershipItems = [{
-      status     : "membershipCreate",
-      createdAt  : membershipItem.createdAt,
-      text       : <span>用户购买了会卡：{ toHighLightText(membershipName) }</span>,
-    }];
-
+    // let membershipItems = [{
+    //   status     : "membershipCreate",
+    //   createdAt  : membershipItem.createdAt,
+    //   text       : <span>用户购买了会卡：{ toHighLightText(membershipName) }</span>,
+    // }];
+    let membershipItems = [];
     if (membershipItem.trashedAt) {
       membershipItems.push({
         status     : "membershipDelete",
