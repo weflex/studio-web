@@ -2,7 +2,7 @@
   "name": "@weflex/studio-desktop",
   "version": "1.16.5",
   "dependencies": {
-    "@weflex/gian": "^1.32.1",
+    "@weflex/gian": "^1.33.0",
     "@weflex/passport.js": "1.2.0",
     "@weflex/weflex-ui": "^2.8.4",
     "antd": "^2.3.0",
