@@ -500,17 +500,19 @@ class MemberOperation extends React.Component {
         createdAt : item.createdAt,
       };
       const operationType = {
-        '删除了会卡': 'membershipDelete', '编辑了会卡': 'membershipUpdate', '购买了会卡': 'membershipCreate'
+        '删除了会卡': 'membershipDelete',
+        '编辑了会卡': 'membershipUpdate',
+        '购买了会卡': 'membershipCreate',
       };
       for(let key in operationType) {
         if(item.record.indexOf(key) > 0) {
-          let text = item.record;
-          let index1 = (text.indexOf('：') > 0) ? text.indexOf('：') + 1: text.indexOf(':') + 1;
-          let index2 = (operationType[key] === 'membershipUpdate') ?  text.indexOf('剩余') - 1: text.indexOf('有效') - 1;
-
-          text = <span>{ text.slice(0, index1) }{ (index2 > 5)? toHighLightText(text.slice( index1, index2 )): toHighLightText(text.slice(index1)) } { (index2 > 5)? text.slice(index2): '' }</span>
-
-          operationItem.text = text;
+          let arr = item.record.split('<br/>');
+          let index1 = (arr[0].indexOf('：') > 0) ? arr[0].indexOf('：'): arr[0].indexOf(':');
+          let text = [<p>{ arr[0].slice(0, index1 + 1) } { toHighLightText( arr[0].slice(index1 + 1) ) }</p>];
+          for(let i = 1; i < arr.length; i++){
+            text.push(<p>{arr[i]}</p>);
+          };
+          operationItem.text =<span>{text}</span>;
           operationItem.status = operationType[key];
           break;
         }
