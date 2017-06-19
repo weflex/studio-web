@@ -112,17 +112,17 @@ export default class UIMembershipCard extends React.Component {
           <li key="multiple-available">
             <header style={UIMembershipCard.styles.basicName}>剩余次数</header>
             <section style={UIMembershipCard.styles.basicValue}>
-              {available + '/' + passes}次
+              {available}次
             </section>
           </li>,
           <li key="unlimited-startsAt">
-            <header style={UIMembershipCard.styles.basicName}>生效时间</header>
+            <header style={UIMembershipCard.styles.basicName}>生效日期</header>
             <section style={UIMembershipCard.styles.basicValue}>
               {format(startsAt, 'YYYY-MM-DD')}
             </section>
           </li>,
           <li key="multiple-expiresAt">
-            <header style={UIMembershipCard.styles.basicName}>到期时间</header>
+            <header style={UIMembershipCard.styles.basicName}>到期日期</header>
             <section style={UIMembershipCard.styles.basicValue}>
               {format(expiresAt, 'YYYY-MM-DD')}
             </section>
@@ -131,13 +131,13 @@ export default class UIMembershipCard extends React.Component {
       } else {
         return wrapper([
           <li key="unlimited-startsAt">
-            <header style={UIMembershipCard.styles.basicName}>生效时间</header>
+            <header style={UIMembershipCard.styles.basicName}>生效日期</header>
             <section style={UIMembershipCard.styles.basicValue}>
               {format(startsAt, 'YYYY-MM-DD')}
             </section>
           </li>,
           <li key="unlimited-expiresAt">
-            <header style={UIMembershipCard.styles.basicName}>到期时间</header>
+            <header style={UIMembershipCard.styles.basicName}>到期日期</header>
             <section style={UIMembershipCard.styles.basicValue}>
               {format(expiresAt, 'YYYY-MM-DD')}
             </section>
