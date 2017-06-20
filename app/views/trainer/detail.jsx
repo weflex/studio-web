@@ -1,7 +1,6 @@
+import './index.css';
 import React from 'react';
-import hourminute from 'hourminute';
 import {range} from 'lodash';
-import moment from 'moment';
 import {client} from '../../api';
 import UIFramework from '@weflex/weflex-ui';
 import {Row, Col, Button, Input, Select, Table, DatePicker, Pagination} from 'antd';
@@ -12,12 +11,30 @@ import TrainerSchedule from './schedule';
 import {startOfDay, endOfDay, format} from 'date-fns';
 
 class PTSchedule extends React.Component {
+  static propTypes = {
+    dataSource: React.PropTypes.object,
+    trainerId: React.PropTypes.string,
+    venueId: React.PropTypes.string,
+    // onCancel: ,
+    // on
+  };
 
   constructor (props) {
     super(props);
+
     this.state = {
       classPackages: [],
+      schedule: props.dataSource,
+      scheduleIndex: 1,
+      showPTSchedule: false,
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      schedule: nextProps.dataSource,
+      venueId: nextProps.venueId,
+    });
   }
 
   async componentDidMount () {
@@ -33,72 +50,122 @@ class PTSchedule extends React.Component {
     });
   }
 
+  onCancel() {
+    const { dataSource } = this.props;
+    UIFramework.Modal.confirm({
+      title: '确认取消私教排期?',
+      content: '取消私教排期后，将不能创建该教练的私教课程',
+      onOk: async () => {
+        await client.ptSchedule.delete(dataSource.id, dataSource.modifiedAt);
+        this.setState({'schedule': null});
+      },
+    });
+  }
+
+  renderSchedule() {
+    const weekName = ['日', '一', '二', '三', '四', '五', '六'];
+    const { scheduleIndex, schedule } = this.state;
+
+    return [1, 2, 3, 4, 5, 6, 0].map(i => {
+      let className = 'schedule-day-item';
+      if( schedule.datetime[i].length > 0 ){
+        className += ' schedule-day-item-border';
+      }
+      if( scheduleIndex === i ){
+        className += ' schedule-day-item-background';
+      }
+      return (<Button key={i} className={className} onClick={()=>{this.setState({scheduleIndex: i})}}>
+        周{weekName[i]}
+      </Button>);
+    });
+  }
+
   render () {
-    const ptSchedule = this.props.dataSource;
-    const classPackages = this.state.classPackages;
-    if (ptSchedule) {
-      return (
-        <div>
-          <div className='detail-card-row'>
-            <label>排课时间</label>
-            <span>
-              {
-                range(1, 8).map((day, key) => {
-                  const dayString = moment().isoWeekday(day).format('ddd');
-                  let className = 'day';
-                  if (ptSchedule.days.indexOf(day) > -1) {
-                    className += ' active';
-                  }
-                  return <span className={className} key={key}>{dayString}</span>
-                })
-              }
-            </span>
-          </div>
-          <div className='detail-card-row'>
-            <label></label>
-            <span>
-              {
-                range(6, 23).map((hour, key) => {
-                  const hourString = hourminute({hour}).format();
-                  let className = 'hour';
-                  if (ptSchedule.hours.indexOf(hour) > -1) {
-                    className += ' active';
-                  }
-                  return <span className={className} key={key}>{hourString}</span>
-                })
-              }
-            </span>
-          </div>
-          <div className='detail-card-row'>
-            <label>课程时长</label>
-            <span>
-              {
-                ptSchedule.durationMinutes + ' 分钟'
-              }
-            </span>
-          </div>
-          <div className='detail-card-row'>
-            <label>关联会卡</label>
-            <Select multiple
-                    disabled
-                    value={ptSchedule.paymentOptionIds}
-                    style={{width: 'calc(100% - 90px)'}}>
-              {
-                classPackages.map((membership, key) =>
-                  <Option value={membership.id} key={key}>{membership.name}</Option>
-                )
-              }
-            </Select>
-          </div>
+    const { schedule, scheduleIndex, classPackages, showPTSchedule } = this.state;
+
+    return (
+      <Row className='schedule'>
+        <div className='card-header'>
+          <h3>私教排期</h3>
+          <ul className='actions'>
+            {
+              schedule
+                ? <li><Button size='small' onClick={this.onCancel.bind(this)}>取消</Button></li>
+                : ""
+            }
+            <li>
+              <Button size='small' onClick={() => this.setState({showPTSchedule: true})}>
+                编辑
+              </Button>
+            </li>
+          </ul>
         </div>
-      );
-    } else {
-      return <span className='placeholder'>该教练暂时没有私教排期</span>;
-    }
+        {
+          schedule
+          ?<div>
+            <div className='detail-card-row'>
+              <label>排课时间</label>
+              <span>{this.renderSchedule()}</span>
+            </div>
+            <div className='detail-card-row'>
+              {
+                range(6, 23).map((item, key) => {
+                  let className = 'hour';
+                  if (schedule.datetime[scheduleIndex].indexOf(item) > -1) {
+                    className += ' active';
+                  }
+                  return <span key={key} className={className}>{(item > 9)? item: '0' + item}:00</span>
+                })
+              }
+            </div>
+            <div className='detail-card-row'>
+              <label>课程时长</label>
+              <span>{ schedule.durationMinutes + ' 分钟' }</span>
+            </div>
+            <div className='detail-card-row'>
+              <label>关联会卡</label>
+              <Select multiple
+                      disabled
+                      value={schedule.paymentOptionIds}
+                      style={{width: 'calc(100% - 90px)'}}>
+                {
+                  classPackages.map((membership, key) =>
+                    <Option value={membership.id} key={key}>{membership.name}</Option>
+                  )
+                }
+              </Select>
+            </div>
+          </div>
+          :<span className='placeholder'>该教练暂时没有私教排期</span>
+        }
+
+        <UIFramework.Modal
+          ref="ptScheduleModal"
+          footer=""
+          title='私教排期'
+          onCancel={() => { this.setState({showPTSchedule: false})} }
+          visible={showPTSchedule}>
+          <TrainerSchedule
+            schedule={schedule}
+            trainerId={this.props.trainerId}
+            onComplete={(ptSchedule) => {
+              this.setState({
+                showPTSchedule: false,
+                schedule: Object.assign({}, ptSchedule),
+              });
+            }}/>
+        </UIFramework.Modal>
+      </Row>
+    );
   }
 }
 
 class TrainerSalesList extends React.Component {
+  static propTypes = {
+    trainerId: React.PropTypes.string,
+    trainerName: React.PropTypes.string,
+  };
+
   constructor (props) {
     super(props);
     const { trainerId, trainerName } = props;
@@ -260,21 +327,23 @@ class TrainerSalesList extends React.Component {
 }
 
 module.exports = class TrainerDetail extends React.Component {
+  static propTypes = {
+    trainerId: React.PropTypes.string,
+  };
+
   constructor (props) {
     super(props);
     this.state = {
-      dataSource: props.dataSource || {
+      dataSource: {
         avatar: {},
       },
     };
   }
 
-  // component lifecycle methods
-
   async componentDidMount () {
     const defaultAvatar = {uri: 'http://static.theweflex.com/default-avatar-male.png'};
     const trainer = await client.collaborator.get(
-      this.props.id,
+      this.props.trainerId,
       {
         include: [
           {
@@ -294,6 +363,7 @@ module.exports = class TrainerDetail extends React.Component {
         ],
       }
     );
+
     const dataSource = {
       id: trainer.id,
       avatar: trainer.user.avatar || defaultAvatar,
@@ -308,8 +378,7 @@ module.exports = class TrainerDetail extends React.Component {
       modifiedAt: trainer.modifiedAt,
     };
 
-    if (trainer.ptSchedule &&
-        trainer.ptSchedule.paymentOptionIds.indexOf('*') > -1) {
+    if (dataSource.ptSchedule && dataSource.ptSchedule.paymentOptionIds.indexOf('*') > -1) {
       dataSource.ptSchedule.paymentOptions = [
         {
           name: '所有会卡',
@@ -321,13 +390,6 @@ module.exports = class TrainerDetail extends React.Component {
     this.setState({ dataSource });
   }
 
-  // internal mehods
-
-  async fetchUptoken () {
-  }
-
-  // modal callback functions
-
   dismissModal (refName) {
     this.setState({[refName + 'Visible']: false});
   }
@@ -337,7 +399,7 @@ module.exports = class TrainerDetail extends React.Component {
   }
 
   render () {
-    const dataSource = this.state.dataSource;
+    const { dataSource } = this.state;
     const ptSchedule = dataSource.ptSchedule;
     return (
       <div className='trainer-detail'>
@@ -392,45 +454,7 @@ module.exports = class TrainerDetail extends React.Component {
           </Col>
         </Row>
 
-        <Row className='schedule'>
-          <div className='card-header'>
-            <h3>私教排期</h3>
-            <ul className='actions'>
-              {(() => {
-                if (ptSchedule) {
-                  return (
-                    <li>
-                      <Button
-                        size='small'
-                        onClick={() => {
-                          const context = this;
-                          UIFramework.Modal.confirm({
-                            title: '确认取消私教排期?',
-                            content: '取消私教排期后，将不能创建该教练的私教课程',
-                            onOk: async () => {
-                              await client.ptSchedule.delete(ptSchedule.id, ptSchedule.modifiedAt);
-                              const dataSource = context.state.dataSource;
-                              delete dataSource.ptSchedule;
-                              context.setState({dataSource});
-                            },
-                          });
-                        }}>
-                        取消
-                      </Button>
-                    </li>
-                  );
-                }
-              })()}
-              <li>
-                <Button size='small'
-                        onClick={this.triggerModal.bind(this, 'ptScheduleModal')}>
-                  编辑
-                </Button>
-              </li>
-            </ul>            
-          </div>
-          <PTSchedule dataSource={ptSchedule} venueId={dataSource.venueId}/>
-        </Row>
+        <PTSchedule dataSource={ptSchedule} trainerId={dataSource.id} venueId={dataSource.venueId}/>
 
         <TrainerSalesList trainerId={dataSource.id} trainerName={dataSource.name}/>
 
@@ -447,23 +471,6 @@ module.exports = class TrainerDetail extends React.Component {
               this.setState({
                 profileModalVisible: false,
                 dataSource: newTrainer,
-              });
-            }}/>
-        </UIFramework.Modal>
-        <UIFramework.Modal
-          ref="ptScheduleModal"
-          footer=""
-          title='私教排期'
-          onCancel={this.dismissModal.bind(this, 'ptScheduleModal')}
-          visible={this.state.ptScheduleModalVisible}>
-          <TrainerSchedule
-            schedule={ptSchedule}
-            trainerId={this.props.id}
-            onComplete={(ptSchedule) => {
-              const trainer = Object.assign({}, dataSource, {ptSchedule});
-              this.setState({
-                ptScheduleModalVisible: false,
-                dataSource: trainer,
               });
             }}/>
         </UIFramework.Modal>
