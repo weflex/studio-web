@@ -159,17 +159,17 @@ export default class extends React.Component {
         let memberOperation = {
           memberId: membership.memberId,
           membershipId: form.id,
-          record: '管理员编辑了会卡：' + membership.name,
+          record: '管理员编辑了会卡:' + membership.name,
         }
 
         if(!isSameDay(membership.startsAt, data.startsAt)){
-          memberOperation.record += '<br/>生效日期：' + format(data.startsAt, 'YYYY-MM-DD') + '变更为' + format(membership.startsAt, 'YYYY-MM-DD');
+          memberOperation.record += '<br/>生效日期:' + format(data.startsAt, 'YYYY-MM-DD') + '变更为' + format(membership.startsAt, 'YYYY-MM-DD');
         }
         if(!isSameDay(membership.expiresAt, data.expiresAt)){
-          memberOperation.record += '<br/>到期日期：' + format(data.startsAt, 'YYYY-MM-DD') + '变更为' + format(membership.expiresAt, 'YYYY-MM-DD');
+          memberOperation.record += '<br/>到期日期:' + format(data.startsAt, 'YYYY-MM-DD') + '变更为' + format(membership.expiresAt, 'YYYY-MM-DD');
         }
         if(membership.available && membership.available !== data.available){
-          memberOperation.record += '<br/>剩余次数：' + data.available + '次变更为' + membership.available;
+          memberOperation.record += '<br/>剩余次数:' + data.available + '次变更为' + membership.available;
         }
 
         await client.operation.create(memberOperation);
@@ -177,10 +177,10 @@ export default class extends React.Component {
     } else if(operation === 'add') {
       let memberOperation = {
         memberId: membership.memberId,
-        record: '用户购买了会卡：' + membership.name + '<br/>生效日期：' + format(membership.startsAt, 'YYYY-MM-DD') + '<br/>到期日期：' + format(membership.expiresAt, 'YYYY-MM-DD'),
+        record: '用户购买了会卡:' + membership.name + '<br/>生效日期:' + format(membership.startsAt, 'YYYY-MM-DD') + '<br/>到期日期:' + format(membership.expiresAt, 'YYYY-MM-DD'),
       }
       if(membership.available) {
-        memberOperation.record += '<br/>有效次数：' + membership.available;
+        memberOperation.record += '<br/>有效次数:' + membership.available;
       };
       await client.membership.create(membership);
       await client.operation.create(memberOperation);
