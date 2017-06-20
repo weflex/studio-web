@@ -166,7 +166,7 @@ export default class extends React.Component {
           memberOperation.record += '<br/>生效日期:' + format(data.startsAt, 'YYYY-MM-DD') + '变更为' + format(membership.startsAt, 'YYYY-MM-DD');
         }
         if(!isSameDay(membership.expiresAt, data.expiresAt)){
-          memberOperation.record += '<br/>到期日期:' + format(data.startsAt, 'YYYY-MM-DD') + '变更为' + format(membership.expiresAt, 'YYYY-MM-DD');
+          memberOperation.record += '<br/>到期日期:' + format(data.expiresAt, 'YYYY-MM-DD') + '变更为' + format(membership.expiresAt, 'YYYY-MM-DD');
         }
         if(membership.available && membership.available !== data.available){
           memberOperation.record += '<br/>剩余次数:' + data.available + '次变更为' + membership.available;
