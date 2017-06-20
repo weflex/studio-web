@@ -274,7 +274,7 @@ export default class extends React.Component {
         paymentOptionIds = trainer.ptSchedule.paymentOptionIds;
       } else {
         paymentOptionIds = [];
-      }      
+      }
     }
     if (this.state.memberships.length > 0) {
       membershipOptions = this.state.memberships.map((item) => {

@@ -1,134 +1,130 @@
-"use strict";
-
+import './index.css';
 import React from 'react';
 import UIFramework from '@weflex/weflex-ui';
-import _ from 'lodash';
 import {client} from '../../api';
-import hourminute from 'hourminute';
-import moment from 'moment';
-import {Checkbox, Select} from 'antd';
+import {range} from 'lodash';
+import {Checkbox, Select, Button} from 'antd';
 const Option = Select.Option;
 
 class TrainerSchedule extends React.Component {
+  static propTypes = {
+    trainerId: React.PropTypes.string,
+    schedule: React.PropTypes.object,
+    onComplete: React.PropTypes.func,
+  };
+
   constructor (props) {
     super(props);
-    const defaultSchedule = {
-      paymentOptions: [],
-      hours: [],
-      days: [],
-    };
+
     this.state = {
-      schedule: Object.assign(defaultSchedule, this.props.schedule),
+      scheduleIndex: 1,
       classPackages: [],
+      schedule: Object.assign({datetime: [[],[],[],[],[],[],[]]}, props.schedule),
+    }
+
+    this.cache = {
+      venueId: '',
     }
   }
+
   componentWillReceiveProps (nextProps) {
-    const defaultSchedule = {
-      paymentOptions: [],
-      hours: [],
-      days: [],
-    };
-    if (nextProps.schedule) {
-      this.setState({
-        schedule: Object.assign(defaultSchedule, nextProps.schedule),
-      });
-    } else {
-      this.setState({
-        schedule: defaultSchedule,
-      });
-    }
+    this.setState({ 'schedule': Object.assign({datetime: [[],[],[],[],[],[],[]]}, nextProps.schedule) });
   }
+
   async componentDidMount () {
-    const venue = await client.user.getVenueById();
+    const venueId = ( await client.user.getVenueById() ).id;
     const wildcard = [{id: '*', name: '所有会卡'}];
     const classPackages = await client.classPackage.list(
       {
         where: {
-          venueId: venue.id,
+          venueId,
         },
       }
     );
+    this.cache.venueId = venueId;
     this.setState({
       classPackages: wildcard.concat(classPackages),
     });
   }
+
   async onSubmit () {
+    const {datetime, durationMinutes, paymentOptionIds} = this.state.schedule;
     try {
       await client.ptSchedule.create({
         trainerId: this.props.trainerId,
-        days: this.state.schedule.days,
-        hours: this.state.schedule.hours,
-        durationMinutes: this.state.schedule.durationMinutes,
-        paymentOptionIds: this.state.schedule.paymentOptionIds,
+        datetime,
+        durationMinutes,
+        paymentOptionIds,
+        venueId: this.cache.venueId,
       });
-      this.props.onComplete();
       this.props.onComplete(this.state.schedule);
     } catch (error) {
       console.error(error && error.message);
     }
   }
-  get submitDisabled() {
-    return !(this.state.schedule.days.length > 0 &&
-      this.state.schedule.hours.length > 0 &&
-      this.state.schedule.durationMinutes &&
-      this.state.schedule.paymentOptionIds.length > 0);
+
+  onScheduleDatetimeChange(event) {
+    const { scheduleIndex, schedule } = this.state;
+    schedule.datetime[scheduleIndex] = event;
+    this.setState({schedule});
   }
+
+  renderSchedule() {
+    const weekName = ['日', '一', '二', '三', '四', '五', '六'];
+    const { schedule, scheduleIndex } = this.state;
+
+    return [1, 2, 3, 4, 5, 6, 0].map(i => {
+      let className = 'schedule-day-item';
+      if( schedule.datetime[i].length > 0 ){
+        className += ' schedule-day-item-border';
+      }
+      if( scheduleIndex === i ){
+        className += ' schedule-day-item-background';
+      }
+      return <Button className={className} onClick={()=>{this.setState({scheduleIndex: i})}}>周{weekName[i]}</Button>
+    });
+  }
+
   render () {
-    const ptSchedule = this.state.schedule;
-    const hours = _.range(6, 23).map((hour) => {
-      return {
-        label: hourminute({hour}).format(),
-        value: hour,
-      };
-    });
-    const days = _.range(1, 8).map((day) => {
-      return {
-        label: moment().isoWeekday(day).format('ddd'),
-        value: day,
-      };
-    });
+    let {schedule} = this.state;
+    const {scheduleIndex} = this.state;
+    const {datetime, durationMinutes, paymentOptionIds} = this.state.schedule;
+
     return (
       <UIFramework className='trainer-schedule'>
         <UIFramework.Row name="排课时间" hint="">
+          {this.renderSchedule()}
           <Checkbox.Group
-            onChange={(e) => {
-              ptSchedule.days = e;
-              this.setState({
-                schedule: ptSchedule,
-              });
-            }}
-            options={days}
-            value={ptSchedule.days} />      
-        </UIFramework.Row>
-        <UIFramework.Row name="" hint="">
-          <Checkbox.Group
-            options={hours}
-            onChange={(e) => {
-              ptSchedule.hours = e;
-              this.setState({
-                schedule: ptSchedule,
-              });
-            }}
-            value={ptSchedule.hours} />
+            options={
+              range(6, 23).map(item => {
+                return {
+                  label: (item > 9? item: '0' + item) + ':00',
+                  value: item,
+                }
+              })
+            }
+            onChange={this.onScheduleDatetimeChange.bind(this)}
+            value={datetime[scheduleIndex]}
+          />
         </UIFramework.Row>
         <UIFramework.Row name="课程时长" hint="">
           <UIFramework.TextInput
             bindStateCtx={this}
             bindStateName='schedule.durationMinutes'
-            value={ptSchedule.durationMinutes}
+            value={durationMinutes}
             flex={0.9}/>
-          <UIFramework.TextInput className='plain' flex={0.1} value='分钟' disabled />
+          <span className="weflex-ui-text">分钟</span>
         </UIFramework.Row>
         <UIFramework.Row name="关联会卡" hint="">
           <Select multiple
-                  value={ptSchedule.paymentOptionIds}
+                  value={paymentOptionIds}
                   onChange={(e) => {
                     if (e.indexOf('*') > -1) {
-                      ptSchedule.paymentOptionIds =['*'];
+                      schedule.paymentOptionIds =['*'];
                     } else {
-                      ptSchedule.paymentOptionIds = e;
+                      schedule.paymentOptionIds = e;
                     }
-                    this.setState({schedule: ptSchedule});
+                    this.setState({ schedule });
                   }}
                   style={{width: '100%'}}>
             {
@@ -140,7 +136,8 @@ class TrainerSchedule extends React.Component {
         </UIFramework.Row>
         <UIFramework.Button
           onClick={() => this.onSubmit()}
-          disabled={this.submitDisabled}>
+          disabled={!(datetime.length > 0 && durationMinutes && paymentOptionIds && paymentOptionIds.length > 0)}
+        >
           保存
         </UIFramework.Button>
       </UIFramework>

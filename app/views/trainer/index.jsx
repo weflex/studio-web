@@ -21,7 +21,7 @@ module.exports = class TrainerView extends React.Component {
     let trainerId;
     if (result) {
       trainerId = result[1].substring(1);
-      return <TrainerDetail id={trainerId} />;
+      return <TrainerDetail trainerId={trainerId} />;
     } else {
       return <TrainerList />;
     }
