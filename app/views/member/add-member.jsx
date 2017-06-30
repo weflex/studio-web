@@ -17,20 +17,23 @@ export default class extends React.Component {
   }
 
   async componentDidMount() {
-    this.cache.venueId = ( await client.user.getVenueById() ).id;
+    this.cache.venueId = (await client.user.getVenueById()).id;
   }
 
   async onSubmit() {
     try {
       if (!this.props.member) {
         const response = await client.middleware('/transaction/add-member', Object.assign({
-          venueId: this.cache.venueId || ( await client.user.getVenueById() ).id,
+          venueId: this.cache.venueId || (await client.user.getVenueById()).id,
         }, this.state.form), 'post');
         if (!response || !response.user) {
           throw new Error('Internal Server Error');
         }
       } else {
         // edit member object
+        await client.user.update(this.props.member.userId, {
+          phone: this.state.form.phone,
+        }, this.props.member.user.modifiedAt);
         await client.member.update(this.props.member.id, {
           phone: this.state.form.phone,
           email: this.state.form.email,
@@ -38,6 +41,7 @@ export default class extends React.Component {
           comment: this.state.form.comment,
           nickname: this.state.form.nickname,
         }, this.props.member.modifiedAt);
+
       }
       // empty the form if submit successfully
       this.setState({
@@ -66,7 +70,7 @@ export default class extends React.Component {
   async onChangePhone(event) {
     const keyword = event.target.value;
     if (keyword.length == 11) {
-      const venueId = this.cache.venueId || ( await client.user.getVenueById() ).id;
+      const venueId = this.cache.venueId || (await client.user.getVenueById()).id;
 
       const memberList = await client.member.list({
         where: {
@@ -75,15 +79,15 @@ export default class extends React.Component {
         }
       });
 
-      let {form, hasPhone } = this.state;
+      let { form, hasPhone } = this.state;
 
-      if(memberList.length <= 0 || (memberList.length > 0 && this.props.member && memberList[0].phone === this.props.member.phone) ){
+      if (memberList.length <= 0 || (memberList.length > 0 && this.props.member && memberList[0].phone === this.props.member.phone)) {
         hasPhone = 'none';
       } else {
         hasPhone = '';
       }
 
-      this.setState({form, hasPhone});
+      this.setState({ form, hasPhone });
     }
   }
   render() {
@@ -105,7 +109,7 @@ export default class extends React.Component {
             value={this.state.form.email}
             placeholder="可选填：example@getweflex.com"
           />
-          <span style={{color:'#f00', display: this.state.hasPhone}}>会员手机号已存在</span>
+          <span style={{ color: '#f00', display: this.state.hasPhone }}>会员手机号已存在</span>
         </UIFramework.Row>
         <UIFramework.Row name="会员姓名" hint="会员的名字">
           <UIFramework.TextInput

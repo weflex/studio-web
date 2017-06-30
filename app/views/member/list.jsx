@@ -92,6 +92,7 @@ class List extends React.Component {
         venueId: venue.id,
       },
       include: [
+        'user',
         {
           relation: 'checkIns',
           scope:{
