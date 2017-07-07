@@ -1,19 +1,21 @@
-"use strict";
-
 import React from 'react';
 import './index.css';
 
-/**
- * @class ImageCell
- */
 class ImageCell extends React.Component {
-  
+  static propTypes = {
+    src: React.PropTypes.object,
+    description: React.PropTypes.string,
+    onClick: React.PropTypes.func,
+    hint: React.PropTypes.string,
+    selected: React.PropTypes.bool,
+    selectable: React.PropTypes.bool,
+    onFilesSelect: React.PropTypes.func,
+    multiple: React.PropTypes.bool,
+  }
+
   constructor(props) {
     super(props);
     this.state = {
-      /**
-       * @state {Boolean} isSelected - flag if selected
-       */
       isSelected: props.selected || false,
     };
   }
@@ -110,8 +112,7 @@ class ImageCell extends React.Component {
 
     let fileInput = null;
     if (this.props.type === 'file') {
-      fileInput = <input type="file" 
-        multiple={this.props.multiple} onChange={this.onTypeFileSelect.bind(this)} />;
+      fileInput = <input type="file" multiple={this.props.multiple} onChange={this.onTypeFileSelect.bind(this)} />;
     }
 
     return (
@@ -127,3 +128,4 @@ class ImageCell extends React.Component {
 }
 
 module.exports = ImageCell;
+
