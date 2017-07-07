@@ -104,6 +104,7 @@ class Detail extends React.Component {
   }
   
   async onSave() {
+
     let shouldRefresh = false;
     let resp;
     const {name, spot, price, description} = this.state.data;
@@ -139,6 +140,7 @@ class Detail extends React.Component {
   }
 
   onDelete() {
+    mixpanel.track( "课程模板详情：删除课程模板按钮" );
     let self = this;
     UIFramework.Modal.confirm({
       title: '确认删除该课程模版？',
@@ -151,6 +153,7 @@ class Detail extends React.Component {
   }
 
   makeOnOpenImageManager(title, mode, onFinish, data) {
+    mixpanel.track( "课程模板详情：点击上传图片按钮" );
     return () => {
       this.setState({
         imageManagerVisibled: true,

@@ -94,7 +94,7 @@ class PTSchedule extends React.Component {
                 : ""
             }
             <li>
-              <Button size='small' onClick={() => this.setState({showPTSchedule: true})}>
+              <Button size='small' onClick={() => {mixpanel.track( "教练详情：私教排期" );this.setState({showPTSchedule: true})}}>
                 编辑
               </Button>
             </li>
@@ -396,6 +396,7 @@ module.exports = class TrainerDetail extends React.Component {
 
   triggerModal (refName) {
     this.setState({[refName + 'Visible']: true});
+    mixpanel.track( "教练详情：编辑教练信息" );
   }
 
   render () {
