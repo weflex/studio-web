@@ -86,10 +86,6 @@ class UserProfileCard extends React.Component {
     return actions;
   }
 
-  /**
-   * delete this card information
-   * @method onDelete
-   */
   onDelete() {
     const props = this.props;
     UIFramework.Modal.confirm({
@@ -100,6 +96,7 @@ class UserProfileCard extends React.Component {
           await client.member.delete(props.id, props.modifiedAt);
           await props.context.props.updateMaster();
           UIFramework.Message.success('已删除会员：' + props.nickname);
+          mixpanel.track( "会员详情：删除会员" );
         } else {
           // TODO(Yorkie)
         }
@@ -139,7 +136,8 @@ class UserProfileCard extends React.Component {
       checkIns.push(checkIn)
       this.setState({
         checkIns: checkIns,
-      })
+      });
+      mixpanel.track( "会员详情：进店登记" );
     } catch (error) {
       console.error(error)
       UIFramework.Message.error('登记失败')
@@ -154,6 +152,7 @@ class UserProfileCard extends React.Component {
     this.setState({
       modalVisibled: true,
     });
+    mixpanel.track( "会员详情：编辑会员" );
   }
 
   /**
@@ -186,7 +185,8 @@ class UserProfileCard extends React.Component {
         <span key='checkIn' className={'status-tag'.concat(checkIns.length>0?' green-bg':'')}>{checkIns.length>0?'今日已登记':'今日未登记'}</span>
         <UIFramework>
           <UIFramework.Row>
-            <UIFramework.Upload 
+            <UIFramework.Upload
+              onClick={() => {mixpanel.track( "会员详情：上传会员头像" )}}
               token={this.state.uptoken} 
               onSuccess={this.onMemberAvatarUploaded.bind(this)}
               onError={this.onMemberAvatarUploadFail.bind(this)}>
@@ -312,6 +312,7 @@ class MembershipCard extends React.Component {
           footer="">
           <ViewToAddMembership
 	    {...this.props}
+      onClick={()=>{mixpanel.track( "会员详情：添加会卡");}}
 	    onComplete={this.onComplete.bind(this)}
 	  />
         </UIFramework.Modal>

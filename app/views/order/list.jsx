@@ -43,6 +43,7 @@ class List extends React.Component {
     ];
   }
   get search() {
+    mixpanel.track( "订单：订单搜索");
     return this.refs
       .masterDetail
       .onSearchInputChange
@@ -75,6 +76,7 @@ class List extends React.Component {
         {name: '用户', key: 'member.nickname'},
       ],
       onClickAdd: () => {
+        mixpanel.track("订单：加载更多订单按钮");
         this.refs.masterDetail.updateMasterSource();
       },
       addButtonText: '加载更多订单',
@@ -206,6 +208,7 @@ class List extends React.Component {
     return nextState.data || this.state.data;
   }
   onViewAddOrder() {
+    mixpanel.track( "订单：订单创建");
     this.setState({
       modalVisibled: true,
     });

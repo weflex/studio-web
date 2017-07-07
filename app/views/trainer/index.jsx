@@ -14,8 +14,6 @@ module.exports = class TrainerView extends React.Component {
     return [];
   }
 
-  // internal functions
-
   render () {
     const result = window.location.pathname.match(/trainer(\/\w+)$/);
     let trainerId;

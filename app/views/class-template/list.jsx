@@ -73,6 +73,7 @@ class List extends React.Component {
         this.props.app.title(instance.title);
       }
       if (instance.actions) {
+        mixpanel.track( "课程模板：新的课程模版按钮" );
         this.props.app.actions(instance.actions);
       }
     }

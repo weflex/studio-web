@@ -24,7 +24,8 @@ class SettingsIndex extends React.Component {
       {
         id: 'basic',
         title: '基本信息',
-        component: require('./tabs/basic')
+        component: require('./tabs/basic'),
+        onClick:() => { mixpanel.track( "设置：门店" ); }
       },
       {
         id: 'venue',

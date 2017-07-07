@@ -98,6 +98,7 @@ class TrainerList extends React.Component {
         className: 'action',
         render: (_, trainer) =>
           <Button onClick={() => {
+            mixpanel.track( "教练：私教排期" );
             this.setState({
               ptScheduleModalSchedule: trainer.ptSchedule,
               ptScheduleModalTrainerId: trainer.id,
@@ -123,6 +124,11 @@ class TrainerList extends React.Component {
     this.setState({[refName + 'Visible']: true});
   }
 
+  addTrainer (refName) {
+    mixpanel.track( "教练：添加教练" );
+    this.setState({[refName + 'Visible']: true});
+  }
+
   render () {
     return (
       <div className='trainer-list'>
@@ -131,7 +137,7 @@ class TrainerList extends React.Component {
                title={() => <h2>教练</h2>} />
         <div className='action-button'>
           <UIFramework.Button
-            onClick={this.triggerModal.bind(this, 'profileModal')}>
+            onClick={this.addTrainer.bind(this, 'profileModal')} >
             添加教练
           </UIFramework.Button>
         </div>

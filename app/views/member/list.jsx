@@ -40,11 +40,12 @@ class List extends React.Component {
     return [
       {
         title: '邀请新会员',
-        onClick: this.viewModal.bind(this),
+        onClick: this.addNewMember.bind(this),
         disableToggled: true,
       }
     ];
   }
+
   get search() {
     return this.refs
       .masterDetail
@@ -80,7 +81,7 @@ class List extends React.Component {
       sortKeys: [
         {name: '姓名', key: 'nickname'},
       ],
-      onClickAdd: this.viewModal.bind(this),
+      onClickAdd: this.addNewMember.bind(this),
       addButtonText: '邀请新会员',
     };
   }
@@ -144,6 +145,11 @@ class List extends React.Component {
       modalVisibled: true,
     });
   }
+
+  addNewMember() {
+    mixpanel.track( "会员：邀请新会员");
+    this.viewModal();
+  }
   hideModal() {
     this.setState({
       modalVisibled: false,
@@ -166,6 +172,7 @@ class List extends React.Component {
         <UIFramework.Modal 
           visible={this.state.modalVisibled}
           onCancel={this.hideModal.bind(this)}
+          onClick={() => { mixpanel.track( "会员：邀请新会员" ); }}
           title="邀请新会员"
           footer=""
         >

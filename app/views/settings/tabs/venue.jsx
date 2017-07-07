@@ -95,7 +95,7 @@ class Venue extends React.Component {
           </UIFramework.Row>
           <UIFramework.Row>
             <UIFramework.Button text="保存信息" 
-              onClick={this.onSubmit.bind(this)} />
+              onClick={()=>{mixpanel.track( "门店：保存" );this.onSubmit.bind(this)}} />
           </UIFramework.Row>
           <UIFramework.Row name="会员订课网址">
             <UIFramework.TextInput
@@ -106,7 +106,7 @@ class Venue extends React.Component {
               <UIFramework.Button
                 text="复制"
                 flex={0.2}
-                onClick={() => window.alert("会员订课网址已复制到您的剪贴板")}/>
+                onClick={() => { mixpanel.track( "门店：复制" );window.alert("会员订课网址已复制到您的剪贴板")} }/>
             </CopyToClipboard>
           </UIFramework.Row>
         </UIFramework>
