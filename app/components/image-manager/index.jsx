@@ -9,6 +9,12 @@ import _ from 'lodash';
 import './index.css';
 
 class ImageManager extends React.Component {
+  static propTypes = {
+    src: React.PropTypes.object,
+    data: React.PropTypes.array,
+    mode: React.PropTypes.string,
+    onFinish: React.PropTypes.func,
+  }
 
   constructor(props) {
     super(props);
@@ -133,7 +139,7 @@ class ImageManager extends React.Component {
               />
             );
           })}
-          <ImageCell 
+          <ImageCell
             type="file"
             multiple={this.props.mode === 'multiple'}
             onFilesSelect={this.onSelectFiles.bind(this)}

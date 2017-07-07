@@ -37,21 +37,18 @@ To make a static build, simply
 $ npm run build
 ```
 
-### Electron
-
-```
-$ npm run electron
-```
-
-Currently we only support MacOS and Windows.
-
 ### Development
-
+use dev server api and data
 ```sh
 $ npm run dev
+```
+
+### Product
+use product server api and data
+```sh
+$ npm run prod
 ```
 
 ## License
 
 WeFlex Copyright
-
