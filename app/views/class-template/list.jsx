@@ -48,6 +48,7 @@ class List extends React.Component {
         {name: '价格', key: 'price'},
       ],
       onClickAdd: () => {
+        mixpanel.track( "课程模板：新的课程模版按钮" );
         this.props.app.router.navigate('/class/template/add');
       },
       addButtonText: '新的课程模版',
@@ -73,7 +74,6 @@ class List extends React.Component {
         this.props.app.title(instance.title);
       }
       if (instance.actions) {
-        mixpanel.track( "课程模板：新的课程模版按钮" );
         this.props.app.actions(instance.actions);
       }
     }

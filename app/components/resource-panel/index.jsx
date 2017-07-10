@@ -24,7 +24,7 @@ class ResourcePanel extends React.Component {
     let nextItemsTop;
     const prevItemsTop = this.state.itemsTop || 0;
     const heightDelta  = this.refs.resourcePanel.offsetHeight - this.refs.resourcePanelItems.offsetHeight;
-    console.log(heightDelta);
+
     if (heightDelta > 0) {
       nextItemsTop = 0;
     } else {

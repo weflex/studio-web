@@ -21,7 +21,7 @@ class ToolBar extends React.Component {
         <div className="title">{this.state.title}</div>
         <ul className="toolbox">
           <li className ="searchbox">
-            <SearchInput ref="searchInput" />
+            <SearchInput ref="searchInput" name={this.state.title} />
           </li>
           <li>
             <Actions ref="actions" />
