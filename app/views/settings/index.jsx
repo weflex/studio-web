@@ -28,7 +28,7 @@ class SettingsIndex extends React.Component {
       },
       {
         id: 'venue',
-        title: '门店信息',
+        title: '场馆设置',
         component: require('./tabs/venue')
       },
     ];
