@@ -6,6 +6,10 @@ import { client } from '../../../api';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
 class Venue extends React.Component {
+  static style = {
+    position: 'relative',
+    top: '12px'
+  };
   constructor(props) {
     super(props);
     this.state = {
@@ -13,6 +17,10 @@ class Venue extends React.Component {
       owner: {},
       wechatURL: ''
     };
+  }
+  static defaultProps = {
+    MaxDeadline: 200,
+    MinDeadline: 0
   }
   async componentWillMount() {
     const venue = await client.user.getVenueById();
@@ -58,6 +66,20 @@ class Venue extends React.Component {
       location.reload();
     }
   }
+  checkoutNumber(event) {
+    let keyword = event.target.value
+    let MaxDeadline = this.props.MaxDeadline
+    let MinDeadline = this.props.MinDeadline
+    if (keyword >= MaxDeadline) {
+      this.state.venue.deadline = MaxDeadline
+    } else if (keyword < MinDeadline) {
+      this.state.venue.deadline = MinDeadline
+    } else if (keyword >= MinDeadline && keyword <= MaxDeadline) {
+      this.state.venue.deadline = keyword
+    } else {
+      this.state.venue.deadline = MinDeadline
+    }
+  }
   render() {
     return (
       <div className="settings-detail settings-venue">
@@ -93,9 +115,18 @@ class Venue extends React.Component {
               disabled={true}
             />
           </UIFramework.Row>
+          <UIFramework.Row name='最晚预约取消时间'>
+            <span style={Venue.style}>课程开始前</span> <UIFramework.TextInput
+              flex={0.2}
+              bindStateCtx={this}
+              bindStateName="venue.deadline"
+              value={this.state.venue.deadline}
+              onChange={this.checkoutNumber.bind(this)}
+            /><span style={Venue.style}>小时</span>
+          </UIFramework.Row>
           <UIFramework.Row>
-            <UIFramework.Button text="保存信息" 
-              onClick={()=>{mixpanel.track( "门店：保存" );this.onSubmit.bind(this)}} />
+            <UIFramework.Button text="保存信息"
+              onClick={this.onSubmit.bind(this)} />
           </UIFramework.Row>
           <UIFramework.Row name="会员订课网址">
             <UIFramework.TextInput
@@ -106,7 +137,7 @@ class Venue extends React.Component {
               <UIFramework.Button
                 text="复制"
                 flex={0.2}
-                onClick={() => { mixpanel.track( "门店：复制" );window.alert("会员订课网址已复制到您的剪贴板")} }/>
+                onClick={() => { mixpanel.track("门店：复制"); window.alert("会员订课网址已复制到您的剪贴板") }} />
             </CopyToClipboard>
           </UIFramework.Row>
         </UIFramework>
