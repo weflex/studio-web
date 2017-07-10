@@ -43,7 +43,6 @@ class List extends React.Component {
     ];
   }
   get search() {
-    mixpanel.track( "订单：订单搜索");
     return this.refs
       .masterDetail
       .onSearchInputChange

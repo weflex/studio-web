@@ -87,6 +87,7 @@ class UserProfileCard extends React.Component {
   }
 
   onDelete() {
+    mixpanel.track( "会员详情：删除会员" );
     const props = this.props;
     UIFramework.Modal.confirm({
       title: '你确认要删除会员：' + props.nickname,
@@ -96,7 +97,6 @@ class UserProfileCard extends React.Component {
           await client.member.delete(props.id, props.modifiedAt);
           await props.context.props.updateMaster();
           UIFramework.Message.success('已删除会员：' + props.nickname);
-          mixpanel.track( "会员详情：删除会员" );
         } else {
           // TODO(Yorkie)
         }
@@ -186,13 +186,12 @@ class UserProfileCard extends React.Component {
         <UIFramework>
           <UIFramework.Row>
             <UIFramework.Upload
-              onClick={() => {mixpanel.track( "会员详情：上传会员头像" )}}
               token={this.state.uptoken} 
               onSuccess={this.onMemberAvatarUploaded.bind(this)}
               onError={this.onMemberAvatarUploadFail.bind(this)}>
               <UIFramework.Image size={120} src={this.props.avatar} style={{marginRight: '10px'}} />
               <UIFramework.Cell>
-                <UIFramework.Button>修改会员头像</UIFramework.Button>
+                <UIFramework.Button onClick={() => {mixpanel.track( "会员详情：上传会员头像" )}}>修改会员头像</UIFramework.Button>
                 <UIFramework.Divider />
                 <UIFramework.Text text="修改会员头像并不会影响到用户的信息" />
               </UIFramework.Cell>
@@ -268,6 +267,9 @@ class MembershipCard extends React.Component {
    * @method viewModal
    */
   viewModal() {
+    if(!this.props.data){
+      mixpanel.track( "会员详情：添加会卡");
+    }
     this.setState({
       visible: true,
     });
@@ -311,10 +313,9 @@ class MembershipCard extends React.Component {
           onCancel={() => this.setState({visible: false})}
           footer="">
           <ViewToAddMembership
-	    {...this.props}
-      onClick={()=>{mixpanel.track( "会员详情：添加会卡");}}
-	    onComplete={this.onComplete.bind(this)}
-	  />
+            {...this.props}
+            onComplete={this.onComplete.bind(this)}
+          />
         </UIFramework.Modal>
       </span>
     );

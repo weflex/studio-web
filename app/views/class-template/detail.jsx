@@ -153,7 +153,6 @@ class Detail extends React.Component {
   }
 
   makeOnOpenImageManager(title, mode, onFinish, data) {
-    mixpanel.track( "课程模板详情：点击上传图片按钮" );
     return () => {
       this.setState({
         imageManagerVisibled: true,
@@ -308,7 +307,7 @@ class Detail extends React.Component {
     return (
       <section className="class-template-detail-cover">
         <h3>封面</h3>
-        <div>
+        <div onClick={this.addMixpanel.bind(this)}>
           <ImageCell 
             src={this.state.data.cover}
             onClick={this.makeOnOpenImageManager.call(
@@ -327,7 +326,7 @@ class Detail extends React.Component {
     return (
       <section className="class-template-detail-photos">
         <h3>图片</h3>
-        <div>
+        <div onClick={this.addMixpanel.bind(this)}>
           {(this.state.data.photos || []).map((src, index) => {
             return (
               <ImageCell 
@@ -354,6 +353,10 @@ class Detail extends React.Component {
         </div>
       </section>
     );
+  }
+
+  addMixpanel() {
+    mixpanel.track( "课程模板详情：点击上传图片按钮" );
   }
 
   render() {

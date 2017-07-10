@@ -55,7 +55,7 @@ class TrainerList extends React.Component {
         const defaultAvatar = {uri: 'http://static.theweflex.com/default-avatar-male.png'};
         return {
           id: trainer.id,
-          name: <Link href={URL}>{name}</Link>,
+          name: <Link onClick={()=>mixpanel.track( "教练：教练详情")} href={URL}>{name}</Link>,
           phone: trainer.user.phone,
           employmentStatus: trainer.employmentStatus,
           avatar: trainer.user.avatar || defaultAvatar,
