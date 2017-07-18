@@ -62,7 +62,7 @@
   "scripts": {
     "test": "make test",
     "dev": "webpack-dev-server",
-    "build": "npm run prebuild && NODE_ENV=prod webpack --optimize-dedupe",
+    "build": "npm run prebuild && NODE_ENV=prod webpack -p --optimize-dedupe",
     "prebuild": "test -e dist || npm run staticAssets && test -e typings || npm run typings",
     "staticAssets": "cp -r assets dist",
     "typings": "typings install"
