@@ -391,6 +391,7 @@ class Detail extends React.Component {
               mode={this.state.imageManagerMode}
               onFinish={this.state.onImageManagerFinish}
               data={this.state.imageManagerData}
+              size={5}
             />
           </UIFramework.Modal>
         </div>

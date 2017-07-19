@@ -5,14 +5,15 @@ import UIFramework from '@weflex/weflex-ui';
 import ImageCell from '../image-cell';
 import randomize from 'randomatic';
 import { client } from '../../api';
-import _ from 'lodash';
+import { filter, find } from 'lodash';
 import './index.css';
 
 class ImageManager extends React.Component {
   static propTypes = {
     src: React.PropTypes.object,
-    data: React.PropTypes.array,
+    data: React.PropTypes.any,
     mode: React.PropTypes.string,
+    size: React.PropTypes.number,
     onFinish: React.PropTypes.func,
   }
 
@@ -38,8 +39,8 @@ class ImageManager extends React.Component {
   async componentWillMount() {
     const venue = await client.user.getVenueById();
     const [ 
-      images, 
-      { 
+      images,
+      {
         uptoken
       }
     ] = await Promise.all([
@@ -101,17 +102,16 @@ class ImageManager extends React.Component {
   }
 
   onSubmit() {
-    const srcs = [];
-    for (let index in this.cells) {
-      const cell = this.cells[index];
-      if (cell.state.isSelected) {
-        srcs.push(cell.props.src);
+    const selectedNumber = filter(this.cells, ['state.isSelected', true]);
+    if(this.size > 0 && this.size >= selectedNumber.length) {
+      const srcs = selectedNumber.map(item => item.props.src);
+      if (typeof this.props.onFinish !== 'function') {
+        console.warn('miss onFinish on initializing component');
+      } else {
+        this.props.onFinish(srcs);
       }
-    }
-    if (typeof this.props.onFinish !== 'function') {
-      console.warn('miss onFinish on initializing component');
     } else {
-      this.props.onFinish(srcs);
+      return UIFramework.Message.error('课程图片数量不得大于5。');
     }
   }
 
@@ -124,7 +124,7 @@ class ImageManager extends React.Component {
             if (data && !Array.isArray(this.props.data)) {
               data = [data];
             }
-            const selected = !!_.find(data, (item) => {
+            const selected = !!find(data, (item) => {
               return item.id === src.id;
             });
             return (
