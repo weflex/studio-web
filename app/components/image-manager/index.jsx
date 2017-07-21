@@ -103,7 +103,8 @@ class ImageManager extends React.Component {
 
   onSubmit() {
     const selectedNumber = filter(this.cells, ['state.isSelected', true]);
-    if(this.size > 0 && this.size >= selectedNumber.length) {
+
+    if(this.props.size > 0 && this.props.size >= selectedNumber.length) {
       const srcs = selectedNumber.map(item => item.props.src);
       if (typeof this.props.onFinish !== 'function') {
         console.warn('miss onFinish on initializing component');
