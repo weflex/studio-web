@@ -35,6 +35,16 @@ class ImageCell extends React.Component {
     }
   }
 
+  checkFile(file, index) {
+    const imageType = new Set(['image/png', 'image/jpg', 'image/jpeg', 'image/gif']);
+    if ( !imageType.has(file.type) ) {
+      return `文件(${file.name})不是图片格式：.png, .jpg, .jpeg, .gif。`;
+    } else if (file.size > 2*1024*1024) {
+      return `文件(${file.name})大小必须小于2M。`;
+    }
+    return null;
+  }
+
   onTypeFileSelect(event) {
     // stop default behaviors
     event.stopPropagation();
@@ -46,21 +56,15 @@ class ImageCell extends React.Component {
       return;
     }
 
-    const errs = [];
-    const returns = [];
-    for (let idx = 0; idx < files.length; idx++) {
-      let err = this.checkFile(files[idx], idx);
-      if (err instanceof Error) {
-        errs.push(err);
-      } else {
-        returns.push(files[idx]);
-      }
+    let errors = [];
+    let returns = [];
+    for (let i = 0; i < files.length; i++) {
+      let usable = this.checkFile(files[i], i);
+      usable? errors.push(usable): returns.push(files[i]);
     }
-    if (errs.length > 0) {
-      return window.alert(errs.reduce((text, err) => {
-        text += '- ' + (err.displayMessage || err.message) + '\n';
-        return text;
-      }, ''));
+
+    if (errors.length > 0) {
+      return window.alert( errors.concat('\n') );
     } else {
       if (typeof this.props.onFilesSelect !== 'function') {
         console.warn('initialize ImageCell with file type, but onFilesSelect prop not found');
@@ -70,23 +74,6 @@ class ImageCell extends React.Component {
     }
   }
 
-  checkFile(file, index) {
-    if (file.type !== 'image/png' &&
-      file.type !== 'image/jpg' &&
-      file.type !== 'image/jpeg' &&
-      file.type !== 'image/gif') {
-      let err = new TypeError('image required');
-      err.displayMessage = `文件(${file.name})不是图片格式：.png, .jpg, .jpeg, .gif`;
-      return err;
-    }
-    if (file.size > 2*1024*1024) {
-      let err = new Error('image size should less than 2M');
-      err.displayMessage = `文件(${file.name})大小必须小于2M`;
-      return err;
-    }
-    return null;
-  }
-  
   render() {
     let className = 'image-cell';
     let bg = null;
@@ -94,7 +81,7 @@ class ImageCell extends React.Component {
       <span key="icon">+</span>,
       <span key="text">点击上传图片</span>,
     ];
-    
+
     if (this.props.src && this.props.src.uri) {
       bg = <img src={this.props.src.uri} width="100%" height="100%" className="background"/>;
       hint = '点击更换图片';

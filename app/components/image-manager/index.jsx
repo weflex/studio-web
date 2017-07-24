@@ -102,17 +102,20 @@ class ImageManager extends React.Component {
   }
 
   onSubmit() {
-    const selectedNumber = filter(this.cells, ['state.isSelected', true]);
+    const { mode } = this.props;
+    const selectedNumber = filter(this.cells || [], ['state.isSelected', true]);
 
-    if(this.props.size > 0 && this.props.size >= selectedNumber.length) {
+    if (mode === 'single' && selectedNumber.length !== 1) {
+      return UIFramework.Message.error('至少选择一张图片。');
+    } else if(mode === 'multiple' && this.props.size > 0 && this.props.size < selectedNumber.length ) {
+      return UIFramework.Message.error(`课程图片数量不得大于${this.props.size}。`);
+    } else {
       const srcs = selectedNumber.map(item => item.props.src);
       if (typeof this.props.onFinish !== 'function') {
         console.warn('miss onFinish on initializing component');
       } else {
         this.props.onFinish(srcs);
       }
-    } else {
-      return UIFramework.Message.error('课程图片数量不得大于5。');
     }
   }
 
@@ -152,7 +155,6 @@ class ImageManager extends React.Component {
       </div>
     );
   }
-
 }
 
 module.exports = ImageManager;
