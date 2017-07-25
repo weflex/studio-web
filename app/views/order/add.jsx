@@ -311,7 +311,7 @@ export default class extends React.Component {
         this.state.membershipId &&
         this.state.trainerId &&
         this.state.hour &&
-        this.state.minute);
+        this.state.minute == 0 || this.state.minute);
     }
   }
   
