@@ -156,6 +156,9 @@ class List extends React.Component {
     });
   }
   async onAddMemberDone() {
+    if(!this.refs.masterDetail){
+      this.setState({showImporter: false})
+    }
     await this.refs.masterDetail.updateMasterSource();
     this.hideModal();
   }
