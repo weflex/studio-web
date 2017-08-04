@@ -3,9 +3,10 @@ import React from 'react';
 import {range} from 'lodash';
 import {client} from '../../api';
 import UIFramework from '@weflex/weflex-ui';
-import {Row, Col, Button, Input, Select, Table, DatePicker, Pagination} from 'antd';
+import {Radio,Row, Col, Button, Input, Select, Table, DatePicker, Pagination} from 'antd';
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
+const RadioGroup = Radio.Group;
 import TrainerProfile from './profile';
 import TrainerSchedule from './schedule';
 import {startOfDay, endOfDay, format} from 'date-fns';
@@ -27,6 +28,10 @@ class PTSchedule extends React.Component {
       schedule: props.dataSource,
       scheduleIndex: 1,
       showPTSchedule: false,
+      disabled: true,
+      style: {
+        marginBottom: '10px',
+      },
     };
   }
 
@@ -81,8 +86,7 @@ class PTSchedule extends React.Component {
   }
 
   render () {
-    const { schedule, scheduleIndex, classPackages, showPTSchedule } = this.state;
-
+    const { schedule, scheduleIndex, classPackages, showPTSchedule ,style} = this.state;
     return (
       <Row className='schedule'>
         <div className='card-header'>
@@ -122,6 +126,10 @@ class PTSchedule extends React.Component {
               <label>课程时长</label>
               <span>{ schedule.durationMinutes + ' 分钟' }</span>
             </div>
+            <RadioGroup onChange={this.onChange} value={schedule.orderMode} style={style}>
+                <Radio disabled={this.state.disabled} value={"整点预约"}>整点预约</Radio>
+                <Radio disabled={this.state.disabled} value={"半小时预约"}>半小时预约</Radio>
+            </RadioGroup>
             <div className='detail-card-row'>
               <label>关联会卡</label>
               <Select multiple
