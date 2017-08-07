@@ -566,14 +566,14 @@ class MemberOperation extends React.Component {
     let orderItems = [{
       status     : "classReserve",
       createdAt  : orderItem.createdAt,
-      text       : <span>用户使用 { toHighLightText(membershipName) } 预定了课程 { toHighLightText(className) }</span>,
+      text       : <span>用户使用 { toHighLightText(membershipName) } 预定了课程 { toHighLightText(className) }<p>上课时间：{format(orderItem.class.startsAt, 'YYYY-MM-DD HH:mm')}</p></span>,
     }];
 
     if (orderItem.cancelledAt) {
       orderItems.push({
         status    : "classCancel",
         createdAt : orderItem.cancelledAt,
-        text      : <span>用户取消了课程： { toHighLightText(className) } 所属会卡： { toHighLightText(membershipName) }</span>,
+        text      : <span>用户取消了课程： { toHighLightText(className) } 所属会卡： { toHighLightText(membershipName) }<p>上课时间：{format(orderItem.class.startsAt, 'YYYY-MM-DD HH:mm')}</p></span>,
       });
     };
 
@@ -587,14 +587,14 @@ class MemberOperation extends React.Component {
     let ptSessionItems = [{
       status     : "ptSessionReserve",
       createdAt  : ptSessionItem.createdAt,
-      text : <span>用户使用 { toHighLightText(membershipName) } 预定了 { toHighLightText(trainerName) } 的私教课程 </span>,
+      text : <span>用户使用 { toHighLightText(membershipName) } 预定了 { toHighLightText(trainerName) } 的私教课程<p>上课时间：{format(ptSessionItem.startsAt, 'YYYY-MM-DD HH:mm')}</p></span>,
     }];
 
     if (ptSessionItem.cancelledAt) {
       ptSessionItems.push({
         status : "ptSessionCancel",
         createdAt : ptSessionItem.cancelledAt,
-        text : <span>用户取消了 { toHighLightText(trainerName) } 的私教课程 所属会卡：{ toHighLightText(membershipName) }</span>,
+        text : <span>用户取消了 { toHighLightText(trainerName) } 的私教课程 所属会卡：{ toHighLightText(membershipName) }<p>上课时间：{format(ptSessionItem.startsAt, 'YYYY-MM-DD HH:mm')}</p></span>,
       });
     };
 
