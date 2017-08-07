@@ -118,7 +118,7 @@ class TrainerSchedule extends React.Component {
           <span className="weflex-ui-text">分钟</span>
         </UIFramework.Row>
         <UIFramework.Row name="预约方式" hint="">
-          <RadioGroup onChange={this.onChange} defaultValue={orderMode} onChange={(e) => {
+          <RadioGroup onChange={this.onChange} value={orderMode} onChange={(e) => {
             schedule.orderMode = e.target.value;
             this.setState({ schedule });
           }}>

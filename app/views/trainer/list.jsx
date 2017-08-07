@@ -1,14 +1,14 @@
 import React from 'react';
 import UIFramework from '@weflex/weflex-ui';
-import {Table, Button} from 'antd';
-import {client} from '../../api';
-import {Link} from 'react-router-component';
+import { Table, Button } from 'antd';
+import { client } from '../../api';
+import { Link } from 'react-router-component';
 import TrainerProfile from './profile';
 import TrainerSchedule from './schedule';
 
 class TrainerList extends React.Component {
 
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       dataSource: [],
@@ -21,9 +21,9 @@ class TrainerList extends React.Component {
     this.updateTrainerList();
   }
 
-  async updateTrainerList () {
-    if(!this.cache.venueId) {
-      this.cache.venueId = ( await client.user.getVenueById() ).id;
+  async updateTrainerList() {
+    if (!this.cache.venueId) {
+      this.cache.venueId = (await client.user.getVenueById()).id;
     }
 
     const trainers = await client.collaborator.list({
@@ -52,10 +52,10 @@ class TrainerList extends React.Component {
       dataSource: trainers.map((trainer) => {
         const name = trainer.fullname.first + trainer.fullname.last;
         const URL = '/trainer/' + trainer.id;
-        const defaultAvatar = {uri: 'http://static.theweflex.com/default-avatar-male.png'};
+        const defaultAvatar = { uri: 'http://static.theweflex.com/default-avatar-male.png' };
         return {
           id: trainer.id,
-          name: <Link onClick={()=>mixpanel.track( "教练：教练详情")} href={URL}>{name}</Link>,
+          name: <Link onClick={() => mixpanel.track("教练：教练详情")} href={URL}>{name}</Link>,
           phone: trainer.user.phone,
           employmentStatus: trainer.employmentStatus,
           avatar: trainer.user.avatar || defaultAvatar,
@@ -67,7 +67,7 @@ class TrainerList extends React.Component {
 
   // internal functions
 
-  get columns () {
+  get columns() {
     return [
       {
         dataIndex: 'avatar',
@@ -98,7 +98,7 @@ class TrainerList extends React.Component {
         className: 'action',
         render: (_, trainer) =>
           <Button onClick={() => {
-            mixpanel.track( "教练：私教排期" );
+            mixpanel.track("教练：私教排期");
             this.setState({
               ptScheduleModalSchedule: trainer.ptSchedule,
               ptScheduleModalTrainerId: trainer.id,
@@ -111,30 +111,31 @@ class TrainerList extends React.Component {
 
   // modal callback functions
 
-  dismissModal (refName) {
-    this.setState({[refName + 'Visible']: false});
+  dismissModal(refName) {
+    this.setState({ [refName + 'Visible']: false });
   }
 
-  onAddTrainerDone () {
+  onAddTrainerDone() {
     this.updateTrainerList();
-    this.setState({profileModalVisible: false});
+    this.setState({ profileModalVisible: false });
   }
 
-  triggerModal (refName) {
-    this.setState({[refName + 'Visible']: true});
+  triggerModal(refName) {
+    this.setState({ [refName + 'Visible']: true });
   }
 
-  addTrainer (refName) {
-    mixpanel.track( "教练：添加教练" );
-    this.setState({[refName + 'Visible']: true});
+  addTrainer(refName) {
+    mixpanel.track("教练：添加教练");
+    this.setState({ [refName + 'Visible']: true });
   }
 
-  render () {
+  render() {
+    console.log(this.state)
     return (
       <div className='trainer-list'>
         <Table columns={this.columns}
-               dataSource={this.state.dataSource}
-               title={() => <h2>教练</h2>} />
+          dataSource={this.state.dataSource}
+          title={() => <h2>教练</h2>} />
         <div className='action-button'>
           <UIFramework.Button
             onClick={this.addTrainer.bind(this, 'profileModal')} >
@@ -149,7 +150,7 @@ class TrainerList extends React.Component {
           visible={this.state.profileModalVisible}>
           <TrainerProfile
             trainer={{}}
-            onComplete={this.onAddTrainerDone.bind(this)}/>
+            onComplete={this.onAddTrainerDone.bind(this)} />
         </UIFramework.Modal>
         <UIFramework.Modal
           ref="ptScheduleModal"
@@ -160,7 +161,18 @@ class TrainerList extends React.Component {
           <TrainerSchedule
             schedule={this.state.ptScheduleModalSchedule}
             trainerId={this.state.ptScheduleModalTrainerId}
-            onComplete={this.dismissModal.bind(this, 'ptScheduleModal')}/>
+            onComplete={
+              (ptSchedule) => {
+                let dataSource = this.state.dataSource
+                const index = dataSource.findIndex((element)=>{
+                   return element.id == ptSchedule.trainerId
+                })
+                dataSource[index].ptSchedule = ptSchedule
+                this.setState({
+                  ptScheduleModalVisible: false,
+                  dataSource,
+                })
+              }} />
         </UIFramework.Modal>
       </div>
     );
