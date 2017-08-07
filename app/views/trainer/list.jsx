@@ -130,7 +130,6 @@ class TrainerList extends React.Component {
   }
 
   render() {
-    console.log(this.state)
     return (
       <div className='trainer-list'>
         <Table columns={this.columns}
