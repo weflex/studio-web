@@ -1,6 +1,6 @@
 {
   "name": "@weflex/studio-desktop",
-  "version": "1.22.2",
+  "version": "1.22.3",
   "dependencies": {
     "@weflex/gian": "^1.33.0",
     "@weflex/passport.js": "1.2.0",
