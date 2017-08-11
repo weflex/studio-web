@@ -49,11 +49,12 @@ class TrainerList extends React.Component {
       ],
     });
     this.setState({
-      dataSource: trainers.map((trainer) => {
+      dataSource: trainers.map((trainer,index) => {
         const name = trainer.fullname.first + trainer.fullname.last;
         const URL = '/trainer/' + trainer.id;
         const defaultAvatar = { uri: 'http://static.theweflex.com/default-avatar-male.png' };
         return {
+          key:index,
           id: trainer.id,
           name: <Link onClick={() => mixpanel.track("教练：教练详情")} href={URL}>{name}</Link>,
           phone: trainer.user.phone,
@@ -163,9 +164,12 @@ class TrainerList extends React.Component {
             onComplete={
               (ptSchedule) => {
                 let dataSource = this.state.dataSource
-                const index = dataSource.findIndex((element)=>{
+                let index = dataSource.findIndex((element)=>{
                    return element.id == ptSchedule.trainerId
                 })
+                if(index = -1) {
+                    index = 0
+                }
                 dataSource[index].ptSchedule = ptSchedule
                 this.setState({
                   ptScheduleModalVisible: false,

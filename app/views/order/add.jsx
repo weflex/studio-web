@@ -305,7 +305,7 @@ export default class extends React.Component {
         this.state.date &&
         this.state.membershipId);
     } else {
-      return !(this.state.isSpotsAvailable &&
+      return !(
         this.state.phone.length == 11 &&
         this.state.date &&
         this.state.membershipId &&

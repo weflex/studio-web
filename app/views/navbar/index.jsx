@@ -171,6 +171,7 @@ class NavBar extends React.Component {
         <NavItem location="/class/package"    hint="卡种管理"  icon="heart"    onClick={ ()=>{mixpanel.track( "卡种管理" );} } />
         <NavItem location="/member"           hint="会员管理"  icon="customer" onClick={ ()=>{mixpanel.track( "会员" );} } />
         <NavItem location="/trainer"          hint="教练管理"  icon="idea"     onClick={ ()=>{mixpanel.track( "教练" );} } />
+        <NavItem location="/report"           hint="运营报表"  icon="note"  onClick={ ()=>{mixpanel.track( "报表" );} } />
         <NavItem location="/settings"         hint="我的设置"  icon="setting"  onClick={ ()=>{mixpanel.track( "设置" );} } />
       </ul>
     );
