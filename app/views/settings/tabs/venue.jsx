@@ -4,12 +4,23 @@ import React from 'react';
 import UIFramework from '@weflex/weflex-ui';
 import { client } from '../../../api';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import { Switch, Icon } from 'antd';
 
 class Venue extends React.Component {
-  static style = {
-    position: 'relative',
-    top: '12px'
-  };
+
+  static style = [
+    {
+      position: 'absolute',
+      top: '298px',
+      left: '380px'
+    },
+    {
+      position: 'relative',
+      top: '12px'
+    }
+  ]
+
+  ;
   constructor(props) {
     super(props);
     this.state = {
@@ -32,12 +43,30 @@ class Venue extends React.Component {
       ]
     });
     const venueId = await client.user.getVenueById().id;
-    this.setState({
+    await this.setState({
       venue,
       owner: this.getOwner(org.members),
       wechatURL: 'http://booking.theweflex.com/venues/' + venueId + '/classes'
     });
   }
+
+  swtch() {
+    const remindMember = this.state.venue.remindMember
+    return <UIFramework.Row name='会籍到期短信提醒发送时间'>
+      <Switch checkedChildren="开" unCheckedChildren="关"  defaultChecked={remindMember.isRemind} onChange={this.showText.bind(this)} style={Venue.style[0]} />
+      {remindMember.isRemind ? [<span key='1' style={Venue.style[1]}>会籍到期前 </span>,
+      <UIFramework.TextInput
+        key='2'
+        flex={0.2}
+        bindStateCtx={this}
+        bindStateName="venue.remindMember.days"
+        value={remindMember.days}
+        bindStateType={Number}
+      />,
+      <span key='3' style={Venue.style[1]}> 天</span>] : ''}
+    </UIFramework.Row>
+  }
+
   getOwner(members) {
     let owner;
     for (let member of members) {
@@ -80,6 +109,13 @@ class Venue extends React.Component {
       this.state.venue.deadline = MinDeadline
     }
   }
+  showText(event) {
+    let venue = this.state.venue
+    venue.remindMember.isRemind = event;
+    this.setState({
+      venue
+    })
+  }
   render() {
     return (
       <div className="settings-detail settings-venue">
@@ -115,14 +151,15 @@ class Venue extends React.Component {
               disabled={true}
             />
           </UIFramework.Row>
+          {this.state.venue.remindMember ? this.swtch() : ''}
           <UIFramework.Row name='最晚预约取消时间'>
-            <span style={Venue.style}>课程开始前</span> <UIFramework.TextInput
+            <span style={Venue.style[1]}>课程开始前</span> <UIFramework.TextInput
               flex={0.2}
               bindStateCtx={this}
               bindStateName="venue.deadline"
               value={this.state.venue.deadline}
               onChange={this.checkoutNumber.bind(this)}
-            /><span style={Venue.style}>小时</span>
+            /><span style={Venue.style[1]}>小时</span>
           </UIFramework.Row>
           <UIFramework.Row>
             <UIFramework.Button text="保存信息"
