@@ -383,6 +383,7 @@ class MembershipsCard extends React.Component {
               include: [
                 'payments',
                 'package',
+                'venue',
               ]
             }
           }
