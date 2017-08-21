@@ -84,6 +84,7 @@ class Venue extends React.Component {
     return owner;
   }
   async onSubmit() {
+    mixpanel.track("我的设置：场馆-保存");
     let shouldRefresh = false;
     try {
       await client.venue.upsert(this.state.venue);
@@ -174,7 +175,7 @@ class Venue extends React.Component {
               <UIFramework.Button
                 text="复制"
                 flex={0.2}
-                onClick={() => { mixpanel.track("门店：复制"); window.alert("会员订课网址已复制到您的剪贴板") }} />
+                onClick={() => { mixpanel.track("我的设置：场馆-复制"); window.alert("会员订课网址已复制到您的剪贴板") }} />
             </CopyToClipboard>
           </UIFramework.Row>
         </UIFramework>
