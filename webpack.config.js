@@ -1,20 +1,22 @@
-"use strict";
-
 const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { join } = require('path');
+const environments = require('./config/environments.js');
+const environment = environments[process.env.env];
 
 function dir (subpath) {
-  return require('path').join(__dirname, subpath);
+  return join(__dirname, subpath);
 }
 
 module.exports = {
   entry: {
-    'app.js': dir('app/index.jsx'),
-    'login/index.js': dir('app/login/index.jsx'),
-    'signup/index.js': dir('app/signup/index.jsx'),
+    'app': dir('app/index.jsx'),
+    'login/index': dir('app/login/index.jsx'),
+    'signup/index': dir('app/signup/index.jsx'),
   },
   output: {
     path: dir('dist'),
-    filename: '[name]'
+    filename: '[name].js'
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.jsx', '.js', '']
@@ -70,9 +72,18 @@ module.exports = {
     }
   },
   plugins: [
+    new HtmlWebpackPlugin({
+      template: './assets/index.html',
+      filename: 'index.html',
+      inject: false,
+      chunks: ['app'],
+      mixpanelToken: environment.mixpanelToken,
+    }),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': `"${process.env.NODE_ENV || 'dev'}"`,
-      'process.env.GIAN_GATEWAY': `"${process.env.GIAN_GATEWAY || 'staging'}"`,
+      'process.env': {
+        'NODE_ENV': `"${environment.NODE_ENV || 'dev'}"`,
+        'GIAN_GATEWAY': `"${environment.GIAN_GATEWAY || 'staging'}"`,
+      }
     }),
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /zh/),
   ]
