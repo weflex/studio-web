@@ -29,18 +29,9 @@ Studio-desktop is able to build and release for the following platforms:
 * Make
 * GNU Make 3.81
 
-### Generic build
-
-To make a static build, simply
-
-```sh
-$ npm run build
-```
-
 ### Development
-use dev server api and data
 ```sh
-$ npm run dev
+$ npm start
 ```
 
 ### Product

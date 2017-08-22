@@ -12,6 +12,7 @@
     "halogen": "0.1.10",
     "hammerjs": "2.0.6",
     "hourminute": "^1.1.1",
+    "html-webpack-plugin": "^2.30.1",
     "json2csv": "^3.7.3",
     "keymirror": "^0.1.1",
     "lodash": "4.0.0",
@@ -62,12 +63,14 @@
     "node": ">=5.0.0"
   },
   "scripts": {
+    "start": "npm run build:dev && npm run dev",
+    "build:dev": "npm run prebuild && env=dev webpack --optimize-dedupe",
+    "dev": "env=dev webpack-dev-server",
+    "build:prod": "npm run prebuild && env=prod webpack --optimize-dedupe",
+    "prod": "env=prod webpack-dev-server",
     "test": "make test",
-    "prod": "NODE_ENV=prod webpack-dev-server",
-    "dev": "NODE_ENV=dev webpack-dev-server",
-    "build": "rm -rf dist && npm run prebuild && NODE_ENV=prod webpack --optimize-dedupe",
     "prebuild": "test -e dist || npm run staticAssets && test -e typings || npm run typings",
-    "staticAssets": "cp -r assets dist",
+    "staticAssets": "rm -rf dist && cp -r assets dist",
     "typings": "typings install"
   },
   "private": true
