@@ -130,6 +130,8 @@ class App extends React.Component {
           handler={createViewWithBars(require('./views/settings/index'), this)} />
         <Location path="/trainer(/*)"
           handler={createViewWithBars(require('./views/trainer/index'), this)} />
+        <Location path="/report(/*)"
+          handler={createViewWithBars(require('./views/report/index'), this)} />
       </Locations>
     );
   }

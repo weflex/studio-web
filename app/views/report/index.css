@@ -1,0 +1,36 @@
+.weflex-report{background-color: #F3F2F2; font-family: 'PingFang SC';}
+
+
+.weflex-report .navbar-form{padding:0px}
+.weflex-report .navbar-collapse{padding-left: 0px;}
+
+.weflex-report .dropdown-menu{width:300px}
+.weflex-report .dropdown{float: left; margin-right: 10px;}
+.weflex-report .input-group{margin-left:10px}
+.weflex-report .input-group .form-control{width:220px}
+.weflex-report .nav{width: 100%; padding:12px 0; background-color: #fff; box-shadow: 0 1px 3px #999; overflow: hidden; position: absolute;  top: 0px; z-index: 2;}
+.weflex-report .nav .left{float: left; overflow: hidden; margin-left: 20px;}
+.weflex-report .nav .right{float: right; overflow: hidden; margin-right: 20px;}
+
+.weflex-report .ant-btn{line-height: 22px;}
+
+.weflex-report .content{width: calc(100% - 40px); height: auto; margin: 20px; padding-top: 40px;overflow: hidden;}
+
+.weflex-report .block {overflow: hidden;}
+
+.weflex-report .card1{width: calc((100% - 40px)/3); min-width: 300px; height: 145px; background-color: #fff; float: left; margin: 0 20px 20px 0;}
+.weflex-report .card2{width: calc((100% - 20px)/2); min-width: 800px; height: 300px; background-color: #fff; float: left; margin: 0 20px 20px 0;}
+.weflex-report .card2 div[id]{height: 265px}
+
+.weflex-report .card1 .title, .weflex-report .card2 .title{margin: 15px 0 0 10px; color: #4a4a4a;}
+.weflex-report .card1 .total, .weflex-report .high-light, .weflex-report .card2 .total {text-align: center; color: #4990e2; font-size: 36px; line-height: 36px; margin: 20px 0;}
+.weflex-report .card1 .description, .weflex-report .card2 .description {color: #9b9b9b; margin:0 10px 10px; font-size: 12px;}
+
+.weflex-report .finamcial {color: #9b9b9b; font-size: 18px;}
+
+.weflex-report .mgr0 {margin-right: 0;}
+.weflex-report .bookingClasses .title{overflow: hidden;}
+.weflex-report .bookingClasses .tr{float: right; margin-right: 20px;}
+.weflex-report .bookingClasses .tl{float: left;}
+.weflex-report .nullData{margin: 15px 0 0 10px;}
+.weflex-report .nullData .content{margin-top: 50px; text-align: center;}

@@ -127,7 +127,7 @@ class TrainerSchedule extends React.Component {
           </RadioGroup>
         </UIFramework.Row>
         <UIFramework.Row name="关联会卡" hint="">
-          <Select multiple
+          <Select mode='multiple'
             value={paymentOptionIds}
             onChange={(e) => {
               if (e.indexOf('*') > -1) {
