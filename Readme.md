@@ -31,13 +31,21 @@ Studio-desktop is able to build and release for the following platforms:
 
 ### Development
 ```sh
-$ npm start
+$ npm start    // => use dev server api and data, To make a static build, simply. and run in local machine.
+```
+
+or
+
+```sh
+$ npm run build:dev  // => use dev server api and data, To make a static build, simply.
+$ npm run dev        // => run in local machine
 ```
 
 ### Product
 use product server api and data
 ```sh
-$ npm run prod
+$ npm run build:prod  // => use prod server api and data, To make a static build, simply.
+$ npm run prod        // => run in local machine
 ```
 
 ## License
