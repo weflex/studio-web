@@ -192,12 +192,13 @@ export default class ReportDetail extends Component {
     const { sales, salesTrainers, newMembers, newMembersSource, membersActive,
       newMemberships, membershipsEffective, bookings, classes, bookingClasses,
       bookingTranier, startsAt, endsAt, isStateReady, venueCreatedAt, detailTime } = this.state;
+       
     return (
       <div className="weflex-report">
         <div className="nav">
           <div className="left">
             <DatePicker size='small'
-              value={moment(startsAt, 'YYYY-MM-DD')}
+              value={moment(startsAt, 'YYYY-MM-DD').isBefore(moment(venueCreatedAt)) ? moment(venueCreatedAt):moment(startsAt, 'YYYY-MM-DD')}
               onChange={(dates, dateStrings) => {
                 this.setState({
                   startsAt: dateStrings || format(venueCreatedAt, 'YYYY-MM-DD'),
@@ -211,7 +212,7 @@ export default class ReportDetail extends Component {
               onChange={(dates, dateStrings) => {
                 this.setState({ endsAt: dateStrings || format(Date.now(), 'YYYY-MM-DD') })
               }}
-              disabledDate={current => current && current.valueOf() >= Date.now()}
+              disabledDate={current => current && current.valueOf() >= Date.now() | current.valueOf() < startOfDay(venueCreatedAt) }
             />
             <Button size='small' onClick={this.getReport} disabled={!(startsAt || endsAt) || isStateReady} >查看</Button>
           </div>
