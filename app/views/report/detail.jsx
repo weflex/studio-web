@@ -4,10 +4,11 @@ import UIFramework from '@weflex/weflex-ui';
 import ProtoTypes from 'prop-types';
 import { BarChart, LineChart, Line, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { Button, DatePicker, Radio, Spin } from 'antd';
-import { startOfMonth,endOfMonth,startOfDay, endOfDay, addDays, format, compareDesc } from 'date-fns';
+import { startOfMonth, endOfMonth, startOfDay, endOfDay, addDays, format, compareDesc } from 'date-fns';
 import { reduce, groupBy } from 'lodash';
 import { client } from '../../api';
 import moment from 'moment';
+
 const { MonthPicker } = DatePicker
 export default class ReportDetail extends Component {
 
@@ -63,7 +64,7 @@ export default class ReportDetail extends Component {
       venueCreatedAt: new Date('2016-06-01'),
       startsAt: format(addDays(new Date(), -7), 'YYYY-MM-DD'),
       endsAt: format(new Date(), 'YYYY-MM-DD'),
-      detailTime: format(addDays(new Date(), -7), 'YYYY-MM')
+      detailTime: addDays(new Date(), -7)
     };
 
     this.getReport = this.getReport.bind(this);
@@ -174,7 +175,7 @@ export default class ReportDetail extends Component {
   renderButtonDeatil() {
     let { venueId, detailTime } = this.state;
     const { accessToken } = this.cache;
-    detailTime = format(detailTime,'YYYY-MM')
+    detailTime = format(detailTime, 'YYYY-MM')
     if (!detailTime) {
       return <Button size="small" disabled>下载明细</Button>;
     } else {
@@ -190,31 +191,40 @@ export default class ReportDetail extends Component {
   render() {
     const { sales, salesTrainers, newMembers, newMembersSource, membersActive,
       newMemberships, membershipsEffective, bookings, classes, bookingClasses,
-      bookingTranier, startsAt, endsAt, isStateReady, venueCreatedAt ,detailTime} = this.state;
+      bookingTranier, startsAt, endsAt, isStateReady, venueCreatedAt, detailTime } = this.state;
     return (
       <div className="weflex-report">
         <div className="nav">
           <div className="left">
             <DatePicker size='small'
               value={moment(startsAt, 'YYYY-MM-DD')}
-              onChange={(dates, dateStrings) => { this.setState({ startsAt: dateStrings || format(venueCreatedAt, 'YYYY-MM-DD'),detailTime:format(dateStrings,'YYYY-MM')}) }}
-              disabledDate={current => current && current.valueOf() < startOfDay(venueCreatedAt)}
+              onChange={(dates, dateStrings) => {
+                this.setState({
+                  startsAt: dateStrings || format(venueCreatedAt, 'YYYY-MM-DD'),
+                  detailTime: dateStrings || venueCreatedAt
+                })
+              }}
+              disabledDate={current => current && current.valueOf() < startOfDay(venueCreatedAt) | current.valueOf() > endOfDay(endsAt)}
             />
             <DatePicker size='small'
               value={moment(endsAt, 'YYYY-MM-DD')}
-              onChange={(dates, dateStrings) => { this.setState({ endsAt: dateStrings || format(Date.now(), 'YYYY-MM-DD') }) }}
+              onChange={(dates, dateStrings) => {
+                this.setState({ endsAt: dateStrings || format(Date.now(), 'YYYY-MM-DD') })
+              }}
               disabledDate={current => current && current.valueOf() >= Date.now()}
             />
             <Button size='small' onClick={this.getReport} disabled={!(startsAt || endsAt) || isStateReady} >查看</Button>
           </div>
           <div className="right">
             <MonthPicker size='small'
-              value={moment(detailTime)} 
-              onChange={(dates, dateStrings)=> { 
+              allowClear={false}
+              value={moment(detailTime)}
+              onChange={(dates, dateStrings) => {
                 this.setState({
-                  detailTime: dates
-                })}}
-              disabledDate={(current) => current && current.valueOf() > endOfMonth(endsAt) | current.valueOf() < startOfMonth(startsAt)}/>
+                  detailTime: moment(dates)
+                })
+              }}
+              disabledDate={(current) => current && current.valueOf() > endOfMonth(endsAt) | current.valueOf() < startOfMonth(startsAt)} />
             {this.renderButtonDeatil()}
           </div>
         </div>
