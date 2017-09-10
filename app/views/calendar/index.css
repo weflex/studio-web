@@ -469,3 +469,22 @@
   margin-bottom: 5px;
   color: #777;
 }
+
+.course-schedule .ant-table-body{height: 240px;}
+.course-schedule .ant-table-fixed-header.ant-table-empty .ant-table-scroll .ant-table-body{margin-bottom: 0;}
+.course-schedule .ant-table-placeholder{position: absolute; top: 120px; left: calc(50% - 40px); padding-bottom: 5px;}
+
+.course-schedule .small input{height: 22px;}
+.course-schedule .ml10{margin-left: 10px;}
+
+.schedule-day{padding: 2px 15px; margin: 5px; display: inline-block; font-weight: 500; text-align: center; -ms-touch-action: manipulation; touch-action: manipulation; cursor: pointer; background-image: none; border: 1px solid transparent; white-space: nowrap; line-height: 1.15; font-size: 12px; border-radius: 4px; height: 28px; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1); position: relative; color: rgba(0, 0, 0, 0.65); background-color: #fff; border-color: #d9d9d9;}
+.course-schedule .schedule-day-notnull{color: #70cca1; border: 1px solid #70cca1; background-color: #fff;}
+.course-schedule .schedule-day-delete{color: #FF8AC2; border: 1px solid #FF8AC2; background-color: #fff;}
+.course-schedule .schedule-day-select{color: #fff; border: 1px solid #70cca1; background-color: #70cca1}
+.schedule-day:hover{color: #108ee9; border: 1px solid #108ee9; background-color: #fff}
+
+.course-schedule .ant-table-footer{padding: 8px 8px;}
+.course-schedule .course-templates{width: 200px; margin: 0px 38px;}
+.ant-select-search, .ant-select-search--inline:hover{border: 0;}
+
+.ant-select-search__field__wrap:focus, .ant-select-ant-select-search__field:focus{border: 0;}

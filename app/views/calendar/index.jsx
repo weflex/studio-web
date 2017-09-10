@@ -1,24 +1,18 @@
-"use strict";
-
-import _ from 'lodash';
-import moment from 'moment';
+import './index.css';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Calendar from './calendar';
+import _ from 'lodash';
 import { WeekPicker } from './components/week-picker';
-import { NewClassTemplate } from './new';
-import {
-  getCellHeight,
-  getFormatTime,
-} from './util.js';
+import { getCellHeight, getFormatTime } from './util.js';
 import UIFramework from '@weflex/weflex-ui';
-import { client } from '../../api';
+import ClassBatch from './ClassBatch';
 import ClassList from './class-list';
 import Template from './components/template';
 import ResourcePanel from '../../components/resource-panel';
-import './index.css';
+import moment from 'moment';
 import hourminute from 'hourminute';
 import {startOfDay, endOfDay} from 'date-fns';
+import { client } from '../../api';
 
 /**
  * @class WeflexCalendar
@@ -37,12 +31,22 @@ class WeflexCalendar extends React.Component {
 
   get title() {
     return (
-      <WeekPicker context={this}/>
+      <WeekPicker context={this} />
     );
   }
 
   get actions() {
     return [
+      {
+        title: '批量排课',
+        onClick: (ctx, action) => {
+          this.setState({modalVisibled: true});
+          const calendar = this.refs.calendar;
+          calendar.setState({isEditing: false});
+          // hide the resource firstly.
+          //== mixpanel.track( "日历：管理课程/完成");
+        }
+      },
       {
         title: '管理课程',
         toggledTitle: '完成',
@@ -102,11 +106,22 @@ class WeflexCalendar extends React.Component {
 
   render() {
     const cellHeight = getCellHeight();
+    const { schedule, modalVisibled } = this.state;
     return (
-      <Calendar ref="calendar"
-                ctx={this}
-                cellHeight={cellHeight}
-                schedule={this.state.schedule} />
+      <div>
+        <Calendar ref="calendar"
+                  ctx={this}
+                  cellHeight={cellHeight}
+                  schedule={schedule} />
+        <UIFramework.Modal
+          title="批量排课"
+          footer=""
+          visible={ modalVisibled }
+          onCancel={ () => this.setState({modalVisibled: false}) }
+        >
+          <ClassBatch schedule={ schedule._list } onComplete={ () => this.setState({modalVisibled: false}) } />
+        </UIFramework.Modal>
+      </div>
     );
   }
 
@@ -159,6 +174,7 @@ class WeflexCalendar extends React.Component {
       item.date = moment(startsAt).startOf('day');
       item.from = hourminute({hour: startsAt.hour(), minute: startsAt.minute()});
       item.to = hourminute({hour: endsAt.hour(), minute: endsAt.minute()});
+      item.type = 'class';
       return item;
     });
 
@@ -192,6 +208,7 @@ class WeflexCalendar extends React.Component {
         to: hourminute({hour: endsAt.hour(), minute: endsAt.minute()}),
         orders: [Object.assign(session, {isPT: true})],
         isPT: true,
+        type: 'ptSessions',
       };
     });
 
