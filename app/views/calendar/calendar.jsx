@@ -4,12 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Hammer from 'hammerjs';
 import moment from 'moment';
-import {
-  getFormatTime,
-  getGridHeight,
-  getGridOffsetByTime,
-} from './util.js';
-
+import { getFormatTime, getGridHeight, getGridOffsetByTime } from './util.js';
 import { range } from 'lodash';
 import ClassCard from './card';
 import ClassOverview from './class-overview';
