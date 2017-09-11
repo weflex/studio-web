@@ -31,15 +31,23 @@ class ClassBatch extends React.Component {
     const venueId = (await client.user.getVenueById()).id;
     this.cache.venueId = venueId;
 
-    const weeks = await this.getWeeks();
+    const classes = this.getClasses(this.props.schedule || []);
+    const weeks = await this.getWeeks(classes);
+
     this.setState({
       weeks,
-      classes: this.getClasses(this.props.schedule || []),
+      classes,
     });
   }
   
-  componentWillReceiveProps(nextProps) {
-    this.setState({ classes: this.getClasses(nextProps.schedule || []) });
+  async componentWillReceiveProps(nextProps) {
+    const classes = this.getClasses(nextProps.schedule || []);
+    const weeks = await this.getWeeks(classes);
+
+    this.setState({
+      classes,
+      weeks,
+    });
   }
   
   getClasses(schedule) {
@@ -53,6 +61,8 @@ class ClassBatch extends React.Component {
           paymentOptionIds: item.paymentOptionIds,
           price: item.price || item.template.price,
           spot: item.spot,
+          // spotsAvailable: item.spot,
+          // spotsBooked: 0,
           duration: item.duration || item.template.duration,
           templateId: item.templateId,
           trainerId: item.trainerId,
@@ -65,9 +75,13 @@ class ClassBatch extends React.Component {
     return classes;
   }
 
-  async getWeeks() {
+  async getWeeks(classes) {
+    if(!classes || classes.length <= 0 ) {
+      return [];
+    }
+
     const { dateFormat, venueId, weekStartsOn } = this.cache;
-    const now = startOfWeek(new Date(), {weekStartsOn});
+    const now = startOfWeek(new Date(classes[0].startsAt), {weekStartsOn});
     const weeks = [];
 
     for(let i = 1; i < 13; i++) {
@@ -81,6 +95,9 @@ class ClassBatch extends React.Component {
             venueId,
             startsAt: {
               between: [startsAt, endsAt]
+            },
+            trashedAt: {
+              exists: false
             }
           }
         }) ).count;
@@ -107,19 +124,16 @@ class ClassBatch extends React.Component {
     const { weekStartsOn } = this.cache;
 
     try {
-      weeksStart.forEach( (weekStart, i) => {
-        classes.forEach(
-          (item, j) => {
-            const daysDistance = differenceInDays(Number(weekStart), startOfWeek(item.startsAt, {weekStartsOn}) ) ;
-            item.startsAt = addDays(item.startsAt, daysDistance);
-            item.endsAt = addDays(item.endsAt, daysDistance);
-            console.log(item);
-          }
-        );
-      } );
-
-      // await client.class.create({});
-      // this.props.onComplete(this.state.schedule);
+      for (let weekStart of weeksStart) {
+        for (let item of classes) {
+          const daysDistance = differenceInDays(Number(weekStart), startOfWeek(item.startsAt, {weekStartsOn}) ) ;
+          item.startsAt = addDays(item.startsAt, daysDistance);
+          item.endsAt = addDays(item.endsAt, daysDistance);
+          await client.class.create(item);
+        }
+      }
+      this.setState({weeksStart: []});
+      this.props.onComplete();
     } catch (error) {
       console.error(error);
     }
