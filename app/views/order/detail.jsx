@@ -1,5 +1,4 @@
-"use strict";
-
+import './detail.css';
 import React from 'react';
 import moment from 'moment';
 import UIFramework from '@weflex/weflex-ui';
@@ -8,7 +7,7 @@ import { UIHistory } from '../../components/ui-history';
 import MasterDetail from '../../components/master-detail';
 import UIMembershipCard from '../../components/ui-membership-card';
 import { getFormatTime } from '../calendar/util.js';
-import './detail.css';
+
 import {isBefore, isAfter, format} from 'date-fns';
 
 class Detail extends React.Component {
