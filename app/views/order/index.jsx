@@ -37,7 +37,7 @@ class BookingView extends React.Component {
   render() {
     const parsedResult = (window.location.pathname).substring(1).split('/');
     const bookingType = parsedResult[1];
-    const bookingId = parsedResult[2];console.log(parsedResult)
+    const bookingId = parsedResult[2];
     return (
       <div>
         <div>

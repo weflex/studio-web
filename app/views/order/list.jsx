@@ -68,6 +68,7 @@ class List extends React.Component {
     this.cache = {
       venueId: '',
       searchFilter: {},
+      timer: undefined,
     };
 
     this.onPageNumberChange = this.onPageNumberChange.bind(this);
@@ -142,7 +143,7 @@ class List extends React.Component {
         bookingTime    : format(item.createdAt, 'YYYY.MM.DD HH:mm'),
         bookingStatus  : this.getStatusLabel(item, item.class.startsAt),
         nickName       : item.member && item.member.nickname || '',
-        courseName      : item.class.template.name,
+        courseName     : item.class.template.name,
         classTime      : format(item.class.startsAt, 'YYYY.MM.DD HH:mm') + format(item.class.endsAt, ' ~ HH:mm'),
         trainerName    : item.class.trainer.fullname.first + item.class.trainer.fullname.last,
       };
@@ -172,8 +173,8 @@ class List extends React.Component {
         bookingNumber  : <Link href={'/order/ptSession/' + item.id}>{item.passcode}</Link>,
         bookingTime    : format(item.createdAt,'YYYY.MM.DD HH:mm'),
         bookingStatus  : this.getStatusLabel(item, item.startsAt),
-        nickName       : item.member.nickname,
-        courseName      : `私教 (${item.trainer.fullname.first + item.trainer.fullname.last})`,
+        nickName       : item.member && item.member.nickname || '',
+        courseName     : `私教 (${item.trainer.fullname.first + item.trainer.fullname.last})`,
         classTime      : format(item.startsAt, 'YYYY.MM.DD HH:mm') + format(item.endsAt, ' ~ HH:mm'),
         trainerName    : item.trainer.fullname.first + item.trainer.fullname.last,
       };
@@ -207,7 +208,12 @@ class List extends React.Component {
   }
 
   async onChange(e){
-    setInterval(200, this.onSearch(e.target.value))
+    let { timer } = this.cache;
+    const value = e.target.value;
+    if(timer) {
+      clearTimeout(timer);
+    }
+    this.cache.timer = setTimeout( ()=>{this.onSearch(value)}, 500 );
   }
 
   render() {
@@ -228,7 +234,6 @@ class List extends React.Component {
 
         <Input.Search
           placeholder="订单号/会员姓名/手机号"
-          value={ search }
           style={{ width: 200, marginBottom: 10 }}
           onChange={ this.onChange.bind(this) }
           onSearch={ this.onSearch }

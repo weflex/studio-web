@@ -1,259 +1,424 @@
 import './detail.css';
 import React from 'react';
+import PropTypes from 'prop-types';
 import moment from 'moment';
 import UIFramework from '@weflex/weflex-ui';
 import { client } from '../../api';
 import { UIHistory } from '../../components/ui-history';
 import MasterDetail from '../../components/master-detail';
 import UIMembershipCard from '../../components/ui-membership-card';
+import { format, isAfter } from 'date-fns';
 import { getFormatTime } from '../calendar/util.js';
+import { find } from 'lodash';
 
-import {isBefore, isAfter, format} from 'date-fns';
-
-class Detail extends React.Component {
+class BookingInformation extends React.Component {
   constructor(props) {
     super(props);
+  }
+
+  render() {
+    const {tags, actions, memberAvatar, memberName, memberPhone, passcode, createdAt,
+      className, classDescription, classTime, trainerName} = this.props;
+
+    return (
+      <MasterDetail.Card actions={actions}>
+        <div className="detail-card">
+          <h3>订单主要信息</h3>
+          {tags}
+          <div className="booking-member">
+            {memberAvatar}
+            <div className="detail-card-row">
+              <label>订单号</label>
+              <span>{passcode}</span>
+            </div>
+            <div className="detail-card-row">
+              <label>订单时间</label>
+              <span>{createdAt}</span>
+            </div>
+            <div className="detail-card-row">
+              <label>用户</label>
+              <span>{memberName}</span>
+            </div>
+            <div className="detail-card-row">
+              <label>手机号码</label>
+              <span>{memberPhone}</span>
+            </div>
+          </div>
+          <div className="booking-class">
+            <div className="detail-card-row">
+              <label>报名课程</label>
+              <span>{className}</span>
+            </div>
+            <div className="detail-card-row">
+              <label>课程教练</label>
+              <span>{trainerName}</span>
+            </div>
+            <div className="detail-card-row">
+              <label>课程时间</label>
+              <span>{classTime}</span>
+            </div>
+            <div className="detail-card-row">
+              <label>课程详情</label>
+              <span>{classDescription}</span>
+            </div>
+          </div>
+        </div>
+      </MasterDetail.Card>
+    );
+  }
+}
+
+class PaymentDetail extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    const {description, membershipView, membershipText} = this.props;
+
+    return (
+      <div className="detail-card booking-payment">
+        <h3>费用支付</h3>
+        <div className="booking-payment-description">{description}</div>
+        <div className="booking-payment-preview">{membershipView}</div>
+        <div className="booking-payment-metadata">
+          <div className="booking-payment-metadata-container">
+            <fieldset>
+              <legend>会卡详情</legend>
+            </fieldset>
+            <div className="detail-card-row">
+              <label>会卡种类</label>
+              <span>{membershipText.category}</span>
+            </div>
+            <div className="detail-card-row">
+              <label>会卡类型</label>
+              <span>{membershipText.accessType}</span>
+            </div>
+            <div className="detail-card-row">
+              <label>剩余次数</label>
+              <span>{membershipText.available}次</span>
+            </div>
+            <div className="detail-card-row">
+              <label>开卡时间</label>
+              <span>{membershipText.createdAt}</span>
+            </div>
+            <div className="detail-card-row">
+              <label>到期时间</label>
+              <span>{membershipText.expiredAt}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+class HistoryDetail extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    const {logs, colors, description} = this.props;
+
+    return (
+      <div className="detail-card detail-card-right">
+        <h3>订单历史记录</h3>
+        <UIHistory data={logs} colors={colors} description={description} />
+      </div>
+    );
+  }
+}
+
+class Detail extends React.Component {
+  static propTypes = {
+    bookingType: PropTypes.string,
+    bookingId: PropTypes.string,
+  }
+
+  constructor(props) {
+    super(props);
+
     this.state = {
-      order: props.data,
-      membership: null
+      bookingDetail : {
+        tags             : '',
+        actions          : '',
+        memberAvatar     : '',
+        memberName       : '',
+        memberPhone      : '',
+        passcode         : '',
+        createdAt        : '',
+        className        : '',
+        classTime        : '',
+        classDescription : '',
+        trainerName      : '',
+      },
+      paymentDetail : {
+        description    : '',
+        membershipView : '',
+        membershipText : {},
+      },
+      historyDetail : {
+        logs         : [],
+        colors       : {},
+        description  : () => {},
+      },
     };
-  }
-  async componentWillMount() {
-    const {order} = this.state;
-    const payment = order.payments && order.payments[0];
-    if (payment && payment.membership && payment.membership.id) {
-      const membership = await client.membership.get(payment.membership.id, {
-        include: ['package']
-      });
 
-      this.setState({
-        membership: Object.assign(membership.package, membership)
+    this.cache = {
+      startsAt         : '',
+      endsAt           : '',
+      status           : [],
+    };
+
+    this.onCheckIn = this.onCheckIn.bind(this);
+    this.onCancel = this.onCancel.bind(this);
+  }
+
+  componentDidMount() {
+    const {bookingType, bookingId} = this.props;
+
+    bookingType === 'order'
+      ? this.getOrderById(bookingId)
+      : this.getPTSessionById(bookingId);
+  }
+
+  async getOrderById(id) {
+    const order = await client.order.get(id, {
+      include: [
+        {
+          'payments': { 'membership': 'package' },
+        },
+        {
+          'class': ['template', 'trainer'],
+        },
+        {
+          'member': 'avatar',
+        }
+      ]
+    });
+
+    order.payment = order.payments[0];
+    order.class = Object.assign(order.class.template, order.class);
+    order.trainerName = order.class.trainer.fullname.first + order.class.trainer.fullname.last;
+    order.startsAt = format(order.startsAt, 'YYYY-MM-DD HH:mm');
+    order.endsAt = format(order.endsAt, 'YYYY-MM-DD HH:mm');
+    if(order.payments[0].membership) {
+      const reduceMemberships = await client.middleware('/transaction/reduce-memberships', {
+        userId: order.userId,
+        venueId: order.venueId,
       });
+      const reduceMembership = find(reduceMemberships, (item) => {
+        return item.membershipId === order.payments[0].membership.id;
+      });
+      order.payment.membership = Object.assign(order.payments[0].membership, reduceMembership);
+    };
+
+    this.updateState(order);
+  }
+
+  async getPTSessionById(id) {
+    let ptSession = await client.ptSession.get(id, {
+      include: [
+        {'member': 'avatar'},
+        'trainer',
+        {'payment': {'membership': 'package'}},
+      ],
+    });
+
+    const reduceMemberships = await client.middleware('/transaction/reduce-memberships', {
+      userId: ptSession.userId,
+      venueId: ptSession.venueId,
+    });
+    const reduceMembership = find(reduceMemberships, (item) => {
+      return item.membershipId === ptSession.payment.membership.id;
+    });
+    ptSession.payment.membership = Object.assign(ptSession.payment.membership, reduceMembership);
+    ptSession.trainerName = ptSession.trainer.fullname.first + ptSession.trainer.fullname.last;
+    ptSession.class = {
+      name: `私教 (${ptSession.trainerName})`,
+      description: '无课程详情',
+    };
+
+    this.updateState(ptSession);
+  }
+
+  updateState(bookingData) {
+    const {member, payment, trainerName, startsAt, endsAt} = bookingData;
+    const status = this.getStatus(bookingData);
+
+    this.cache = {startsAt, endsAt, status};
+    const bookingDetail = {
+      tags          : this.getTags(status, endsAt),
+      actions       : this.getActions(status, startsAt),
+      memberAvatar  : <UIFramework.Image size={80} src={member.avatar} />,
+      memberName    : member.nickname,
+      memberPhone   : member.phone,
+      passcode      : bookingData.passcode,
+      createdAt     : format(bookingData.createdAt, 'YYYY年MM月DD日 HH:mm:ss'),
+      className     : bookingData.class.name,
+      classDescription : bookingData.class.description,
+      classTime     : format(startsAt, 'YYYY年MM月DD日 HH:mm ~ ') + format(endsAt, 'HH:mm'),
+      trainerName,
+    };
+
+    this.setState({
+      bookingDetail,
+      paymentDetail : this.getPaymentDetail(payment),
+      historyDetail : this.getHistoryDetail(status),
+    });
+  }
+
+  getStatus(bookingData) {
+    let status = {'createdAt': bookingData.createdAt};
+
+    if(bookingData.cancelledAt) {
+      status['cancelledAt'] = bookingData.cancelledAt;
     }
+    if(bookingData.checkedInAt) {
+      status['checkedInAt'] = bookingData.checkedInAt;
+    };
+    return status;
   }
-  get actions() {
-    let {order} = this.state;
 
-    if (order.cancelledAt) {
+  getTags(status, endsAt) {
+    if(status.cancelledAt) {
+      return [<span key='cancel' className='status-tag red-bg'>已取消</span>];
+    };
+
+    let tags = [];
+    if( isAfter(new Date(), endsAt) ) {
+      tags.push(<span key='complete' className='status-tag green-bg'>课程已完成</span>);
+    };
+
+    status.checkedInAt
+      ? tags.push(<span key='checkIn' className='status-tag green-bg'>已签到</span>)
+      : tags.push(<span key='create' className='status-tag'>尚未签到</span>);
+
+    return tags;
+  }
+
+  getActions(status, startsAt) {
+    if (status.cancelledAt) {
       return [];
-    }
+    };
 
-    let actions = [];
-    if (!order.checkedInAt) {
-      actions.push(<a key="checkin" onClick={this.onCheckIn.bind(this)}>签到</a>);
-    }
-    if (isBefore(new Date(), order.class.startsAt)) {
-      actions.push(<a key="cancel" onClick={this.onCancel.bind(this)}>取消</a>);
-    }
+    let actions = [<a key="cancel" onClick={this.onCancel}>取消订单</a>];
+    if (!status.checkedInAt) {
+      actions.push(<a key="checkin" onClick={this.onCheckIn}>签到</a>);
+    };
+    // if ( isAfter(startsAt, new Date()) ) {
+    //   actions.push();
+    // };
     return actions;
   }
-  async onCheckIn () {
-    let {order} = this.state;
+
+  getPaymentDetail(payment) {
+    let description = '未知方式支付', membershipView = null, membershipText = null;
+    if (payment.membership) {
+      const membership = Object.assign(payment.membership.package, payment.membership);
+      description = `使用 ${membership.name} 抵扣 ${payment.fee} 元`;
+      membershipView = <UIMembershipCard data={membership} type="membership"/>;
+      membershipText = {
+        category   : membership.category === 'group' ? '团课' : '私教',
+        accessType : membership.accessType === 'unlimited' ? '不限次卡': '多次卡',
+        available  : membership.accessType === 'unlimited'
+                       ? '不限': ('available' in membership ? membership.available : 0),
+        createdAt  : format(membership.createdAt, 'YYYY年MM月DD日'),
+        expiredAt  : 'expiredAt' in membership ? format(membership.expiredAt, 'YYYY年MM月DD日') : '未知',
+      };
+    } else if (payment && payment._raw) {
+      description = (payment._raw.method === 'wechat')
+        ? `使用微信支付：${payment.fee} ${payment._raw.currency}`
+        : `使用支付宝支付：${payment.fee} ${payment._raw.currency}`;
+    };
+
+    return {description, membershipView, membershipText};
+  }
+
+  getHistoryDetail(status) {
+    let logs = [];
+    let statusName = {
+      'cancelledAt': 'cancel',
+      'checkedInAt': 'checkin',
+      'createdAt'  : 'create',
+    };
+    for(let key in statusName) {
+      if(status[key]) {
+        logs.push({status: statusName[key], createdAt: status[key]});
+      };
+    };
+
+    return {
+      logs,
+      colors      : {
+        create   : '#80c7e8',
+        cancel   : '#ff8ac2',
+        checkin  : '#6ed4a4',
+      },
+      description : (item) => {
+        switch (item.status) {
+          case 'create'   : return '预定';
+          case 'cancel'   : return '该订单被取消';
+          case 'checkin'  : return '场馆签到了课程';
+        }
+      },
+    };
+  }
+
+  async onCheckIn() {
+    const{bookingId, bookingType} = this.props;
     try {
-      if (order.isPT) {
-        await client.ptSession.checkInById(order.id);
-      } else {
-        await client.order.checkInById(order.id);
-      }
-      order.checkedInAt = Date();
-      this.setState({order});
+      bookingType === 'order'
+        ? await client.order.checkInById(bookingId)
+        : await client.ptSession.checkInById(bookingId);
+
+      this.cache.status.checkedInAt = new Date();
+      this.updateStatusChangeState();
     } catch (error) {
       UIFramework.Message.error('签到失败');
     }
   }
-  async onUncheck () {
-    let {order} = this.state;
-    delete order.checkedInAt;
-    this.setState({order});
-    await client.order.uncheckById(order.id);
-  }
+
   async onCancel() {
-    let self = this;
     UIFramework.Modal.confirm({
       title: '确认取消该订单?',
       content: '确认取消该订单?',
       onOk: async () => {
-        let {order} = this.state;
-        order.cancelledAt = new Date();
-        this.setState({order});
-        if (order.isPT) {
-          await client.ptSession.cancelById(order.id);
-        } else {
-          await client.order.cancelById(order.id);          
-        }
-        // await self.props.updateMaster();
-      }
-    });
-  }
-  payment(payments) {
-    let description = '未知方式支付';
-    let preview = null;
-    let metadata = null;
-    const data = payments && payments[0];
-    if (this.state.membership) {
-      const membership = this.state.membership;
+        const{bookingId, bookingType} = this.props;
+        try {
+          bookingType === 'order'
+            ? await client.order.cancelById(bookingId)
+            : await client.ptSession.cancelById(bookingId);
 
-      description = `使用 ${membership.name} 抵扣 ${payments[0].fee} 元`;
-      preview = <UIMembershipCard data={membership} type="membership"/>;
-      metadata = (
-        <div className="order-payment-metadata-container">
-          <fieldset>
-            <legend>会卡详情</legend>
-          </fieldset>
-          <div className="detail-card-row">
-            <label>会卡种类</label>
-            <span>{membership.category === 'group' ? '团课' : '私教'}</span>
-          </div>
-          <div className="detail-card-row">
-            <label>会卡类型</label>
-            <span>{membership.accessType === 'unlimited' ? '不限次卡': '多次卡'}</span>
-          </div>
-          {
-            'available' in membership ?
-            <div className="detail-card-row">
-              <label>剩余次数</label>
-              <span>{membership.available}次</span>
-            </div> : null
-          }
-          <div className="detail-card-row">
-            <label>开卡时间</label>
-            <span>{moment(membership.createdAt).format('YYYY[年]MM[月]DD[日]')}</span>
-          </div>
-          {
-            'expiresAt' in membership ?
-            <div className="detail-card-row">
-              <label>到期时间</label>
-              <span>
-                {moment(membership.expiresAt).format('YYYY[年]MM[月]DD[日]')}
-              </span>
-            </div> : null
-          }
-        </div>
-      );
-    } else if (data && data._raw) {
-      if (data._raw.method === 'wechat') {
-        description = `使用微信支付：${data.fee} ${data._raw.currency}`;
-      } else {
-        description = `使用支付宝支付：${data.fee} ${data._raw.currency}`;
-      }
-    }
-    return (
-      <div className="detail-card order-payment">
-        <h3>费用支付</h3>
-        <div className="order-payment-description">{description}</div>
-        <div className="order-payment-preview">{preview}</div>
-        <div className="order-payment-metadata">{metadata}</div>
-      </div>
-    );
-  }
-  history(order) {
-    var logs = [];
-    ['cancelledAt', 'checkedInAt', 'createdAt'].map((field) => {
-      var status;
-      if (order[field]) {
-        switch (field) {
-        case 'cancelledAt':
-          status = 'cancel';
-          break;
-        case 'checkedInAt':
-          status = 'checkin';
-          break;
-        default:
-          status = 'paid';
-          break;
+          this.cache.status.cancelledAt = new Date();
+          this.updateStatusChangeState();
+        } catch (error) {
+          UIFramework.Message.error('取消失败');
         }
-        logs.push({status: status, createdAt: order[field]});
-      }        
+      }
     });
-    return (
-      <div className="detail-card detail-card-right">
-        <h3>订单历史记录</h3>
-        <UIHistory 
-          data={logs}
-          colors={{
-            paid: '#80c7e8',
-            cancel: '#ff8ac2',
-            checkin: '#6ed4a4',
-          }}
-          description={(item) => {
-            switch (item.status) {
-              case 'paid'   : return '用户预定了课程'; break;
-              case 'cancel' : return '用户取消了预定'; break;
-              case 'checkin': return '用户签到了课程'; break;
-            }
-          }}
-        />
-      </div>
-    );
   }
+
+  updateStatusChangeState() {
+    const {status, startsAt, endsAt} = this.cache;
+    let {bookingDetail, historyDetail} = this.state;
+    bookingDetail.actions = this.getActions(status, startsAt);
+    bookingDetail.tags = this.getTags(status, endsAt);
+    historyDetail = this.getHistoryDetail(status);
+    this.setState({bookingDetail, historyDetail});
+  }
+
   render() {
-    const {order} = this.state;
-    const { date, startsAt, endsAt, trainer } = order.class;
-    const now = moment();
-    let tags = [];
-    if (isAfter(new Date(), endsAt)) {
-      tags.push(<span key='complete' className='status-tag green-bg'>课程已完成</span>);
-    }
-    if (order.checkedInAt) {
-      tags.push(<span key='checkIn' className='status-tag green-bg'>已签到</span>);
-    } else {
-      tags.push(<span key='checkIn' className='status-tag'>尚未签到</span>);
-    }
-
-    if (order.cancelledAt) {
-      tags = [<span key='cancel' className='status-tag red-bg'>已取消</span>];
-    }
-              
+    const {bookingDetail, paymentDetail, historyDetail} = this.state;
     return (
-      <div className="detail-cards order-detail-container">
+      <div className="detail-cards booking-detail-container detail">
         <div className="detail-cards-left">
-          <MasterDetail.Card actions={this.actions}>
-            <div className="detail-card" style={{height: '100%'}}>
-              <h3>订单主要信息</h3>
-              {tags}
-              <div className="order-member">
-                <UIFramework.Image size={80} src={order.member.avatar} />
-                <div className="detail-card-row">
-                  <label>用户</label>
-                  <span>{order.member.nickname}</span>
-                </div>
-                <div className="detail-card-row">
-                  <label>手机号码</label>
-                  <span>{order.member.phone}</span>
-                </div>
-                <div className="detail-card-row">
-                  <label>电子邮箱</label>
-                  {order.user.email.endsWith('theweflex.com') ? <span>未设置</span> : <a href={'`mailto:' + order.user.email}>{order.user.email}</a>}
-                </div>
-              </div>
-              <div className="order-class">
-                <div className="detail-card-row">
-                  <label>报名课程</label>
-                  <span>{order.class.template.name}</span>
-                </div>
-                <div className="detail-card-row">
-                  <label>课程教练</label>
-                  <span>{trainer.fullname.first} {trainer.fullname.last}</span>
-                </div>
-                <div className="detail-card-row">
-                  <label>课程日期</label>
-                  <span>{format(startsAt, 'MM[月]DD[日]')}</span>
-                </div>
-                <div className="detail-card-row">
-                  <label>课程时间</label>
-                  <span>{format(startsAt, 'HH:mm - ') + format(endsAt, 'HH:mm')}</span>
-                </div>
-                <div className="detail-card-row">
-                  <label>课程详情</label>
-                  <span>{order.class.template.description || '这个人很懒，无课程详情'}</span>
-                </div>
-              </div>
-            </div>
-          </MasterDetail.Card>
+          <BookingInformation {...bookingDetail} />
         </div>
         <div className="detail-cards-right">
-          {this.payment(order.payments)}
-          {this.history(order)}
+          <PaymentDetail {...paymentDetail} />
+          <HistoryDetail {...historyDetail} />
         </div>
       </div>
     );
