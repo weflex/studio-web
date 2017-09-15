@@ -41,7 +41,7 @@ class DataItem extends React.Component {
       checkin: '#6ED4A4'
     };
     var backgroundColor = bgColors[this.props.type];
-    const href = '/order/' + qstringify({
+    const href = '/booking/' + qstringify({
       classBefore: moment().add(1, 'day').format('YYYY-MM-DD'),
       classAfter: moment().format('YYYY-MM-DD'),
       orderStatus: this.props.type
@@ -166,7 +166,7 @@ class NavBar extends React.Component {
           <DataItem value={this.state.stats.checkin.length} hint="今日课程签到" type="checkin" />
         </li>
         <NavItem location="/calendar"         hint="课程日历"  icon="calendar" onClick={ ()=>{mixpanel.track( "日历" );} } />
-        <NavItem location="/order"            hint="订单管理"  icon="inbox"    onClick={ ()=>{mixpanel.track( "订单" );} } />
+        <NavItem location="/booking"          hint="订单管理"  icon="inbox"    onClick={ ()=>{mixpanel.track( "订单" );} } />
         <NavItem location="/class/template"   hint="课程模板"  icon="star"     onClick={ ()=>{mixpanel.track( "课程模板" );} } />
         <NavItem location="/class/package"    hint="会卡模版"  icon="heart"    onClick={ ()=>{mixpanel.track( "卡种管理" );} } />
         <NavItem location="/member"           hint="会员管理"  icon="customer" onClick={ ()=>{mixpanel.track( "会员" );} } />
