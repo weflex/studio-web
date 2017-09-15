@@ -1,15 +1,14 @@
 import './detail.css';
 import React from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import UIFramework from '@weflex/weflex-ui';
 import { client } from '../../api';
 import { UIHistory } from '../../components/ui-history';
 import MasterDetail from '../../components/master-detail';
 import UIMembershipCard from '../../components/ui-membership-card';
 import { format, isAfter } from 'date-fns';
-import { getFormatTime } from '../calendar/util.js';
 import { find } from 'lodash';
+import { Button } from 'antd';
 
 class BookingInformation extends React.Component {
   constructor(props) {
@@ -201,8 +200,8 @@ class Detail extends React.Component {
     order.payment = order.payments[0];
     order.class = Object.assign(order.class.template, order.class);
     order.trainerName = order.class.trainer.fullname.first + order.class.trainer.fullname.last;
-    order.startsAt = format(order.startsAt, 'YYYY-MM-DD HH:mm');
-    order.endsAt = format(order.endsAt, 'YYYY-MM-DD HH:mm');
+    order.startsAt = order.class.startsAt;
+    order.endsAt = order.class.endsAt;
     if(order.payments[0].membership) {
       const reduceMemberships = await client.middleware('/transaction/reduce-memberships', {
         userId: order.userId,
@@ -414,6 +413,9 @@ class Detail extends React.Component {
     return (
       <div className="detail-cards booking-detail-container detail">
         <div className="detail-cards-left">
+          <div>
+            <Button>xx</Button>
+          </div>
           <BookingInformation {...bookingDetail} />
         </div>
         <div className="detail-cards-right">

@@ -139,7 +139,7 @@ class List extends React.Component {
     }) ).map( (item, i)=>{
       return {
         key            : item.id,
-        bookingNumber  : <Link href={'/order/order/' + item.id}>{item.passcode}</Link>,
+        bookingNumber  : <Link href={'/booking/order/' + item.id}>{item.passcode}</Link>,
         bookingTime    : format(item.createdAt, 'YYYY.MM.DD HH:mm'),
         bookingStatus  : this.getStatusLabel(item, item.class.startsAt),
         nickName       : item.member && item.member.nickname || '',
@@ -170,7 +170,7 @@ class List extends React.Component {
     }) ).map( (item, i)=>{
       return {
         key            : item.id,
-        bookingNumber  : <Link href={'/order/ptSession/' + item.id}>{item.passcode}</Link>,
+        bookingNumber  : <Link href={'/booking/ptSession/' + item.id}>{item.passcode}</Link>,
         bookingTime    : format(item.createdAt,'YYYY.MM.DD HH:mm'),
         bookingStatus  : this.getStatusLabel(item, item.startsAt),
         nickName       : item.member && item.member.nickname || '',
@@ -225,10 +225,10 @@ class List extends React.Component {
 
         <Menu className='booking-menu' selectedKeys={[bookingType]} mode="horizontal">
           <Menu.Item key="order">
-            <Link href={'/order/order'}>团课</Link>
+            <Link href={'/booking/order'}>团课</Link>
           </Menu.Item>
           <Menu.Item key="ptSession">
-            <Link href={'/order/ptSession'}>私教</Link>
+            <Link href={'/booking/ptSession'}>私教</Link>
           </Menu.Item>
         </Menu>
 
