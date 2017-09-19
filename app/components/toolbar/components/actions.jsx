@@ -159,7 +159,7 @@ export class Actions extends React.Component {
       <div className="actions">
         {this.state.actions.map((action, index) => {
           return (
-            <Action 
+            <Action
               key={index}
               ref={this.addActionRef.bind(this)}
               parent={this}

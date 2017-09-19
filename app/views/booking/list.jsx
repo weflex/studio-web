@@ -1,9 +1,10 @@
 import './list.css';
 import React from 'react';
 import PropTypes from 'prop-types';
+import UIFramework from '@weflex/weflex-ui';
 import { client } from '../../api';
 import { Link } from 'react-router-component';
-import { Table, Pagination, Menu, Input } from 'antd';
+import { Table, Pagination, Menu, Input, Button } from 'antd';
 import { format, compareAsc } from 'date-fns';
 import { filter } from 'lodash';
 
@@ -26,41 +27,46 @@ class List extends React.Component {
 
     this.config = {
       orderColumns: [{
-        title     : '订单号',
-        dataIndex : 'bookingNumber',
-        key       : 'bookingNumber',
-        width     : '8%',
-      }, {
         title     : '订单状态',
         dataIndex : 'bookingStatus',
         key       : 'bookingStatus',
         width     : '10%',
       }, {
-        title     : '创建时间',
-        dataIndex : 'bookingTime',
-        key       : 'bookingTime',
-        width     : '15%',
-      }, {
         title     : '会员姓名',
         dataIndex : 'nickName',
         key       : 'nickName',
-        width     : '12%',
+        width     : '10%',
       }, {
         title     : '课程名称',
         dataIndex : 'courseName',
         key       : 'courseName',
         width     : '17%',
       }, {
-        title     : '课程时间',
-        dataIndex : 'classTime',
-        key       : 'classTime',
-        width     : '20%',
-      }, {
         title     : '课程教练',
         dataIndex : 'trainerName',
         key       : 'trainerName',
-        width     : '18%',
-      }],
+        width     : '15%',
+      }, {
+        title     : '课程时间',
+        dataIndex : 'classTime',
+        key       : 'classTime',
+        width     : '15%',
+      }, {
+        title     : '下单时间',
+        dataIndex : 'bookingTime',
+        key       : 'bookingTime',
+        width     : '15%',
+      }, {
+        title     : '订单号',
+        dataIndex : 'bookingNumber',
+        key       : 'bookingNumber',
+        width     : '8%',
+      }, {
+        title     : '操作',
+        dataIndex : 'operation',
+        key       : 'operation',
+        width     : '10%',
+      }, ],
       pageSize: 20,
     };
     this.config.ptSessionColumns = filter(this.config.orderColumns, (item)=>{return item.dataIndex !== 'courseName'});
@@ -144,10 +150,11 @@ class List extends React.Component {
         bookingStatus  : this.getStatusLabel(item, item.class.startsAt),
         nickName       : item.member && item.member.nickname || '',
         courseName     : item.class.template.name,
-        classTime      : format(item.class.startsAt, 'YYYY.MM.DD HH:mm') + format(item.class.endsAt, ' ~ HH:mm'),
+        classTime      : format(item.class.startsAt, 'YYYY.MM.DD HH:mm'),
         trainerName    : item.class.trainer.fullname.first + item.class.trainer.fullname.last,
+        operation      : item.cancelledAt? '': <Button type="danger" size="small" onClick={e => this.onCancel(item.id)}>取消</Button>,
       };
-    } );
+    });
 
     this.setState({bookingList: orderList, bookingTotal: orderTotal, pageNumber});
   }
@@ -175,10 +182,11 @@ class List extends React.Component {
         bookingStatus  : this.getStatusLabel(item, item.startsAt),
         nickName       : item.member && item.member.nickname || '',
         courseName     : `私教 (${item.trainer.fullname.first + item.trainer.fullname.last})`,
-        classTime      : format(item.startsAt, 'YYYY.MM.DD HH:mm') + format(item.endsAt, ' ~ HH:mm'),
+        classTime      : format(item.startsAt, 'YYYY.MM.DD HH:mm'),
         trainerName    : item.trainer.fullname.first + item.trainer.fullname.last,
+        operation      : item.cancelledAt? '': <Button type="danger" size="small" onClick={e => this.onCancel(item.id)}>取消</Button>,
       };
-    } );
+    });
 
     this.setState({bookingList: ptSessionList, bookingTotal: ptSessionTotal, pageNumber});
   }
@@ -203,7 +211,7 @@ class List extends React.Component {
     const { venueId } = this.cache;
     this.setState({
       pageNumber: 1,
-      search: value.replace(/^\s+|\s+$/g, '')
+      search: value.replace(/^\s+|\s+$/g, ''),
     }, this.updateBooking);
   }
 
@@ -214,6 +222,25 @@ class List extends React.Component {
       clearTimeout(timer);
     }
     this.cache.timer = setTimeout( ()=>{this.onSearch(value)}, 500 );
+  }
+
+  async onCancel(bookingId) {
+    const{bookingType} = this.state;
+
+    UIFramework.Modal.confirm({
+      title: '确认取消该订单?',
+      content: '确认取消该订单?',
+      onOk: async () => {
+        try {
+          bookingType === 'order'
+            ? await client.order.cancelById(bookingId)
+            : await client.ptSession.cancelById(bookingId);
+          this.updateBooking();
+        } catch (error) {
+          UIFramework.Message.error('取消失败');
+        }
+      }
+    });
   }
 
   render() {
