@@ -7,7 +7,7 @@
 }
 
 .wrap-booking-manager tr td {
-  padding: 8px 8px;
+  padding: 12px 8px;
 }
 
 .wrap-booking-manager .pagination {
@@ -30,4 +30,14 @@
 
 .booking-menu {
   margin-bottom: 10px;
+}
+
+.ant-btn-danger {
+  color: #FF8AC2;
+  background-color: #fff;
+}
+
+.ant-btn-danger:hover{
+  background-color: #FF8AC2;
+  border-color: #FF8AC2;
 }

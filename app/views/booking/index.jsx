@@ -1,7 +1,6 @@
 import React from 'react';
 import UIFramework from '@weflex/weflex-ui';
 import List from './list';
-import Detail from './detail';
 import AddBookingView from './add';
 
 class BookingView extends React.Component {
@@ -35,17 +34,11 @@ class BookingView extends React.Component {
   }
 
   render() {
-    const parsedResult = (window.location.pathname).substring(1).split('/');
-    const bookingType = parsedResult[1];
-    const bookingId = parsedResult[2];
+    const bookingType = (window.location.pathname).substring(1).split('/')[1] || 'order';
     return (
       <div>
         <div>
-        {
-          !bookingId
-            ? <List bookingType={bookingType || 'order'} />
-            : <Detail bookingType={bookingType} bookingId={bookingId} />
-        }
+          <List bookingType={bookingType} />
         </div>
         <UIFramework.Modal
             title="添加新订单"

@@ -979,11 +979,7 @@ bluebird@^2.9.30:
   version "2.11.0"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-2.11.0.tgz#534b9033c022c9579c56ba3b3e5a5caafbb650e1"
 
-bluebird@^3.1.1:
-  version "3.4.6"
-  resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.4.6.tgz#01da8d821d87813d158967e743d5fe6c62cf8c0f"
-
-bluebird@^3.4.7:
+bluebird@^3.1.1, bluebird@^3.4.7:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.0.tgz#791420d7f551eea2897453a8a77653f96606d67c"
 
@@ -1135,11 +1131,11 @@ clap@^1.0.9:
   dependencies:
     chalk "^1.1.3"
 
-classnames@2.2.3, classnames@2.x, classnames@~2.2.0:
+classnames@2.2.3, classnames@~2.2.0:
   version "2.2.3"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.3.tgz#551b774b6762a0c0a997187f7ba4f1d603961ac5"
 
-classnames@2.2.5, classnames@^2.2.0, classnames@^2.2.1, classnames@^2.2.3, classnames@^2.2.5:
+classnames@2.2.5, classnames@2.x, classnames@^2.2.0, classnames@^2.2.1, classnames@^2.2.3, classnames@^2.2.5:
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.5.tgz#fb3801d453467649ef3603c7d61a02bd129bde6d"
 
@@ -1240,11 +1236,11 @@ combined-stream@~0.0.4:
   dependencies:
     delayed-stream "0.0.5"
 
-commander@2.11.x, commander@~2.11.0:
+commander@2.11.x, commander@^2.5.0, commander@^2.9.0, commander@~2.11.0:
   version "2.11.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.11.0.tgz#157152fd1e7a6c8d98a5b715cf376df928004563"
 
-commander@^2.5.0, commander@^2.8.1, commander@^2.9.0:
+commander@^2.8.1:
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.9.0.tgz#9c99094176e12240cb22d6c5146098400fe0f7d4"
   dependencies:
@@ -1684,6 +1680,12 @@ dom-closest@^0.2.0:
   dependencies:
     dom-matches ">=1.0.1"
 
+dom-converter@~0.1:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/dom-converter/-/dom-converter-0.1.4.tgz#a45ef5727b890c9bffe6d7c876e7b19cb0e17f3b"
+  dependencies:
+    utila "~0.3"
+
 dom-helpers@^3.2.0:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/dom-helpers/-/dom-helpers-3.2.1.tgz#3203e07fed217bd1f424b019735582fc37b2825a"
@@ -1691,11 +1693,6 @@ dom-helpers@^3.2.0:
 dom-matches@>=1.0.1:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/dom-matches/-/dom-matches-2.0.0.tgz#d2728b416a87533980eb089b848d253cf23a758c"
-dom-converter@~0.1:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/dom-converter/-/dom-converter-0.1.4.tgz#a45ef5727b890c9bffe6d7c876e7b19cb0e17f3b"
-  dependencies:
-    utila "~0.3"
 
 dom-scroll-into-view@1.x, dom-scroll-into-view@^1.2.0:
   version "1.2.1"
@@ -2858,11 +2855,7 @@ lodash@^3.10.0:
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
 
-lodash@^4.16.4, lodash@^4.16.5, lodash@^4.17.2, lodash@^4.17.4, lodash@^4.2.0, lodash@~4.17.4:
-  version "4.17.4"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
-
-lodash@^4.17.3:
+lodash@^4.16.4, lodash@^4.16.5, lodash@^4.17.2, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.2.0, lodash@~4.17.4:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 

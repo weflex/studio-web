@@ -2,13 +2,13 @@ import './detail.css';
 import React from 'react';
 import PropTypes from 'prop-types';
 import UIFramework from '@weflex/weflex-ui';
+import AddBookingView from './add';
 import { client } from '../../api';
 import { UIHistory } from '../../components/ui-history';
 import MasterDetail from '../../components/master-detail';
 import UIMembershipCard from '../../components/ui-membership-card';
 import { format, isAfter } from 'date-fns';
 import { find } from 'lodash';
-import { Button } from 'antd';
 
 class BookingInformation extends React.Component {
   constructor(props) {
@@ -172,6 +172,7 @@ class Detail extends React.Component {
 
     this.onCheckIn = this.onCheckIn.bind(this);
     this.onCancel = this.onCancel.bind(this);
+    this.onViewAddOrder = this.onViewAddOrder.bind(this);
   }
 
   componentDidMount() {
@@ -180,6 +181,24 @@ class Detail extends React.Component {
     bookingType === 'order'
       ? this.getOrderById(bookingId)
       : this.getPTSessionById(bookingId);
+  }
+
+  get title() {
+    return '订单管理';
+  }
+
+  get actions() {
+    return [
+      {
+        title: '返回',
+        onClick: e => window.history.back(),
+        disableToggled: true,
+      }, {
+        title: '创建订单',
+        onClick: this.onViewAddOrder,
+        disableToggled: true,
+      }
+    ];
   }
 
   async getOrderById(id) {
@@ -254,7 +273,7 @@ class Detail extends React.Component {
       memberName    : member.nickname,
       memberPhone   : member.phone,
       passcode      : bookingData.passcode,
-      createdAt     : format(bookingData.createdAt, 'YYYY年MM月DD日 HH:mm:ss'),
+      createdAt     : format(bookingData.createdAt, 'YYYY年MM月DD日 HH:mm'),
       className     : bookingData.class.name,
       classDescription : bookingData.class.description,
       classTime     : format(startsAt, 'YYYY年MM月DD日 HH:mm ~ ') + format(endsAt, 'HH:mm'),
@@ -287,7 +306,7 @@ class Detail extends React.Component {
 
     let tags = [];
     if( isAfter(new Date(), endsAt) ) {
-      tags.push(<span key='complete' className='status-tag green-bg'>课程已完成</span>);
+      tags.push(<span key='complete' className='status-tag green-bg'>已完成</span>);
     };
 
     status.checkedInAt
@@ -408,20 +427,30 @@ class Detail extends React.Component {
     this.setState({bookingDetail, historyDetail});
   }
 
+  onViewAddOrder() {
+    mixpanel.track( "订单：订单创建");
+    this.setState({ modalVisibled: true });
+  }
+
   render() {
     const {bookingDetail, paymentDetail, historyDetail} = this.state;
     return (
       <div className="detail-cards booking-detail-container detail">
         <div className="detail-cards-left">
-          <div>
-            <Button>xx</Button>
-          </div>
           <BookingInformation {...bookingDetail} />
         </div>
         <div className="detail-cards-right">
           <PaymentDetail {...paymentDetail} />
           <HistoryDetail {...historyDetail} />
         </div>
+        <UIFramework.Modal
+            title="添加新订单"
+            footer=""
+            visible={this.state.modalVisibled}
+            onCancel={() => this.setState({modalVisibled: false})}
+        >
+          <AddBookingView onComplete={() => this.setState({modalVisibled: false})} />
+        </UIFramework.Modal>
       </div>
     );
   }
