@@ -37,7 +37,8 @@
   background-color: #fff;
 }
 
-.ant-btn-danger:hover{
+.ant-btn-danger:hover, .ant-btn-danger:focus {
   background-color: #FF8AC2;
   border-color: #FF8AC2;
+  color: #fff;
 }
