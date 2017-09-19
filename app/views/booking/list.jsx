@@ -173,7 +173,7 @@ class List extends React.Component {
       ],
       limit: pageSize,
       skip: (pageNumber - 1) * pageSize,
-      order: 'createdAt ASC',
+      order: 'createdAt DESC',
     }) ).map( (item, i)=>{
       return {
         key            : item.id,
@@ -232,9 +232,8 @@ class List extends React.Component {
       content: '确认取消该订单?',
       onOk: async () => {
         try {
-          bookingType === 'order'
-            ? await client.order.cancelById(bookingId)
-            : await client.ptSession.cancelById(bookingId);
+          if(bookingType === 'order')  await client.order.cancelById(bookingId)
+          else if(bookingType === 'ptSession') await client.ptSession.cancelById(bookingId);
           this.updateBooking();
         } catch (error) {
           UIFramework.Message.error('取消失败');
