@@ -220,7 +220,8 @@ class UserProfileCard extends React.Component {
           footer="">
           <ViewToAddMember
             onComplete={this.onComplete.bind(this)}
-            member={this.props}
+            memberId={this.props.id}
+            type="edit"
           />
         </UIFramework.Modal>
       </MasterDetail.Card>
