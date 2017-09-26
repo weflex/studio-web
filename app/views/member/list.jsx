@@ -180,6 +180,8 @@ class List extends React.Component {
           footer=""
         >
           <ViewToAddMember
+            type="add"
+            memberId=""
             onComplete={this.onAddMemberDone.bind(this)}
           />
         </UIFramework.Modal>
