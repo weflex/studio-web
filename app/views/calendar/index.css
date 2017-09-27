@@ -470,6 +470,10 @@
   color: #777;
 }
 
+.ant-time-picker-panel-clear-btn {
+  display: none
+}
+
 .course-schedule .ant-table-wrapper{border: 1px solid #eee;}
 .course-schedule .ant-table-body{height: 240px;}
 .course-schedule .ant-table-fixed-header.ant-table-empty .ant-table-scroll .ant-table-body{margin-bottom: 0;}

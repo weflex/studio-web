@@ -106,7 +106,7 @@ class WeflexCalendar extends React.Component {
 
   render() {
     const cellHeight = getCellHeight();
-    const { schedule, modalVisibled } = this.state;
+    const { schedule, modalVisibled } = this.state; 
     return (
       <div>
         <Calendar ref="calendar"
@@ -119,7 +119,7 @@ class WeflexCalendar extends React.Component {
           visible={ modalVisibled }
           onCancel={ () => this.setState({modalVisibled: false}) }
         >
-          <ClassBatch schedule={ schedule._list } onComplete={ () => this.setState({modalVisibled: false}) } />
+          <ClassBatch schedule={ schedule._list } refs={this.refs} onComplete={ (startsAt,endsAt) => {this.setState({modalVisibled: false});this.listClasses(startsAt,endsAt) }} />
         </UIFramework.Modal>
       </div>
     );

@@ -172,7 +172,9 @@ export default class extends React.Component {
   async onSubmitPrivateTraining() {
     const startsAt = moment(this.state.date)
       .hour(this.state.hour)
-      .minute(this.state.minute);
+      .minute(this.state.minute)
+      .second(0)
+      .milliseconds(0)
     try {
       await client.ptSession.create({
         trainerId: this.state.trainerId,
