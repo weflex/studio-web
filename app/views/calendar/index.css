@@ -470,9 +470,11 @@
   color: #777;
 }
 
+.course-schedule .ant-table-wrapper{border: 1px solid #eee;}
 .course-schedule .ant-table-body{height: 240px;}
 .course-schedule .ant-table-fixed-header.ant-table-empty .ant-table-scroll .ant-table-body{margin-bottom: 0;}
 .course-schedule .ant-table-placeholder{position: absolute; top: 120px; left: calc(50% - 40px); padding-bottom: 5px;}
+
 
 .course-schedule .small input{height: 22px;}
 .course-schedule .ml10{margin-left: 10px;}

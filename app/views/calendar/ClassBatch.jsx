@@ -12,7 +12,7 @@ import moment from 'moment';
 class ClassBatch extends React.Component {
 
   static propTypes = {
-    
+    onComplete: PropTypes.func,
   };
 
   constructor(props) {
@@ -31,6 +31,8 @@ class ClassBatch extends React.Component {
       venueId: '',
       weekStartsOn: 1,
       dateFormat: 'YYYY-MM-DD',
+      ctId: null,
+      ctModifiedAt: null,
       columns: [
         {
           title: '时间',
@@ -73,11 +75,12 @@ class ClassBatch extends React.Component {
   }
 
   async componentWillReceiveProps(nextProps) {
-    // const courseTemplates = await this.getCourseTemplates();
+    // const courseTemplates = await this.getCourseTemplatesConfig();
+    // const schedule = await this.getCourseTemplates();
 
     // this.setState({
     //   courseTemplates,
-
+    //   schedule,
     // });
   }
 
@@ -96,11 +99,17 @@ class ClassBatch extends React.Component {
 
   async getCourseTemplatesConfig() {
     const { venueId } = this.cache;
-    const courseTemplates = [[], [], [], [], [], [], []] || await client.classTempleList.list({
+    const courseTemplates = await client.classTempleList.list({
       where: venueId,
     });
 
-    return courseTemplates
+    if(courseTemplates.length > 0) {
+      this.cache.ctId = courseTemplates[0].id;
+      this.cache.ctModifiedAt = courseTemplates[0].modifiedAt;
+      return courseTemplates[0].classList;
+    } else {
+      return [[], [], [], [], [], [], []];
+    }
   }
 
   onAddTemplate() {
@@ -113,7 +122,6 @@ class ClassBatch extends React.Component {
     schedule[scheduleIndex].push({time, templateId});
     schedule[scheduleIndex] = sortBy(schedule[scheduleIndex], ['time'])
     this.saveCourseTemplate(schedule);
-    
   }
 
   onDeleteTemplate(time, templateId) {
@@ -123,8 +131,26 @@ class ClassBatch extends React.Component {
   }
 
   async saveCourseTemplate(schedule) {
+    const { ctId, ctModifiedAt } = this.cache;
 
-    this.setState({ schedule });
+    try {
+      if(!ctId) {
+        const resault = await client.classTempleList.create({
+          venueId,
+          classList: schedule,
+        });
+        this.cache.ctId = resault.id;
+        this.cache.ctModifiedAt = resault.modifiedAt;
+      } else {
+        const resault = await client.classTempleList.update(ctId, {
+          classList: schedule,
+        }, ctModifiedAt);
+        this.cache.ctModifiedAt = resault.modifiedAt;
+      }
+      this.setState({ schedule });
+    } catch(error) {
+      console.error(error);
+    }
   }
 
   getScheduleView() {
@@ -169,27 +195,30 @@ class ClassBatch extends React.Component {
 
     [1, 2, 3, 4, 5, 6, 0].forEach( (item, i) => {
       const date = addDays(weekStart, i);
+
       schedule[item].forEach((scheduleItem, j) => {
         const { templateId, time } = scheduleItem;
-        const { coverId, description, duration, name, paymentOptionIds, photoIds, price, spot, trainerId, venueId } = courseTemplates[templateId];
+        const template = courseTemplates[templateId];
 
-        const times = time.split(':');
-        const startsAt = setHours(setMinutes(date, times[1]), times[0]);
-
-        courses.push({
-          startsAt,
-          endsAt: addMinutes(startsAt, duration),
-          description,
-          duration,
-          name,
-          paymentOptionIds,
-          price,
-          spot,
-          templateId,
-          trainerId,
-          venueId,
-          orders: [],
-        });
+        if(template){
+          const times = time.split(':');
+          const startsAt = setHours(setMinutes(date, times[1]), times[0]);
+  
+          courses.push({
+            startsAt,
+            endsAt: addMinutes(startsAt, duration),
+            description: template.description,
+            duration: template.duration,
+            name: template.name,
+            paymentOptionIds: template.paymentOptionIds,
+            price: template.price,
+            spot: template.spot,
+            templateId,
+            trainerId: template.trainer,
+            venueId: template.venueId,
+            orders: [],
+          });
+        }
       });
     });
 
