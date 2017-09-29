@@ -176,7 +176,7 @@ class List extends React.Component {
           visible={this.state.modalVisibled}
           onCancel={this.hideModal.bind(this)}
           onClick={() => { mixpanel.track( "会员：邀请新会员" ); }}
-          title="邀请新会员2222222222"
+          title="邀请新会员"
           footer=""
         >
           <ViewToAddMember
