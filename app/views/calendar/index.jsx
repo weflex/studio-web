@@ -119,7 +119,7 @@ class WeflexCalendar extends React.Component {
           visible={ modalVisibled }
           onCancel={ () => this.setState({modalVisibled: false}) }
         >
-          <ClassBatch schedule={ schedule._list } onComplete={ (startsAt,endsAt) => {this.setState({modalVisibled: false});this.listClasses(startsAt,endsAt) }} />
+          <ClassBatch schedule={ schedule._list } refs={this.refs} onComplete={ (startsAt,endsAt) => {this.setState({modalVisibled: false});this.listClasses(startsAt,endsAt) }} />
         </UIFramework.Modal>
       </div>
     );
