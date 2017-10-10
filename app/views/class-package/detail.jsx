@@ -200,7 +200,7 @@ class CardDetail extends React.Component {
             ]}
           />
         </UIFramework.Row>
-        <UIFramework.Row name="延期次数" required={true} key="extensible"
+        {/* <UIFramework.Row name="延期次数" required={true} key="extensible"
           hint="会员出差或工作室休息的时候可以给会卡延期">
           <UIFramework.Select
             flex={1} 
@@ -215,7 +215,7 @@ class CardDetail extends React.Component {
               {text: '可4次', value: 4},
             ]}
           />
-        </UIFramework.Row>
+        </UIFramework.Row> */}
         <UIFramework.Row name="卡片颜色" key="color" hint="给不同的卡片设定不同的颜色可以帮你区分不同的卡">
           <UIFramework.ColorPicker
             bindStateCtx={this}
