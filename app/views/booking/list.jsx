@@ -47,7 +47,7 @@ class List extends React.Component {
         key       : 'trainerName',
         width     : '15%',
       }, {
-        title     : '课程时间',
+        title     : '课程开始时间',
         dataIndex : 'classTime',
         key       : 'classTime',
         width     : '15%',
@@ -151,7 +151,7 @@ class List extends React.Component {
         nickName       : item.member && item.member.nickname || '',
         courseName     : item.class.template.name,
         classTime      : format(item.class.startsAt, 'YYYY.MM.DD HH:mm'),
-        trainerName    : item.class.trainer.fullname.first + item.class.trainer.fullname.last,
+        trainerName    : item.class.trainer? item.class.trainer.fullname.first + item.class.trainer.fullname.last: '',
         operation      : item.cancelledAt? '': <Button type="danger" size="small" onClick={e => this.onCancel(item.id)}>取消</Button>,
       };
     });
@@ -175,15 +175,16 @@ class List extends React.Component {
       skip: (pageNumber - 1) * pageSize,
       order: 'createdAt DESC',
     }) ).map( (item, i)=>{
+      const trainerName = item.trainer? item.trainer.fullname.first + item.trainer.fullname.last: '';
       return {
         key            : item.id,
         bookingNumber  : <Link href={'/booking/ptSession/' + item.id}>{item.passcode}</Link>,
         bookingTime    : format(item.createdAt,'YYYY.MM.DD HH:mm'),
         bookingStatus  : this.getStatusLabel(item, item.startsAt),
         nickName       : item.member && item.member.nickname || '',
-        courseName     : `私教 (${item.trainer.fullname.first + item.trainer.fullname.last})`,
+        courseName     : `私教 (${trainerName})`,
         classTime      : format(item.startsAt, 'YYYY.MM.DD HH:mm'),
-        trainerName    : item.trainer.fullname.first + item.trainer.fullname.last,
+        trainerName,
         operation      : item.cancelledAt? '': <Button type="danger" size="small" onClick={e => this.onCancel(item.id)}>取消</Button>,
       };
     });
