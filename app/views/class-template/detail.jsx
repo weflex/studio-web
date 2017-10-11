@@ -107,7 +107,7 @@ class Detail extends React.Component {
 
     let shouldRefresh = false;
     let resp;
-    const {name, spot, price, description} = this.state.data;
+    const {name, spot, price, paymentOptionIds, description} = this.state.data;
     const errorMessage = [];
     if (!name) {
       errorMessage.push('`课程名`');
@@ -117,6 +117,9 @@ class Detail extends React.Component {
     }
     if (!Number.isInteger(price) || price < 0) {
       errorMessage.push('`价格`');
+    }
+    if (!paymentOptionIds || paymentOptionIds.length <= 0){
+      errorMessage.push('`可用会卡`');
     }
     if (!description) {
       errorMessage.push('`课程描述`');
