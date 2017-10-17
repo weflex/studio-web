@@ -371,7 +371,7 @@ module.exports = class TrainerDetail extends React.Component {
         ],
       }
     );
-
+    
     const dataSource = {
       id: trainer.id,
       avatar: trainer.user.avatar || defaultAvatar,
@@ -384,6 +384,7 @@ module.exports = class TrainerDetail extends React.Component {
       venueId: trainer.venueId,
       orgId: trainer.orgId,
       modifiedAt: trainer.modifiedAt,
+      roles:trainer.roleIds
     };
 
     if (dataSource.ptSchedule && dataSource.ptSchedule.paymentOptionIds.indexOf('*') > -1) {
@@ -422,10 +423,12 @@ module.exports = class TrainerDetail extends React.Component {
                   onClick={() => {
                     UIFramework.Modal.confirm({
                       title: '确认删除教练？',
-                      content: '删除后，请及时修改该教练的课程',
+                      content: dataSource.roles.indexOf("$owner") > -1? '该教练为场馆主教练，无法被删除': '删除后，请及时修改该教练的课程',
                       onOk: async () => {
-                        await client.collaborator.delete(dataSource.id, dataSource.modifiedAt);
-                        location.href = '/trainer/';
+                        if (dataSource.roles.indexOf("$owner") == -1) {
+                          await client.collaborator.delete(dataSource.id, dataSource.modifiedAt);
+                          location.href = '/trainer/';
+                        }
                       }
                     });
                   }}>
