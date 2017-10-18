@@ -3,6 +3,7 @@ import React from 'react';
 import {range} from 'lodash';
 import {client} from '../../api';
 import UIFramework from '@weflex/weflex-ui';
+import AvatarUploader from '../../components/ui-avatar'
 import {Radio,Row, Col, Button, Input, Select, Table, DatePicker, Pagination} from 'antd';
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -371,7 +372,6 @@ module.exports = class TrainerDetail extends React.Component {
         ],
       }
     );
-    
     const dataSource = {
       id: trainer.id,
       avatar: trainer.user.avatar || defaultAvatar,
@@ -384,7 +384,8 @@ module.exports = class TrainerDetail extends React.Component {
       venueId: trainer.venueId,
       orgId: trainer.orgId,
       modifiedAt: trainer.modifiedAt,
-      roles:trainer.roleIds
+      roles:trainer.roleIds,
+      userId:trainer.userId,
     };
 
     if (dataSource.ptSchedule && dataSource.ptSchedule.paymentOptionIds.indexOf('*') > -1) {
@@ -445,6 +446,7 @@ module.exports = class TrainerDetail extends React.Component {
           </div>
           <Col span={12}>
             <img src={dataSource.avatar.uri} className='avatar' />
+            <AvatarUploader src={dataSource.avatar} dataSource={dataSource}/>
           </Col>
           <Col span={12}>
             <div className='detail-card-row'>
