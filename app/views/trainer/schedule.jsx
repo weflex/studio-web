@@ -60,7 +60,8 @@ class TrainerSchedule extends React.Component {
         orderMode,
         venueId: this.cache.venueId,
       });
-      this.props.onComplete(this.state.schedule);
+      // this.props.onComplete(this.state.schedule);
+      location.href = '/trainer'
     } catch (error) {
       console.error(error && error.message);
     }
