@@ -10,7 +10,7 @@ import ClassList from './class-list';
 import Template from './components/template';
 import ResourcePanel from '../../components/resource-panel';
 import moment from 'moment';
-import hourminute from 'hourminute';
+import hourminute from '@weflex/hourminute';
 import {startOfDay, endOfDay} from 'date-fns';
 import { client } from '../../api';
 

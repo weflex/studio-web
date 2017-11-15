@@ -12,6 +12,7 @@
   "homepage": "https://github.com/weflex/studio-web#readme",
   "dependencies": {
     "@weflex/gian": "^1.35.3",
+    "@weflex/hourminute": "^1.2.0",
     "@weflex/passport.js": "1.2.0",
     "@weflex/weflex-ui": "^2.8.4",
     "antd": "^2.12.6",
@@ -20,7 +21,6 @@
     "date-fns": "^1.28.1",
     "halogen": "0.1.10",
     "hammerjs": "2.0.6",
-    "hourminute": "^1.1.1",
     "html-webpack-plugin": "^2.30.1",
     "json2csv": "^3.7.3",
     "keymirror": "^0.1.1",
