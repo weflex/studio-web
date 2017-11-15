@@ -2,13 +2,17 @@
 # yarn lockfile v1
 
 
-"@weflex/gian@^1.35.1":
-  version "1.35.1"
-  resolved "https://registry.yarnpkg.com/@weflex/gian/-/gian-1.35.1.tgz#e43f29207ff9ac13aa3875744fb37c9e531e2f84"
+"@weflex/gian@^1.35.3":
+  version "1.35.3"
+  resolved "https://registry.yarnpkg.com/@weflex/gian/-/gian-1.35.3.tgz#a38669b17868d04c8026fcbd2931d0f106e37b62"
   dependencies:
     qstringify "^1.4.2"
     superagent "^1.8.0-beta.2"
     superagent-promise "^1.1.0"
+
+"@weflex/hourminute@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@weflex/hourminute/-/hourminute-1.2.0.tgz#f639d93d55fd246b0416fb6e302ef1c54222be6c"
 
 "@weflex/passport.js@1.2.0":
   version "1.2.0"
@@ -2274,10 +2278,6 @@ home-or-tmp@^2.0.0:
   dependencies:
     os-homedir "^1.0.0"
     os-tmpdir "^1.0.1"
-
-hourminute@^1.1.1:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/hourminute/-/hourminute-1.1.2.tgz#7e6b906bc28f9f1e62497b5eb94dc07843f97742"
 
 html-comment-regex@^1.1.0:
   version "1.1.1"

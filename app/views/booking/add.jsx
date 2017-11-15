@@ -2,7 +2,7 @@
 
 import _ from 'lodash';
 import moment from 'moment';
-import hourminute from 'hourminute';
+import hourminute from '@weflex/hourminute';
 import React from 'react';
 import UIFramework from '@weflex/weflex-ui';
 import {Tabs, DatePicker, TimePicker} from 'antd';
