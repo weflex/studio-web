@@ -45,7 +45,7 @@ export default class extends React.Component {
   }
 
   async onSubmit() {
-    const { type, memberId } = this.props;
+    const { type, memberId, onComplete } = this.props;
     const { form } = this.state;
     const { venueId } = this.cache;
     try {
@@ -67,8 +67,8 @@ export default class extends React.Component {
         }, form.modifiedAt);
 
       }
-      if (typeof this.props.onComplete === 'function') {
-        await this.props.onComplete();
+      if (typeof onComplete === 'function') {
+        await onComplete();
       }
     } catch (err) {
       console.error(err && err.stack);

@@ -8,7 +8,7 @@ import Importer from './importer';
 import ViewToAddMember from './add-member';
 import { UIProfileListItem } from '../../components/ui-profile';
 import { client } from '../../api';
-import {startOfDay, endOfDay} from 'date-fns';
+import {startOfToday, endOfToday} from 'date-fns';
 class List extends React.Component {
   static styles = {
     master: {
@@ -26,16 +26,22 @@ class List extends React.Component {
       },
     },
   };
+
   constructor(props) {
     super(props);
     this.state = {
+      skip: 0,
+      limit: 50,
+      data: [],
       modalVisibled: false,
       showImporter: false,
     };
   }
+
   get title() {
     return '会员管理（加载中...）';
   }
+
   get actions() {
     return [
       {
@@ -52,6 +58,7 @@ class List extends React.Component {
       .onSearchInputChange
       .bind(this.refs.masterDetail);
   }
+
   get config() {
     return {
       title: 'title',
@@ -81,16 +88,18 @@ class List extends React.Component {
       sortKeys: [
         {name: '姓名', key: 'nickname'},
       ],
-      onClickAdd: this.addNewMember.bind(this),
-      addButtonText: '邀请新会员',
+      onClickAdd: () => {this.refs.masterDetail.updateMasterSource();},
+      addButtonText: '加载更多会员',
     };
   }
+
   async getMembers() {
-    const today = new Date();
-    const venue = await client.user.getVenueById();
-    return await client.member.list({
+    const venueId = ( await client.user.getVenueById() ).id;
+    const { skip, limit } = this.state;
+
+    const memberList = await client.member.list({
       where: {
-        venueId: venue.id,
+        venueId,
       },
       include: [
         'user',
@@ -99,7 +108,7 @@ class List extends React.Component {
           scope:{
             where: {
               timestamp: {
-                between: [startOfDay(today), endOfDay(today)]
+                between: [startOfToday(), endOfToday()]
               }
             }
           }
@@ -116,13 +125,25 @@ class List extends React.Component {
         },
         'avatar'
       ],
+      limit,
+      skip,
     });
+
+    let nextState = {};
+    nextState.skip = skip + limit;
+    if (memberList.length > 0) {
+      nextState.data = this.state.data.concat(memberList);
+    }
+    //this.setState(nextState);
+    return nextState.data || this.state.data;
   }
+
   async source() {
     this.members = await this.getMembers();
     this.props.app.title(`会员管理（${this.members.length}）`);
     return this.members;
   }
+
   async componentDidMount() {
     const venueId = ( await client.user.getVenueById() ).id;
     const memberCount = ( await client.member.count({
@@ -138,8 +159,10 @@ class List extends React.Component {
       showImporter: !memberCount,
     });
   }
+
   componentWillUnmount() {
   }
+
   viewModal() {
     this.setState({
       modalVisibled: true,
@@ -150,6 +173,7 @@ class List extends React.Component {
     mixpanel.track( "会员：邀请新会员");
     this.viewModal();
   }
+
   hideModal() {
     this.setState({
       modalVisibled: false,
@@ -190,4 +214,3 @@ class List extends React.Component {
   }
 }
 
-module.exports = List;

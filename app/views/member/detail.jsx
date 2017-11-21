@@ -1,8 +1,4 @@
-"use strict";
-/*
- * @module views.member
- */
-
+import './index.css';
 import { flattenDeep } from 'lodash';
 import React from 'react';
 import UIFramework from '@weflex/weflex-ui';
@@ -12,13 +8,10 @@ import { UIHistory } from '../../components/ui-history';
 import ViewToAddMember from './add-member';
 import ViewToAddMembership from './add-membership';
 import { client } from '../../api';
-import './detail.css';
+
 import { format, compareDesc } from 'date-fns';
 import { keyBy } from 'lodash';
 
-/**
- * @class UserProfileCard
- */
 class UserProfileCard extends React.Component {
   static propTypes = {
     /**
@@ -88,15 +81,16 @@ class UserProfileCard extends React.Component {
 
   onDelete() {
     mixpanel.track( "会员详情：删除会员" );
-    const props = this.props;
+    const { id, modifiedAt, nickname, onCompleteRefresh } = this.props;
     UIFramework.Modal.confirm({
-      title: '你确认要删除会员：' + props.nickname,
+      title: '你确认要删除会员：' + nickname,
       content: '删除会员资料将不可恢复！',
       onOk: async () => {
-        if (props.id) {
-          await client.member.delete(props.id, props.modifiedAt);
-          await props.context.props.updateMaster();
-          UIFramework.Message.success('已删除会员：' + props.nickname);
+        if (id) {
+          await client.member.delete(id, modifiedAt);
+          //await props.context.props.updateMaster();
+          UIFramework.Message.success('已删除会员：' + nickname);
+          onCompleteRefresh();
         } else {
           // TODO(Yorkie)
         }
@@ -104,20 +98,15 @@ class UserProfileCard extends React.Component {
     });
   }
 
-  /**
-   * @method onMemberAvatarUploaded
-   */
   async onMemberAvatarUploaded(result, file) {
-    await client.member.update(this.props.id, {
+    const { id, modifiedAt, onCompleteRefresh } = this.props;
+    await client.member.update(id, {
       avatarId: result.id,
-    }, this.props.modifiedAt);
+    }, modifiedAt);
     UIFramework.Message.success('上传头像成功');
-    await this.props.context.props.updateMaster();
+    onCompleteRefresh();
   }
 
-  /**
-   * @method onMemberAvatarFail
-   */
   onMemberAvatarUploadFail(err) {
     console.error(err);
     UIFramework.Modal.error({
@@ -229,10 +218,6 @@ class UserProfileCard extends React.Component {
   }
 }
 
-/**
- * @class MembershipCard
- * @extends React.Component
- */
 class MembershipCard extends React.Component {
   static propTypes = {
     /**
@@ -323,11 +308,7 @@ class MembershipCard extends React.Component {
   }
 }
 
-/**
- * @class MembershipsCard
- * @extends React.Component
- */
-class MembershipsCard extends React.Component {
+class MembershipList extends React.Component {
   static propTypes = {
     /**
      * @property {Object} member - the member data
@@ -341,14 +322,6 @@ class MembershipsCard extends React.Component {
     onComplete: React.PropTypes.func,
   };
 
-  /**
-   * The `MembershipCard`'s constructor will create the following
-   * states:
-   *   1. modelVisibled
-   *   2. membershipView
-   *   3. member
-   * @constructor
-   */
   constructor(props) {
     super(props);
     this.state = {
@@ -357,20 +330,16 @@ class MembershipsCard extends React.Component {
   }
 
   componentDidMount() {
-    this.refresh();
+    this.refresh(this.props);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.refresh();
+    this.refresh(nextProps);
   }
 
-  /**
-   * @method refresh
-   * @async
-   */
-  async refresh() {
+  async refresh(props) {
     let member = await client.member.get(
-      this.props.member.id,
+      props.member.id,
       {
         include: [
           {
@@ -439,9 +408,6 @@ class MembershipsCard extends React.Component {
     );
   }
 
-  /**
-   * @method render
-   */
   render() {
     return (
       <MasterDetail.Card>
@@ -484,11 +450,11 @@ class MemberOperation extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.updateOperationList();
+    this.updateOperationList(nextProps);
   }
 
-  async updateOperationList() {
-    const { memberId, userId, venueId } = this.props;
+  async updateOperationList(props) {
+    const { memberId, userId, venueId } = props || this.props;
 
     const operationList = ( await client.operation.list({
       where :{
@@ -639,10 +605,6 @@ class MemberOperation extends React.Component {
   }
 }
 
-/**
- * @class Detail
- * @extends React.Component
- */
 export default class Detail extends React.Component {
   constructor(props) {
     super(props);
@@ -659,8 +621,8 @@ export default class Detail extends React.Component {
     return (
       <div className="membership-detail-container">
         <MasterDetail.Cards position="left">
-          <UserProfileCard context={this} {...member} />
-          <MembershipsCard context={this} member={member} onComplete={this.updateDetailView} />
+          <UserProfileCard context={this} {...member} onCompleteRefresh={this.props.onRefresh}/>
+          <MembershipList context={this} member={member} onComplete={this.updateDetailView} />
         </MasterDetail.Cards>
         <MasterDetail.Cards position="right">
           <MemberOperation memberId={member.id} memberCreatedAt={member.createdAt} userId={member.userId} venueId={member.venueId}/>
