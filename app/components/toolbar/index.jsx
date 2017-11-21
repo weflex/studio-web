@@ -12,7 +12,7 @@ class ToolBar extends React.Component {
       title: null
     };
   }
-  setTitle(title: string) {
+  setTitle(title) {
     this.setState({title});
   }
   render() {
