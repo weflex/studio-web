@@ -43,7 +43,7 @@ class AvatarUploader extends React.Component {
     console.error(err);
   }
   checkFileSize(file) {
-    console.log(file.size)
+
   }
   render() {
     return (
