@@ -82,7 +82,9 @@ class MemberView extends React.Component {
         trashedAt: { exists: false }
       }
     }) ).count;
-    this.setState({showImporter: false});
+    if(memberCount > 0) {
+      this.setState({showImporter: false});
+    }
     this.updateMembers();
   }
 
