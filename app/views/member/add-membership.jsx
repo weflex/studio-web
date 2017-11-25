@@ -17,7 +17,6 @@ export default class extends React.Component {
 
     let operation = 'add';
     let form = {
-      memberName: props.member.nickname,
       name: null,
       accessType: null,
       price: null,
@@ -27,7 +26,6 @@ export default class extends React.Component {
       packageId: null,
       salesId: null,
       venueId: props.member.venueId,
-      memberId: props.member.id,
     };
 
     if(props.data) {
@@ -134,9 +132,9 @@ export default class extends React.Component {
 
   async onSubmit() {
     const { operation, form } = this.state;
-    const { data, onComplete } = this.props;
+    const { data, onComplete, member } = this.props;
     const membership = {
-      memberName: form.memberName,
+      memberName: member.nickname,
       name: form.name,
       accessType: form.accessType,
       price: form.price,
@@ -145,7 +143,7 @@ export default class extends React.Component {
       packageId: form.packageId,
       salesId: (form.salesId === "（空）")? null : form.salesId,
       venueId: form.venueId,
-      memberId: form.memberId,
+      memberId: member.id,
     };
     if(form.available || form.available === 0) {
       membership.available = form.available;
@@ -194,11 +192,10 @@ export default class extends React.Component {
 
   onDelete() {
     const { data, onComplete } = this.props;
-    const { memberName } = this.state.form;
 
     UIFramework.Modal.confirm({
       title: '确认删除会卡信息？',
-      content: `您正在删除会员 ${memberName} 的会卡，删除后将无法返回`,
+      content: `您正在删除会员 ${this.props.member.nickname} 的会卡，删除后将无法返回`,
       onOk: async () => {
         try {
           await client.membership.delete(data.id, data.modifiedAt);
@@ -219,11 +216,12 @@ export default class extends React.Component {
 
   render() {
     const { operation, form, packageOptions, salesOptions } = this.state;
+    const { member } = this.props;
      
     return (
       <UIFramework>
         <UIFramework.Row name="会员姓名">
-          <UIFramework.TextInput flex={1} value={form.memberName} disabled />
+          <UIFramework.TextInput flex={1} value={member.nickname} disabled />
         </UIFramework.Row>
         <UIFramework.Row name="会卡" hint="会员需要会卡才能预定课程">
           <UIFramework.Select

@@ -353,10 +353,6 @@ class MembershipList extends React.Component {
     this.setState({member});
   }
 
-  /**
-   * This method renders out to the cards
-   * @method cards
-   */
   cards() {
     if (this.refs.membershipcards === undefined) {
       return;
