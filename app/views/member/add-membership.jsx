@@ -49,6 +49,15 @@ export default class extends React.Component {
     this.onChangeStartsAt = this.onChangeStartsAt.bind(this);
   }
 
+  componentWillReceiveProps (nextProps) {
+    let form = this.state.form, operation = 'add';
+    if(nextProps.data) {
+      operation = 'edt';
+      form = Object.assign(form, nextProps.data);
+    }
+    this.setState({operation, form});
+  }
+
   async componentWillMount() {
     const { operation } = this.state;
     let { form } = this.state;
@@ -224,15 +233,22 @@ export default class extends React.Component {
           <UIFramework.TextInput flex={1} value={member.nickname} disabled />
         </UIFramework.Row>
         <UIFramework.Row name="会卡" hint="会员需要会卡才能预定课程">
-          <UIFramework.Select
-            flex={1}
-            bindStateCtx={this}
-            bindStateName="form.packageId"
-            value={form.packageId}
-            options={packageOptions}
-            onChange={this.onChangePackage}
-            disabled={operation==='edt'}
-          />
+          {
+            operation === 'edt'
+              ? <UIFramework.TextInput
+                flex={1}
+                value={form.name}
+                disabled="true"
+              />
+              : <UIFramework.Select
+                flex={1}
+                bindStateCtx={this}
+                bindStateName="form.packageId"
+                value={ form.packageId }
+                options={packageOptions}
+                onChange={this.onChangePackage}
+              />
+          }
         </UIFramework.Row>
         <UIFramework.Row name="实付价格">
           <UIFramework.TextInput
