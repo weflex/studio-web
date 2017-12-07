@@ -11,7 +11,7 @@ class Venue extends React.Component {
   static style = [
     {
       position: 'absolute',
-      top: '298px',
+      top: '340px',
       left: '380px'
     },
     {
@@ -20,7 +20,7 @@ class Venue extends React.Component {
     }
   ]
 
-  ;
+    ;
   constructor(props) {
     super(props);
     this.state = {
@@ -53,7 +53,7 @@ class Venue extends React.Component {
   swtch() {
     const remindMember = this.state.venue.remindMember
     return <UIFramework.Row name='会籍到期短信提醒发送时间'>
-      <Switch checkedChildren="开" unCheckedChildren="关"  defaultChecked={remindMember.isRemind} onChange={this.showText.bind(this)} style={Venue.style[0]} />
+      <Switch checkedChildren="开" unCheckedChildren="关" defaultChecked={remindMember.isRemind} onChange={this.showText.bind(this)} style={Venue.style[0]} />
       {remindMember.isRemind ? [<span key='1' style={Venue.style[1]}>会籍到期前 </span>,
       <UIFramework.TextInput
         key='2'
@@ -111,13 +111,31 @@ class Venue extends React.Component {
     }
   }
   showText(event) {
-    let venue = this.state.venue
+    let venue = this.state
     venue.remindMember.isRemind = event;
     this.setState({
       venue
     })
   }
+  async closeSmsCode(checked) {
+    let owner = this.state.owner
+    let trainers = await client.collaborator.list({
+      where: {
+        venueId: owner.venueId,
+      }
+    });
+    for (let i = 0; i < trainers.length; i++) {
+      await client.collaborator.update(trainers[i].id, {
+        closeClassSms: checked
+      }, trainers[i].modifiedAt);
+    }
+    owner.closeClassSms = checked
+    this.setState({
+      owner
+    })
+  }
   render() {
+    const owner = this.state.owner
     return (
       <div className="settings-detail settings-venue">
         <UIFramework>
@@ -152,6 +170,7 @@ class Venue extends React.Component {
               disabled={true}
             />
           </UIFramework.Row>
+          <div style={{ padding: '10px 0 10px 0' }}><span>团课短信通知开关</span><Switch checkedChildren="开" unCheckedChildren="关" checked={owner.closeClassSms} onChange={this.closeSmsCode.bind(this)} style={{ 'margin-left': '70px' }} /></div>
           {this.state.venue.remindMember ? this.swtch() : ''}
           <UIFramework.Row name='最晚预约取消时间'>
             <span style={Venue.style[1]}>课程开始前</span> <UIFramework.TextInput
