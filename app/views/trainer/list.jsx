@@ -1,6 +1,6 @@
 import React from 'react';
 import UIFramework from '@weflex/weflex-ui';
-import { Table, Button } from 'antd';
+import { Table, Button, Switch } from 'antd';
 import { client } from '../../api';
 import { Link } from 'react-router-component';
 import TrainerProfile from './profile';
@@ -49,18 +49,20 @@ class TrainerList extends React.Component {
       ],
     });
     this.setState({
-      dataSource: trainers.map((trainer,index) => {
+      dataSource: trainers.map((trainer, index) => {
         const name = trainer.fullname.first + trainer.fullname.last;
         const URL = '/trainer/' + trainer.id;
         const defaultAvatar = { uri: 'http://static.theweflex.com/default-avatar-male.png' };
         return {
-          key:index,
+          key: index,
           id: trainer.id,
           name: <Link onClick={() => mixpanel.track("教练：教练详情")} href={URL}>{name}</Link>,
           phone: trainer.user.phone,
           employmentStatus: trainer.employmentStatus,
           avatar: trainer.user.avatar || defaultAvatar,
           ptSchedule: trainer.ptSchedule,
+          classSms: trainer.classSms,
+          modifiedAt: trainer.modifiedAt
         };
       })
     });
@@ -107,6 +109,23 @@ class TrainerList extends React.Component {
             this.triggerModal('ptScheduleModal');
           }}>私教排期</Button>
       },
+      {
+        dataIndex: 'classSms',
+        title: '团课短信通知',
+        key: 'classSms',
+        className: 'action',
+        render:  (_, trainer) =>
+          <Switch checkedChildren="开" unCheckedChildren="关" checked={trainer.classSms} onChange={async () => {
+            let dataSource = this.state.dataSource
+            dataSource[trainer.key].classSms = !trainer.classSms
+            await client.collaborator.update(trainer.id, {
+              classSms: trainer.classSms
+            }, trainer.modifiedAt);
+            this.setState({
+              dataSource
+            })
+          }} />
+      }
     ];
   }
 
@@ -164,11 +183,11 @@ class TrainerList extends React.Component {
             onComplete={
               (ptSchedule) => {
                 let dataSource = this.state.dataSource
-                let index = dataSource.findIndex((element)=>{
-                   return element.id == ptSchedule.trainerId
+                let index = dataSource.findIndex((element) => {
+                  return element.id == ptSchedule.trainerId
                 })
-                if(index = -1) {
-                    index = 0
+                if (index = -1) {
+                  index = 0
                 }
                 dataSource[index].ptSchedule = ptSchedule
                 this.setState({
