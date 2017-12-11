@@ -20,7 +20,7 @@ class Venue extends React.Component {
     }
   ]
 
-  ;
+    ;
   constructor(props) {
     super(props);
     this.state = {
@@ -53,7 +53,7 @@ class Venue extends React.Component {
   swtch() {
     const remindMember = this.state.venue.remindMember
     return <UIFramework.Row name='会籍到期短信提醒发送时间'>
-      <Switch checkedChildren="开" unCheckedChildren="关"  defaultChecked={remindMember.isRemind} onChange={this.showText.bind(this)} style={Venue.style[0]} />
+      <Switch checkedChildren="开" unCheckedChildren="关" defaultChecked={remindMember.isRemind} onChange={this.showText.bind(this)} style={Venue.style[0]} />
       {remindMember.isRemind ? [<span key='1' style={Venue.style[1]}>会籍到期前 </span>,
       <UIFramework.TextInput
         key='2'
@@ -111,13 +111,15 @@ class Venue extends React.Component {
     }
   }
   showText(event) {
-    let venue = this.state.venue
+    let venue = this.state
     venue.remindMember.isRemind = event;
     this.setState({
       venue
     })
   }
+ 
   render() {
+    const owner = this.state.owner
     return (
       <div className="settings-detail settings-venue">
         <UIFramework>
