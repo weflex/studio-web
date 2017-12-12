@@ -117,10 +117,11 @@ class TrainerList extends React.Component {
         render:  (_, trainer) =>
           <Switch checkedChildren="开" unCheckedChildren="关" checked={trainer.classSms} onChange={async () => {
             let dataSource = this.state.dataSource
-            dataSource[trainer.key].classSms = !trainer.classSms
-            await client.collaborator.update(trainer.id, {
+           const result = await client.collaborator.update(trainer.id, {
               classSms: trainer.classSms
             }, trainer.modifiedAt);
+            dataSource[trainer.key].classSms = !trainer.classSms
+            dataSource[trainer.key].modifiedAt = result.modifiedAt
             this.setState({
               dataSource
             })
