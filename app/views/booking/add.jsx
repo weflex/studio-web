@@ -4,12 +4,14 @@ import _ from 'lodash';
 import moment from 'moment';
 import hourminute from '@weflex/hourminute';
 import React from 'react';
+import './add.css';
 import UIFramework from '@weflex/weflex-ui';
-import {Tabs, DatePicker, TimePicker} from 'antd';
+import { Tabs, DatePicker, TimePicker, Select } from 'antd';
 import { client } from '../../api';
 import { getFormatTime } from '../calendar/util.js';
 const TabPane = Tabs.TabPane;
-import {format} from 'date-fns';
+import { format } from 'date-fns';
+const { Option, OptGroup } = Select;
 
 export default class extends React.Component {
   constructor(props) {
@@ -76,7 +78,7 @@ export default class extends React.Component {
     }).filter((template) => {
       return template.classes.length > 0;
     });
-    this.setState({templates, trainers});
+    this.setState({ templates, trainers });
   }
   async onPhoneInputChange(event) {
     const phone = event.target.value;
@@ -93,7 +95,7 @@ export default class extends React.Component {
         include: ['avatar']
       });
       if (members.length === 0) {
-        this.setState({isUserNotFound: true});
+        this.setState({ isUserNotFound: true });
       } else {
         // find a user
         const member = members[0];
@@ -101,15 +103,13 @@ export default class extends React.Component {
         let memberships;
         try {
           const now = new Date();
-          memberships = ( await client.membership.list({
+          memberships = (await client.membership.list({
             where: {
               'memberId': member.id,
-              'startsAt': {lte: now},
-              'expiresAt': {gte: now},
             },
             include: 'package'
-          }) ).filter(item =>
-            item.accessType === 'unlimited' || (item.accessType === 'multiple' && item.available > 0) );
+          })).filter(item =>
+            item.accessType === 'unlimited' || (item.accessType === 'multiple' && item.available > 0));
         } catch (error) {
           console.error(error);
           memberships = [];
@@ -134,11 +134,11 @@ export default class extends React.Component {
       id: event.target.value
     }).classes;
     classes = _.sortBy(classes, [
-      (item)=>item['startsAt']
+      (item) => item['startsAt']
     ]);
-    this.setState({classes});
+    this.setState({ classes });
   }
-   onClassChange(event) {
+  onClassChange(event) {
     let aClass = _.find(this.state.classes, {
       id: event.target.value
     });
@@ -211,7 +211,7 @@ export default class extends React.Component {
               circle={true}
               src={member.avatar}
               size={20}
-              style={{marginRight: 10}} />
+              style={{ marginRight: 10 }} />
           </UIFramework.Cell>
           <UIFramework.Cell flex={0.8}>
             <UIFramework.Text text={member.nickname} />
@@ -228,8 +228,8 @@ export default class extends React.Component {
     return view;
   }
   renderClassPicker() {
-    let templateOptions = [{text: '未选择'}];
-    let classOptions = [{text: '未选择'}];
+    let templateOptions = [{ text: '未选择' }];
+    let classOptions = [{ text: '未选择' }];
     if (this.state.templates.length > 0) {
       templateOptions = this.state.templates.map((item) => {
         return {
@@ -247,7 +247,7 @@ export default class extends React.Component {
       });
     }
     return [
-      <UIFramework.Select 
+      <UIFramework.Select
         flex={0.6}
         key="template"
         bindStateCtx={this}
@@ -266,8 +266,10 @@ export default class extends React.Component {
     ];
   }
   renderMemberships() {
-    let membershipOptions = [{text: '未选择'}];
+    let membershipOptions = [{ text: '未选择' }];
     let paymentOptionIds = this.state.paymentOptionIds;
+    let available = [], unavailable = [], expires = [], Inoperative = []
+    const now = new Date()
     if ('PrivateTraining' === this.state.activeTab) {
       const trainer = this.state.trainers.filter((trainer) => {
         return trainer.id === this.state.trainerId
@@ -280,24 +282,44 @@ export default class extends React.Component {
     }
     if (this.state.memberships.length > 0) {
       membershipOptions = this.state.memberships.map((item) => {
-        const disabled = paymentOptionIds.indexOf('*') > -1 ?
-                         false :
-                         paymentOptionIds.indexOf(item.packageId) === -1;
-        return {
-          text: item.name,
-          value: item.id,
-          disabled,
-        };
+       if (moment(item.expiresAt).isBefore(moment(now))) {
+          expires.push(
+            <Option value={item.id} disabled >{item.name}</Option>
+          )
+        } else if (moment(item.startsAt).isAfter(moment(now))) {
+          Inoperative.push(
+            <Option value={item.id} disabled style={{color:'#80C7E8'}}>{item.name}</Option>
+          )
+        } else  if (paymentOptionIds.indexOf('*') > -1) {
+          available.push(
+            <Option value={item.id} style={{color:'#6ED4A4'}}>{item.name}</Option>
+          )
+        } else if (paymentOptionIds.indexOf(item.packageId) > -1) {
+          available.push(
+            <Option value={item.id} style={{color:'#6ED4A4'}}>{item.name}</Option>
+          )
+        } else {
+          unavailable.push(
+            <Option value={item.id} disabled style={{color:'#FF8AC2'}}>{item.name}</Option>
+          )
+        }
       });
     }
-    return (
-      <UIFramework.Select
-        flex={1}
-        bindStateCtx={this}
-        bindStateName="membershipId"
-        options={membershipOptions}
-      />
-    );
+
+    return [
+      <OptGroup label="可使用 （以下会卡可以适用于此课程或者该私教）" >
+        {available}
+      </OptGroup>,
+      <OptGroup label="不匹配 （以下会卡无法适用于此课程或者该私教）" >
+        {unavailable}
+      </OptGroup>,
+      <OptGroup label="未生效 （以下会卡生效时间未到）">
+        {Inoperative}
+      </OptGroup>,
+      <OptGroup label="已过期 （以下会卡已经失效）">
+        {expires}
+      </OptGroup>,
+    ]
   }
 
   get submitDisabled() {
@@ -313,10 +335,19 @@ export default class extends React.Component {
         this.state.membershipId &&
         this.state.trainerId &&
         this.state.hour &&
-        this.state.minute == 0 || this.state.minute);
+        this.state.minute == 0 || this.state.minute &&
+        this.state.membershipId
+      );
     }
   }
-  
+
+  handleChange (value){
+    if(value){
+      this.setState({
+        membershipId:value
+      })
+    } 
+  }
   render() {
     const trainerOptions = this.state.trainers.map((trainer) => {
       return {
@@ -326,10 +357,10 @@ export default class extends React.Component {
     });
     return (
       <Tabs defaultActiveKey='1'
-            onChange={(key) => {
-              const activeTab = ('2' === key) ? 'PrivateTraining' : 'GroupTraining';
-              this.setState({activeTab});
-            }}>
+        onChange={(key) => {
+          const activeTab = ('2' === key) ? 'PrivateTraining' : 'GroupTraining';
+          this.setState({ activeTab });
+        }}>
         <TabPane tab='团课' key='1'>
           <UIFramework className="order-add">
             <UIFramework.Row name="手机号码" hint="预定课程用户的手机号码">
@@ -341,12 +372,14 @@ export default class extends React.Component {
             {
               this.state.isSpotsAvailable ? '' : (
                 <UIFramework.Row>
-                  <span style={{color: 'red'}}>此课程课位已满,无法创建新订单</span>
+                  <span style={{ color: 'red' }}>此课程课位已满,无法创建新订单</span>
                 </UIFramework.Row>
               )
             }
             <UIFramework.Row name="会卡" hint="用户需要会卡才能创建订单">
-              {this.renderMemberships()}
+              <Select placeholder="未选择" style={{ width: 475 }} onChange={this.handleChange.bind(this)}  >
+                {this.renderMemberships()}
+              </Select>
             </UIFramework.Row>
             <UIFramework.Row>
               <UIFramework.Button text="创建订单" onClick={this.onSubmit.bind(this)} disabled={this.submitDisabled} />
@@ -363,14 +396,14 @@ export default class extends React.Component {
                 bindStateCtx={this}
                 bindStateName='trainerId'
                 options={trainerOptions}
-                flex={1}/>
+                flex={1} />
             </UIFramework.Row>
             <UIFramework.Row name='课程时间' hint='课程开始时间'>
               <DatePicker
                 onChange={(date) => {
-                  this.setState({date: date.toDate()});
+                  this.setState({ date: date.toDate() });
                 }}
-                flex={0.5}/>
+                flex={0.5} />
               <TimePicker
                 onChange={(time) => {
                   this.setState({
@@ -379,10 +412,12 @@ export default class extends React.Component {
                   })
                 }}
                 format={'HH:mm'}
-                flex={0.5}/>
+                flex={0.5} />
             </UIFramework.Row>
             <UIFramework.Row name='支付会卡'>
-              {this.renderMemberships()}
+              <Select placeholder="未选择" style={{ width: 475 }} >
+                {this.renderMemberships()}
+              </Select>
             </UIFramework.Row>
             <UIFramework.Row>
               <UIFramework.Button text="创建订单" onClick={this.onSubmitPrivateTraining.bind(this)} disabled={this.submitDisabled} />

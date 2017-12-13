@@ -48,18 +48,13 @@ class AvatarUploader extends React.Component {
   render() {
     return (
       // <UIFramework.Image size={70} src={this.props.src} style={{marginRight: '10px'}} />
-      <
-      UIFramework.Upload token = { this.state.uptoken }
+      <UIFramework.Upload token = { this.state.uptoken }
       onSuccess = { this.onAvatarUploaded.bind(this) }
       onError = { this.onError } >
-      <
-      UIFramework.Cell >
-      <
-      UIFramework.Button > 上传头像 < /UIFramework.Button> <
-      UIFramework.Divider / >
-      <
-      /UIFramework.Cell> <
-      /UIFramework.Upload>
+      <UIFramework.Cell >
+      < UIFramework.Button > 上传头像 </UIFramework.Button>
+       < UIFramework.Divider / >
+      </UIFramework.Cell> </UIFramework.Upload>
     );
   }
 }
