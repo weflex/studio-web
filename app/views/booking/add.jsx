@@ -155,17 +155,20 @@ export default class extends React.Component {
     });
     try {
       // create an order
-      await client.middleware('/transaction/add-order', {
-        classId: this.state.classId,
-        userId: this.state.member.userId,
-        membershipId: this.state.membershipId,
-        memberId: this.state.member.id,
-      }, 'post');
+        await client.middleware('/transaction/add-order', {
+          classId: this.state.classId,
+          userId: this.state.member.userId,
+          membershipId: this.state.membershipId,
+          memberId: this.state.member.id,
+        }, 'post');
       if (typeof this.props.onComplete === 'function') {
         this.props.onComplete();
       }
-    } catch (err) {
-      alert(err.message);
+    } catch (error) {
+      UIFramework.Modal.error({
+        title: '创建订单失败',
+        content: error.message,
+      });
     }
   }
   async onSubmitPrivateTraining() {
@@ -186,7 +189,10 @@ export default class extends React.Component {
         this.props.onComplete();
       }
     } catch (error) {
-      console.error(error && error.message);
+      UIFramework.Modal.error({
+        title: '创建订单失败',
+        content: error.message ,
+      });
     }
   }
   renderUserSearch() {
@@ -279,10 +285,9 @@ export default class extends React.Component {
         paymentOptionIds = [];
       }
     }
-    console.log(this.state.memberships)
     if (this.state.memberships.length > 0) {
       membershipOptions = this.state.memberships.map((item) => {
-        if (moment(item.expiresAt).isBefore(moment(now))) {
+        if (moment(item.expiresAt).isBefore(moment(now)) || item.accessType == "multiple" && item.available == 0) {
           expires.push(
             <Option value={item.id} disabled >{item.name}</Option>
           )
@@ -290,17 +295,9 @@ export default class extends React.Component {
           Inoperative.push(
             <Option value={item.id} disabled style={{ color: '#80C7E8' }}>{item.name}</Option>
           )
-        } else if (paymentOptionIds.indexOf('*') > -1) {
+        } else if (paymentOptionIds.indexOf('*') > -1 || paymentOptionIds.indexOf(item.packageId) > -1) {
           available.push(
             <Option value={item.id} style={{ color: '#6ED4A4' }}>{item.name}</Option>
-          )
-        } else if (paymentOptionIds.indexOf(item.packageId) > -1) {
-          available.push(
-            <Option value={item.id} style={{ color: '#6ED4A4' }}>{item.name}</Option>
-          )
-        } else if (item.accessType == "multiple" && item.available == 0) {
-          expires.push(
-            <Option value={item.id} disabled >{item.name}</Option>
           )
         } else {
           unavailable.push(
@@ -419,7 +416,7 @@ export default class extends React.Component {
                 flex={0.5} />
             </UIFramework.Row>
             <UIFramework.Row name='支付会卡'>
-              <Select placeholder="未选择" style={{ width: 475 }} >
+              <Select placeholder="未选择" style={{ width: 475 }} onChange={this.handleChange.bind(this)}>
                 {this.renderMemberships()}
               </Select>
             </UIFramework.Row>
