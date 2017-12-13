@@ -108,8 +108,7 @@ export default class extends React.Component {
               'memberId': member.id,
             },
             include: 'package'
-          })).filter(item =>
-            item.accessType === 'unlimited' || (item.accessType === 'multiple' && item.available > 0));
+          }))
         } catch (error) {
           console.error(error);
           memberships = [];
@@ -280,27 +279,32 @@ export default class extends React.Component {
         paymentOptionIds = [];
       }
     }
+    console.log(this.state.memberships)
     if (this.state.memberships.length > 0) {
       membershipOptions = this.state.memberships.map((item) => {
-       if (moment(item.expiresAt).isBefore(moment(now))) {
+        if (moment(item.expiresAt).isBefore(moment(now))) {
           expires.push(
             <Option value={item.id} disabled >{item.name}</Option>
           )
         } else if (moment(item.startsAt).isAfter(moment(now))) {
           Inoperative.push(
-            <Option value={item.id} disabled style={{color:'#80C7E8'}}>{item.name}</Option>
+            <Option value={item.id} disabled style={{ color: '#80C7E8' }}>{item.name}</Option>
           )
-        } else  if (paymentOptionIds.indexOf('*') > -1) {
+        } else if (paymentOptionIds.indexOf('*') > -1) {
           available.push(
-            <Option value={item.id} style={{color:'#6ED4A4'}}>{item.name}</Option>
+            <Option value={item.id} style={{ color: '#6ED4A4' }}>{item.name}</Option>
           )
         } else if (paymentOptionIds.indexOf(item.packageId) > -1) {
           available.push(
-            <Option value={item.id} style={{color:'#6ED4A4'}}>{item.name}</Option>
+            <Option value={item.id} style={{ color: '#6ED4A4' }}>{item.name}</Option>
+          )
+        } else if (item.accessType == "multiple" && item.available == 0) {
+          expires.push(
+            <Option value={item.id} disabled >{item.name}</Option>
           )
         } else {
           unavailable.push(
-            <Option value={item.id} disabled style={{color:'#FF8AC2'}}>{item.name}</Option>
+            <Option value={item.id} disabled style={{ color: '#FF8AC2' }}>{item.name}</Option>
           )
         }
       });
@@ -341,12 +345,12 @@ export default class extends React.Component {
     }
   }
 
-  handleChange (value){
-    if(value){
+  handleChange(value) {
+    if (value) {
       this.setState({
-        membershipId:value
+        membershipId: value
       })
-    } 
+    }
   }
   render() {
     const trainerOptions = this.state.trainers.map((trainer) => {
