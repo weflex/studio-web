@@ -10,7 +10,7 @@ import { Tabs, DatePicker, TimePicker, Select } from 'antd';
 import { client } from '../../api';
 import { getFormatTime } from '../calendar/util.js';
 const TabPane = Tabs.TabPane;
-import { format } from 'date-fns';
+import { format ,subMonths} from 'date-fns';
 const { Option, OptGroup } = Select;
 
 export default class extends React.Component {
@@ -63,6 +63,9 @@ export default class extends React.Component {
           relation: 'classes',
           scope: {
             where: {
+              startsAt:{
+                gte: subMonths(new Date,1)
+              },
               trashedAt: {
                 exists: false
               }
@@ -70,12 +73,7 @@ export default class extends React.Component {
           }
         }
       ]
-    })).map((template) => {
-      template.classes = template.classes.filter((item) => {
-        return moment(item.date).isAfter(today);
-      });
-      return template;
-    }).filter((template) => {
+    })).filter((template) => {
       return template.classes.length > 0;
     });
     this.setState({ templates, trainers });
