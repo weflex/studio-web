@@ -175,12 +175,9 @@ class Calendar extends React.Component {
                   className="cards">
                   {
                     cardsInfo.map(
-                      (card, index) => {
-                        if (!card.trainer || Object.keys(card.trainer).length == 0) {
-                          // color = "#FF8AC2"
-                        }
-                     return   <ClassCard key={index}
-                          style={{zIndex}}
+                      (card, index) =>
+                        <ClassCard key={index}
+                          style={{ zIndex }}
                           cardInfo={card}
                           total={total}
                           moveDisabled={true}
@@ -194,7 +191,7 @@ class Calendar extends React.Component {
                           }}
                           onHide={ctx.deleteClass}
                           onPanEnd={ctx.createClass} />
-                        }
+
                     )
                   }
                 </div>
