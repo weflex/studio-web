@@ -75,18 +75,19 @@ class NewClassTemplate extends React.Component {
     });
     const members = await client.collaborator.list({
       where: {
-        or: [
-          {
-            orgId: venue.orgId,
-          },
-          {
-            venueId: venue.id,
-          },
-        ],
+        venueId: venue.id,
+        trashedAt:{
+          exists:false
+        }
       },
       include: ['roles'],
     });
     const trainers = members.filter((member) => {
+      if(this.state.data.trainerId == member.id ){
+        this.setState({
+          defaultTrainer:true
+        })
+     }
       return member.roles.filter((role) => {
         return role.name === 'trainer';
       });
@@ -124,17 +125,18 @@ class NewClassTemplate extends React.Component {
     if(!data.spot || data.spot <= 0) {
       errorMessages.push('`课位`');
     }
+    if(!data.trainer || Object.keys(data.trainer).length == 0){
+      errorMessages.push('`请选择教练`')
+    }
     if(errorMessages.length > 0) {
       return UIFramework.Message.error('请正确输入 ' + errorMessages.join('和') + '后确认保存。');
     }
-
+    
     const newData = Object.assign({}, this.state.data, {
       template: this.template,
     });
-
     newData.from = getTime(newData.from);
     newData.to = getTime(newData.to);
-
     if (this.props.ctx) {
       this.props.ctx.createClass(newData);
     } else {
@@ -203,16 +205,25 @@ class NewClassTemplate extends React.Component {
             />
           </UIFramework.Row>
           <UIFramework.Row name="教练" hint="选择上课的教练">
-            <UIFramework.Select
-              flex={1}
-              bindStateCtx={this}
-              bindStateName="data.trainerId"
-              value={this.state.data.trainerId}
-              options={this.state.trainers.map(item => {
-                const name = item.fullname.first + ' ' + item.fullname.last;
-                return {text: name, value: item.id};
-              })}
-            />
+            <Select
+            style={{ width: '100%' }}
+            defaultValue = {this.state.defaultTrainer ? this.state.data.trainerId :'请选择教练'}
+            placeholder="选择教练"
+            onChange={async (value) => {
+              let data = this.state.data
+              const result = await client.collaborator.get(value)
+              data.trainerId = value
+              data.trainer = result
+              this.setState({
+                data
+              })
+            }}>
+            {
+              this.state.trainers.map((trainer, key) => {
+                return <Option value={trainer.id} key={key}>{trainer.fullname.first} {trainer.fullname.last}</Option>
+              })
+            }
+          </Select>
           </UIFramework.Row>
           <UIFramework.Row name="课位" hint="请输入上课预留的课位" required={true}>
             <UIFramework.TextInput
@@ -264,7 +275,8 @@ class NewClassTemplate extends React.Component {
             </div>
           </UIFramework.Row>
           <UIFramework.Row name="可用会卡" hint="可以用于预约该课程的会卡种类">
-            <Select multiple
+            <Select 
+                    mode = 'multiple'
                     style={{width:'100%'}}
                     value={this.state.data.paymentOptionIds}
                     onSelect={(value) => {

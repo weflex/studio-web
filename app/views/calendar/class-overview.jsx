@@ -172,7 +172,16 @@ class ClassOverview extends React.Component {
   render() {
     const { template, date, from, to, trainer, orders } = this.props.data;
     const duration = `${moment(date).format('ddd')} ${getFormatTime(from)} - ${getFormatTime(to)}`
-    const trainerName = `${trainer.fullname.first} ${trainer.fullname.last}`;
+    let trainerName , style
+    if(trainer){
+      trainerName = `${trainer.fullname.first} ${trainer.fullname.last}`;
+      style = {}
+    }else{
+      trainerName =  "暂无教练，请设置"
+      style = {
+        color: "#FF8AC2"
+      }
+    }
     return (
       <div className="class-overview">
         <p className="class-title">{template.name}</p>
@@ -180,7 +189,7 @@ class ClassOverview extends React.Component {
           <span>{moment(date).format('MM[月]DD[日]')}</span>
           <span>{duration}</span>
         </div>
-        <div className="trainer">{trainerName}</div>
+        <div className="trainer" style={style}>{trainerName}</div>
         <div className="btn-modify-class"
           style={{display: this.props.data.isPT ? 'none' : 'block'}}
           onClick={() => this.setState({modalVisibled: true})}>修改课程</div>

@@ -85,13 +85,23 @@ class WeflexCalendar extends React.Component {
     ];
     const getData = async () => {
       return await client.classTemplate.list({
-        include: 'trainer',
+        include: [
+          {
+            relation: 'trainer',
+            scope: {
+              where: {
+                trashedAt: {
+                  exists: false
+                }
+              }
+            }
+          }
+        ],
         where: {
           venueId: (await client.user.getVenueById()).id
         }
       });
     };
-
     return (
       <ResourcePanel component={Template} 
         context={{
@@ -161,7 +171,16 @@ class WeflexCalendar extends React.Component {
         venueId: venue.id
       },
       include: [
-        'trainer',
+        {
+          relation: 'trainer',
+          scope: {
+            where: {
+              trashedAt: {
+                exists: false
+              }
+            }
+          }
+        },
         'template',
         {
           'orders': ['user']
@@ -262,7 +281,6 @@ class WeflexCalendar extends React.Component {
     const schedule = this.state.schedule;
     schedule.addItem(dupClass);
     let results;
-    this.setState({schedule}, async () => {
       try {
         results = await client.class.create(newClass);
       } catch (err) {
@@ -274,7 +292,6 @@ class WeflexCalendar extends React.Component {
         schedule.addItem(newClass);
         this.setState({schedule});
       }
-    });
   }
 }
 
