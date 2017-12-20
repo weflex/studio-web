@@ -328,7 +328,8 @@ class ClassCard extends React.Component {
       from,
       to, 
       template, 
-      orders 
+      orders,
+      trainer 
     } = this.props.cardInfo;
     const calendar = this.props.calendar;
     const duration = '' + moment(this.state.date).format('ddd') +
@@ -339,6 +340,9 @@ class ClassCard extends React.Component {
     let className = 'class-card';
     let style = Object.assign({}, 
       this.state.style, this.props.style);
+    if (!trainer || Object.keys(trainer).length == 0) {
+      style = Object.assign(style,{backgroundColor: "#FF8AC2"})
+    }
 
     if (this.props.className) {
       className += ' ' + this.props.className;
@@ -385,7 +389,6 @@ class ClassCard extends React.Component {
         </PopUp>
       );
     }
-
     return (
       <div
         className={className}

@@ -9,7 +9,7 @@ import { getFormatTime } from './util';
 import { client } from '../../api';
 moment.locale('zh-cn');
 
-function _orderStatus (order) {
+function _orderStatus(order) {
   let status = 'paid';
   if (order.checkedInAt) {
     status = 'checkin';
@@ -25,13 +25,13 @@ class OrderLine extends React.Component {
     super(props);
     const order = props.data;
     const status = _orderStatus(order);
-    this.state = {status};
+    this.state = { status };
   }
 
   async componentWillReceiveProps(nextProps) {
     const order = nextProps.data;
     const status = _orderStatus(order);
-    const {userId, venueId} = nextProps.data;
+    const { userId, venueId } = nextProps.data;
     const members = await client.member.list({
       where: {
         userId,
@@ -46,7 +46,7 @@ class OrderLine extends React.Component {
   }
 
   async componentDidMount() {
-    const {userId, venueId} = this.props.data;
+    const { userId, venueId } = this.props.data;
     const members = await client.member.list({
       where: {
         userId,
@@ -54,7 +54,7 @@ class OrderLine extends React.Component {
       },
     });
     const nickname = members[0] && members[0].nickname || this.props.data.user.nickname;
-    this.setState({nickname: nickname});
+    this.setState({ nickname: nickname });
   }
 
   render() {
@@ -65,8 +65,8 @@ class OrderLine extends React.Component {
       this.state.status !== 'cancel') {
       userStatus = (
         <div className="order-info-user-status">
-          <button onClick={() => {ctx.checkInOrder(order)}}>签到</button>
-          <button onClick={() => {ctx.cancelOrder(order)}}>取消</button>
+          <button onClick={() => { ctx.checkInOrder(order) }}>签到</button>
+          <button onClick={() => { ctx.cancelOrder(order) }}>取消</button>
         </div>
       );
     } else {
@@ -135,9 +135,9 @@ class ClassOverview extends React.Component {
 
   // MARK: - ClassOrderContext methods
 
-  async cancelOrder (order) {
+  async cancelOrder(order) {
     const id = order.id;
-    const {ctx, data} = this.props;
+    const { ctx, data } = this.props;
     const orders = data.orders;
     orders.filter((order) => {
       return order.id === id;
@@ -151,9 +151,9 @@ class ClassOverview extends React.Component {
     UIFramework.Message.success('取消成功');
   }
 
-  async checkInOrder (order) {
+  async checkInOrder(order) {
     const id = order.id;
-    const {ctx, data} = this.props;
+    const { ctx, data } = this.props;
     const orders = data.orders;
     orders.filter((order) => {
       return order.id === id;
@@ -172,7 +172,16 @@ class ClassOverview extends React.Component {
   render() {
     const { template, date, from, to, trainer, orders } = this.props.data;
     const duration = `${moment(date).format('ddd')} ${getFormatTime(from)} - ${getFormatTime(to)}`
-    const trainerName = `${trainer.fullname.first} ${trainer.fullname.last}`;
+    let trainerName, style
+    if (trainer) {
+      trainerName = `${trainer.fullname.first} ${trainer.fullname.last}`;
+      style = {}
+    } else {
+      trainerName = "暂无教练，请设置"
+      style = {
+        color: "#FF8AC2"
+      }
+    }
     return (
       <div className="class-overview">
         <p className="class-title">{template.name}</p>
@@ -180,20 +189,20 @@ class ClassOverview extends React.Component {
           <span>{moment(date).format('MM[月]DD[日]')}</span>
           <span>{duration}</span>
         </div>
-        <div className="trainer">{trainerName}</div>
+        <div className="trainer" style={style}>{trainerName}</div>
         <div className="btn-modify-class"
-          style={{display: this.props.data.isPT ? 'none' : 'block'}}
-          onClick={() => this.setState({modalVisibled: true})}>修改课程</div>
+          style={{ display: this.props.data.isPT ? 'none' : 'block' }}
+          onClick={() => this.setState({ modalVisibled: true })}>修改课程</div>
         <OrdersInfo data={orders} ctx={this} />
         <UIFramework.Modal
           visible={this.state.modalVisibled}
           title="修改课程"
           footer=""
-          onCancel={() => this.setState({modalVisibled: false})}>
-          <NewClassTemplate 
-            data={this.props.data} 
+          onCancel={() => this.setState({ modalVisibled: false })}>
+          <NewClassTemplate
+            data={this.props.data}
             onCreateClass={(newClass) => {
-              this.setState({modalVisibled: false});
+              this.setState({ modalVisibled: false });
               this.props.onCreateClass(newClass);
             }}
           />

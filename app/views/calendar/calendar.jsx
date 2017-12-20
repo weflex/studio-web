@@ -30,9 +30,9 @@ class TableHeader extends React.Component {
       <ul className="table-header" ref="table-header">
         <li key="header-index" className="header-index"></li>
         {
-          this.props.indexes.map(({raw, content}, i) => {
+          this.props.indexes.map(({ raw, content }, i) => {
             return (
-                <li key={i} style={style} ref={(c)=> {this.dayList[i] = raw}}>
+              <li key={i} style={style} ref={(c) => { this.dayList[i] = raw }}>
                 {content}
               </li>
             );
@@ -50,8 +50,8 @@ class TableHeader extends React.Component {
 class Calendar extends React.Component {
   constructor(props) {
     super(props);
-    const viewDate     = moment();
-    const currentDate  = moment();
+    const viewDate = moment();
+    const currentDate = moment();
     const weekSchedule = this.props.schedule;
     const startOfWeek = moment(this._viewDate).startOf('week');
     const week = range(0, 7).map((n) => moment(startOfWeek).add(n, 'days'));
@@ -72,7 +72,7 @@ class Calendar extends React.Component {
       weekSchedule,
       indexes,
       tableHeight: 0,
-      scrollTop : 0,
+      scrollTop: 0,
       createCardStyle: {
         top: 0,
         left: 0,
@@ -99,7 +99,7 @@ class Calendar extends React.Component {
       <ul key="hour-axis" className="hour-axis" style={style.ul}>
         {
           range(1, DAYHOUR).map((hour, index) => {
-            const formatedSting = getFormatTime({hour, minute: 0});
+            const formatedSting = getFormatTime({ hour, minute: 0 });
             return <li key={index} style={style.li}>{formatedSting}</li>
           })
         }
@@ -108,9 +108,9 @@ class Calendar extends React.Component {
   }
 
   setViewDate(viewDate) {
-    this.setState({viewDate}, async () => {
+    this.setState({ viewDate }, async () => {
       const startsAt = moment(viewDate).startOf('week');
-      const endsAt   = moment(viewDate).endOf('week');
+      const endsAt = moment(viewDate).endOf('week');
       this.props.ctx.listClasses(startsAt, endsAt);
     });
   }
@@ -128,7 +128,7 @@ class Calendar extends React.Component {
         height: this.props.cellHeight,
       }
     };
-    const {ctx} = this.props;
+    const { ctx } = this.props;
     const { weekSchedule, viewDate } = this.state;
     let day;
     let schedule;
@@ -157,18 +157,19 @@ class Calendar extends React.Component {
           range(0, DAYHOUR).map((hourIndex) => {
             const hour = moment(day).add(hourIndex, 'hours');
             const cardsInfo = schedule.filterByHour(hour).get();
-            const zIndex = hourIndex + 10;
+            const zIndex = hourIndex + 10
+            // let color
             const total = cardsInfo.length;
             return (
               <li style={style.li}
-                  key={hourIndex}
-                  ref={
-                    (c) => {
-                      if (c) {
-                        this.rowList[hourIndex] = c.getBoundingClientRect();
-                      }
+                key={hourIndex}
+                ref={
+                  (c) => {
+                    if (c) {
+                      this.rowList[hourIndex] = c.getBoundingClientRect();
                     }
-                  }>
+                  }
+                }>
                 <div
                   ref="cards"
                   className="cards">
@@ -176,20 +177,21 @@ class Calendar extends React.Component {
                     cardsInfo.map(
                       (card, index) =>
                         <ClassCard key={index}
-                                   style={{zIndex}}
-                                   cardInfo={card}
-                                   total={total}
-                                   moveDisabled={true}
-                                   calendar={this}
-                                   ctx={ctx}
-                                   popupEnabled={true}
-                                   popupTemplate={ClassOverview}
-                                   popupProps={{
-                                     onCreateClass: (classUpdates) => ctx.updateClass(classUpdates),
-                                     ctx: ctx
-                                   }}
-                                   onHide={ctx.deleteClass}
-                                   onPanEnd={ctx.createClass}/>
+                          style={{ zIndex }}
+                          cardInfo={card}
+                          total={total}
+                          moveDisabled={true}
+                          calendar={this}
+                          ctx={ctx}
+                          popupEnabled={true}
+                          popupTemplate={ClassOverview}
+                          popupProps={{
+                            onCreateClass: (classUpdates) => ctx.updateClass(classUpdates),
+                            ctx: ctx
+                          }}
+                          onHide={ctx.deleteClass}
+                          onPanEnd={ctx.createClass} />
+
                     )
                   }
                 </div>
@@ -214,13 +216,13 @@ class Calendar extends React.Component {
     let baselineLeft = clientX;
 
     this.rowList.forEach((row, index) => {
-      const top    = row.top - this.table.top + this.state.scrollTop;
+      const top = row.top - this.table.top + this.state.scrollTop;
       const bottom = row.bottom - this.table.top + this.state.scrollTop;
       if (top <= baselineTop && baselineTop <= bottom) {
         const offsetTop = baselineTop - top;
         const minute = Math.floor((offsetTop) / row.height * 60);
         const hour = index;
-        this.baselineClock = new HourMinute({hour: hour, minute: minute});
+        this.baselineClock = new HourMinute({ hour: hour, minute: minute });
       }
     });
     let colIndex = -1;
@@ -316,9 +318,9 @@ class Calendar extends React.Component {
 
   // MARK: - React Component lifecycle methods
 
-  async componentWillMount () {
+  async componentWillMount() {
     const startsAt = moment(this.state.viewDate).startOf('week');
-    const endsAt   = moment(this.state.viewDate).endOf('week');
+    const endsAt = moment(this.state.viewDate).endOf('week');
     await this.props.ctx.listClasses(startsAt, endsAt);
   }
 
@@ -352,10 +354,10 @@ class Calendar extends React.Component {
         <TableHeader viewDate={this.state.viewDate} indexes={this.state.indexes} ref="tableHeader" />
         <div className="scroll-div"></div>
         <div ref="table"
-             className="schedule-table"
-             style={{height: this.state.tableHeight}}
-             onMouseMove={this.setBaseline.bind(this)}
-             onScroll={this.handleScroll.bind(this)} >
+          className="schedule-table"
+          style={{ height: this.state.tableHeight }}
+          onMouseMove={this.setBaseline.bind(this)}
+          onScroll={this.handleScroll.bind(this)} >
           {
             [
               this.getHourAxis(),
@@ -364,8 +366,8 @@ class Calendar extends React.Component {
           }
           {currline}
           <div ref="createCard"
-               className="create-card create-card-shown"
-               style={this.state.createCardStyle}>
+            className="create-card create-card-shown"
+            style={this.state.createCardStyle}>
           </div>
         </div>
       </div>

@@ -27,15 +27,22 @@ class List extends React.Component {
       .bind(this.refs.masterDetail);
   }
   get config() {
+    let fullname, style
     return {
       title: 'name',
       section: (item) => {
-        if (!item.trainer) {
-          return null;
+        if (item.trainer) {
+          fullname = item.trainer.fullname.first + " " + item.trainer.fullname.last
+          style = {}
+        } else {
+          fullname = "暂无教练，请设置"
+          style = {
+            color: "#FF8AC2"
+          }
         }
         return [
           <div key={0}>{item.duration}分钟</div>,
-          <div key={1}>{item.trainer.fullname.first} {item.trainer.fullname.last}</div>
+          <div key={1} style={style}>{fullname}</div>
         ];
       },
       detail: {
@@ -43,12 +50,12 @@ class List extends React.Component {
       },
       iterated: true,
       sortKeys: [
-        {name: '标题', key: 'name'},
-        {name: '教练', key: 'trainer.fullname.first'},
-        {name: '价格', key: 'price'},
+        { name: '标题', key: 'name' },
+        { name: '教练', key: 'trainer.fullname.first' },
+        { name: '价格', key: 'price' },
       ],
       onClickAdd: () => {
-        mixpanel.track( "课程模板：新的课程模版按钮" );
+        mixpanel.track("课程模板：新的课程模版按钮");
         this.props.app.router.navigate('/class/template/add');
       },
       addButtonText: '新的课程模版',
@@ -61,10 +68,19 @@ class List extends React.Component {
         venueId: venue.id
       },
       include: [
-        'venue', 
-        'trainer', 
-        'cover', 
-        'photos'
+        'venue',
+        'cover',
+        'photos',
+        {
+          relation: 'trainer',
+          scope: {
+            where: {
+              trashedAt: {
+                exists: false
+              }
+            }
+          }
+        }
       ]
     });
   }
@@ -94,14 +110,14 @@ class List extends React.Component {
   }
   render() {
     return (
-      <MasterDetail 
+      <MasterDetail
         ref="masterDetail"
         pathname="class/template"
         className="class-template"
         masterSource={this.source}
         masterConfig={this.config}
         refDetail={this.onRefDetail.bind(this)}
-        detailProps={{app: this.props.app}}
+        detailProps={{ app: this.props.app }}
       />
     );
   }

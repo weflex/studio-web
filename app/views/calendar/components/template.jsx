@@ -58,7 +58,7 @@ export default class Template extends React.Component {
   /**
    * @getter classConfirmation
    */
-  get classConfirmation () {
+  get classConfirmation() {
     if (this.state.data) {
       let onCreateClass = (data) => {
         this.setState({
@@ -68,7 +68,7 @@ export default class Template extends React.Component {
       };
       return (
         <NewClassTemplate
-          data={this.state.data} 
+          data={this.state.data}
           onCreateClass={onCreateClass}
         />
       );
@@ -114,14 +114,24 @@ export default class Template extends React.Component {
         width: '100%'
       };
     }
+    let fullname, style
+    if (template.trainer) {
+      fullname = template.trainer.fullname.first + " " + template.trainer.fullname.last
+      style = {
+        color: "#696969"
+      }
+    } else {
+      fullname = "暂无教练，请设置"
+      style = {
+        color: "#FF8AC2"
+      }
+    }
     return (
+
       <li className="resource-calendar-template">
         <div>{template.name}</div>
         <div>{template.duration}分钟</div>
-        <div>
-          {template.trainer.fullname.first} 
-          {template.trainer.fullname.last}
-        </div>
+        <div style={style}>{fullname}</div>
         <div className="resource-calendar-template-hint">
           <div className="icon-font icon-copy"></div>
           <div className="hint-text">拖动模版创建课程</div>
