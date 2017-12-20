@@ -28,7 +28,7 @@ class Venue extends React.Component {
         }
       ]
     });
-    const wechatUrl = 'http://booking.theweflex.com/venues/' + venue.id + '/classes?check-ins'
+    const wechatUrl = 'http://booking.theweflex.com/venues/' + venue.id + '/classes?checkIns=1'
     this.setState({
       wechatUrl,
       venue,
@@ -55,7 +55,11 @@ class Venue extends React.Component {
 
   onClick() {
     const canvas = document.querySelector('.Qrcode > canvas');
-    window.location.href =canvas.toDataURL()
+    let download = document.createElement('a');
+    let image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");   
+    download.href = image;
+    download.download = "场馆二维码.png";
+    download.click()
   }
 
   render() {
