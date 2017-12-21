@@ -10,9 +10,9 @@ function dir (subpath) {
 
 module.exports = {
   entry: {
-    'app': dir('app/index.jsx'),
-    'login/index': dir('app/login/index.jsx'),
-    'signup/index': dir('app/signup/index.jsx'),
+    'app': dir('src/index.jsx'),
+    //'login/index': dir('components/containers/Login/index.js'),
+    //'signup/index': dir('src/containers/Signup/index.jsx'),
   },
   output: {
     path: dir('dist'),
@@ -46,7 +46,7 @@ module.exports = {
         loader: 'file-loader',
         query: {
           name: 'images/[1]',
-          regExp: 'app\/(.*)'
+          regExp: 'src\/(.*)'
         }
       }
     ]
@@ -57,6 +57,7 @@ module.exports = {
     publicPath: '/',
     contentBase: 'assets',
     host: '0.0.0.0',
+    port: 9002,
     historyApiFallback: {
       rewrites: [
         {

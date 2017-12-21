@@ -1,0 +1,20 @@
+export default {
+  "studio_web_project_title": "Studio Web",
+  "studio_web_login_account_does_not_exist": "The account does not exist, please contact customer service staff",
+  "studio_web_login_account_or_password_wrong": "Account or password is wrong, please log in again",
+  "studio_web_login_failed": "Login error failed to login",
+  "studio_web_login_tab_smscode_title": "Login via SMS",
+  "studio_web_login_tab_smscode_error_login_failed_title": "Login failed",
+  "studio_web_login_tab_smscode_error_login_failed_content": "Please enter correct verify code",
+  "studio_web_login_tab_smscode_input_phone_placeholder": "Enter the 11 digit phone number",
+  "studio_web_login_tab_smscode_input_smscode_placeholder": "Enter confirmation code",
+  "studio_web_login_tab_smscode_input_button_get_verification_code": "Verify",
+  "studio_web_login_tab_smscode_message_wait": "Resend ",
+  "studio_web_login_tab_smscode_input_button_text": "Login",
+  "studio_web_login_tab_signup_message": "Do not have an account? Click",
+  "studio_web_login_tab_signup_link": "Sign up",
+
+  "studio_web_login_tab_userpass_title": "Username/Password",
+  "studio_web_login_tab_userpass_input_username_placeholder": "Enter your user name",
+  "studio_web_login_tab_userpass_input_password_placeholder": "Enter your password",
+}

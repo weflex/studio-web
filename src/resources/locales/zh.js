@@ -1,0 +1,20 @@
+export default {
+  "studio_web_project_title": "登陆WeFlex",
+  "studio_web_login_account_does_not_exist": "该账户不存在，请联系客服人员",
+  "studio_web_login_account_or_password_wrong": "账号或密码错误，请重新登录",
+  "studio_web_login_failed": "登录错误导致登录失败",
+  "studio_web_login_tab_smscode_title": "手机验证码登录",
+  "studio_web_login_tab_smscode_error_login_failed_title": "登录失败",
+  "studio_web_login_tab_smscode_error_login_failed_content": "请输入正确的验证码",
+  "studio_web_login_tab_smscode_input_phone_placeholder": "输入11位手机号",
+  "studio_web_login_tab_smscode_input_smscode_placeholder": "输入验证码",
+  "studio_web_login_tab_smscode_input_button_get_verification_code": "获取验证码",
+  "studio_web_login_tab_smscode_message_wait": "等待",
+  "studio_web_login_tab_smscode_input_button_text": "登录",
+  "studio_web_login_tab_signup_message": "还没有账号？点击",
+  "studio_web_login_tab_signup_link": "这里注册",
+
+  "studio_web_login_tab_userpass_title": "用户名密码登录",
+  "studio_web_login_tab_userpass_input_username_placeholder": "输入用户名",
+  "studio_web_login_tab_userpass_input_password_placeholder": "输入密码",
+}
