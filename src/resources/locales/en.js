@@ -11,10 +11,21 @@ export default {
   "studio_web_login_tab_smscode_input_button_get_verification_code": "Verify",
   "studio_web_login_tab_smscode_message_wait": "Resend ",
   "studio_web_login_tab_smscode_input_button_text": "Login",
-  "studio_web_login_tab_signup_message": "Do not have an account? Click",
+  "studio_web_login_tab_signup_message": "Do not have an account? Click here",
   "studio_web_login_tab_signup_link": "Sign up",
 
-  "studio_web_login_tab_userpass_title": "Username/Password",
+  "studio_web_login_tab_userpass_title": "Login with Username",
   "studio_web_login_tab_userpass_input_username_placeholder": "Enter your user name",
   "studio_web_login_tab_userpass_input_password_placeholder": "Enter your password",
+
+  "studio_web_signup_title": "Register with studio",
+  "studio_web_signup_studio_name": "Studio name",
+  "studio_web_signup_input_username_placeholder": "Enter username",
+  "studio_web_signup_input_phone_placeholder": "Enter phone number",
+  "studio_web_signup_input_smscode_request": "Verify",
+  "studio_web_signup_smscode_message_wait": "Resend ",
+  "studio_web_signup_input_smsmcode_verify_placeholder": "Enter confirmation code",
+  "studio_web_signup_button_submit": "Create Studio",
+  "studio_web_signup_login_message": "Already have an account? Click here",
+  "studio_web_signup_login_link": "Login",
 }

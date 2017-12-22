@@ -6,6 +6,7 @@ import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import ConnectedIntlProvider from './components/ConnectedIntlProvider';
 
 import LoginIndex from './containers/Login';
+import SignupIndex from './containers/Signup';
 //import Calendar from './components/views/calendar';
 
 const store = configureStore();
@@ -24,7 +25,8 @@ ReactDOM.render(
         <div>
           <Switch>
             <Route exact path="/login" component={LoginIndex} />
-            <Route exact path="/" component={LoginIndex} />
+            <Route exact path="/signup" component={SignupIndex} />
+            <Route path="/" component={LoginIndex} />
             <Redirect to="/"/>
           </Switch>
         </div>

@@ -33,8 +33,8 @@ class TabSMSCode extends React.Component {
   render() {
     const { intl } = this.props;
     const phone_placeholder = intl.formatMessage({id: "studio_web_login_tab_smscode_input_phone_placeholder"});
-    const smscode_placeholder = intl.formatMessage({id:'studio_web_login_tab_smscode_input_smscode_placeholder'})
-    const wait_message = intl.formatMessage({id:'studio_web_login_tab_smscode_message_wait'})
+    const smscode_placeholder = intl.formatMessage({id:'studio_web_login_tab_smscode_input_smscode_placeholder'});
+    const wait_message = intl.formatMessage({id:'studio_web_login_tab_smscode_message_wait'});
     return (
       <UIFramework>
         <UIFramework.Row>

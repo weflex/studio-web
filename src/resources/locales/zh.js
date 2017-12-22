@@ -17,4 +17,15 @@ export default {
   "studio_web_login_tab_userpass_title": "用户名密码登录",
   "studio_web_login_tab_userpass_input_username_placeholder": "输入用户名",
   "studio_web_login_tab_userpass_input_password_placeholder": "输入密码",
+
+  "studio_web_signup_title": "注册工作室",
+  "studio_web_signup_studio_name": "工作室名称",
+  "studio_web_signup_input_username_placeholder": "用户名",
+  "studio_web_signup_input_phone_placeholder": "输入手机号码",
+  "studio_web_signup_input_smscode_request": "获取验证码",
+  "studio_web_signup_smscode_message_wait": "等待",
+  "studio_web_signup_input_smsmcode_verify_placeholder": "输入验证码",
+  "studio_web_signup_button_submit": "创建工作室",
+  "studio_web_signup_login_message": "已有账号？点击这里",
+  "studio_web_signup_login_link": "登录",
 }
