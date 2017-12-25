@@ -28,7 +28,7 @@
     "moment": "^2.18.1",
     "object-assign": "4.0.1",
     "prop-types": "^15.5.10",
-    "qrcode.react": "0.5.2",
+    "qrcode.react": "^0.5.2",
     "qstringify": "1.4.2",
     "query-string": "^4.3.2",
     "randomatic": "1.1.5",

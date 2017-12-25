@@ -3,30 +3,35 @@
 import React from 'react';
 import UIFramework from '@weflex/weflex-ui';
 import { client } from '../../../api';
-
+import QRCode from 'qrcode.react';
+import { Button } from 'antd';
 class Venue extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      wechatUrl: '',
       venue: {},
       org: {},
       owner: {
         fullname: {}
-      }
+      },
+      size: 'large',
     };
   }
   async componentWillMount() {
     const venue = await client.user.getVenueById();
     const org = await client.org.get(venue.orgId, {
       include: [
-        'banner', 
+        'banner',
         {
           'members': ['roles']
         }
       ]
     });
+    const wechatUrl = 'http://booking.theweflex.com/venues/' + venue.id + '/classes?checkIns=1'
     this.setState({
-      venue, 
+      wechatUrl,
+      venue,
       org,
       owner: this.getOwner(org.members),
     });
@@ -47,16 +52,27 @@ class Venue extends React.Component {
     owner.display = owner.fullname.first + ' ' + owner.fullname.last;
     return owner;
   }
+
+  onClick() {
+    const canvas = document.querySelector('.Qrcode > canvas');
+    let download = document.createElement('a');
+    let image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");   
+    download.href = image;
+    download.download = "场馆二维码.png";
+    download.click()
+  }
+
   render() {
+    const size = this.state.size;
     return (
       <div className="settings-detail settings-basic">
         <UIFramework>
           <UIFramework.Row name="组织名称">
-            <UIFramework.TextInput 
+            <UIFramework.TextInput
               flex={1}
               bindStateCtx={this}
               bindStateName="org.name"
-              value={this.state.org.name} 
+              value={this.state.org.name}
             />
           </UIFramework.Row>
           <UIFramework.Row name="经理">
@@ -66,6 +82,12 @@ class Venue extends React.Component {
               disabled={true}
             />
           </UIFramework.Row>
+          <UIFramework.Row name="场馆二维码">
+            <div className="Qrcode">
+              <QRCode value={this.state.wechatUrl} />
+            </div>
+          </UIFramework.Row>
+          <Button icon="download" size={size} onClick={this.onClick}>下载二维码</Button>
         </UIFramework>
       </div>
     );
