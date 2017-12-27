@@ -111,7 +111,7 @@ class Venue extends React.Component {
     }
   }
   showText(event) {
-    let venue = this.state
+    let {venue} = this.state
     venue.remindMember.isRemind = event;
     this.setState({
       venue
