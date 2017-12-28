@@ -1,7 +1,8 @@
 import React from 'react';
-import { InputNumber, Checkbox, Button } from 'antd';
+import { Input, Checkbox, Button } from 'antd';
 import UIFramework from '@weflex/weflex-ui';
 import { client } from '../../../api';
+import _ from 'lodash';
 class Header extends React.Component {
   constructor(props) {
     super(props)
@@ -71,6 +72,7 @@ class Option extends React.Component {
       },
       form: {}
     }
+    this.form = this.form.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -89,15 +91,15 @@ class Option extends React.Component {
   }
 
   isUndefined(o) {
-    if (typeof o == 'undefined' || o == 'undefined') {
-      return true
-    } else if (typeof o == 'object') {
+    if (typeof o == 'object') {
       let arr = Object.keys(o)
       for (let i = 0; i < arr.length; i++) {
         if (this.isUndefined(o[arr[i]])) {
           return true
         }
       }
+    } else if (typeof o != 'boolean' && (typeof o == 'undefined' || o == '' || Number.isNaN(Number(o)))) {
+      return true
     }
     return false
   }
@@ -105,9 +107,10 @@ class Option extends React.Component {
   async onSave() {
     let { venue, form } = this.state
     if (this.isUndefined(form)) {
-      return UIFramework.Message.error('请填写完整');
+      return UIFramework.Message.error('填写错误，请检查后提交');
     }
-    const newVenue = Object.assign(venue, form)
+    let newVenue = {}
+    newVenue = _.merge(venue, form)
     try {
       await client.venue.upsert(newVenue);
     } catch (err) {
@@ -118,7 +121,6 @@ class Option extends React.Component {
     this.setState({
       isSet: false,
       config,
-      venue: newVenue
     })
   }
   onCancel() {
@@ -130,16 +132,25 @@ class Option extends React.Component {
       form: {}
     })
   }
-  setRemindMember(e) {
+
+  form(e) {
+    const { name, value, checked } = e.target
     let form = this.state.form
-    if (typeof e == 'number' || typeof e == 'undefined') {
-      const newForm = Object.assign(form, { remindMember: { isRemind: this.state.venue.remindMember.isRemind, days: e } })
-    } else if (typeof e == 'object') {
-      const newForm = Object.assign(form, { remindMember: { isRemind: e.target.checked, days: this.state.venue.remindMember.days } })
-    } else if (typeof e == 'undefined') {
-      console.log(this)
+    let remindMember = {}
+    if (name == 'isRemind') {
+      remindMember[name] = checked
+      form = Object.assign(form, { remindMember })
+    } else if (name == 'days') {
+      remindMember[name] = value
+      form = Object.assign(form, { remindMember })
+    } else {
+      form[name] = value
     }
+    this.setState({
+      form
+    })
   }
+
   setTips() {
     const { isSet } = this.state
     const venue = this.state.venue
@@ -157,22 +168,14 @@ class Option extends React.Component {
             <Checkbox defaultChecked={true} />
             当前场馆设置
             <span style={{ color: "#ff9d00" }}>最晚预约开课前</span>
-            <InputNumber min={0} defaultValue={venue.deadline} style={{ margin: "0 5px 0 5px" }} onChange={
-              (value) => {
-                let form = this.state.form
-                form.deadline = value
-                this.setState({
-                  form
-                })
-              }
-            } />
+            <Input min={0} defaultValue={venue.deadline} name='deadline' style={{ margin: "0 5px 0 5px", width: 50 }} onBlur={this.form} />
             小时内不能取消订单
           </li>
-          <li >
-            <Checkbox defaultChecked={venue.remindMember.isRemind} onChange={this.setRemindMember.bind(this)} />
+          <li>
+            <Checkbox defaultChecked={venue.remindMember.isRemind} name='isRemind' onBlur={this.form} />
             当前场馆设置
             <span style={{ color: "#ff9d00" }}>会员会卡过期前</span>
-            <InputNumber min={0} defaultValue={venue.remindMember.days} style={{ margin: "0 5px 0 5px" }} onChange={this.setRemindMember.bind(this)} />
+            <Input min={0} defaultValue={venue.remindMember.days} name='days' style={{ margin: "0 5px 0 5px", width: 50 }} title='days' onBlur={this.form} />
             天提醒
           </li>
         </ul>,

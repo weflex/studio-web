@@ -73,7 +73,7 @@ class UserProfileCard extends React.Component {
       <a key="edit" onClick={this.onEdit.bind(this)}>编辑会员</a>,
       <a key="dele" onClick={this.onDelete.bind(this)}>删除</a>
     )
-    if (this.state.checkIns.length == 0) {
+    if (this.props.checkIns.length == 0) {
       actions.unshift(<a key="chenkIns" onClick={this.createCheckIn.bind(this)}>进店登记</a>)
     }
     return actions;
@@ -128,11 +128,7 @@ class UserProfileCard extends React.Component {
       checkIn = await client.checkIn.create({
         memberId: this.props.id,
       });
-      let checkIns = this.state.checkIns
-      checkIns.push(checkIn)
-      this.setState({
-        checkIns: checkIns,
-      });
+      this.props.onCompleteRefresh();
       mixpanel.track( "会员详情：进店登记" );
     } catch (error) {
       console.error(error)
@@ -152,7 +148,7 @@ class UserProfileCard extends React.Component {
   }
 
   render() {
-    const {checkIns} = this.state
+    const {checkIns} = this.props
     return (
       <MasterDetail.Card actions={this.actions}>
         <h3>基础信息</h3>
