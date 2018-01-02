@@ -59,7 +59,6 @@ class Option extends React.Component {
     super(props)
     this.state = {
       isSet: false,
-      venue: this.props.venue,
       config: {
         settingName: '设置',
         content: '会籍到期提醒',
@@ -73,12 +72,6 @@ class Option extends React.Component {
       form: {}
     }
     this.form = this.form.bind(this)
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      venue: nextProps.venue
-    });
   }
 
   showSet() {
@@ -105,23 +98,26 @@ class Option extends React.Component {
   }
 
   async onSave() {
-    let { venue, form } = this.state
+    let venue = this.props.venue
+    let form = this.state.form
     if (this.isUndefined(form)) {
       return UIFramework.Message.error('填写错误，请检查后提交');
     }
-    let newVenue = {}
-    newVenue = _.merge(venue, form)
+    let newVenue = _.merge(venue, form)
     try {
-      await client.venue.upsert(newVenue);
+      const result = await client.venue.update(newVenue.id, newVenue, newVenue.modifiedAt);
+      let config = this.state.config
+      config.isEdit = false
+      this.setState({
+        isSet: false,
+        config,
+      })
+      if (typeof this.props.onComplete == 'function') {
+        this.props.onComplete(result)
+      }
     } catch (err) {
       console.log(err)
     }
-    let config = this.state.config
-    config.isEdit = false
-    this.setState({
-      isSet: false,
-      config,
-    })
   }
   onCancel() {
     let config = this.state.config
@@ -153,7 +149,7 @@ class Option extends React.Component {
 
   setTips() {
     const { isSet } = this.state
-    const venue = this.state.venue
+    const venue = this.props.venue
     let result = []
     if (!isSet) {
       result.push(<p key='1' className="wf-set-tips">当前场馆设置，最晚预约开课前 <span className="wf-tips-color">{venue.deadline}</span> 小时内不能取消订单</p>)

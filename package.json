@@ -60,6 +60,7 @@
     "file-loader": "0.8.5",
     "fixed-data-table": "0.6.0",
     "glob": "7.0.3",
+    "json-loader": "^0.5.7",
     "qiniu": "6.1.9",
     "style-loader": "0.13.0",
     "ts-loader": "0.8.2",

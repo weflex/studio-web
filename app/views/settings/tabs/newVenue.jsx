@@ -2,9 +2,11 @@ import QRCode from 'qrcode.react';
 import React from 'react';
 import { client } from '../../../api';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { Switch, Icon, Input, Button, InputNumber, Layout, Menu, Breadcrumb } from 'antd';
+import { Switch, Icon, Input, Button, InputNumber, Layout, Menu, Breadcrumb, Cascader } from 'antd';
 import { Option } from '../components/Option'
 import UIFramework from '@weflex/weflex-ui';
+import options from '../components/cascader-address-options';
+import _ from 'lodash';
 const { SubMenu } = Menu;
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -13,6 +15,7 @@ class Venue extends React.Component {
     super(props);
     this.state = {
       venue: {
+        address: ["工作室地址", "上海市 市辖区 静安区", "31,3101,310106"],
         deadline: 0,
         remindMember: {
           isRemind: false,
@@ -29,8 +32,11 @@ class Venue extends React.Component {
     this.OnSave = this.OnSave.bind(this)
     this.OnCancel = this.OnCancel.bind(this)
     this.form = this.form.bind(this)
+    this.setAddress = this.setAddress.bind(this)
+    this.onComplete = this.onComplete.bind(this)
   }
   async componentWillMount() {
+    const user = await client.user.getCurrent();
     const venue = await client.user.getVenueById();
     const org = await client.org.get(venue.orgId, {
       include: [
@@ -39,11 +45,10 @@ class Venue extends React.Component {
         },
       ]
     });
-    const venueId = await client.user.getVenueById().id;
     await this.setState({
       venue,
       owner: this.getOwner(org.members),
-      wechatURL: 'http://booking.theweflex.com/venues/' + venueId + '/classes'
+      wechatURL: 'http://booking.theweflex.com/venues/' + venue.id + '/classes'
     });
   }
 
@@ -71,9 +76,9 @@ class Venue extends React.Component {
   }
 
   isErrTips(form) {
-    let errorMessage = [] 
+    let errorMessage = []
     const props = Object.keys(form)
-    for(let i = 0 ; i < props.length;i++){
+    for (let i = 0; i < props.length; i++) {
       if (typeof form[props[i]] == 'undefined' || form[props[i]] == '') {
         if (props[i] == 'phone') {
           errorMessage.push(`电话`)
@@ -93,17 +98,20 @@ class Venue extends React.Component {
     const { venue, form } = this.state
     const errorMessage = this.isErrTips(form)
     if (errorMessage.length > 0) {
-     return UIFramework.Message.error('请正确输入:' + errorMessage.join('和') + '后确认保存。');
+      return UIFramework.Message.error('请正确输入:' + errorMessage.join('和') + '后确认保存。');
     }
-    const newVenue = Object.assign(venue, form)
-     try {
-      await client.venue.upsert(newVenue);
+    const newVenue = _.merge(venue, form)
+    try {
+      const result = await client.venue.update(newVenue.id, newVenue, newVenue.modifiedAt);
+      this.setState({
+        venue: result,
+        edit: false
+      })
+      let user = client.user
+      user.user = null
     } catch (err) {
       console.log(err)
     }
-    this.setState({
-      edit: false
-    })
   }
 
   OnCancel() {
@@ -121,13 +129,38 @@ class Venue extends React.Component {
     download.click()
   }
 
-  form(e) {
-    let form = this.state.form
-    let { title, value } = e.target
-    form[title] = value
+  setAddress(value, selectedOptions) {
+    let { form, venue } = this.state
+    const area = selectedOptions.map(o => o.label).join(' ')
+    let address = form.address || []
+    address[1] = area
+    address[2] = value.toString()
+    form.address = address
     this.setState({
       form
     })
+  }
+
+  form(e) {
+    let form = this.state.form
+    let { title, value } = e.target
+    if (title == 'address') {
+      let address = form.address || []
+      address[0] = value
+      form.address = address
+    } else {
+      form[title] = value
+    }
+    this.setState({
+      form
+    })
+  }
+
+  onComplete(venue) {
+    this.setState({
+      venue
+    })
+
   }
   render() {
     const venue = this.state.venue
@@ -136,8 +169,8 @@ class Venue extends React.Component {
         <Content className="venue-two-panel" style={{ padding: '0 50px', marginTop: 64, minWidth: 1240 }}>
           <div className="left-panel" >
             <div className="wf-panel">
-              <div className="venue-setting" >场馆详情
-            {this.state.edit ? '' : <a href="javascript:void(0);" onClick={this.EditBaseInfo} style={{ float: 'right', color: '#006eff' }}>编辑</a>}
+              <div className="venue-setting" ><h3>场馆详情</h3>
+                {this.state.edit ? '' : <a href="javascript:void(0);" onClick={this.EditBaseInfo} style={{ float: 'right', color: '#006eff' }}>编辑</a>}
               </div>
               <div>
                 <ul className="option-message">
@@ -166,10 +199,18 @@ class Venue extends React.Component {
                   </li>
                   <li>
                     <div className="option-label">
-                      <label >地址</label>
+                      <label >所在地区</label>
                     </div>
                     <div className="option-input">
-                      {this.state.edit ? <Input defaultValue={venue.address} title='address' onBlur={this.form} /> : <p>{venue.address}</p>}
+                      {this.state.edit ? <Cascader allowClear={false} defaultValue={venue.address.length == 0 ? ["11", "1101", "110112"] : venue.address[2].split(',')} options={options} style={{ width: 200 }} onChange={this.setAddress} /> : <p>{venue.address[1]}</p>}
+                    </div>
+                  </li>
+                  <li>
+                    <div className="option-label">
+                      <label >详细地址</label>
+                    </div>
+                    <div className="option-input">
+                      {this.state.edit ? <Input defaultValue={venue.address[0]} title='address' onBlur={this.form} /> : <p>{venue.address[0]}</p>}
                     </div>
                   </li>
                   <li>
@@ -189,13 +230,13 @@ class Venue extends React.Component {
           </div>
           <div className="right-panel">
             <div className="wf-panel" style={{ marginTop: 0 }}>
-              <div>场馆二维码</div>
+              <h3>场馆二维码</h3>
               <div className="Qrcode">
-                <QRCode value={this.state.wechatURL+"?checkIns=1"} />
+                <QRCode value={this.state.wechatURL + "?checkIns=1"} />
               </div>
               <Button icon="download" size={this.state.size} onClick={this.onClick}>下载二维码</Button>
             </div>
-            <Option venue={venue} />
+            <Option venue={venue} onComplete={this.onComplete} />
           </div>
         </Content>
 
