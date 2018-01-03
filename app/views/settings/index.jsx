@@ -1,7 +1,7 @@
 "use strict"
 
 import React from 'react';
-import MasterDetail from '../../components/master-detail';
+import Venue from './tabs/newVenue';
 import './index.css';
 
 class SettingsIndex extends React.Component {
@@ -29,17 +29,13 @@ class SettingsIndex extends React.Component {
       {
         id: 'venue',
         title: '场馆设置',
-        component: require('./tabs/venue')
+        component: require('./tabs/newVenue')
       },
     ];
   }
   render() {
     return (
-      <MasterDetail
-        pathname="/settings"
-        className="settings"
-        masterSource={this.settings}
-      />
+      <Venue />
     );
   }
 }
