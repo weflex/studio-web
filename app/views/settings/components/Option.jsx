@@ -61,7 +61,7 @@ class Option extends React.Component {
       isSet: false,
       config: {
         settingName: '设置',
-        content: '会籍到期提醒',
+        content: '场馆管理',
         isEdit: false,
         showSet: this.showSet.bind(this)
       },
@@ -152,7 +152,7 @@ class Option extends React.Component {
     const venue = this.props.venue
     let result = []
     if (!isSet) {
-      result.push(<p key='1' className="wf-set-tips">当前场馆设置，最晚预约开课前 <span className="wf-tips-color">{venue.deadline}</span> 小时内不能取消订单</p>)
+      result.push(<p key='1' className="wf-set-tips">当前场馆设置，会员最晚开课前 <span className="wf-tips-color">{venue.deadline}</span> 小时内不能取消订单</p>)
       if (venue.remindMember && venue.remindMember.isRemind) {
         result.push(<p key='2' className="wf-set-tips">  当前场馆设置，会员会卡过期前 <span className="wf-tips-color">{venue.remindMember.days}</span> 天提醒</p>)
       }
@@ -163,7 +163,7 @@ class Option extends React.Component {
           <li >
             <Checkbox defaultChecked={true} />
             当前场馆设置
-            <span style={{ color: "#ff9d00" }}>最晚预约开课前</span>
+            <span style={{ color: "#ff9d00" }}>会员最晚开课前</span>
             <Input min={0} defaultValue={venue.deadline} name='deadline' style={{ margin: "0 5px 0 5px", width: 50 }} onBlur={this.form} />
             小时内不能取消订单
           </li>
