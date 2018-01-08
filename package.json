@@ -11,7 +11,7 @@
   },
   "homepage": "https://github.com/weflex/studio-web#readme",
   "dependencies": {
-    "@weflex/gian": "^1.35.3",
+    "@weflex/gian": "^1.35.6",
     "@weflex/hourminute": "^1.2.0",
     "@weflex/passport.js": "1.2.0",
     "@weflex/weflex-ui": "^2.8.4",
@@ -73,7 +73,9 @@
     "node": ">=5.0.0"
   },
   "scripts": {
-    "start": "npm run build:dev && npm run dev",
+    "start": "sh ./build/start.sh",
+    "build:local": "npm run prebuild && env=local webpack --optimize-dedupe",
+    "local": "env=local webpack-dev-server",
     "build:dev": "npm run prebuild && env=dev webpack --optimize-dedupe",
     "dev": "env=dev webpack-dev-server",
     "build:prod": "npm run prebuild && env=prod webpack --optimize-dedupe",
