@@ -62,6 +62,7 @@ module.exports = {
     publicPath: '/',
     contentBase: 'assets',
     host: '0.0.0.0',
+    port: 8021,
     historyApiFallback: {
       rewrites: [
         {
@@ -87,7 +88,7 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': `"${environment.NODE_ENV || 'dev'}"`,
-        'GIAN_GATEWAY': `"${environment.GIAN_GATEWAY || 'staging'}"`,
+        'GIAN_GATEWAY': `"${environment.GIAN_GATEWAY || 'dev'}"`,
       }
     }),
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /zh/),

@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@weflex/gian@^1.35.3":
-  version "1.35.3"
-  resolved "https://registry.yarnpkg.com/@weflex/gian/-/gian-1.35.3.tgz#a38669b17868d04c8026fcbd2931d0f106e37b62"
+"@weflex/gian@^1.35.6":
+  version "1.35.6"
+  resolved "https://registry.yarnpkg.com/@weflex/gian/-/gian-1.35.6.tgz#a156435defe85118d6f8caeaf5fc31665b65e608"
   dependencies:
     qstringify "^1.4.2"
     superagent "^1.8.0-beta.2"
@@ -4730,7 +4730,7 @@ superagent-promise@1.1.0, superagent-promise@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/superagent-promise/-/superagent-promise-1.1.0.tgz#baf22d8bbdd439a9b07dd10f8c08f54fe2503533"
 
-superagent@1.5.0:
+superagent@1.5.0, superagent@^1.2.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/superagent/-/superagent-1.5.0.tgz#2d704af87b4000a725b88b789afb3c817ac9b456"
   dependencies:
@@ -4746,7 +4746,7 @@ superagent@1.5.0:
     readable-stream "1.0.27-1"
     reduce-component "1.0.1"
 
-superagent@^1.2.0, superagent@^1.8.0-beta.2:
+superagent@^1.8.0-beta.2:
   version "1.8.4"
   resolved "https://registry.yarnpkg.com/superagent/-/superagent-1.8.4.tgz#68b2c8a400f1753ddb39410906899e42f420fd3a"
   dependencies:
