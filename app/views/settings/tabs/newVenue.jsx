@@ -1,12 +1,20 @@
 import QRCode from 'qrcode.react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import React from 'react';
 import { client } from '../../../api';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { Switch, Icon, Input, Button, InputNumber, Layout, Menu, Breadcrumb, Cascader } from 'antd';
+import { DatePicker, Switch, Icon, Input, Button, InputNumber, Layout, Menu, Breadcrumb, Cascader } from 'antd';
 import { Option } from '../components/Option'
 import UIFramework from '@weflex/weflex-ui';
 import options from '../components/cascader-address-options';
 import _ from 'lodash';
+import { addDays, format, isSameDay } from 'date-fns';
+import moment from 'moment';
+import { getTimeDistance } from '../components/untils';
+const startOfDay = require('date-fns/start_of_day')
+const endOfDay = require('date-fns/end_of_day')
+const differenceInDays = require('date-fns/difference_in_days')
+const { RangePicker } = DatePicker;
 const { SubMenu } = Menu;
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -26,7 +34,8 @@ class Venue extends React.Component {
       wechatURL: '',
       edit: false,
       size: 'large',
-      form: {}
+      form: {},
+      rangePickerValue: getTimeDistance('week'),
     };
     this.EditBaseInfo = this.EditBaseInfo.bind(this)
     this.OnSave = this.OnSave.bind(this)
@@ -34,8 +43,12 @@ class Venue extends React.Component {
     this.form = this.form.bind(this)
     this.setAddress = this.setAddress.bind(this)
     this.onComplete = this.onComplete.bind(this)
+    this.handleRangePickerChange = this.handleRangePickerChange.bind(this)
+    this.getCheckIn = this.getCheckIn.bind(this)
+    this.download = this.download.bind(this)
   }
   async componentWillMount() {
+    const { rangePickerValue } = this.state
     const user = await client.user.getCurrent();
     const venue = await client.user.getVenueById();
     const org = await client.org.get(venue.orgId, {
@@ -45,11 +58,42 @@ class Venue extends React.Component {
         },
       ]
     });
+    await this.getCheckIn(venue.id, rangePickerValue[0], rangePickerValue[1])
     await this.setState({
       venue,
       owner: this.getOwner(org.members),
       wechatURL: 'http://booking.theweflex.com/venues/' + venue.id + '/classes'
     });
+  }
+
+  async getCheckIn(venueId, startsAt, endsAt) {
+    const days = differenceInDays(endsAt, startsAt)
+    let data = new Array(days || 1)
+    for (let i = 0; i < data.length; i++) {
+      data[i] = {
+        name: format(addDays(new Date(startsAt), i), 'MM-DD'),
+        uv: 0
+      }
+    }
+    const checkIn = await client.checkIn.list({
+      where: {
+        venueId: venueId,
+        createdAt: {
+          between: [startsAt, endsAt]
+        }
+      }
+    })
+    checkIn.map(item => {
+      for (let i = 0; i < data.length; i++) {
+        if (isSameDay(data[i].name, format(item.createdAt, 'MM-DD'))) {
+          data[i].uv++
+          break
+        }
+      }
+    })
+    await this.setState({
+      data
+    })
   }
 
   getOwner(members) {
@@ -162,11 +206,59 @@ class Venue extends React.Component {
     })
 
   }
-  render() {
+
+  handleRangePickerChange(rangePickerValue) {
     const venue = this.state.venue
+    this.getCheckIn(venue.id, rangePickerValue[0], rangePickerValue[1])
+    this.setState({
+      rangePickerValue,
+    })
+  }
+
+  selectDate(type) {
+    let a = document.querySelectorAll('.dateChange')
+    for (let item of a) {
+      if (item.title == type) {
+        item.style.color = '#1890ff'
+      } else {
+        item.style.color = 'gray'
+      }
+    }
+    const rangeDate = getTimeDistance(type)
+    const venue = this.state.venue
+    this.getCheckIn(venue.id, rangeDate[0], rangeDate[1])
+    this.setState({
+      rangePickerValue: getTimeDistance(type),
+    });
+  }
+
+  renderCheckIn() {
+    const { data, config } = this.state
+    return (<div style={{ position: 'relative', right: '20px', top: '10px' }}>
+      <LineChart width={560} height={200} data={data}>
+        <XAxis dataKey="name" />
+        <YAxis />
+        <CartesianGrid strokeDasharray="3 3" />
+        <Tooltip />
+        <Line connectNulls={true} type='monotone' name='登记人数' dataKey='uv' stroke='rgba(0, 0, 0, 0.65)' fill='rgba(0, 0, 0, 0.65)' />
+      </LineChart>
+    </div>)
+  }
+
+  download() {
+    const {venue,rangePickerValue} = this.state
+    const accessToken = (JSON.parse(localStorage["weflex.user"])).accessToken
+    let download = document.createElement('a');
+    download.href = `api/venues/${venue.id}/classes/exportCheckIn?access_token=${accessToken}&startsAt=${format(rangePickerValue[0],'YYYY-MM-DD')}&endsAt=${format(rangePickerValue[1],'YYYY-MM-DD')}`
+    download.download = "进店登记详情.xlsx";
+    download.click()
+  }
+
+  render() {
+    const { venue, venueCreatedAt, startsAt, endsAt, detailTime, config, rangePickerValue } = this.state
     return (
       <Layout style={{ height: '100%' }}>
-        <Content className="venue-two-panel" style={{ padding: '0 50px', marginTop: 64, minWidth: 1240 }}>
+        <Content className="venue-two-panel" style={{ padding: '0 50px', marginTop: 64, minWidth: 1240, background: '#ececec' }}>
           <div className="left-panel" >
             <div className="wf-panel">
               <div className="venue-setting" ><h3>场馆详情</h3>
@@ -237,9 +329,32 @@ class Venue extends React.Component {
               <Button icon="download" size={this.state.size} onClick={this.onClick}>下载二维码</Button>
             </div>
             <Option venue={venue} onComplete={this.onComplete} />
+            <div className="wf-panel" style={{ marginTop: '20px' }} >
+              <div>
+                <h3 style={{ display: 'inline-block' }}>进店登记</h3>
+                <div style={{ margin: '10px 0 10px 10px', display: 'inline-block' }}>
+                  <a className='dateChange' title='today' onClick={() => this.selectDate('today')}>
+                    今日
+                </a>
+                  <a className='dateChange' style={{ color: '#1890ff' }} title='week' onClick={() => this.selectDate('week')}>
+                    本周
+                </a>
+                  <a className='dateChange' title='month' onClick={() => this.selectDate('month')}>
+                    本月
+                </a>
+                </div>
+                <RangePicker
+                  allowClear={false}
+                  value={rangePickerValue}
+                  onChange={this.handleRangePickerChange}
+                  style={{ width: 256 }}
+                />
+                <Button icon="download" onClick={this.download}>下载明细</Button>
+              </div>
+              {this.renderCheckIn()}
+            </div>
           </div>
         </Content>
-
       </Layout>
     )
   }

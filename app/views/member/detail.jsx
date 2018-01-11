@@ -420,6 +420,7 @@ class MemberOperation extends React.Component {
         membershipCreate : "#6ed4a4",
         membershipDelete : "#ff8ac2",
         membershipUpdate : "#f0ab51",
+        checkIn          : "#4fd898"
       },
     };
 
@@ -432,7 +433,19 @@ class MemberOperation extends React.Component {
 
   async updateOperationList(props) {
     const { memberId, userId, venueId } = props || this.props;
-
+    const checkIn = (await client.operation.list({
+      where: {
+        memberId,
+        record: { like: '进店签到' }
+      }
+    })).map(item =>{
+      let  checkIn= {
+        createdAt: item.createdAt,
+        status: "checkIn",
+        text:<p>{item.record}</p>
+      };
+      return checkIn
+    })
     const operationList = ( await client.operation.list({
       where :{
         memberId,
@@ -499,7 +512,7 @@ class MemberOperation extends React.Component {
       include : {"memberships": "package"},
     }) )["memberships"].map( this.toMembershipItems );
 
-    let operation = flattenDeep([orderList, ptSessionList, membershipList, operationList]);
+    let operation = flattenDeep([orderList, ptSessionList, membershipList, operationList,checkIn]);
     operation.sort((previousItem, nextItem)=>{ return compareDesc(previousItem.createdAt, nextItem.createdAt)});
     this.setState({operation});
   }
