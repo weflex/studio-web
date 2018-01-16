@@ -1,0 +1,114 @@
+
+.toolbar {
+  width: calc(100% - 150px);
+  height: 52px;
+  position: absolute;
+  top: 0;
+  left: 150px;
+  z-index: 100;
+  background-color: #FAFAFA;
+  border-bottom: 1px solid #EBEBEB;
+  /*box-shadow: 0 2px 2px 0 rgba(0,0,0,0.2);*/
+}
+
+.toolbar .title {
+  position: absolute;
+  left: calc(50% - 160px);
+  color: #535353;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+  height: 52px;
+  line-height: 52px;
+  min-width: 320px;
+}
+
+.toolbar > ul, .toolbar > div {
+  padding: 12px;
+  height: 28px;
+}
+
+.toolbar li {
+  float: right;
+  display: block;
+  text-align: center;
+  height: 28px;
+  margin: 0;
+}
+
+.toolbar li * {
+  box-sizing: border-box;
+}
+
+.toolbar .action-button {
+  display: inline-block;
+  font-size: 12px;
+  font-family: 'PingFang SC', sans-serif;
+  background-color: #fff;
+  cursor: pointer;
+  border: 1px solid #9b9b9b;
+  border-radius: 4px;
+  padding: 4px 10px;
+  margin: 0px 5px;
+}
+
+.toolbar .action-button.toggled,
+.toolbar .action-button:hover {
+  border-color: #70CCA1;
+  background-color: #70CCA1;
+}
+
+.toolbar .action-button,
+.toolbar .action-button a {
+  text-decoration: none;
+  color: #242f40;
+  transition: all .2s ease-in-out;
+}
+
+.toolbar .action-button:hover,
+.toolbar .action-button:hover a,
+.toolbar .action-button.toggled,
+.toolbar .action-button.toggled a {
+  color: #fff;
+}
+
+.toolbar .searchbox {
+  float: left;
+}
+
+.toolbar .search {
+  position: relative;
+}
+
+.toolbar .search .icon-font {
+  width: 20px;
+  font-size: 16px;
+  color: #888;
+  display: block;
+  padding: 0 0 0 5px;
+  position: absolute;
+  top: 2px;
+  left: 0;
+}
+
+.toolbar .search input {
+  height: 28px;
+  width: 100px;
+  padding: 0 5px 0 30px;
+  font-size: 14px;
+  -webkit-appearance: none;
+  outline: none;
+  background: #fff;
+  border-radius: 4px;
+  border: 1px solid #d8d8d8;
+  transition: all .2s ease-in-out;
+}
+
+.toolbar .search input:focus {
+  border: 1px solid #00cfe6;
+  width: 200px;
+}
+
+.toolbar .search input:focus + .icon-font {
+  color: #00cfe6;
+}

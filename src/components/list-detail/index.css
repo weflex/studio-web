@@ -1,0 +1,194 @@
+.list-item{ box-sizing: border-box; }
+.list-item .avatar{ display: inline-block; width: 55px; }
+.list-item .description{ display: inline-block; width: calc(100% - 55px); }
+.list-item .avatar img{width: 40px; height: 40px; border-radius: 20px;}
+.list-item .avatar span{ display: block; border-radius: 20px; background-color: #108ee9; width: 40px; height: 40px; color: #EEE; font-size: 20px; overflow: hidden; line-height: 40px; font-weight: 700; }
+
+
+.list-detail {
+  height: 100%;
+}
+
+.list-detail .list, .list-detail .detail {
+  display: inline-block;
+  vertical-align: top;
+  height: 100%;
+}
+
+.list-detail .list {
+  width: 200px;
+  border-right: 1px solid #ebebeb;
+  box-shadow: 0 1px 4px 0 #ebebeb;
+}
+
+.list-detail .list > .list-sort {
+  padding: 0;
+  border-bottom: 1px solid #DAE2D9;
+  box-shadow: 1px 1px 2px #E8E8E8;
+  height: 30px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.list-detail .list > .list-sort > select {
+  width: 100%;
+  font-size: 12px;
+  background-color: transparent;
+  border: 0;
+  outline: none;
+  color: #4A4A4A;
+  cursor: pointer;
+}
+
+.list-detail .list-iterator {
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: calc(100% - 30px);
+}
+
+.list-detail .list-iterator li { border-bottom: 1px solid #DAE2D9; }
+.list-detail .list-iterator li:hover{ background-color: #eee; }
+.list-detail .list-iterator .active, .list-detail .list-iterator .active:hover{ background-color: #70CCA1;}
+.list-detail .list-iterator .active .list-item {color: #fff;}
+
+.list-detail .list-iterator a {
+  padding: 10px;
+  color: #696969;
+  display: block;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+
+
+/**
+ * Detail Styles
+ */
+
+.list-detail .detail {
+  /* should add border 1px width */
+  width: calc(100% - 201px);
+  overflow-y: auto;
+}
+
+.list-detail .detail > div, .list-detail .detail-container, .list-detail .detail-container > * {
+  height: 100%;
+}
+
+.list-detail .list-item {
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+  box-sizing: border-box;
+  transition: all .2s ease-in-out;
+}
+
+.list-detail .list-item, .list-detail .list-item > a {
+  color: #696969;
+  display: block;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+
+
+.list-detail .list-item header {
+  line-height: 30px;
+  height: 30px;
+  vertical-align: middle;
+}
+
+.list-detail .list-item section {
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.list-detail .list-item section > div {
+  font-size: 12px;
+  padding: 2px 0;
+}
+
+.list-detail .list-item-add > a { display: block; text-align: center; padding: 20px 0; transition: all .2s ease-in-out; }
+.list-detail .list-item-add > a:hover { color: #696969; }
+.list-detail .list-item-add > span{cursor: not-allowed; display: block; height: 60px; line-height: 60px; color: #DAE2D9; text-align: center;}
+
+
+
+.detail-cards {
+  padding: 10px;
+  background-color: #F7F7F7;
+  height: 100%;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.detail-cards-left, .detail-cards-right {
+  display: inline-block;
+  vertical-align: top;
+  height: 100%;
+}
+
+.detail-cards-left {
+  width: 70%;
+  margin-right: 10px;
+}
+
+.detail-cards-right {
+  width: calc(30% - 10px);
+  float: right;
+}
+
+.detail-card {
+  position: relative;
+  display: block;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #fff;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.detail-card h3 {
+  font-size: 18px;
+  font-weight: 100;
+  margin-bottom: 5px;
+}
+
+.detail-card-icons {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}
+
+.detail-card-icons > * {
+  display: inline-block;
+  margin: 0 5px;
+}
+
+.detail-card-icons > a {
+  cursor: pointer;
+}
+
+.detail-card-row {
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.detail-card-row a {
+  color: #70CCA1;
+}
+
+.detail-card-row > * {
+  display: inline-block;
+}
+
+.detail-card-row > label {
+  color: #4A4A4A;
+  width: 90px;
+  vertical-align: top;
+}
+
+.detail-card-row > span {
+  color: #9B9B9B;
+  width: calc(100% - 90px);
+}

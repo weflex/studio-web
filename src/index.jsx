@@ -1,36 +1,30 @@
+import "babel-polyfill";
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import configureStore from './store/configureStore';
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
+import { Router, browserHistory } from 'react-router';
 import ConnectedIntlProvider from './components/ConnectedIntlProvider';
-
-import LoginIndex from './containers/Login';
-import SignupIndex from './containers/Signup';
-//import Calendar from './components/views/calendar';
+import { syncHistoryWithStore } from 'react-router-redux';
+import routes from './util/routes';
+import jwt from 'jsonwebtoken';
+import { setCurrentUser } from './actions/loginAction';
+import { getCurrentUser } from './actions/userAction';
+import { configuration } from './constants';
 
 const store = configureStore();
 
-const RouteWithSubRoutes = (route) => (
-  <Route path={route.path} render={props => (
-    // pass the sub-routes down to keep nesting
-    <route.component {...props} routes={route.routes}/>
-  )}/>
-)
+if (localStorage.getItem(configuration.userTokenKey)) {
+  store.dispatch(setCurrentUser(localStorage.getItem(configuration.userTokenKey)));
+  store.dispatch(getCurrentUser());
+}
 
-ReactDOM.render(
+const history = syncHistoryWithStore(browserHistory, store);
+
+render(
   <Provider store={store}>
     <ConnectedIntlProvider>
-      <BrowserRouter>
-        <div>
-          <Switch>
-            <Route exact path="/login" component={LoginIndex} />
-            <Route exact path="/signup" component={SignupIndex} />
-            <Route path="/" component={LoginIndex} />
-            <Redirect to="/"/>
-          </Switch>
-        </div>
-      </BrowserRouter>
+      <Router history={history} routes={routes} />
     </ConnectedIntlProvider>
   </Provider>,
   document.getElementById('root-container')

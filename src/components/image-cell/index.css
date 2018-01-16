@@ -1,0 +1,89 @@
+/**
+ * Image Cell Styles
+ */
+
+.image-cell {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  margin-right: 5px;
+  box-sizing: border-box;
+  transition: all .2s ease-in-out;
+  /**
+   * default box
+   */
+  line-height: 100px;
+  height: 100px;
+  width: 100px;
+}
+
+.image-cell-empty {
+  border: 1px dashed #B5BBC3;
+}
+
+.image-cell-empty:hover {
+  border-color: #7D8895;
+}
+
+.image-cell {
+  border-radius: 4px;
+}
+
+.image-cell .hint {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  font-size: 12px;
+  font-family: 'PingFang SC', 'Open Sans', sans-serif;
+  vertical-align: middle;
+  text-align: center;
+  transition: all .2s ease-in-out;
+}
+
+.image-cell.selected {
+  box-shadow: 0px 0px 1px 1px rgba(0,0,0,0.15);
+}
+
+.image-cell.selectable:not(.selected) .hint {
+  opacity: 0.7;
+  background: grey;
+  color: transparent;
+  z-index: 1;
+}
+
+.image-cell.selectable:not(.selected):hover .background {
+  -webkit-filter: blur(5px);
+}
+
+.image-cell.selectable:not(.selected) .hint:hover {
+  color: #fff;
+  text-shadow: 1px 1px 1px #000;
+  z-index: 1;
+}
+
+.image-cell-empty .hint {
+  color: #B5BBC3;
+  font-weight: normal;
+}
+
+.image-cell-empty:hover .hint {
+  color: #7D8895;
+}
+
+/**
+ * file input
+ */
+
+.image-cell .hint input[type="file"] {
+  opacity: 0;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  cursor: pointer;
+}

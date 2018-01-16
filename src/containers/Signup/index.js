@@ -5,23 +5,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import UIFramework from '@weflex/weflex-ui';
 import { client } from '../../util/api';
+import { Link } from 'react-router';
 import '../../styles/root-center.css';
-import {FormattedMessage} from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import SignupForm from '../../components/SignupForm';
 
 class SignupIndex extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      form: {
-        name: '',
-        username: '',
-        phone: '',
-        smscode: '',
-      },
-    };
-  }
-
   render() {
     let content;
     return (
@@ -32,7 +21,7 @@ class SignupIndex extends React.Component {
             <SignupForm />
           </div>
           <p className="login-link"><FormattedMessage id="studio_web_signup_login_message"/>
-            <a href="/login"><FormattedMessage id="studio_web_signup_login_link"/></a>
+            <Link to="/login"><FormattedMessage id="studio_web_signup_login_link"/></Link>
           </p>
         </div>
       </div>

@@ -2,13 +2,15 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import UIFramework from '@weflex/weflex-ui';
-import { client } from '../../util/api';
-import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
+import * as actions from '../../actions/signupAction';
+import { injectIntl, intlShape } from 'react-intl';
 
 class SignupForm extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor(props, context) {
+    super(props, context);
     this.state = {
       form: {
         name: '',
@@ -18,24 +20,18 @@ class SignupForm extends React.Component {
       },
     };
   }
-  async onRequestSMSCode() {
+  onRequestSMSCode() {
     try {
-      await client.user.smsRequest(this.state.form.phone);
+      this.props.actions.requestSMSCode(this.state.form);
     } catch (err) {
       alert(err && err.message);
     }
   }
-  async onSignUp() {
+
+  onSignUp() {
     try {
-      await client.user.smsRegisterNewOrgAndVenue(
-        this.state.form.phone,
-        this.state.form.smscode,
-        {
-          name: this.state.form.name,
-          username: this.state.form.username,
-        }
-      );
-      window.location.href = '/calendar';
+      this.props.actions.smsRegisterNewOrgAndVenue(this.state.form);
+      this.context.router.push('calendar');
     } catch (err) {
       alert(err && err.message + ', please contact: 400-8566-203');
     }
@@ -84,7 +80,7 @@ class SignupForm extends React.Component {
           />
           <UIFramework.Button
             flex={0.3}
-            text={<FormattedMessage id="studio_web_signup_input_smscode_request"/>}
+            text={intl.formatMessage({id: 'studio_web_signup_input_smscode_request'})}
             interval={60}
             intervalFormat={(c) => `(${wait_message + c})`}
             disabled={this.disableRequestSMSCode}
@@ -102,7 +98,7 @@ class SignupForm extends React.Component {
         <UIFramework.Row>
           <UIFramework.Button
             flex={1}
-            text={<FormattedMessage id="studio_web_signup_button_submit"/>}
+            text={intl.formatMessage({id: 'studio_web_signup_button_submit'})}
             block={true}
             level="primary"
             onClick={this.onSignUp.bind(this)}
@@ -114,7 +110,18 @@ class SignupForm extends React.Component {
 }
 
 SignupForm.propTypes = {
-  intl: intlShape.isRequired
+  actions: PropTypes.object.isRequired,
+  intl: intlShape.isRequired,
 }
 
-module.exports = injectIntl(SignupForm);
+SignupForm.contextTypes = {
+  router: PropTypes.object
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(actions, dispatch)
+  };
+}
+
+module.exports = injectIntl(connect(null, mapDispatchToProps)(SignupForm));

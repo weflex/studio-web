@@ -44,3 +44,8 @@ body {
 .box a:hover {
   text-decoration: underline;
 }
+
+/** fix style from weflex-ui */
+.weflex-framework input, .weflex-framework textarea, .weflex-framework select {
+  color: #000000;
+}

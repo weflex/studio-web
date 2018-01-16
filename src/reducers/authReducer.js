@@ -9,6 +9,14 @@ export default function authReducer(state = initialState.auth, action) {
         isAuthenticated: !isEmpty(action.user),
         user: action.user
       };
+    break;
+    
+    case types.LOGOUT_SUCCESS:
+      return {
+        isAuthenticated: false,
+        user: {}
+      };
+    break;
 
     default:
       return state;

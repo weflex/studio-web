@@ -2,18 +2,20 @@
 
 import 'babel-polyfill';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { client } from '../../util/api';
+import { Link } from 'react-router';
 import '../../styles/root-center.css';
 import './index.css';
 import UIFramework from '@weflex/weflex-ui';
-import {FormattedMessage} from 'react-intl';
+import { FormattedMessage, injectIntl, intlShape } from 'react-intl';
 
 const queryString = require('query-string');
 
 const sourceTabs = [
   require('../../components/Login/Tabs/smscode'),
-  // require('../../presentation/Login/Tabs/qrcode'),
+  // require('../../components/Login/Tabs/qrcode'),
   require('../../components/Login/Tabs/userpass'),
 ];
 
@@ -48,9 +50,9 @@ class LoginIndex extends Component {
         break;
       }
       UIFramework.Modal.error({
-        title: <FormattedMessage id="studio_web_login_tab_smscode_error_login_failed_title"/>,
+        title: this.props.intl.formatMessage({id: 'studio_web_login_tab_smscode_error_login_failed_title'}),
         content: errorMessage,
-        onOk: () => window.location.href = '/login'
+        onOk: () => this.context.router.push('login')
       });
     }
   }
@@ -78,11 +80,24 @@ class LoginIndex extends Component {
           <div className="contents">
             {content}
           </div>
-          <p className="login-link"><FormattedMessage id="studio_web_login_tab_signup_message"/><a href="/signup"><FormattedMessage id="studio_web_login_tab_signup_link"/></a></p>
+          <p className="login-link">
+            <FormattedMessage id="studio_web_login_tab_signup_message"/>
+            <Link to="/signup">
+              <FormattedMessage id="studio_web_login_tab_signup_link"/>
+            </Link>
+          </p>
         </div>
       </div>
     );
   }
 }
 
-export default connect(state => state)(LoginIndex);
+LoginIndex.propTypes = {
+  intl: intlShape.isRequired,
+}
+
+LoginIndex.contextTypes = {
+  router: PropTypes.object
+}
+
+export default connect(state => state)(injectIntl(LoginIndex));

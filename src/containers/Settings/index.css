@@ -1,0 +1,74 @@
+.settings-detail {
+  padding: 10px;
+  box-sizing: border-box;
+}
+.settings-detail > .form {
+  width: 80%;
+}
+
+/**
+ * Team
+ */
+
+.settings-team {
+  width: 80%;
+}
+
+.settings-team header {
+  padding: 10px 0;
+  margin-top: 20px;
+}
+
+.settings-team header:first-child {
+  margin-top: 0px;
+}
+
+.settings-team header > * {
+  display: inline-block;
+}
+
+.settings-team header > h3 {
+  font-size: 16px;
+  font-weight: 300;
+}
+
+.settings-team-item li {
+  padding: 5px;
+  border-bottom: 1px solid #ebebeb;
+}
+
+.settings-team-item li:last-child {
+  border-bottom: 0;
+}
+
+.settings-team-item li > * {
+  display: inline-block;
+  height: 30px;
+  line-height: 30px;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+.settings-team-item li > .username {
+  width: 100px;
+  padding-left: 10px;
+  color: #555;
+}
+
+.settings-team-item li > .description {
+  font-size: 12px;
+  color: #878787;
+  margin-right: 20px;
+}
+
+.settings-team-item li > .button {
+  font-size: 12px;
+  color: #1B486B;
+  float: right;
+  cursor: pointer;
+  transition: all .2s ease-in-out;
+}
+
+.settings-team-item li > .venue:hover {
+  opacity: .7;
+}

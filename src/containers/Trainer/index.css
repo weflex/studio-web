@@ -1,0 +1,145 @@
+.trainer-list,
+.trainer-detail {
+    padding: 20px;
+    width: 100%;
+    max-width: 1000px;
+    transform: translateX(-50%);
+    position: relative;
+    left: 50%;
+}
+
+.trainer-list > *,
+.trainer-detail > * {
+    background-color: #fff;
+    padding: 20px;
+    position: relative;
+}
+
+.trainer-list .action > button {
+    padding: 3px 5px;
+    border-radius: 3px;
+    font-weight: 400;
+}
+
+.trainer-list .action > button:hover {
+    background: #2db7f5;
+    color: #fff;
+}
+
+.trainer-list .ant-table-thead > tr > th,
+.trainer-list .ant-table-tbody > tr > td {
+    padding: 8px;
+}
+
+.trainer-list img.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+}
+
+.trainer-list tr td:first-of-type {
+    width: 40px;
+}
+
+.trainer-list .action-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.trainer-detail img.avatar {
+    height: 100px;
+    width: 100px;
+    border-radius: 50px;
+}
+
+.trainer-detail .card-header {
+    padding-bottom: 20px;
+}
+
+.trainer-detail .name {
+    display: block;
+    text-align: center;
+}
+
+.trainer-detail ul.actions {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    float: right;
+}
+
+.trainer-detail ul.actions,
+.trainer-detail ul.actions li {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.trainer-detail .upload-avatar {
+    position: relative;
+    left: 50px;
+    top: -50px;
+}
+
+.trainer-detail .ant-row {
+    margin-bottom: 20px;
+}
+
+.trainer-detail .detail-card-row {
+    font-size: 12px;
+}
+
+.trainer-detail .schedule .day,
+.trainer-detail .schedule .hour {
+    display: inline-block;
+    width: auto;
+    padding: 2px 10px;
+    background: #fff;
+    border-radius: 5px;
+    border: 1px solid #d8d8d8;
+    margin: 5px;
+}
+
+.trainer-detail .schedule .active {
+    color: #fff;
+    background-color: #70cca1;    
+}
+
+.trainer-detail .schedule .placeholder {
+    color: #6b6c6d;
+    margin: 10px 0;
+    display: inline-block;
+}
+
+.trainer-detail .schedule .ant-select-selection li {
+    background-color: #70cca1;
+    color: #fff;
+}
+
+.trainer-detail .schedule .ant-select-selection li:last-of-type {
+    display: none;
+}
+
+.trainer-schedule label.ant-checkbox-group-item {
+    width: 12.5%;
+    margin-left: 8px;
+    box-sizing: border-box;
+}
+
+.trainer-schedule label > .ant-checkbox + span {
+    padding: 5px 0 5px 10px;
+}
+
+.trainerSalesList tr td {
+    padding: 11px 8px;
+}
+
+.trainerSalesList .red {
+    color: #ff0000;
+}
+
+.schedule-day-item{padding: 2px 10px; margin: 5px}
+.schedule-day-item-border{border: 1px solid #70cca1;}
+.schedule-day-item-background{color: #fff; background-color: #70cca1;}
+
+.weflex-ui-text{display: inline-block; width: 8%; line-height: 30px; text-align: center; margin-right: 5px}

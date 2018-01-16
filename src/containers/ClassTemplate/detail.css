@@ -1,0 +1,32 @@
+.class-template-loading {
+  text-align: center;
+  padding: 30px 0px;
+}
+
+.class-template-loading p {
+  margin-top: 10px;
+  font-size: 14px;
+  font-family: monospace;
+  color: #555;
+}
+
+.class-template-new-container {
+  padding: 20px;
+}
+
+.class-template-new-form {
+  width: 100%;
+}
+
+.class-template-detail-cover .image-cell {
+  height: 180px;
+  line-height: 180px;
+  width: 100%;
+}
+
+.class-template-detail-photos .image-cell {
+  height: 100px;
+  line-height: 100px;
+  width: 49%;
+  margin-right: 1%;
+}

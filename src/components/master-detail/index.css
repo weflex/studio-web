@@ -1,0 +1,209 @@
+.master-detail {
+  height: 100%;
+}
+
+.master-detail .master, 
+.master-detail .detail {
+  display: inline-block;
+  vertical-align: top;
+  height: 100%;
+}
+
+.master-detail .master {
+  width: 200px;
+  border-right-color: rgba(0,0,0,0);
+}
+
+.master-detail .master:not(.master-without-border) {
+  border-right: 1px solid #ebebeb;
+  box-shadow: 0 1px 4px 0 #ebebeb;
+}
+
+.master-detail .master > .master-sort {
+  padding: 0;
+  border-bottom: 1px solid #DAE2D9;
+  box-shadow: 1px 1px 2px #E8E8E8;
+  height: 30px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.master-detail .master > .master-sort > select {
+  width: 100%;
+  font-size: 12px;
+  background-color: transparent;
+  border: 0;
+  outline: none;
+  color: #4A4A4A;
+  cursor: pointer;
+}
+
+.master-detail .master > .master-iterator {
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: calc(100% - 30px);
+}
+
+/**
+ * Detail Styles
+ */
+
+.master-detail .detail {
+  /* should add border 1px width */
+  width: calc(100% - 201px);
+  overflow-y: auto;
+}
+
+.master-detail .detail > div,
+.master-detail .detail-container,
+.master-detail .detail-container > * {
+  height: 100%;
+}
+
+.master-detail .master-item {
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+  box-sizing: border-box;
+  transition: all .2s ease-in-out;
+}
+
+.master-detail .master-item,
+.master-detail .master-item > a {
+  color: #696969;
+  display: block;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.master-detail .master-item > a {
+  padding: 10px;
+}
+
+.master-detail .master-item:hover {
+  background-color: #ebebeb;
+}
+
+.master-detail .master-item.active {
+  background-color: #70CCA1;
+}
+
+.master-detail .master-item.active > a {
+  color: #fff;
+}
+
+.master-detail .master-item:not(.active):not(.hide-bottom-line) {
+  border-color: #DAE2D9;
+}
+
+.master-detail .master-item header {
+  line-height: 30px;
+  height: 30px;
+  vertical-align: middle;
+}
+
+.master-detail .master-item section {
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.master-detail .master-item section > div {
+  font-size: 12px;
+  padding: 2px 0;
+}
+
+.master-detail .master-item.master-item-add > a {
+  display: block;
+  text-align: center;
+  padding: 20px 0;
+  color: #DAE2D9;
+  transition: all .2s ease-in-out;
+}
+
+.master-detail .master-item.master-item-add > a:hover {
+  color: #696969;
+}
+
+/**
+ * detail card
+ */
+
+.detail-cards {
+  padding: 10px;
+  background-color: #F7F7F7;
+  height: 100%;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.detail-cards-left,
+.detail-cards-right {
+  display: inline-block;
+  vertical-align: top;
+  height: 100%;
+}
+
+.detail-cards-left {
+  width: 70%;
+  margin-right: 10px;
+}
+
+.detail-cards-right {
+  width: calc(30% - 10px);
+  float: right;
+}
+
+.detail-card {
+  position: relative;
+  display: block;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #fff;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.detail-card h3 {
+  font-size: 18px;
+  font-weight: 100;
+  margin-bottom: 5px;
+}
+
+.detail-card-icons {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}
+
+.detail-card-icons > * {
+  display: inline-block;
+  margin: 0 5px;
+}
+
+.detail-card-icons > a {
+  cursor: pointer;
+}
+
+.detail-card-row {
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.detail-card-row a {
+  color: #70CCA1;
+}
+
+.detail-card-row > * {
+  display: inline-block;
+}
+
+.detail-card-row > label {
+  color: #4A4A4A;
+  width: 90px;
+  vertical-align: top;
+}
+
+.detail-card-row > span {
+  color: #9B9B9B;
+  width: calc(100% - 90px);
+}

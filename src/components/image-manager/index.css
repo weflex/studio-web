@@ -1,0 +1,25 @@
+/**
+ * images-manager-container
+ */
+
+.images-manager-container {
+  padding: 10px;
+}
+
+.images-manager-container h3 {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 100;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+}
+
+.images-manager-container .image-cell {
+  height: 110px;
+  width: calc(25% - 5px);
+}
+
+.images-manager-footer {
+  padding-top: 20px;
+  text-align: right;
+}

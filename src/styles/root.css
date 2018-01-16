@@ -9,7 +9,7 @@
 
 #root-container > div {
   height: 100%;
-  background-color: #fafafa;
+  /**background-color: #fafafa;*/
 }
 
 .main {

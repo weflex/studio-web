@@ -3,4 +3,10 @@ export default {
     isAuthenticated: false,
     user: {}
   },
+  venue: {
+    id: null
+  },
+  user: {
+    
+  }
 };

@@ -1,0 +1,81 @@
+.membership-card {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  vertical-align: top;
+}
+
+.membership-card-add {
+  border: 1px dashed #9b9b9b;
+  text-align: center;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.membership-card-add,
+.membership-card-add-text {
+  transition: all .2s ease-in-out;
+}
+
+.membership-card-add:hover {
+  border-color: #7b7b7b;
+}
+
+.membership-card-add:hover > * {
+  color: #7b7b7b;
+}
+
+.membership-card-add-text {
+  font-size: 14px;
+  color: #9b9b9b;
+}
+
+.membership-card svg,
+.membership-card svg *,
+.membership-card-metadata,
+.membership-card-price {
+  transition: all .2s ease-in-out;
+}
+
+.membership-card:hover .membership-card-metadata,
+.membership-card:hover .membership-card-price {
+  bottom: 20px;
+}
+
+.membership-card-metadata,
+.membership-card-price {
+  position: absolute;
+  bottom: 15px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 100;
+  font-family: 'PingFang SC', 'Open Sans', sans-serif;
+}
+
+.membership-card-metadata {
+  left: 15px;
+}
+
+.membership-card-price {
+  right: 15px;
+  text-align: right;
+}
+
+.membership-card-metadata li {
+  margin-top: 5px;
+}
+
+.membership-card-metadata header,
+.membership-card-metadata section {
+  display: inline-block;
+}
+
+.membership-card-metadata header {
+  margin-right: 20px;
+  font-weight: normal;
+}
+
+.membership-card-price-value {
+  font-size: 24px;
+  font-weight: normal;
+}

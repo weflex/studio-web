@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
 const { join } = require('path');
 const environments = require('./config/environments.js');
 const environment = environments[process.env.env];
@@ -11,7 +12,7 @@ function dir (subpath) {
 module.exports = {
   entry: {
     'app': dir('src/index.jsx'),
-    //'login/index': dir('components/containers/Login/index.js'),
+    //'login/index': dir('src/containers/Login/index.js'),
     //'signup/index': dir('src/containers/Signup/index.jsx'),
   },
   output: {
@@ -19,34 +20,38 @@ module.exports = {
     filename: '[name].js'
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.jsx', '.js', '']
+    extensions: ['.ts', '.tsx', '.jsx', '.js', '*']
   },
   module: {
-    loaders: [
+    rules: [
+      {
+        test: /\.css$/,
+        exclude: '/node_modules/',
+        use: ExtractTextPlugin.extract({
+            fallback: [{
+              loader: 'style-loader',
+            }],
+            use: [{
+              loader: 'css-loader',
+            }],
+        }),
+      },
       {
         test: /\.tsx?$/,
-        exclude: [/node_modules/],
-        loader: 'ts-loader'
+        exclude: /node_modules/,
+        loaders: ['ts-loader']
       },
       {
         test: /\.jsx?$/,
         exclude: [/node_modules/, /server/],
-        loader: 'babel',
-        query: {
-          presets: ['react', 'es2015', 'stage-1'],
-          plugins: [['import', { style: 'css', libraryName: 'antd' }]],
-        }
-      },
-      {
-        test: /\.css$/,
-        loader: 'style-loader!css-loader'
+        loaders: ['babel-loader']
       },
       {
         test: /\.(jpg|png|svg)$/,
         loader: 'file-loader',
         query: {
           name: 'images/[1]',
-          regExp: 'src\/(.*)'
+          regExp: 'app\/(.*)'
         }
       }
     ]
@@ -55,7 +60,7 @@ module.exports = {
     open: true,
     inline: true,
     publicPath: '/',
-    contentBase: 'assets',
+    contentBase: './dist',
     host: '0.0.0.0',
     port: 9002,
     historyApiFallback: {
@@ -86,6 +91,10 @@ module.exports = {
         'GIAN_GATEWAY': `"${environment.GIAN_GATEWAY || 'staging'}"`,
       }
     }),
-    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /zh/),
+    new ExtractTextPlugin({
+      filename: 'app.css',
+      fallback: 'style-loader'
+    }),
+    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /^\.\/(zh|en)$/)
   ]
 };

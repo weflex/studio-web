@@ -1,0 +1,163 @@
+.navbar {
+  width: 150px;
+  height: 100%;
+  background-color: #242f40;
+  background-image: url(./bg.png);
+  background-repeat: repeat-x;
+  background-size: 70px;
+  background-position: 5px 0;
+  float: left;
+  position: absolute;
+  z-index: 1000;
+  color: #fafafa;
+}
+.navbar a {
+  color: #fafafa;
+  text-decoration: none;
+  font-size: 14px;
+  text-align: center;
+  display: block;
+}
+.navbar > li {
+  position: relative;
+  width: 100%;
+  transition: all .3s ease-in-out;
+}
+.navbar > li > .active-marker {
+  height: 100%;
+  width: 3px;
+  background-color: #00E4FF;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.navbar > li > a {
+  box-sizing: border-box;
+  padding: 6px 0;
+}
+.navbar > li.navitem:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+.navbar > li.navitem.active {
+  background-color: rgba(255, 255, 255, 0.10);
+}
+
+.navbar .studio-org-panel {
+  position: absolute;
+  top: 0;
+  left: 150px;
+  width: 130px;
+  z-index: 100;
+  box-sizing: border-box;
+  transition: all .2s ease-in-out;
+}
+.navbar .studio-org-panel:not(.active) {
+  left: 0px;
+  opacity: 0;
+  display: none;
+}
+.navbar .studio-org-panel > li {
+  display: block;
+  background-color: rgba(36,47,64,.9);
+  padding: 7px 10px;
+  text-align: left;
+  cursor: pointer;
+  transition: all .2s ease-in-out;
+}
+.navbar .studio-org-panel > li:hover,
+.navbar .studio-org-panel > li.active {
+  background-color: rgba(36,47,64,1);
+}
+.navbar .studio-org-panel span {
+  font-size: 11px;
+  font-family: 'PingFang SC', 'Open Sans', sans-serif;
+}
+.navbar .studio-org-panel span.badge {
+  float: right;
+  display: inline-block;
+  font-size: 10px;
+  font-family: 'Open Sans', sans-serif;
+  background-color: #04070D;
+  border-radius: 4px;
+  line-height: 13px;
+  height: 13px;
+  width: 13px;
+  text-align: center;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
+.navbar .studio-name,
+.navbar .username {
+  width: 100%;
+  text-align: center;
+  font-size: 12px;
+  font-family: 'PingFang SC', 'Open Sans', sans-serif;
+}
+.navbar .studio-name {
+  cursor: pointer;
+  padding: 15px 0 10px 0;
+}
+.navbar .studio-name .text {
+  font-family: 'Open Sans Semibold', sans-serif;
+  padding-right: 3px;
+  padding-left: 10px;
+}
+.navbar .studio-name .icon-font {
+  font-size: 9px;
+  /**
+   * dont remove because `transform` requires the field
+   */
+  display: inline-block;
+  transition: all .2s ease-in-out;
+}
+.navbar .studio-name:hover .icon-font {
+  transform: rotate(-90deg) translateX(5px) translateY(-5px);
+}
+.navbar .useravatar {
+  text-align: center;
+}
+.navbar .username a {
+  display: inline-block;
+  font-size: 12px;
+  font-family: 'PingFang SC', 'Open Sans', sans-serif;
+}
+.navbar .username > *:first-child:after {
+  content: '|';
+  margin: 0 7px;
+}
+.navbar .username > *:first-child > a {
+  color: #00E4FF;
+}
+.navbar .username a:hover {
+  text-decoration: underline;
+}
+
+.navbar .icon-font {
+  padding-right: 10px;
+}
+
+.navbar .data-item {
+  background-color: red;
+  border-radius: 4px;
+  padding: 7px 10px;
+  margin: 10px;
+}
+
+.data-item div {
+  width: 100%;
+}
+
+.data-item .value {
+  color: #fff;
+  font-size: 36px;
+  font-family: 'Open Sans';
+  font-weight: 100;
+  margin: -5px 0;
+  text-align: center;
+}
+
+.data-item .hint {
+  font-size: 12px;
+  text-align: center;
+}
