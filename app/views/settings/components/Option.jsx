@@ -3,7 +3,7 @@ import { Input, Checkbox, Button } from 'antd';
 import UIFramework from '@weflex/weflex-ui';
 import { client } from '../../../api';
 import _ from 'lodash';
-class Header extends React.Component {
+class Head extends React.Component {
   constructor(props) {
     super(props)
   }
@@ -184,7 +184,7 @@ class Option extends React.Component {
   render() {
     return (
       <div className="wf-panel" style={{ marginTop: 20 }}>
-        <Header config={this.state.config}></Header>
+        <Head config={this.state.config}></Head>
         <div className="param-bd">
           {this.setTips()}
         </div>
@@ -194,7 +194,7 @@ class Option extends React.Component {
 }
 
 module.exports = {
-  Header,
+  Head,
   Foot,
   Option
 }
