@@ -442,7 +442,7 @@ class MemberOperation extends React.Component {
       let  checkIn= {
         createdAt: item.createdAt,
         status: "checkIn",
-        text:<p>{item.record}</p>
+        text:<p>用户完成进店登记</p>
       };
       return checkIn
     })
