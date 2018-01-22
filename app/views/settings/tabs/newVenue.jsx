@@ -312,6 +312,13 @@ class Venue extends React.Component {
                       <p>{this.state.wechatURL}</p>
                     </div>
                   </li>
+                  <li>
+                    <div className="option-label">
+                      <label >教练端网址</label></div>
+                    <div className="option-input">
+                      <p>http://trainer.theweflex.com</p>
+                    </div>
+                  </li>
                 </ul>
               </div>
               {this.state.edit ? <div>
