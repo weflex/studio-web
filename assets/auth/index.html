@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>登陆WeFlex</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+</head>
+<script>
+    function redirectUri() {
+        const search = location.search
+        const params = search.split('&')
+        const redirectUrl = "http://" + params[0].substring(params[0].indexOf('=') + 1) + '?' + params[1] + '&' + params[2]
+        if (redirectUrl.indexOf('booking.theweflex.com') > -1) {
+            window.location = redirectUrl
+        } else if (redirectUrl.indexOf('dev-booking.theweflex.com') > -1) {
+            window.location = redirectUrl
+        } else if (redirectUrl.indexOf('trainer.theweflex.com') > -1) {
+            window.location = redirectUrl
+        } else if (redirectUrl.indexOf('dev-trainer.theweflex.com') > -1) {
+            window.location = redirectUrl
+        }
+    }
+    redirectUri()
+</script>
+ <body>
+  </body>
+</html>
