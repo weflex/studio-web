@@ -172,6 +172,9 @@ class WeflexCalendar extends React.Component {
       },
       include: [
         {
+          'members': ['user'],
+        },
+        {
           relation: 'trainer',
           scope: {
             where: {
