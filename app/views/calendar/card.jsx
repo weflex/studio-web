@@ -408,14 +408,16 @@ class ClassCard extends React.Component {
     const trigger = notifyMembers ? 'hover' : ''
     let waitMember = [], number = 0
     if (notifyMembers) {
-      members.map((item, index) => {
-        waitMember.push(
-          <p key={index}>
-            <span>{item.nickname + ':'}</span><span>{item.user.phone}</span>
-          </p>
-        )
-      })
-      number = notifyMembers.length
+      if (members) {
+        members.map((item, index) => {
+          waitMember.push(
+            <p key={index}>
+              <span>{item.nickname + ':'}</span><span>{item.user.phone}</span>
+            </p>
+          )
+        })
+        number = notifyMembers.length
+      }
     }
     const content = (
       <div className='wait-queue'>
