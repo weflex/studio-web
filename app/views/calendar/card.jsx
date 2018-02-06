@@ -5,6 +5,7 @@ import PopUp from 'react-portal-tooltip';
 import Hammer from 'hammerjs';
 import moment from 'moment';
 import UIFramework from '@weflex/weflex-ui';
+import { Popover } from 'antd'
 import {
   getFormatTime,
   getCellHeight,
@@ -43,12 +44,12 @@ class ClassCard extends React.Component {
     const cellHeight = getCellHeight();
     // Compute the grid height by from and to
     const height = getGridHeight(
-      this.props.cardInfo.from, 
-      this.props.cardInfo.to, 
+      this.props.cardInfo.from,
+      this.props.cardInfo.to,
       cellHeight);
     // Get the topPostion by from and cell height
     const topPostion = getGridOffsetByTime(
-      this.props.cardInfo.from, 
+      this.props.cardInfo.from,
       cellHeight);
 
     // Set the style
@@ -56,7 +57,7 @@ class ClassCard extends React.Component {
       height: height,
       marginTop: topPostion,
       marginLeft: 0,
-      width: 100/this.props.total + '%'
+      width: 100 / this.props.total + '%'
     };
 
     // Attach the cellHeight to instance for later uses
@@ -85,7 +86,7 @@ class ClassCard extends React.Component {
       lastScrollOffset: 0,
       date: this.props.cardInfo.date,
       from: this.props.cardInfo.from,
-      to: this.props.cardInfo.to,
+      to: this.props.cardInfo.to
     };
   }
 
@@ -180,12 +181,12 @@ class ClassCard extends React.Component {
       const timeOffset = -this.state.timeToFrom;
       const extraCompensation = 5 /* minutes */;
       const newHourTime = (new HourMinute(calendar.baselineClock))
-            .addMinutes(timeOffset)
-            .addMinutes(extraCompensation);
+        .addMinutes(timeOffset)
+        .addMinutes(extraCompensation);
       const marginLeft = this.style.marginLeft + event.deltaX;
       const marginTop = this.style.marginTop + event.deltaY +
-                        calendar.state.scrollTop -
-                        this.state.lastScrollOffset;
+        calendar.state.scrollTop -
+        this.state.lastScrollOffset;
 
       const style = {
         marginTop,
@@ -241,7 +242,7 @@ class ClassCard extends React.Component {
    */
   showPopUp(e) {
     const calendar = this.props.calendar;
-    if (this.props.isEmptyFrom || 
+    if (this.props.isEmptyFrom ||
       (calendar && calendar.state.isEditing)) {
       // don't show popup when in editing
       return;
@@ -274,7 +275,7 @@ class ClassCard extends React.Component {
    * @method hidePopUp
    */
   hidePopUp() {
-    this.setState({ isPopUpActive: false });
+    this.setState({ isPopUpActive: false })
   }
 
   /**
@@ -300,8 +301,8 @@ class ClassCard extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.style.width = 100/nextProps.total + '%'
-    this.setState({style: this.style});
+    this.style.width = 100 / nextProps.total + '%'
+    this.setState({ style: this.style });
   }
 
   /**
@@ -318,30 +319,45 @@ class ClassCard extends React.Component {
     }
   }
 
+  createHoverInfo() {
+    return (<div className="card-hover">2</div>)
+
+  }
+
   /**
    * @method render
    */
   render() {
-    const { 
-      id, 
+    const {
+      id,
       date,
       from,
-      to, 
-      template, 
+      to,
+      template,
       orders,
-      trainer 
+      trainer,
+      spotsAvailable,
+      spot,
+      spotsBooked,
+      notifyMembers,
+      members
     } = this.props.cardInfo;
     const calendar = this.props.calendar;
     const duration = '' + moment(this.state.date).format('ddd') +
       ' ' + getFormatTime(this.state.from) + ' - ' + getFormatTime(this.state.to);
 
-    let hideButton;
+    let hideButton, classNameColor = {};
     let onClickThis = this.showPopUp.bind(this);
     let className = 'class-card';
-    let style = Object.assign({}, 
+    let style = Object.assign({},
       this.state.style, this.props.style);
     if (!trainer || Object.keys(trainer).length == 0) {
-      style = Object.assign(style,{backgroundColor: "#FF8AC2"})
+      style = Object.assign(style, { backgroundColor: "#FF8AC2" })
+    } else if (spotsAvailable > 0) {
+      style = Object.assign(style, { backgroundColor: "#80C7E8" })
+      classNameColor = {
+        color: 'white!important'
+      }
     }
 
     if (this.props.className) {
@@ -364,8 +380,8 @@ class ClassCard extends React.Component {
         onClickThis = null;
       }
       hideButton = (
-        <div 
-          className="class-close-btn" 
+        <div
+          className="class-close-btn"
           onClick={onHide}>
           <span className="icon-font icon-cancel"></span>
         </div>
@@ -382,27 +398,50 @@ class ClassCard extends React.Component {
           arrow={this.state.arrow}
           position={this.state.position}
           transition={0.0}>
-          <this.props.popupTemplate 
+          <this.props.popupTemplate
             data={this.props.cardInfo}
             {...this.props.popupProps}
           />
         </PopUp>
       );
     }
-    return (
-      <div
-        className={className}
-        style={style}
-        id={`class_${id}`}
-        onMouseLeave={this.hidePopUp.bind(this)}
-        onClick={onClickThis}
-        onMouseDown={this.onMouseDown.bind(this)}
-        onMouseUp={this.onMouseUp.bind(this)}
-        ref="card">
-        <div className="class-name">{template.name}</div>
-        {hideButton}
-        {popupView}
+    const trigger = notifyMembers ? 'hover' : ''
+    let waitMember = [], number = 0
+    if (notifyMembers) {
+      if (members) {
+        members.map((item, index) => {
+          waitMember.push(
+            <p key={index}>
+              <span>{item.nickname + ':'}</span><span>{item.user.phone}</span>
+            </p>
+          )
+        })
+        number = notifyMembers.length
+      }
+    }
+    const content = (
+      <div className='wait-queue'>
+        {waitMember}
       </div>
+    );
+    const title = '课程报名：' + spotsBooked + '/' + spot + "  通知候补：" + number
+
+    return (
+      <Popover content={content} title={title} trigger={trigger} >
+        <div
+          className={className}
+          style={style}
+          id={`class_${id}`}
+          onMouseLeave={this.hidePopUp.bind(this)}
+          onClick={onClickThis}
+          onMouseDown={this.onMouseDown.bind(this)}
+          onMouseUp={this.onMouseUp.bind(this)}
+          ref="card">
+          <div className="class-name" style={classNameColor}>{template.name}</div>
+          {hideButton}
+          {popupView}
+        </div>
+      </Popover>
     );
   }
 }
