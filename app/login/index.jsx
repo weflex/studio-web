@@ -10,7 +10,7 @@ import UIFramework from '@weflex/weflex-ui';
 const queryString = require('query-string');
 
 const sourceTabs = [
-  require('./tabs/smscode'),
+  // require('./tabs/smscode'),
   // require('./tabs/qrcode'),
   require('./tabs/userpass'),
 ];
