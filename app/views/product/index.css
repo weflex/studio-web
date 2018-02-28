@@ -1,0 +1,85 @@
+.ant-layout-header {
+    background: white;
+    padding: 0 0px;
+    height: 64px;
+    line-height: 64px;
+}
+
+.search {
+    background: white;
+    padding-bottom: 15px;
+    padding-left: 25px;
+}
+
+.custom-card {
+    text-align: center;
+}
+
+.ant-card-extra {
+    right: 0;
+}
+
+.ant-card-head {
+    padding: 0 12px;
+}
+
+.ant-card-body {
+    padding: 12px;
+}
+
+.counter {
+    float: right;
+}
+
+.price {
+    height: 28px;
+}
+
+.price-left {
+    float: left;
+}
+
+.price span {
+    font-size: 15px
+}
+
+.ant-input-group-addon {
+    background-color: white;
+}
+
+.btn-join {
+    float: left;
+    width: 100px;
+    background-color: #6ED4A4;
+    color: white;
+}
+
+.btn-join:hover {
+    background-color: #72b998;
+    border: 1px solid #72b998;
+    color: white
+}
+
+.btn-join:focus {
+    background-color: #72b998;
+    border: 1px solid #72b998;
+    color: white
+}
+
+.btn-add {
+    float: right;
+    background-color: #80C7E8;
+    color: white;
+}
+
+.btn-add:hover {
+    background-color: #71b3d2;
+    border: 1px solid #71b3d2;
+    color: white
+}
+
+.btn-add:focus {
+    background-color: #72b998;
+    border: 1px solid #72b998;
+    color: white
+}
