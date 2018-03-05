@@ -12,15 +12,20 @@ const AutoCompleteOption = AutoComplete.Option;
 class RegistrationForm extends React.Component {
   state = {
     confirmDirty: false,
-    address: []
+    address: [],
+    countdown: -1,
   };
 
   async onRequestSMSCode() {
-    const phone = this.props.form.getFieldValue('phone')
-    try {
-      await client.user.smsRequest(phone);
-    } catch (err) {
-      alert(err && err.message);
+    if(this.state.countdown < 0){
+      this.startCountdown()
+      const phone = this.props.form.getFieldValue('phone')
+      try {
+        await client.user.smsRequest(phone);
+      } catch (err) {
+        this.stopCoutdown()
+        alert(err && err.message);
+      }
     }
   }
 
@@ -49,6 +54,28 @@ class RegistrationForm extends React.Component {
       }
     });
   }
+
+  startCountdown() {
+    this.setState({
+      countdown: 30
+    })
+    this.interval = setInterval(() => {
+      this.setState({
+        countdown: this.state.countdown - 1
+      })
+      if (this.state.countdown < 0) {
+        this.stopCoutdown()
+      }
+    }, 1000)
+  }
+
+  stopCoutdown() {
+    this.setState({
+      countdown: -1
+    })
+    clearInterval(this.interval)
+  }
+
 
   setAddress(value, selectedOptions) {
     const area = selectedOptions.map(o => o.label).join(' ')
@@ -102,7 +129,7 @@ class RegistrationForm extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { autoCompleteResult } = this.state;
+    const { autoCompleteResult,countdown } = this.state;
 
     const formItemLayout = {
       labelCol: {
@@ -259,7 +286,7 @@ class RegistrationForm extends React.Component {
                     )}
                   </Col>
                   <Col span={8}>
-                    <Button onClick={this.onRequestSMSCode.bind(this)}>获取验证码</Button>
+                    <Button onClick={this.onRequestSMSCode.bind(this)}>{countdown < 0 ? '获取验证码' : `${countdown}s后重试`}</Button>
                   </Col>
                 </Row>
 
