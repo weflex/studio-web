@@ -1,3 +1,7 @@
+body {
+    font: normal 100% Helvetica, Arial, sans-serif;
+}
+
 .ant-layout-header {
     background: white;
     padding: 0 0px;
@@ -40,7 +44,15 @@
 }
 
 .price span {
-    font-size: 15px
+    font-size: 1.1em
+}
+
+.ant-layout-content {
+    overflow-x: auto;
+}
+
+.ant-input-group-wrapper {
+    display: flex;
 }
 
 .ant-input-group-addon {

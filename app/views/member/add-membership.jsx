@@ -143,7 +143,6 @@ export default class extends React.Component {
     const { operation, form } = this.state;
     const { data, onComplete, member } = this.props;
     const membership = {
-      memberName: member.nickname,
       name: form.name,
       accessType: form.accessType,
       price: form.price,
@@ -162,7 +161,6 @@ export default class extends React.Component {
           membership.isExpiresAt=false
       }
       await client.membership.update(data.id, membership, data.modifiedAt);
-
       if(!isSameDay(membership.startsAt, data.startsAt) || !isSameDay(membership.expiresAt, data.expiresAt) || membership.available && membership.available !== data.available){
         let memberOperation = {
           memberId: membership.memberId,

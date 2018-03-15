@@ -35,7 +35,7 @@ module.exports = {
       },
       {
         test: /\.jsx?$/,
-        exclude: [/node_modules/, /server/],
+        exclude: [/node_modules/, /server/,/dist/],
         loader: 'babel',
         query: {
           presets: ['react', 'es2015', 'stage-1'],
@@ -62,7 +62,7 @@ module.exports = {
     publicPath: '/',
     contentBase: 'assets',
     host: '0.0.0.0',
-    port: 8021,
+    port: 7070,
     historyApiFallback: {
       rewrites: [
         {
