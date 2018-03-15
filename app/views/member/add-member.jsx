@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import UIFramework from '@weflex/weflex-ui';
 import { client } from '../../api';
+import randomize from 'randomatic';
 
 export default class extends React.Component {
   static propTypes = {
@@ -55,17 +56,34 @@ export default class extends React.Component {
           throw new Error('Internal Server Error');
         }
       } else if(type === 'edit') {
-        await client.user.update(form.user.id, {
-          phone: form.phone,
-        }, form.user.modifiedAt);
+        let user = await client.user.list({
+          where:{
+            phone:form.phone
+          }
+        })
+        let userId = ''
+        if(user[0]){
+         userId = user[0].id
+        } else {
+          let newUser = {
+            sex: 'female',
+            phone: form.phone,
+            email: form.nickname + '@register.theweflex.com',
+            nickname: form.nickname,
+            username: form.nickname,
+            password: randomize('Aa0', 8),
+          };
+          const user = await client.user.create(newUser)
+          userId = user.id
+        }
         await client.member.update(memberId, {
           phone: form.phone,
           email: form.email,
           source: form.source,
           comment: form.comment,
           nickname: form.nickname,
+          userId:userId
         }, form.modifiedAt);
-
       }
       if (typeof onComplete === 'function') {
         await onComplete();
@@ -92,7 +110,6 @@ export default class extends React.Component {
           phone,
         }
       });
-
       this.setState({ hasPhone: memberList.length > 0 && memberList[0].phone !== beforPhone });
     }
   }
