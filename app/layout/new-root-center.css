@@ -1,0 +1,46 @@
+@import "./normalize.css";
+body {
+    background-color: #00E4FF;
+    text-align: center;
+}
+
+#root-container {
+    width: 100%;
+    height: 100%;
+   
+}
+
+.box-container {
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    overflow-x: auto;
+}
+
+.box {
+    display: inline-block;
+    width: 500px;
+    color: #fff;
+}
+
+.box h1,
+.box h2,
+.box h3 {
+    font-size: 20px;
+    margin: 10px 0;
+    text-align: center;
+}
+
+.box a {
+    display: inline-block;
+    color: #888;
+    text-decoration: none;
+    padding: 0 5px;
+    transition: all .2s ease-in-out;
+}
+
+.box a:hover {
+    text-decoration: underline;
+}
