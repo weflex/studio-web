@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Modal, Button, Upload, Icon, message, Row, Col, Input } from 'antd';
 // import { Avatar } from './Avatar'
 import { client } from '../../../api';
-import './addProduct.css'
+import './AddProduct.css'
 class AddProduct extends React.Component {
   state = { visible: false }
 
