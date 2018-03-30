@@ -95,3 +95,17 @@ body {
     border: 1px solid #72b998;
     color: white
 }
+
+.shopping-card {
+    position: fixed;
+    top: 50%;
+    width: 35px;
+}
+
+.shopping-card:hover {
+    background: #FF0036
+}
+
+.shopping-card-show {
+    background: #FF0036
+}

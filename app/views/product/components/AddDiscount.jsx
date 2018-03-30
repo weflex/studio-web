@@ -3,48 +3,48 @@ import { Modal, Button, Row, Col, Input, Select } from 'antd';
 const Option = Select.Option;
 const config = [
   {
-    id:1,
-    name:'平价'
+    id:'1',
+    name:'减免折扣'
   },
   {
-    id:2,
-    name:'平价'
+    id:'2',
+    name:'百分比折扣'
   },
   {
-    id:3,
-    name:'平价'
+    id:'3',
+    name:'赠品折扣'
   },
   {
-    id:4,
-    name:'平价'
+    id:'4',
+    name:'量贩满减'
   },
   {
-    id:5,
-    name:'平价'
+    id:'5',
+    name:'量贩打折'
   },
   {
-    id:6,
-    name:'平价'
+    id:'6',
+    name:'会员折扣'
   },
   {
-    id:7,
-    name:'平价'
+    id:'7',
+    name:'满额打折'
   },
   {
-    id:8,
-    name:'平价'
+    id:'8',
+    name:'满额减免'
   },
   {
-    id:9,
-    name:'平价'
+    id:'9',
+    name:'捆绑打折'
   },
   {
-    id:10,
-    name:'平价'
+    id:'10',
+    name:'捆绑减免'
   },
   {
-    id:11,
-    name:'平价'
+    id:'11',
+    name:'团购'
   },
 ]
 class AddDiscount extends React.Component {
@@ -71,9 +71,13 @@ class AddDiscount extends React.Component {
     this.setState({ visible: false });
   }
 
+
+  createNewDiscount(){
+   
+  }
+
   createDiscount() {
     const value = this.state.value
-    console.log(value)
     switch (value) {
       case '1':
         return ([
@@ -175,9 +179,12 @@ class AddDiscount extends React.Component {
             <Col span={6}>选择折扣类型</Col>
             <Col span={12}>
               <Select labelInValue defaultValue={{ key: '0' }} style={{ width: '100%' }} onChange={(value) => this.setState({ value: value.key })}>
-                <Option value="0">无</Option>
-                <Option value="1">平价折扣</Option>
-                <Option value="2">百分比折扣</Option>
+              <Option value="0">无</Option>
+               {
+                 config.map((item,key)=>{
+                   return <Option value={item.id}>{item.name}</Option>
+                 })
+               } 
               </Select>
             </Col>
           </Row>

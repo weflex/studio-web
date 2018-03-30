@@ -30,7 +30,7 @@ class Product extends Component {
 
   componentDidMount() {
     let { productCategorys, products, bands, discounts } = this.state
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < 100; i++) {
       const prodcutCategory = {
         id: i,
         name: `产品分类 ${i}`,
@@ -113,7 +113,7 @@ class Product extends Component {
     const { products, productCategorys, bands, discounts } = this.state
 
     return (
-      <Tabs defaultActiveKey="4">
+      <Tabs defaultActiveKey="1">
         <TabPane tab={<span><Icon type="apple" />产品展示</span>} key="1">
           <ProductManage
             editData={this.editData.bind(this)}

@@ -2,6 +2,7 @@ import React from 'react'
 import { Layout, Icon, Table, Popconfirm, Badge, Input, Menu, Dropdown } from 'antd';
 import SetTopColumns from './components/SetTopColumns'
 import AddDiscount from './components/AddDiscount'
+import NewDiscount from './components/NewDiscount'
 import './DiscountManage.css'
 const { Header, Content } = Layout;
 const EditableCell = ({ editable, value, onChange }) => {
@@ -197,7 +198,8 @@ class DiscountManage extends React.Component {
   }
   newDiscount() {
     return (
-      <AddDiscount addOne={this.props.addData} style={{ float: 'right', marginRight: 10 }} buttonName={this.config.name} />
+      // <AddDiscount addOne={this.props.addData} style={{ float: 'right', marginRight: 10 }} buttonName={this.config.name} />
+      <NewDiscount style={{ float: 'right', marginRight: 10 }} buttonName={this.config.name}/>
     )
   }
   render() {
@@ -223,7 +225,6 @@ class DiscountManage extends React.Component {
           </div>
         </Content>
       </Layout>
-
     )
   }
 }
