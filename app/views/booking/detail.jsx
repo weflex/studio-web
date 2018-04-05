@@ -221,17 +221,7 @@ class Detail extends React.Component {
     order.trainerName = order.class.trainer.fullname.first + order.class.trainer.fullname.last;
     order.startsAt = order.class.startsAt;
     order.endsAt = order.class.endsAt;
-    if(order.payments[0].membership) {
-      const reduceMemberships = await client.middleware('/transaction/reduce-memberships', {
-        userId: order.userId,
-        venueId: order.venueId,
-      });
-      const reduceMembership = find(reduceMemberships, (item) => {
-        return item.membershipId === order.payments[0].membership.id;
-      });
-      order.payment.membership = Object.assign(order.payments[0].membership, reduceMembership);
-    };
-
+  
     this.updateState(order);
   }
 
@@ -243,15 +233,6 @@ class Detail extends React.Component {
         {'payment': {'membership': 'package'}},
       ],
     });
-
-    const reduceMemberships = await client.middleware('/transaction/reduce-memberships', {
-      userId: ptSession.userId,
-      venueId: ptSession.venueId,
-    });
-    const reduceMembership = find(reduceMemberships, (item) => {
-      return item.membershipId === ptSession.payment.membership.id;
-    });
-    ptSession.payment.membership = Object.assign(ptSession.payment.membership, reduceMembership);
     ptSession.trainerName = ptSession.trainer.fullname.first + ptSession.trainer.fullname.last;
     ptSession.class = {
       name: `私教 (${ptSession.trainerName})`,
