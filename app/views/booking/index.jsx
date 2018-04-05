@@ -46,7 +46,7 @@ class BookingView extends React.Component {
             visible={this.state.modalVisibled}
             onCancel={() => this.setState({modalVisibled: false})}
         >
-          <AddBookingView onComplete={() => this.setState({modalVisibled: false})} />
+         {this.state.modalVisibled ?<AddBookingView onComplete={() => this.setState({modalVisibled: false})} />:''} 
         </UIFramework.Modal>
       </div>
     );
