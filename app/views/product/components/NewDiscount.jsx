@@ -1,5 +1,6 @@
 import React from 'react'
-import { Modal, Form, Input, Tooltip, Icon, Cascader, Select, Row, Col, Checkbox, Button, AutoComplete } from 'antd';
+import { Modal, Transfer, Form, Input, Tooltip, Icon, Cascader, Select, Row, Col, Checkbox, Button, AutoComplete } from 'antd';
+import products from '../../../../assets/data/products.json'
 const FormItem = Form.Item;
 const Option = Select.Option;
 const AutoCompleteOption = AutoComplete.Option;
@@ -49,16 +50,22 @@ const config = [
     name: '团购'
   },
 ]
+
+function hasErrors(fieldsError) {
+  return Object.keys(fieldsError).some(field => fieldsError[field]);
+}
 class RegistrationForm extends React.Component {
   state = {
-    disabled:true,
+    disabled: true,
     visible: false,
     confirmDirty: false,
     autoCompleteResult: [],
     value: '0',
-    showOption: (new Array(9)).fill(false,0)
+    showOption: (new Array(9)).fill(false, 0),
+    mockData:[],
+    targetKeys:[]
   };
- 
+
   showModal = () => {
     this.setState({
       visible: true,
@@ -69,23 +76,26 @@ class RegistrationForm extends React.Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
+        // const addOne = this.props.addOne
+        // const { newItem, name } = this.state
+        // if (typeof addOne == 'function') {
+        //   addOne(name, newItem)
+        // }
+
+        this.setState({ visible: false });
       }
     });
-    // const addOne = this.props.addOne
-    // const { newItem, name } = this.state
-    // if (typeof addOne == 'function') {
-    //   addOne(name, newItem)
-    // }
-    this.setState({ visible: false });
+
   }
 
-  handleCancel = () => {
-    this.setState({ visible: false });
+  componentDidMount(){
+    this.getMock()
   }
 
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
+      console.log(1)
       if (!err) {
         console.log('Received values of form: ', values);
       }
@@ -99,7 +109,7 @@ class RegistrationForm extends React.Component {
 
   onChange(value) {
     let showOption = this.state.showOption
-    showOption.fill(false,0)
+    showOption.fill(false, 0)
     switch (value.key) {
       case '1':
         showOption[1] = showOption[8] = true
@@ -147,9 +157,27 @@ class RegistrationForm extends React.Component {
         break;
     }
   }
+  getMock = () => {
+    const mockData = products
+    const targetKeys = [];
+    // const mockData = products;
+    // let index = data.find((item) => item.id == discountId)
+    // index.product.map((item) => {
+    //   mockData.map((piece) => {
+    //     return item.id == piece.id ? targetKeys.push(item.id) : false
+    //   })
+    // })
+    this.setState({ mockData, targetKeys });
+  }
+  filterOption = (inputValue, option) => {
+    return option.description.indexOf(inputValue) > -1;
+  }
+  handleChange = (targetKeys) => {
+    this.setState({ targetKeys });
+  }
 
   render() {
-    const { getFieldDecorator } = this.props.form;
+    const { getFieldDecorator, getFieldsError, resetFields } = this.props.form;
     const { autoCompleteResult, showOption } = this.state;
 
     const formItemLayout = {
@@ -167,20 +195,21 @@ class RegistrationForm extends React.Component {
       <AutoCompleteOption key={website}>{website}</AutoCompleteOption>
     ));
 
-    const { visible,disabled } = this.state
+    const { visible, disabled } = this.state
     return (
       <div style={this.props.style}>
         <Button onClick={this.showModal}>{this.props.buttonName}</Button>
         <Modal
+           width={725}
           visible={visible}
           title={this.props.buttonName}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
           footer={[
-            <Button key="back" size="large" onClick={this.handleCancel}>取消</Button>,
-            <Button key="submit" type="primary" size="large" disabled={disabled} onClick={this.handleOk}>
+            <Button key="back" size="large" onClick={() => { resetFields(); this.setState({ visible: false }); }}>取消</Button>,
+            <Button key="submit" type="primary" size="large" disabled={hasErrors(getFieldsError())} onClick={this.handleOk}>
               确定
-            </Button>,
+            </Button>
           ]}
         >
           <Form onSubmit={this.handleSubmit}>
@@ -215,7 +244,7 @@ class RegistrationForm extends React.Component {
                   <Option value="0">无</Option>
                   {
                     config.map((item, key) => {
-                      return <Option key={key} value={item.id}>{key + 1 +':'+item.name}</Option>
+                      return <Option key={key} value={item.id}>{key + 1 + ':' + item.name}</Option>
                     })
                   }
                 </Select>
@@ -397,13 +426,16 @@ class RegistrationForm extends React.Component {
               {getFieldDecorator('product', {
                 rules: [{ required: true, message: '请选择适用产品!' }],
               })(
-                <AutoComplete
-                  dataSource={websiteOptions}
-                  onChange={this.handleWebsiteChange}
-                  placeholder="产品"
-                >
-                  <Input />
-                </AutoComplete>
+                <Transfer
+                  rowKey={record => record.id}
+                  dataSource={this.state.mockData}
+                  searchPlaceholder='请输入搜索内容'
+                  showSearch
+                  filterOption={this.filterOption}
+                  targetKeys={this.state.targetKeys}
+                  onChange={this.handleChange}
+                  render={item => item.productDetail.productName}
+                />
               )}
             </FormItem> : null}
           </Form>

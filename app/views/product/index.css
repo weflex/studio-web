@@ -109,3 +109,17 @@ body {
 .shopping-card-show {
     background: #FF0036
 }
+
+.shopping-card-balance-disabled {
+    background-color: #666;
+    cursor: default;
+    width: 248px;
+    height: 40px;
+}
+
+.shopping-card-balance-open {
+    background-color: #ff0036;
+    cursor: default;
+    width: 248px;
+    height: 40px;
+}

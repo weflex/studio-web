@@ -17,7 +17,6 @@ const EditableCell = ({ editable, value, onChange }) => {
 };
 
 class ProductCategoryManage extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -39,6 +38,7 @@ class ProductCategoryManage extends Component {
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: '25%',
+      render: (text, record) => {return (new Date(record.createdAt)).toLocaleString()},
     }, {
       title: '创建者',
       dataIndex: 'createdBy',

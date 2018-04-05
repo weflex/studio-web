@@ -6,48 +6,52 @@ class Counter extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      number: 0,
+      num:1,
+      productId:this.props.productId,
       plus: <Icon type="plus-square-o" style={{ fontSize: 16 }} onClick={this.plusNumber.bind(this)} />,
       minus: <Icon type="minus-square-o" style={{ fontSize: 16 }} onClick={this.minusNumber.bind(this)} />,
     }
     this.checkNumber = this.checkNumber.bind(this)
   }
 
+  componentDidMount(){
+    this.props.setNode(this.props.productId,this.container)
+  }
   plusNumber() {
-    let number = this.state.number
+    let {productId,num} = this.state
     this.setState({
-      number: ++number
+      num:++num
     })
-    console.log(this.state.number)
+    this.props.setNode(productId,this.container)
   }
 
   minusNumber() {
-    let number = this.state.number
-    if (number - 1 > -1) {
+    let {number,productId,num} = this.state
+    if (num - 1 > -1) {
       this.setState({
-        number: --number
+        num:--num
       })
+      this.props.setNode(productId,this.container)
     }
-    console.log(this.state.number)
   }
 
   checkNumber(e) {
-    console.log(e.target.value)
-    let number = this.state.number
+    let {productId} = this.state
     if (!(/(^[1-9]\d*$)/.test(e.target.value))) {
-      e.target.value = 0
+      e.target.value = 1
     } else {
       this.setState({
-        number: e.target.value
+        num:e.target.value
       })
+      this.props.setNode(productId,this.container)
     }
   }
 
   render() {
-    const { plus, minus, number } = this.state
+    const { plus, minus,num } = this.state 
     return (
       <div className="counter">
-        <Input style={{ width: '100px' }} addonBefore={minus} addonAfter={plus} value={number} onChange={this.checkNumber} />
+        <Input ref={(node) => { this.container = node; }} style={{ width: '100px' }} addonBefore={minus} addonAfter={plus} defaultValue={num} value={num} onChange={(e)=>this.setState({ num: e.target.value })} onBlur={this.checkNumber} />
       </div>
     )
   }

@@ -1,10 +1,12 @@
 import React from 'react'
-import { Layout, Icon, Table, Popconfirm, Badge, Input, Menu, Dropdown } from 'antd';
+import { Layout, Modal, Transfer, Icon, Table, Popconfirm, Badge, Input, Menu, Dropdown } from 'antd';
 import SetTopColumns from './components/SetTopColumns'
 import AddDiscount from './components/AddDiscount'
 import NewDiscount from './components/NewDiscount'
+import products from '../../../assets/data/products.json'
 import './DiscountManage.css'
 const { Header, Content } = Layout;
+
 const EditableCell = ({ editable, value, onChange }) => {
   return (
     <div>
@@ -16,22 +18,53 @@ const EditableCell = ({ editable, value, onChange }) => {
   )
 };
 
-
 class DiscountManage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       data: this.props.data,
-      name: 'discounts'
+      name: 'discounts',
+      visible: false,
+      mockData: [],
+      targetKeys: [],
     }
     this.cacheData = this.state.data.map(item => ({ ...item }));
   }
+
+  showModal = (discountId) => {
+    this.getMock(discountId)
+    this.discountId = discountId
+    this.setState({
+      visible: true,
+    });
+  }
+  handleOk = () => {
+    const discountId = this.discountId
+    let product = []
+    const { data, targetKeys } = this.state
+    let discount = data.find((item) => item.id == discountId)
+    targetKeys.map((item) => {
+      products.find((piece) => { return item == piece.id ? product.push(piece) : false })
+    })
+    discount.product = product
+    this.setState({
+      data,
+      visible: false,
+    });
+  }
+  handleCancel = (e) => {
+    this.setState({
+      visible: false,
+    });
+  }
+
   expandedRowRender(record) {
     const columns = [
       {
         title: '产品名称',
         dataIndex: 'name',
-        key: 'name'
+        key: 'name',
+        render: (text, record) => record.productDetail.productName,
       },
       {
         title: '产品代号',
@@ -75,6 +108,7 @@ class DiscountManage extends React.Component {
       />
     );
   };
+
   get columns() {
     return [
       {
@@ -88,19 +122,21 @@ class DiscountManage extends React.Component {
         title: '创建时间',
         dataIndex: 'createdAt',
         key: 'createdAt',
-        width: '15%',
+        width: '18%',
+        render: (text, record) => { return (new Date(record.createdAt)).toLocaleString() },
       },
       {
         title: '结束时间',
         dataIndex: 'endAt',
         key: 'endAt',
-        width: '15%',
+        width: '18%',
+        render: (text, record) => { return (new Date(record.endAt)).toLocaleString() },
       },
       {
         title: '会员优惠',
         dataIndex: 'memberPriceOff',
         key: 'memberPriceOff',
-        width: '15%',
+        width: '9%',
       },
       {
         title: '描述',
@@ -123,6 +159,10 @@ class DiscountManage extends React.Component {
           const { editable } = record;
           return (
             <span>
+              <span>
+                <Icon type="plus" style={{ fontSize: '16px'}} onClick={() => this.showModal(record.id)} />
+              </span>
+              <span className="ant-divider" />
               {
                 editable ?
                   <span>
@@ -165,6 +205,7 @@ class DiscountManage extends React.Component {
       this.setState({ data: newData });
     }
   }
+
   edit(id) {
     const newData = [...this.state.data];
     const target = newData.filter(item => id === item.id)[0];
@@ -173,6 +214,7 @@ class DiscountManage extends React.Component {
       this.setState({ data: newData });
     }
   }
+
   save(id) {
     const newData = [...this.state.data];
     const target = newData.filter(item => id === item.id)[0];
@@ -182,6 +224,7 @@ class DiscountManage extends React.Component {
       this.cacheData = newData.map(item => ({ ...item }));
     }
   }
+
   cancel(id) {
     const newData = [...this.state.data];
     const target = newData.filter(item => id === item.id)[0];
@@ -191,17 +234,38 @@ class DiscountManage extends React.Component {
       this.setState({ data: newData });
     }
   }
+
   get config() {
     return {
       name: '创建新折扣'
     }
   }
+
   newDiscount() {
     return (
-      // <AddDiscount addOne={this.props.addData} style={{ float: 'right', marginRight: 10 }} buttonName={this.config.name} />
-      <NewDiscount style={{ float: 'right', marginRight: 10 }} buttonName={this.config.name}/>
+      <NewDiscount style={{ float: 'right', marginRight: 10 }} buttonName={this.config.name} />
     )
   }
+
+  getMock = (discountId) => {
+    const data = this.state.data
+    const targetKeys = [];
+    const mockData = products;
+    let index = data.find((item) => item.id == discountId)
+    index.product.map((item) => {
+      mockData.map((piece) => {
+        return item.id == piece.id ? targetKeys.push(item.id) : false
+      })
+    })
+    this.setState({ mockData, targetKeys });
+  }
+  filterOption = (inputValue, option) => {
+    return option.description.indexOf(inputValue) > -1;
+  }
+  handleChange = (targetKeys) => {
+    this.setState({ targetKeys });
+  }
+
   render() {
     const { data } = this.state
     const config = {
@@ -224,6 +288,23 @@ class DiscountManage extends React.Component {
             />
           </div>
         </Content>
+        <Modal
+          title="添加产品"
+          visible={this.state.visible}
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+        >
+          <Transfer
+            rowKey={record => record.id}
+            dataSource={this.state.mockData}
+            searchPlaceholder='请输入搜索内容'
+            showSearch
+            filterOption={this.filterOption}
+            targetKeys={this.state.targetKeys}
+            onChange={this.handleChange}
+            render={item => item.productDetail.productName}
+          />
+        </Modal>
       </Layout>
     )
   }

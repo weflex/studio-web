@@ -11,5 +11,9 @@
 }
 
 .shoppingCard-item > div{
-  margin: 10px
+  margin: 10px 3px;
+}
+
+.shoppingCard-del-show{
+  display: none
 }

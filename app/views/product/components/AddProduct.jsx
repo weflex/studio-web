@@ -7,8 +7,8 @@ class AddProduct extends React.Component {
   state = { visible: false }
 
   async componentWillMount() {
-    // const venue = await client.user.getVenueById();
-    const token = await client.resource.token();
+    const venue = await client.user.getVenueById();
+    const token = await client.resource.token(venue.id);
     this.setState({
       token: token.uptoken
     });
@@ -33,7 +33,6 @@ class AddProduct extends React.Component {
   }
 
   handleChange = (info) => {
-    console.log(info)
     if (info.file.status === 'done') {
       // Get this url from response in real world.
       this.getBase64(info.file.originFileObj, imageUrl => this.setState({ imageUrl }));

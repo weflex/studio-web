@@ -175,6 +175,7 @@ export default class ReportDetail extends Component {
   renderButtonDeatil() {
     let { venueId, detailTime } = this.state;
     const { accessToken } = this.cache;
+    console.log(`api/venues/${venueId}/classes/export?access_token=${accessToken}&startsAt=${detailTime}&endsAt=${detailTime}`)
     detailTime = format(detailTime, 'YYYY-MM')
     if (!detailTime) {
       return <Button size="small" disabled>下载明细</Button>;

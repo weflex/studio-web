@@ -15,12 +15,21 @@ export default class extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      refs: {},
       current: 'cards',
       name: 'products',
       collapsed: true,
       show: false,
-      cacheShopping:[]
+      cacheShopping: [],
+      total: 0,
+      allChecked: false,
+      showBalance: false
     }
+    this.balance = this.balance.bind(this)
+    this.checkShoppingCard = this.checkShoppingCard.bind(this)
+    this.setNode = this.setNode.bind(this)
+    this.delShoppingCard = this.delShoppingCard.bind(this)
+    this.editShoppingCard = this.editShoppingCard.bind(this)
   }
 
   toggle = () => {
@@ -54,24 +63,27 @@ export default class extends Component {
 
   createCard() {
     const product = this.props.data
+    const { cacheShopping } = this.state
     let col = []
     for (let i = 0; i < product.length; i++) {
-      console.log(product[i])
+      let currShoppingProduct = cacheShopping.find((item) => {
+        return item.id == product[i].id
+      })
       col.push(
         <Col key={i} style={{ padding: '10px' }} xs={12} sm={10} md={8} lg={6} xl={4}>
-          <Card key={product[i].id} title={product[i].name} loading={false} bordered={false} extra={this.createSetting(product[i].id)}>
+          <Card key={product[i].id} title={product[i].productDetail.productName} loading={false} bordered={false} extra={this.createSetting(product[i].id)}>
             <div className="custom-image">
               <img alt="example" width="100%" src={product[i].imageUrl} />
             </div>
             <div className='price'>
               <div className='price-left' >
-                <span>￥{product[i].price}</span>
+                <span>￥{product[i].productPricing.unitPrice}</span>
                 <span style={{ textDecoration: 'line-through', color: 'red', position: 'relative', top: '2px' }}>￥{product[i].delPrice}</span>
               </div>
-              <Counter />
+              <Counter setNode={this.setNode} productId={product[i].id} />
             </div>
             <div style={{ paddingTop: '5px' }}>
-              <Button className='btn-join' onClick={this.addCacheShopping.bind(this) }>加入购物车</Button>
+              <Button className='btn-join' onClick={() => this.addCacheShopping(product[i].id)}>加入购物车</Button>
               <Button className='btn-add' >立刻购买</Button>
             </div>
           </Card>
@@ -80,10 +92,12 @@ export default class extends Component {
     return <Row gutter={24}>{col}</Row>
   }
 
-  addCacheShopping(product) {
-    console.log(product.toString())
-    // let cacheShopping = this.state.cacheShopping
-    // cacheShopping
+  setNode(productId, node) {
+    let refs = this.state.refs
+    refs[productId] = node
+    this.setState({
+      refs
+    })
   }
 
   get config() {
@@ -127,15 +141,96 @@ export default class extends Component {
   }
 
   createShoppingCard() {
-    let cards = []
-    for (let i = 0; i < 25; i++) {
-      cards.push(<ShoppingCard key={i} />)
+    const cacheShopping = this.state.cacheShopping
+    return cacheShopping.map((item) => {
+      return <ShoppingCard
+        key={item.id}
+        data={item}
+        delShoppingCard={this.delShoppingCard}
+        checkShoppingCard={this.checkShoppingCard}
+        editShoppingCard={this.editShoppingCard}
+      />
+    })
+  }
+
+
+  addCacheShopping(productId) {
+    let { cacheShopping, refs } = this.state
+    const index = cacheShopping.findIndex((item) => {
+      return item.id == productId ? item.num += parseInt(refs[productId].props.value) : false
+    })
+    if (index == -1) {
+      cacheShopping.push({
+        id: productId,
+        num: parseInt(refs[productId].props.value),
+        checked: false,
+      })
     }
-    return cards
+    this.setState({
+      cacheShopping
+    }, () => {
+      this.balance()
+    })
+  }
+
+  editShoppingCard(...param) {
+    let cacheShopping = this.state.cacheShopping
+    if (param[0] == 'plus') {
+      let index = cacheShopping.find((item) => {
+        return item.id == param[1]
+      })
+      index.num += 1
+    } else if (param[0] == 'minus') {
+      let index = cacheShopping.find((item) => {
+        return item.id == param[1]
+      })
+      if (index.num > 1) {
+        index.num -= 1
+      }
+    }
+    this.setState({
+      cacheShopping
+    })
+  }
+
+  checkShoppingCard(product, checked) {
+    let { cacheShopping } = this.state
+    const allChecked = cacheShopping.filter((item) => {
+      return item.id == product.id ? item.checked = checked && checked : item.checked
+    })
+    this.setState({
+      cacheShopping,
+      showBalance: allChecked.length > 0,
+      allChecked: allChecked.length == cacheShopping.length ? true : false
+    }, () => {
+      this.balance()
+    })
+  }
+
+  delShoppingCard(productId) {
+    let { cacheShopping } = this.state
+    cacheShopping.splice(cacheShopping.findIndex((e) => { return e.id == productId }), 1)
+    this.setState({
+      cacheShopping
+    })
+  }
+
+
+  balance() {
+    let { cacheShopping } = this.state
+    let total = 0
+    cacheShopping.map((item) => {
+      return this.props.data.map((piece) => {
+        return item.id == piece.id && item.checked ? total += (piece.productPricing.unitPrice * item.num) : false
+      })
+    })
+    this.setState({
+      total
+    })
   }
 
   render() {
-    const show = this.state.show
+    const { allChecked, showBalance, show, cacheShopping, total } = this.state
     return (
       <Layout>
         <Header>
@@ -157,7 +252,7 @@ export default class extends Component {
                     fontWeight: 'bold',
                     lineHeight: '20px'
                   }}>购物车</div>
-                  <Badge count={25} style={{ color: '#fff', backgroundColor: '#FF0036', fontSize: '12px' }} />
+                  <Badge count={cacheShopping.length} style={{ color: '#fff', backgroundColor: '#FF0036', fontSize: '12px' }} />
                 </Icon>
               </div>
             </div>
@@ -169,9 +264,24 @@ export default class extends Component {
             }}>
               <div style={{ height: '90%', overflowX: 'hidden' }}>
                 <div>
-                  <Checkbox  style={{
-                    margin: '8px'
-                  }}>全选</Checkbox>
+                  <Checkbox
+                    checked={allChecked}
+                    style={{
+                      margin: '8px'
+                    }}
+                    onChange={(e) => {
+                      cacheShopping.map((item) => {
+                        item.checked = e.target.checked
+                      })
+                      this.setState({
+                        cacheShopping,
+                        allChecked: e.target.checked,
+                        showBalance: e.target.checked
+                      }, () => {
+                        this.balance()
+                      })
+                    }}
+                  >全选</Checkbox>
                   {this.createShoppingCard()}
                 </div>
               </div>
@@ -188,12 +298,14 @@ export default class extends Component {
                   height: '30px'
                 }}>
                   <span>
-                    已选2件
+                    已选{cacheShopping.filter((item) => {
+                      return item.checked
+                    }).length}件
                   </span>
                   <span style={{
                     float: 'right'
                   }}>
-                    ￥0.00
+                    ￥{total}
                   </span>
                 </div>
                 <div style={{
@@ -202,12 +314,7 @@ export default class extends Component {
                   textAlign: 'center',
                   lineHeight: '40px'
                 }}>
-                  <div style={{
-                    backgroundColor: '#666',
-                    cursor: 'default',
-                    width: '248px',
-                    height: '40px'
-                  }}><span style={{
+                  <div className={showBalance ? 'shopping-card-balance-open' : 'shopping-card-balance-disabled'} ><span style={{
                     color: '#FFF',
                     fontSize: '14px'
                   }}>结算</span></div>
