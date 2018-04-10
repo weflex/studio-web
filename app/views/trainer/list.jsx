@@ -62,7 +62,10 @@ class TrainerList extends React.Component {
           avatar: trainer.user.avatar || defaultAvatar,
           ptSchedule: trainer.ptSchedule,
           classSms: trainer.classSms,
-          modifiedAt: trainer.modifiedAt
+          modifiedAt: trainer.modifiedAt,
+          orgId: trainer.orgId,
+          venueId: trainer.venueId,
+          userId: trainer.userId,
         };
       })
     });
@@ -118,7 +121,10 @@ class TrainerList extends React.Component {
           <Switch checkedChildren="开" unCheckedChildren="关" checked={trainer.classSms} onChange={async () => {
             let dataSource = this.state.dataSource
            const result = await client.collaborator.update(trainer.id, {
-              classSms: !trainer.classSms
+              classSms: !trainer.classSms,
+              orgId: trainer.orgId,
+              venueId: trainer.venueId,
+              userId: trainer.userId,
             }, trainer.modifiedAt);
             dataSource[trainer.key].classSms = !trainer.classSms
             dataSource[trainer.key].modifiedAt = result.modifiedAt

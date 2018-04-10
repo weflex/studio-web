@@ -143,17 +143,18 @@ class ClassBatch extends React.Component {
     const { venueId, ctId, ctModifiedAt } = this.cache;
     try {
       if (!ctId) {
-        const resault = await client.classTempleList.create({
+        const result = await client.classTempleList.create({
           venueId,
           classList: schedule,
         });
-        this.cache.ctId = resault.id;
-        this.cache.ctModifiedAt = resault.modifiedAt;
+        this.cache.ctId = result.id;
+        this.cache.ctModifiedAt = result.modifiedAt;
       } else {
-        const resault = await client.classTempleList.update(ctId, {
+        const result = await client.classTempleList.update(ctId, {
+          venueId,
           classList: schedule,
         }, ctModifiedAt);
-        this.cache.ctModifiedAt = resault.modifiedAt;
+        this.cache.ctModifiedAt = result.modifiedAt;
       }
       this.setState({ schedule });
     } catch (error) {

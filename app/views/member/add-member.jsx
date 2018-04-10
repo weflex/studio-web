@@ -13,7 +13,7 @@ export default class extends React.Component {
 
   constructor(props) {
     super(props);
-    
+
     this.state = {
       form: {},
       hasPhone: false,
@@ -82,7 +82,8 @@ export default class extends React.Component {
           source: form.source,
           comment: form.comment,
           nickname: form.nickname,
-          userId:userId
+          userId: userId,
+          venueId: venueId,
         }, form.modifiedAt);
       }
       if (typeof onComplete === 'function') {

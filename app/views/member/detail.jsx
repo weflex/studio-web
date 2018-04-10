@@ -39,7 +39,7 @@ class UserProfileCard extends React.Component {
      */
     context: React.PropTypes.object,
   };
-  
+
   /**
    * @constructor
    */
@@ -67,7 +67,7 @@ class UserProfileCard extends React.Component {
   /**
    * @property {Array} actions - the buttons on the right top of this card
    */
-  get actions() {  
+  get actions() {
     let actions = [];
     actions.push(
       <a key="edit" onClick={this.onEdit.bind(this)}>编辑会员</a>,
@@ -156,7 +156,7 @@ class UserProfileCard extends React.Component {
         <UIFramework>
           <UIFramework.Row>
             <UIFramework.Upload
-              token={this.state.uptoken} 
+              token={this.state.uptoken}
               onSuccess={this.onMemberAvatarUploaded.bind(this)}
               onError={this.onMemberAvatarUploadFail.bind(this)}>
               <UIFramework.Image size={120} src={this.props.avatar} style={{marginRight: '10px'}} />
@@ -183,7 +183,7 @@ class UserProfileCard extends React.Component {
         <MasterDetail.Card.InlineRow name="备注">
           <span>{this.props.comment || '无备注'}</span>
         </MasterDetail.Card.InlineRow>
-        <UIFramework.Modal 
+        <UIFramework.Modal
           title="编辑会员信息"
           visible={this.state.modalVisibled}
           onCancel={this.hideModal.bind(this)}
@@ -274,7 +274,7 @@ class MembershipCard extends React.Component {
           width={this.props.width}
           data={this.props.data}
         />
-        <UIFramework.Modal 
+        <UIFramework.Modal
           title="会卡"
           visible={this.state.visible}
           onCancel={() => this.setState({visible: false})}
@@ -373,15 +373,13 @@ class MembershipList extends React.Component {
         width={width}
         data={data}
         onComplete={this.props.onComplete}
-        member={this.state.member}
-      />;
+        member={this.state.member} />;
     }).concat(
       <MembershipCard
         key="add"
         width={width}
         onComplete={this.props.onComplete}
-        member={this.state.member}
-      />
+        member={this.state.member}/>
     );
   }
 
