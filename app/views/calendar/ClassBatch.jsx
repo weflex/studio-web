@@ -3,12 +3,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import UIFramework from '@weflex/weflex-ui';
 import { client } from '../../api';
-import { Select, Button, TimePicker, Table, DatePicker } from 'antd';
+import { Select,Spin, Button, TimePicker, Table, DatePicker } from 'antd';
 import { keyBy, sortBy, findIndex } from 'lodash';
 import { startOfWeek, endOfWeek, addDays, addMinutes, startOfDay, addMonths, format, differenceInDays, setHours, setMinutes } from 'date-fns';
 import classnames from 'classnames';
 import moment from 'moment';
-
+const async = require('async')
 class ClassBatch extends React.Component {
 
   static propTypes = {
@@ -25,6 +25,7 @@ class ClassBatch extends React.Component {
       schedule: [[], [], [], [], [], [], []],
       time: '09:00',
       templateId: '',
+      isStateReady:true
     }
 
     this.cache = {
@@ -37,22 +38,32 @@ class ClassBatch extends React.Component {
         {
           title: '时间',
           dataIndex: 'Time',
-          key: 'Time',
           width: '25%',
         }, {
           title: '课程名称',
           dataIndex: 'CourseName',
-          key: 'CourseName',
           width: '30%',
         }, {
           title: '教练姓名',
           dataIndex: 'TrainerName',
-          key: 'TrainerName',
           width: '30%',
+          render: (text, record) => {
+            const { trainers, schedule, scheduleIndex } = this.state
+            const options = trainers.map((item, index) => {
+              return <Select.Option key={item.id} value={item.id}>{item.fullname.first + item.fullname.last}</Select.Option>
+            })
+            return <Select value={record.TrainerName} style={{ width: 120 }} onChange={
+              (value) => {
+                schedule[scheduleIndex][record.id].trainerId = value
+                this.setState({
+                  schedule
+                })
+              }
+            }>{options}</Select>
+          }
         }, {
           title: '操作',
           dataIndex: 'Operation',
-          key: 'Operation',
           width: '15%',
         }
       ],
@@ -63,14 +74,14 @@ class ClassBatch extends React.Component {
   }
 
 
-  async componentWillReceiveProps(nextProps) {
-    // const schedule = await this.getSchedule();
-    // const courseTemplates= await this.getCourseTemplates();
-    // this.setState({
-    //   courseTemplates,
-    //   schedule,
-    // });
-  }
+  // async componentWillReceiveProps(nextProps) {
+  //   // const schedule = await this.getSchedule();
+  //   // const courseTemplates= await this.getCourseTemplates();
+  //   // this.setState({
+  //   //   courseTemplates,
+  //   //   schedule,
+  //   // });
+  // }
 
   async getCourseTemplates() {
     const { venueId } = this.cache;
@@ -89,17 +100,24 @@ class ClassBatch extends React.Component {
   }
 
   async componentDidMount() {
-    let courseTemplates, schedule
+    let courseTemplates, schedule, trainers
     try {
       this.cache.venueId = (await client.user.getVenueById()).id;
       courseTemplates = await this.getCourseTemplates();
       schedule = await this.getSchedule();
+      trainers = await client.collaborator.list({
+        where: {
+          venueId: this.cache.venueId,
+        }
+      });
     } catch (error) {
       console.error(error);
     }
     this.setState({
       courseTemplates,
       schedule,
+      trainers,
+      isStateReady:false
     });
   }
   async getSchedule() {
@@ -164,15 +182,16 @@ class ClassBatch extends React.Component {
   getScheduleView() {
     const { schedule, scheduleIndex, courseTemplates } = this.state;
     const scheduleView = [];
-    schedule[scheduleIndex].forEach(item => {
+    schedule[scheduleIndex].forEach((item, index) => {
       const template = courseTemplates[item.templateId];
       if (template) {
         const { first, last } = template.trainer.fullname;
         scheduleView.push({
-          key: item.id,
+          id: index,
+          key: item.templateId + Math.ceil(Math.random() * 100),
           Time: getEndsAt(item.time, template.duration),
           CourseName: template.name,
-          TrainerName: `${first} ${last}`,
+          TrainerName: item.trainerId || template.trainer.id,
           Operation: <span style={{ color: '#FF8AC2', cursor: 'pointer' }} onClick={e => this.onDeleteTemplate(item.time, item.templateId)}>删除</span>
         });
       }
@@ -198,7 +217,7 @@ class ClassBatch extends React.Component {
     [1, 2, 3, 4, 5, 6, 0].forEach((item, i) => {
       const date = addDays(weekStart, i);
       schedule[item].forEach((scheduleItem, j) => {
-        const { templateId, time } = scheduleItem;
+        const { templateId, time, trainerId } = scheduleItem;
         const template = courseTemplates[templateId];
         if (template) {
           const times = time.split(':');
@@ -214,7 +233,7 @@ class ClassBatch extends React.Component {
             price: template.price,
             spot: template.spot,
             templateId,
-            trainerId: template.trainerId,
+            trainerId: trainerId || template.trainerId,
             venueId: template.venueId,
             orders: [],
           });
@@ -230,11 +249,31 @@ class ClassBatch extends React.Component {
     let startsAt = moment(viewDate).startOf('week')
     let endsAt = moment(viewDate).endOf('week')
     try {
-      for (let item of courses) {
-        await client.class.create({ ...item });
-      }
-      this.setState({ weekStartsAt: moment().startOf('week') });
-      this.props.onComplete(startsAt, endsAt);
+      this.props.onWait()
+      let series = courses.map((item) => {
+        return async (callback) => {
+          let data = {}
+          try {
+            data = await client.class.create(item)
+          } catch (err) {
+            return callback(err, null)
+          }
+          return callback(null, data)
+        }
+      })
+      async.series(series,
+        (err, result) => {
+          if (err) {
+            console.log(err)
+          }
+          this.setState(
+            {
+             weekStartsAt: moment().startOf('week')
+             }
+            );
+          this.props.onComplete(startsAt, endsAt);
+        }
+      )
     } catch (error) {
       console.error(error);
     }
@@ -278,15 +317,17 @@ class ClassBatch extends React.Component {
   }
 
   render() {
-    const { weekStartsAt, schedule, scheduleIndex, courseTemplates, time } = this.state;
+    const { weekStartsAt, schedule, scheduleIndex, courseTemplates, time,isStateReady } = this.state;
     const { columns, weekStartsOn, dateFormat } = this.cache;
     return (
+      <Spin spinning={isStateReady} size="large" tip="Loading...">
       <UIFramework className='course-schedule'>
         <UIFramework.Row name="创建复制模板">
           <div style={{ marginBottom: '5px' }}>
             {this.renderSchedule()}
           </div>
           <Table
+            rowKey={(record) => record.key}
             columns={columns}
             dataSource={this.getScheduleView()}
             pagination={false}
@@ -297,7 +338,7 @@ class ClassBatch extends React.Component {
                   defaultValue={moment('09:00', 'HH:mm')}
                   onChange={(value) => {
                     this.setState({
-                      time: !value ?'':((value.hour() <10 ? '0'+value.hour(): value.hour()) + ":" + (value.minute() <10 ? '0'+value.minute(): value.minute())),
+                      time: !value ? '' : ((value.hour() < 10 ? '0' + value.hour() : value.hour()) + ":" + (value.minute() < 10 ? '0' + value.minute() : value.minute())),
                     })
                   }}
                   format={'HH:mm'}
@@ -313,7 +354,7 @@ class ClassBatch extends React.Component {
             className="small"
             value={weekStartsAt}
             onChange={(date, dateString) => { if (date) this.setState({ weekStartsAt: date }) }}
-            disabledDate={current => current && current.format('d') !== '1' | current.valueOf() < startOfDay(weekStartsAt) | current.valueOf() > addMonths(weekStartsAt, 2)}
+            disabledDate={current => current && current.format('d') !== '1' | current.valueOf() < startOfWeek(new Date()) | current.valueOf() > addMonths(weekStartsAt, 2)}
           />
           <DatePicker
             className="small ml10"
@@ -328,6 +369,7 @@ class ClassBatch extends React.Component {
           复制
         </UIFramework.Button>
       </UIFramework>
+      </Spin>
     );
   }
 }

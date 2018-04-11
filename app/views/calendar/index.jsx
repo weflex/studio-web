@@ -13,6 +13,7 @@ import moment from 'moment';
 import hourminute from '@weflex/hourminute';
 import {startOfDay, endOfDay} from 'date-fns';
 import { client } from '../../api';
+import {Spin} from 'antd'
 
 /**
  * @class WeflexCalendar
@@ -26,6 +27,7 @@ class WeflexCalendar extends React.Component {
     this.state = {
       schedule: new ClassList(),
       modalVisibled: false,
+      isStateReady:true
     };
   }
 
@@ -116,8 +118,9 @@ class WeflexCalendar extends React.Component {
 
   render() {
     const cellHeight = getCellHeight();
-    const { schedule, modalVisibled } = this.state; 
+    const { schedule, modalVisibled,isStateReady } = this.state; 
     return (
+      <Spin spinning={isStateReady} size="large" tip="Loading...">
       <div>
         <Calendar ref="calendar"
                   ctx={this}
@@ -129,9 +132,12 @@ class WeflexCalendar extends React.Component {
           visible={ modalVisibled }
           onCancel={ () => this.setState({modalVisibled: false}) }
         >
-          <ClassBatch schedule={ schedule._list } refs={this.refs} onComplete={ (startsAt,endsAt) => {this.setState({modalVisibled: false});this.listClasses(startsAt,endsAt) }} />
+       {
+            modalVisibled ? <ClassBatch schedule={schedule._list} onWait={()=>{this.setState({isStateReady:true})}} refs={this.refs} onComplete={(startsAt, endsAt) => { this.setState({ modalVisibled: false }); this.listClasses(startsAt, endsAt) }} /> : ''
+       }
         </UIFramework.Modal>
       </div>
+      </Spin>
     );
   }
 
@@ -156,6 +162,9 @@ class WeflexCalendar extends React.Component {
         content: d.format('ddd DD')
       };
     });
+    this.setState({
+      isStateReady:true
+    })
     this.refs.calendar.setState({indexes});
   }
 
@@ -235,7 +244,7 @@ class WeflexCalendar extends React.Component {
     });
 
     const schedule = new ClassList(classes.concat(ptSessionAsClasses));
-    this.setState({schedule});
+    this.setState({schedule,isStateReady:false});
   }
 
   async updateClass(classUpdates) {

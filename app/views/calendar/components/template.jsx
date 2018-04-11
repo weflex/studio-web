@@ -127,8 +127,7 @@ export default class Template extends React.Component {
       }
     }
     return (
-
-      <li className="resource-calendar-template">
+      <li title={template.name} className="resource-calendar-template">
         <div>{template.name}</div>
         <div>{template.duration}分钟</div>
         <div style={style}>{fullname}</div>

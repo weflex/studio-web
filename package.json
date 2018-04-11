@@ -16,6 +16,7 @@
     "@weflex/passport.js": "1.2.0",
     "@weflex/weflex-ui": "^2.8.4",
     "antd": "^2.12.6",
+    "async": "^2.6.0",
     "babel-polyfill": "6.3.14",
     "dataurl": "^0.1.0",
     "date-fns": "^1.28.1",
