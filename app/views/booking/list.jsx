@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import UIFramework from '@weflex/weflex-ui';
 import { client } from '../../api';
 import { Link } from 'react-router-component';
-import { Table, Pagination, Menu, Input, Button } from 'antd';
+import { Table,Spin, Pagination, Menu, Input, Button } from 'antd';
 import { format, compareAsc } from 'date-fns';
 import { filter } from 'lodash';
 
@@ -18,6 +18,7 @@ class List extends React.Component {
     super(props);
 
     this.state = {
+      isStateReady:true,
       bookingList: [],
       bookingTotal: 0,
       pageNumber: 1,
@@ -156,7 +157,7 @@ class List extends React.Component {
       };
     });
 
-    this.setState({bookingList: orderList, bookingTotal: orderTotal, pageNumber});
+    this.setState({bookingList: orderList, bookingTotal: orderTotal, pageNumber,isStateReady:false});
   }
 
   async getPTSessionList(whereFilter) {
@@ -189,7 +190,7 @@ class List extends React.Component {
       };
     });
 
-    this.setState({bookingList: ptSessionList, bookingTotal: ptSessionTotal, pageNumber});
+    this.setState({bookingList: ptSessionList, bookingTotal: ptSessionTotal, pageNumber,isStateReady:false});
   }
 
   getStatusLabel(item, startsAt) {
@@ -244,10 +245,11 @@ class List extends React.Component {
   }
 
   render() {
-    const { bookingList, bookingTotal, pageNumber, bookingType, search } = this.state;
+    const { bookingList, bookingTotal, pageNumber, bookingType, search,isStateReady } = this.state;
     const { orderColumns, ptSessionColumns, pageSize } = this.config;
 
     return (
+      <Spin spinning={isStateReady} size="large" tip="Loading...">
       <div className='wrap-booking-manager'>
 
         <Menu className='booking-menu' selectedKeys={[bookingType]} mode="horizontal">
@@ -279,6 +281,7 @@ class List extends React.Component {
           onChange={this.onPageNumberChange}
         />
       </div>
+      </Spin>
     );
   }
 }
