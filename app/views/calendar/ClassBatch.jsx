@@ -50,7 +50,7 @@ class ClassBatch extends React.Component {
           render: (text, record) => {
             const { trainers, schedule, scheduleIndex } = this.state
             const options = trainers.map((item, index) => {
-              return <Select.Option key={item.id} value={item.id}>{item.fullname.first + item.fullname.last}</Select.Option>
+              return <Select.Option key={"trainer_"+item.id} value={item.id}>{item.fullname.first + item.fullname.last}</Select.Option>
             })
             return <Select value={record.TrainerName} style={{ width: 120 }} onChange={
               (value) => {
@@ -188,7 +188,7 @@ class ClassBatch extends React.Component {
         const { first, last } = template.trainer.fullname;
         scheduleView.push({
           id: index,
-          key: item.templateId + Math.ceil(Math.random() * 100),
+          key: "scheduleView_"+index+item.templateId,
           Time: getEndsAt(item.time, template.duration),
           CourseName: template.name,
           TrainerName: item.trainerId || template.trainer.id,
@@ -283,7 +283,7 @@ class ClassBatch extends React.Component {
     const selects = [];
     for (let key in courseTemplates) {
       const item = courseTemplates[key];
-      selects.push(<Select.Option key={item.id} value={item.id}>{item.name}</Select.Option>);
+      selects.push(<Select.Option key={"courseTemplates_"+item.id} value={item.id}>{item.name}</Select.Option>);
     }
     return (
       <Select
