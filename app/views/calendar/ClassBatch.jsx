@@ -249,6 +249,9 @@ class ClassBatch extends React.Component {
     let startsAt = moment(viewDate).startOf('week')
     let endsAt = moment(viewDate).endOf('week')
     try {
+      this.setState({
+        isStateReady:true
+      })
       this.props.onWait()
       let series = courses.map((item) => {
         return async (callback) => {
@@ -268,7 +271,8 @@ class ClassBatch extends React.Component {
           }
           this.setState(
             {
-             weekStartsAt: moment().startOf('week')
+             weekStartsAt: moment().startOf('week'),
+             isStateReady:false
              }
             );
           this.props.onComplete(startsAt, endsAt);
