@@ -140,7 +140,7 @@ class MemberView extends React.Component {
     });
     
     members = skip !== 0? members.concat(memberList): memberList;
-    this.props.app.title(`会员管理（${members.length}）`);
+    this.props.app.title(`会员管理：当前显示（${members.length}）总人数（${memberCount}）`);
     this.setState({
       skip: skip + limit,
       members,
