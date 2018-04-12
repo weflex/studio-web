@@ -152,20 +152,30 @@ class Option extends React.Component {
     const venue = this.props.venue
     let result = []
     if (!isSet) {
-      result.push(<p key='1' className="wf-set-tips">当前场馆设置，会员最晚开课前 <span className="wf-tips-color">{venue.deadline}</span> 小时内不能取消订单</p>)
+      result.push(
+      [<p key='1' className="wf-set-tips">当前场馆设置，会员最晚开课前 <span className="wf-tips-color">{venue.deadline}</span> 小时内不能取消订单</p>,
+      <p key='2' className="wf-set-tips">当前场馆设置，会员最晚开课前 <span className="wf-tips-color">{venue.lastBookDeadline}</span> 小时内不能预约课程</p>]
+    )
       if (venue.remindMember && venue.remindMember.isRemind) {
-        result.push(<p key='2' className="wf-set-tips">  当前场馆设置，会员会卡过期前 <span className="wf-tips-color">{venue.remindMember.days}</span> 天提醒</p>)
+        result.push(<p key='3' className="wf-set-tips">  当前场馆设置，会员会卡过期前 <span className="wf-tips-color">{venue.remindMember.days}</span> 天提醒</p>)
       }
     } else {
-      result.push(<p key='3' className="wf-set-tips">勾选你要选用的提醒条件，并输入对应数值</p>)
+      result.push(<p key='4' className="wf-set-tips">勾选你要选用的提醒条件，并输入对应数值</p>)
       result.push(
-        <ul key='4' className="wf-set-tips">
-          <li >
+        <ul key='5' className="wf-set-tips">
+          <li>
             <Checkbox defaultChecked={true} />
             当前场馆设置
             <span style={{ color: "#ff9d00" }}>会员最晚开课前</span>
             <Input min={0} defaultValue={venue.deadline} name='deadline' style={{ margin: "0 5px 0 5px", width: 50 }} onBlur={this.form} />
             小时内不能取消订单
+          </li>
+          <li>
+            <Checkbox defaultChecked={true} />
+            当前场馆设置
+            <span style={{ color: "#ff9d00" }}>会员最晚开课前</span>
+            <Input min={0} defaultValue={venue.lastBookDeadline} name='lastBookDeadline' style={{ margin: "0 5px 0 5px", width: 50 }} onBlur={this.form} />
+            小时内不能预约课程
           </li>
           <li>
             <Checkbox defaultChecked={venue.remindMember.isRemind} name='isRemind' onBlur={this.form} />
@@ -175,7 +185,7 @@ class Option extends React.Component {
             天提醒
           </li>
         </ul>,
-        <Foot key='5' data={this.state.saveAndCancel} />
+        <Foot key='6' data={this.state.saveAndCancel} />
       )
     }
     return result
