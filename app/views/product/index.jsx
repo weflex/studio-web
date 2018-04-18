@@ -78,29 +78,29 @@ class Product extends Component {
   render() {
     const { products, productCategorys, bands, discounts } = this.state
     return (
-      <Tabs defaultActiveKey="4">
-        <TabPane tab={<span><Icon type="apple" />产品展示</span>} key="1">
+      <Tabs defaultActiveKey="1">
+        <TabPane tab={<span><Icon type="apple" />产品管理</span>} key="1">
           <ProductManage
             {...this.crudActions}
             data={products}
           />
         </TabPane>
-        <TabPane tab={<span><Icon type="android" />分类管理</span>} key="2">
+        <TabPane tab={<span><Icon type="android" />回收站</span>} key="2">
           <ProductCategoryManage
             {...this.crudActions}
             data={productCategorys} />
         </TabPane>
-        <TabPane tab={<span><Icon type="android" />品牌管理</span>} key="3">
+        {/* <TabPane tab={<span><Icon type="android" />品牌管理</span>} key="3">
           <BandManage
             {...this.crudActions}
             data={bands} />
-        </TabPane>
-        <TabPane tab={<span><Icon type="android" />折扣管理</span>} key="4">
+        </TabPane> */}
+        {/* <TabPane tab={<span><Icon type="android" />折扣管理</span>} key="4">
           <DiscountManage
             {...this.crudActions}
             data={discounts}
           />
-        </TabPane>
+        </TabPane> */}
       </Tabs>
     )
   }

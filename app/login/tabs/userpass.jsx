@@ -18,7 +18,9 @@ class TabUserPass extends React.Component {
   async onLogin() {
     const {username, password} = this.state.form;
     await client.user.login(username, password);
+    alert(1)
     await client.user.getCurrent();
+    alert(2)
     window.location.href = '/calendar';
   }
   render() {
