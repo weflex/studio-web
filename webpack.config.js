@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { join } = require('path');
 const environments = require('./config/environments.js');
 const environment = environments[process.env.env];
+const uglify = require('uglifyjs-webpack-plugin');
 
 function dir (subpath) {
   return join(__dirname, subpath);
@@ -78,6 +79,9 @@ module.exports = {
     }
   },
   plugins: [
+    new uglify({
+      parallel:true
+    }),
     new HtmlWebpackPlugin({
       template: './assets/index.html',
       filename: 'index.html',
