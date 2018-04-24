@@ -1,15 +1,8 @@
 import React, { Component } from 'react';
 import { Tabs, Icon, Input, message } from 'antd'
 import ProductManage from './ProductManage'
-import ProductCategoryManage from './ProductCategoryManage'
-import BandManage from './BandManage'
-import DiscountManage from './DiscountManage'
 import { client } from '../../api';
 import './index.css'
-import products from '../../../assets/data/products.json'
-import productCategorys from '../../../assets/data/productCategorys.json'
-import bands from '../../../assets/data/bands.json'
-import discounts from '../../../assets/data/discounts.json'
 const TabPane = Tabs.TabPane;
 
 class Product extends Component {
@@ -19,10 +12,9 @@ class Product extends Component {
 
     this.state = {
       current: 'cards',
-      products: products,
-      productCategorys: productCategorys,
-      bands: bands,
-      discounts: discounts
+      products: [],
+      productCategorys: [],
+      showProductModel: true
     }
     this.delData = this.delData.bind(this)
     this.editData = this.editData.bind(this)
@@ -33,6 +25,34 @@ class Product extends Component {
   }
   get actions() {
     return [];
+  }
+
+  async componentDidMount() {
+    const venue = await client.user.getVenueById();
+    const productCategorys = await client.productCategory.list({
+      where: {
+        venueId: venue.id,
+      },
+      include: [{
+        relation: 'product',
+        scope: {
+          include: ['productDetail', 'productPricing']
+        },
+      }, {
+        relation: 'productCategoryDetail',
+        scope: {
+          where: {
+            locale: "zh"
+          }
+        }
+      }]
+    })
+    console.log(productCategorys)
+    const products = await client.product.listByVenueId(venue.id)
+    this.setState({
+      productCategorys,
+      products
+    })
   }
 
   delData(dataSource, ...param) {
@@ -68,38 +88,41 @@ class Product extends Component {
       addData: this.addData
     }
   }
-  addData(dataSource, newItem) {
+  addData(dataSource, newItem, productCategoryId) {
     let state = this.state
-    state[dataSource].unshift(newItem)
+    state[dataSource].find((item) => {
+      if (item.id == productCategoryId) {
+        return item.product.unshift(newItem)
+      }
+    })
     this.setState({
       state
     })
   }
+
+  // showCreateProduct() {
+  //   this.setState({
+  //     showProductModel: false
+  //   })
+  // }
+
   render() {
-    const { products, productCategorys, bands, discounts } = this.state
+    const { showProductModel, products, productCategorys } = this.state
     return (
-      <Tabs defaultActiveKey="1">
+      <Tabs style={{ height: '100%' }} defaultActiveKey="1">
         <TabPane tab={<span><Icon type="apple" />产品管理</span>} key="1">
-          <ProductManage
-            {...this.crudActions}
-            data={products}
-          />
+          {
+            productCategorys.length > 0 ? <ProductManage
+              {...this.crudActions}
+              data={{ products, productCategorys }}
+              showCreateProduct={this.showCreateProduct}
+            /> : ''
+          }
         </TabPane>
-        <TabPane tab={<span><Icon type="android" />回收站</span>} key="2">
+        {/* <TabPane tab={<span><Icon type="android" />回收站</span>} key="2">
           <ProductCategoryManage
             {...this.crudActions}
             data={productCategorys} />
-        </TabPane>
-        {/* <TabPane tab={<span><Icon type="android" />品牌管理</span>} key="3">
-          <BandManage
-            {...this.crudActions}
-            data={bands} />
-        </TabPane> */}
-        {/* <TabPane tab={<span><Icon type="android" />折扣管理</span>} key="4">
-          <DiscountManage
-            {...this.crudActions}
-            data={discounts}
-          />
         </TabPane> */}
       </Tabs>
     )

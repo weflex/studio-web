@@ -1,7 +1,8 @@
 
 .toolbar {
   width: calc(100% - 150px);
-  height: 52px;
+  height: 5vh;
+  min-height: 30px;
   position: absolute;
   top: 0;
   left: 150px;
@@ -18,9 +19,11 @@
   text-align: center;
   padding: 0;
   margin: 0;
-  height: 52px;
-  line-height: 52px;
   min-width: 320px;
+  height: 5vh;
+  min-height: 30px;
+  height: 100%;
+  line-height: 5vh;
 }
 
 .toolbar > ul, .toolbar > div {

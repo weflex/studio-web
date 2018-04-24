@@ -28,7 +28,7 @@ body {
 }
 
 .ant-card-body {
-    padding: 12px;
+    padding: 12px 12px 12px 20px;
 }
 
 .counter {
@@ -57,6 +57,10 @@ body {
 
 .ant-input-group-addon {
     background-color: white;
+}
+
+.ant-tabs-bar {
+    margin-bottom: 0px;
 }
 
 .btn-join {
@@ -122,4 +126,53 @@ body {
     cursor: default;
     width: 248px;
     height: 40px;
+}
+
+.product-card {
+    padding: 10px 0 20px 0;
+    color: red;
+}
+
+.product-card span {
+    font-size: 15px;
+}
+
+.ant-tabs-nav-container {
+    height: 4vh;
+    line-height: 4vh;
+    min-height: 30px;
+}
+
+.ant-tabs-nav .ant-tabs-tab {
+    padding: 0 20px;
+}
+
+.product-create li {
+    margin: 10px 0;
+}
+
+.product-detail {
+    display: block;
+    width: 50px;
+    float: left;
+    margin-right: 10px;
+    line-height: 25px;
+}
+
+.avatar-product {
+    width: 150px;
+    height: 150px;
+}
+
+.avatar-uploader {
+    position: relative;
+    left: 100px;
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 150px;
+    height: 150px;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
 }

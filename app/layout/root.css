@@ -15,7 +15,7 @@
 .main {
   position: absolute;
   left: 150px;
-  top: 52px;
+  top: 5vh;
   right: 0;
   bottom: 0;
   overflow: hidden;

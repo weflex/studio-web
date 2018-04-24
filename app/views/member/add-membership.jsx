@@ -153,6 +153,7 @@ export default class extends React.Component {
       venueId: form.venueId,
       memberId: member.id,
     };
+    console.log(membership)
     if(form.available || form.available === 0) {
       membership.available = form.available;
     }
