@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import {
-  Layout, Row, Col,
+  Layout, Row, Col, Badge, Spin, InputNumber,
   Button, Icon, Card, Input, Menu, Modal, Select, DatePicker, Upload, Checkbox, Popconfirm
 } from 'antd';
 import { client } from '../../api'
 import './index.css'
 import Anchor from './components/Anchor'
+import ramda from 'ramda'
 const async = require('async')
 const { MonthPicker, RangePicker } = DatePicker;
 const { Header, Content, Footer, Sider } = Layout;
@@ -16,13 +17,11 @@ export default class extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      defaultCategory: this.props.data.productCategorys[0],
+      defaultCategory: this.props.data.defaultCategory,
       viewModel: false,
       visible: false,
       refs: {},
-      categoryName: 'productCategorys',
       newCategoryName: '',
-      productName: 'products',
       classPackages: [],
       type: '',
       classPackageItem: {},
@@ -30,23 +29,41 @@ export default class extends Component {
       isCategoryEdit: false,
       isCheck: false,
       cacheProducts: [],
-      allChoose: false
+      allChoose: false,
+      loading: false,
+      editProduct: {}
     }
     this.showProduct = this.showProduct.bind(this)
     this.handleClick = this.handleClick.bind(this)
     this.showCreate = this.showCreate.bind(this)
     this.setAttribute = this.setAttribute.bind(this)
-    this.changeDateRange = this.changeDateRange.bind(this)
-    this.handleOk = this.handleOk.bind(this)
+    this.addData = this.addData.bind(this)
     this.unsetAvailable = this.unsetAvailable.bind(this)
     this.setAvailable = this.setAvailable.bind(this)
+    this.confirm = this.confirm.bind(this)
+    this.delAll = this.delAll.bind(this)
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   this.setState({
-  //     defaultCategory: nextProps.data.productCategorys[0]
-  //   })
-  // }
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      defaultCategory: nextProps.data.defaultCategory,
+      viewModel: false,
+      visible: false,
+      refs: {},
+      newCategoryName: '',
+      classPackages: [],
+      type: '',
+      chooseProductCategory: '',
+      classPackageItem: {},
+      cacheProduct: {},
+      isCategoryEdit: false,
+      isCheck: false,
+      cacheProducts: [],
+      allChoose: false,
+      loading: false,
+      editProduct: {},
+    })
+  }
 
   async componentDidMount() {
     try {
@@ -75,8 +92,8 @@ export default class extends Component {
     } catch (err) {
       console.log(err)
     }
-
   }
+
   handleClick(e) {
     const category = this.props.data.productCategorys
     const defaultCategory = category.find((item) => {
@@ -94,10 +111,34 @@ export default class extends Component {
     })
   }
 
+  async delAll() {
+    let { cacheProducts, defaultCategory } = this.state
+    let series = cacheProducts.map((item) => {
+      return async (callback) => {
+        let data = {}
+        try {
+          data = await client.product.delete(item)
+        } catch (err) {
+          return callback(err, null)
+        }
+        return callback(null, data)
+      }
+    })
+    async.series(series,
+      (err, result) => {
+        if (err) {
+          console.log(err)
+        }
+        this.props.getData(defaultCategory.id)
+      }
+    )
+  }
 
   async confirm(id) {
+    const defaultCategory = this.state.defaultCategory
     try {
       await client.product.delete(id)
+      this.props.getData(defaultCategory.id)
     } catch (err) {
       console.log(err)
     }
@@ -107,16 +148,16 @@ export default class extends Component {
     const category = this.state.defaultCategory
     const isCheck = this.state.isCheck
     const cacheProducts = this.state.cacheProducts
+    const editProduct = this.state.editProduct
     let col = []
     let products = category.product
-    // console.log(products)
     products.map((item) => {
       let checked = cacheProducts.includes(item.id)
       if (!item.deletedAt) {
         col.push(
           <Col key={item.id} style={{ margin: '0 0 10px 0' }} xs={24} sm={24} md={24} lg={10} xl={6}>
             {
-              isCheck ? <Checkbox
+              isCheck && !item.isEdit ? <Checkbox
                 checked={checked}
                 onChange={
                   (e) => {
@@ -141,14 +182,34 @@ export default class extends Component {
             <Card key={item.id} style={{ width: 350, height: 200 }}>
               <div style={{ float: "left" }}>
                 <p>
-                  <span style={{
-                    fontSize: '15px',
-                    fontWeight: 'bold'
-                  }}>{item.productDetail[0].productName}</span>
+                  {item.isEdit ? <Input defaultValue={editProduct[item.id].productDetail[0].productName}
+                    onChange={(e) => {
+                      let newProductName = e.target.value
+                      editProduct[item.id].productDetail[0].productName = newProductName
+                      this.setState({
+                        editProduct
+                      })
+                    }}
+                  /> :
+                    <span style={{
+                      fontSize: '15px',
+                      fontWeight: 'bold'
+                    }}>{item.productDetail[0].productName}</span>
+                  }
                 </p>
-                <p className='product-card' >￥
-              <span>{item.productPricing[0].unitPrice}</span>
-                </p>
+                {/* <p className='product-card' >￥ */}
+                {
+                  item.isEdit ? <div className='product-card'>￥<InputNumber min={0} style={{ width: 100 }} value={editProduct[item.id].productPricing[0].unitPrice}
+                    onChange={(value) => {
+                      let newunitPrice = value
+                      editProduct[item.id].productPricing[0].unitPrice = newunitPrice
+                      this.setState({
+                        editProduct
+                      })
+                    }}
+                  /> </div> : <p className='product-card' >￥<span>{item.productPricing[0].unitPrice}</span></p>
+                }
+                {/* </p> */}
                 <p style={{
                   fontSize: '13px',
                   width: '100px',
@@ -156,29 +217,95 @@ export default class extends Component {
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap'
                 }} title={item.productDetail[0].productDescription} >
-                  {item.productDetail[0].productDescription}
+                  {
+                    item.isEdit ? <Input defaultValue={editProduct[item.id].productDetail[0].productDescription}
+                      onChange={(e) => {
+                        let newproductDescription = e.target.value
+                        editProduct[item.id].productDetail[0].productDescription = newproductDescription
+                        this.setState({
+                          editProduct
+                        })
+                      }}
+                    /> : item.productDetail[0].productDescription
+                  }
                 </p>
-                <p style={{ fontSize: '15px', position: 'absolute', bottom: '50px' }}>1000/1000</p>
+                <p style={{ fontSize: '15px', position: 'relative', bottom: '-24px' }}>
+                  {
+                    item.isAvailable ? <Badge status="success" text='已上架' /> : <Badge status="error" text='已下架' />
+                  }
+                </p>
                 <div style={{ position: 'absolute', bottom: '10px' }}>
-                  <Button >置满</Button>
-                  <Popconfirm placement="topRight" title={text} onConfirm={() => this.confirm(item.id)} okText="Yes" cancelText="No">
-                    <Button>删除</Button>
-                  </Popconfirm>
+                  {
+                    item.isEdit ? '' : <Popconfirm placement="topRight" title={text} onConfirm={() => this.confirm(item.id)} okText="Yes" cancelText="No">
+                      <Button>删除</Button>
+                    </Popconfirm>
+                  }
                 </div>
               </div>
               <div style={{ float: "right", width: 150 }}>
                 <img width={150} height={145} src={item.imgUrl} />
-                <Button style={{ float: 'right' }}>编辑</Button>
+                {
+                  item.isAvailable ? '' : (
+                    item.isEdit ? '' :
+                      <Button
+                        onClick={() => {
+                          item.isEdit = true
+                          editProduct[item.id] = ramda.clone(item)
+                          this.setState({
+                            defaultCategory: category,
+                            editProduct
+                          })
+                        }}
+                        style={{ float: 'right' }}>编辑</Button>)
+                }
               </div>
             </Card >
+            {item.isEdit ? <div
+              style={{
+                width: '349px',
+                background: 'white',
+                position: 'relative',
+                bottom: '23px',
+              }}>
+              <div className="option-split"></div>
+              <Button style={{
+                left: '11px',
+                position: 'relative',
+                bottom: '11px',
+              }} type="primary" onClick={async () => {
+                const updateProduct = editProduct[item.id]
+                delete updateProduct.productCategory
+                const result = await client.product.update(updateProduct.id, updateProduct, updateProduct.modifiedAt)
+                item.isEdit = false
+                delete editProduct[item.id]
+                this.setState({
+                  defaultCategory: category
+                })
+                this.props.getData(category.id)
+              }}>确定</Button>
+              <Button
+                style={{
+                  left: '11px',
+                  position: 'relative',
+                  bottom: '11px',
+                }}
+                onClick={() => {
+                  item.isEdit = false
+                  delete editProduct[item.id]
+                  this.setState({
+                    editProduct,
+                    defaultCategory: category
+                  })
+                }}>取消</Button>
+            </div> : ''}
           </Col>)
       }
     })
     return <Row gutter={24} >{col}</Row>
   }
 
-  async handleOk(e) {
-    const { newCategoryName, categoryName, cacheProduct, type, classPackageItem, venueId, user, brandId } = this.state
+  async addData(e) {
+    const { newCategoryName, categoryName, cacheProduct, type, chooseCategory, classPackageItem, venueId, user, brandId, defaultCategory } = this.state
     const addData = this.props.addData
     if (newCategoryName) {
       try {
@@ -194,9 +321,7 @@ export default class extends Component {
             }
           ]
         })
-        if (typeof addData == 'function') {
-          addData(categoryName, newCategory)
-        }
+        this.props.getData(defaultCategory.id)
       } catch (err) {
         console.log(err)
       }
@@ -210,10 +335,9 @@ export default class extends Component {
       let productAttribute = {
         accessType: cacheProduct.accessType,
         description: cacheProduct.description,
-        expiresAt: cacheProduct.expiresAt,
+        lifetime: cacheProduct.lifetime,
         packageId: cacheProduct.packageId,
         salesId: cacheProduct.salesId,
-        startsAt: cacheProduct.startsAt,
       }
       if (cacheProduct.accessType == 'multiple') {
         productAttribute.available = cacheProduct.available
@@ -237,19 +361,23 @@ export default class extends Component {
           currency: "CNY"
         }]
       })
-      const productCategoryProduct = await client.productCategoryProduct.request(
-        '',
-        'post',
-        {
-          productId: product.id,
-          productCategoryId: type.id
-        })
-      this.props.addData('productCategorys', product, type.id)
+      if (chooseCategory.id != '1') {
+        const productCategoryProduct = await client.productCategoryProduct.request(
+          '',
+          'post',
+          {
+            productId: product.id,
+            productCategoryId: chooseCategory.id
+          }
+        )
+      }
+      this.props.getData(defaultCategory.id)
     }
     this.setState(
       {
-        cacheProduct: {},
         type: '',
+        cacheProduct: {},
+        chooseCategory: '',
         classPackageItem: {},
         newCategoryName: '',
         visible: false
@@ -259,21 +387,15 @@ export default class extends Component {
   handleCancel = () => {
     this.setState(
       {
+        cacheProduct: '',
         type: '',
+        chooseCategory: '',
         classPackageItem: {},
         newCategoryName: '',
         visible: false
       }
     );
   }
-
-  // setNode(productId, node) {
-  //   let refs = this.state.refs
-  //   refs[productId] = node
-  //   this.setState({
-  //     refs
-  //   })
-  // }
 
   handleChange = (info) => {
     if (info.file.status === 'done') {
@@ -311,7 +433,7 @@ export default class extends Component {
       'token': this.state.token,
       'x:size': this.state.size,
     }
-    const { type, classPackage, classPackageItem, cacheProduct, imageUrl } = this.state
+    const { type, chooseCategory, classPackage, classPackageItem, cacheProduct, imageUrl } = this.state
     let data = []
     data.push(
       <li key='product-name'>
@@ -325,7 +447,7 @@ export default class extends Component {
           width: '300px'
         }} />
       </li>)
-    if (type.productCategoryDetail && type.productCategoryDetail[0].category == '会卡') {
+    if (type == '00') {
       data.push(
         <li key='product-type'>
           <div className='product-detail'>模板选择</div>
@@ -342,7 +464,11 @@ export default class extends Component {
               venueId: classPackageItem.venueId,
               packageId: classPackageItem.id,
               salesId: null,
-              description: classPackageItem.description
+              description: classPackageItem.description,
+              lifetime: {
+                value: classPackageItem.lifetime.value,
+                scale: classPackageItem.lifetime.scale,
+              }
             }
             if (classPackageItem.accessType == 'multiple') {
               cacheProduct.available = classPackageItem.passes
@@ -376,13 +502,46 @@ export default class extends Component {
             </li>,
           )
         }
-        data.push(
-          <li key='product-date'>
-            <div className='product-detail'>有效期</div>
-            <RangePicker onChange={this.changeDateRange} />
-          </li>)
+        if (classPackageItem.lifetime) {
+          const selectAfter = (
+            <Select defaultValue={cacheProduct.lifetime.scale} style={{ width: 70 }} onChange={(value) => {
+              let scale = ''
+              switch (value) {
+                case '1':
+                  scale = 'day'
+                case '2':
+                  scale = 'month'
+                case '3':
+                  scale = 'year'
+                default:
+                  scale = 'day'
+              }
+              cacheProduct.lifetime.scale = scale
+              this.setState({
+                cacheProduct
+              })
+            }} >
+              <Option value="day">天</Option>
+              <Option value="month">月</Option>
+              <Option value="year">年</Option>
+            </Select>
+          );
+          data.push(
+            <li key='product-date'>
+              <div className='product-detail'>有效期</div>
+              <Input onChange={(e) => {
+                const value = e.target.value
+                cacheProduct.lifetime.value = parseInt(value)
+                this.setState({
+                  cacheProduct
+                })
+              }} addonAfter={selectAfter} value={cacheProduct.lifetime.value} style={{
+                width: 300
+              }} />
+            </li>)
+        }
       }
-    } else {
+    } else if (type == '01') {
       data.push(
         <li>
           <div className='product-detail'>产品图片</div>
@@ -404,47 +563,38 @@ export default class extends Component {
         </li>
       )
     }
-    data.push(
-      <li key='product-price'>
-        <div className='product-detail'>实付价格</div>
-        <Input onChange={(e) => {
-          cacheProduct.price = e.target.value
-          this.setState({
-            cacheProduct
-          })
-        }} value={cacheProduct.price} style={{
-          width: '300px'
-        }} />
-      </li>,
-      <li key='product-description'>
-        <div className='product-detail'>产品描述</div>
-        <Input onChange={(e) => {
-          cacheProduct.description = e.target.value
-          this.setState({
-            cacheProduct
-          })
-        }} value={cacheProduct.description || ''} style={{
-          width: '300px'
-        }} />
-      </li>
-    )
+    if (type != '') {
+      data.push(
+        <li key='product-price'>
+          <div className='product-detail'>实付价格</div>
+          <Input onChange={(e) => {
+            cacheProduct.price = e.target.value
+            this.setState({
+              cacheProduct
+            })
+          }} value={cacheProduct.price} style={{
+            width: '300px'
+          }} />
+        </li>,
+        <li key='product-description'>
+          <div className='product-detail'>产品描述</div>
+          <Input onChange={(e) => {
+            cacheProduct.description = e.target.value
+            this.setState({
+              cacheProduct
+            })
+          }} value={cacheProduct.description || ''} style={{
+            width: '300px'
+          }} />
+        </li>
+      )
+    }
     return data
-  }
-
-  changeDateRange(date, dateString) {
-    const startsAt = new Date(dateString[0])
-    const expiresAt = new Date(dateString[1])
-    let cacheProduct = this.state.cacheProduct
-    cacheProduct.startsAt = startsAt
-    cacheProduct.expiresAt = expiresAt
-    this.setState({
-      cacheProduct
-    })
   }
 
   createSome() {
     let branch = []
-    const { title, visible, newCategoryName, cacheProduct, type } = this.state
+    const { title, visible, newCategoryName, cacheProduct, type, chooseCategory } = this.state
     let disabled = false
     if (title == '创建新分类') {
       branch.push([
@@ -468,7 +618,7 @@ export default class extends Component {
                 return item.id == value
               })
               this.setState({
-                type: chooseCategory
+                chooseCategory: chooseCategory
               })
             }
             }>
@@ -479,13 +629,26 @@ export default class extends Component {
               }
             </Select>
           </li>
+          <li>
+            <div className='product-detail'>选择产品类型</div>
+            <Select style={{
+              width: '300px'
+            }} onChange={(value) => {
+              this.setState({
+                type: value
+              })
+            }}>
+              <Select.Option key='00' value='00'>会卡</Select.Option>
+              <Select.Option key='01' value='01'>其他</Select.Option>
+            </Select>
+          </li>
           {this.setAttribute()}
         </ul>
       )
-      if (!cacheProduct.name || !cacheProduct.price || !type) {
+      if (!cacheProduct.name || !cacheProduct.price || !type || !chooseCategory) {
         disabled = true
-      } else if (type.productCategoryDetail && type.productCategoryDetail[0].category == '会卡') {
-        if (!cacheProduct.startsAt || !cacheProduct.expiresAt || (cacheProduct.accessType == 'multiple' && !cacheProduct.available)) {
+      } else if (chooseCategory.productCategoryDetail && chooseCategory.productCategoryDetail[0].category == '会卡') {
+        if (!cacheProduct.lifetime || (cacheProduct.accessType == 'multiple' && !cacheProduct.available)) {
           disabled = true
         }
       }
@@ -495,7 +658,7 @@ export default class extends Component {
       title={title}
       footer={
         [<Button key="cancel" onClick={this.handleCancel}>取消</Button>,
-        <Button key="determine" disabled={disabled} onClick={this.handleOk}>确定</Button>]
+        <Button key="determine" disabled={disabled} onClick={this.addData}>确定</Button>]
       }
     >
       <Row style={{ padding: '10px', fontSize: '13px' }} >
@@ -506,6 +669,7 @@ export default class extends Component {
 
   async setAvailable() {
     let cacheProducts = this.state.cacheProducts
+    let defaultCategory = this.state.defaultCategory
     let series = cacheProducts.map((item) => {
       return async (callback) => {
         let data = {}
@@ -522,15 +686,13 @@ export default class extends Component {
         if (err) {
           console.log(err)
         }
-        this.setState({
-          cacheProducts: []
-        });
+        this.props.getData(defaultCategory.id)
       }
     )
   }
 
-  async unsetAvailable(){
-    let cacheProducts = this.state.cacheProducts
+  async unsetAvailable() {
+    let { cacheProducts, defaultCategory } = this.state
     let series = cacheProducts.map((item) => {
       return async (callback) => {
         let data = {}
@@ -547,119 +709,133 @@ export default class extends Component {
         if (err) {
           console.log(err)
         }
-        this.setState({
-          cacheProducts: []
-        });
+        this.props.getData(defaultCategory.id)
       }
     )
   }
 
   render() {
-    const { viewModel, visible, newCategoryName, defaultCategory, title, isCategoryEdit, isCheck, allChoose } = this.state
+    const { viewModel, loading, visible, newCategoryName, defaultCategory, title, isCategoryEdit, isCheck, allChoose } = this.state
     return (
-      <Layout>
-        <Sider
-          width={200} style={{ background: '#fff', borderRight: "1px solid #d9d9d9" }}
-        >
-          <div style={{ textAlign: "center", margin: "10px 0", height: '5vh', lineHeight: '5vh' }}>
-            <Search
-              placeholder="请输入文本"
-              style={{ width: 150 }}
-              onSearch={value => console.log(value)}
-            />
-          </div>
-          <Menu
-            mode="inline"
-            defaultSelectedKeys={[defaultCategory.id]}
-            style={{
-              height: '85vh',
-              overflowY: 'auto'
-            }}
-            onClick={this.handleClick}
+      <Spin spinning={loading}>
+        <Layout>
+          <Sider
+            width={200} style={{ background: '#fff', borderRight: "1px solid #d9d9d9" }}
           >
-            {
-              this.props.data.productCategorys.map((item) => {
-                return <Menu.Item key={item.id}>{item.productCategoryDetail[0].category}</Menu.Item>
-              })
-            }
-          </Menu>
-        </Sider>
-        <Layout style={{ height: '90vh', width: '80vh' }}>
-          <Header style={{ background: "#ececec", padding: 0, height: '5vh', lineHeight: '5vh', margin: '10px 0' }} >
-            <h2 style={{ width: '120px', fontSize: "20px", paddingLeft: "16px", float: 'left' }}>
-              {isCategoryEdit ?
-                <Input
-                  defaultValue={defaultCategory.productCategoryDetail[0].category}
-                  onBlur={(e) => {
-                    defaultCategory.productCategoryDetail[0].category = e.target.value
-                    this.setState({
-                      isCategoryEdit: false,
-                      defaultCategory
-                    })
-                  }} />
-                : defaultCategory.productCategoryDetail[0].category}
-            </h2>
-            <Button icon='edit' onClick={() => {
-              let isCategoryEdit = this.state.isCategoryEdit
-              this.setState({
-                isCategoryEdit: !isCategoryEdit
-              })
-            }} style={{ marginLeft: '10px', background: '#94928c', color: 'white' }}>编辑</Button>
-            <Button onClick={() => {
-              this.setState({
-                isCheck: !isCheck
-              })
-            }}>批量管理</Button>
-            {
-              isCheck ?
-                [
-                  <Button onClick={() => {
-                    let cacheProducts = []
-                    if (!allChoose) {
-                      defaultCategory.product.map((item) => {
-                        if (!item.deletedAt) {
-                          cacheProducts.push(item.id)
-                        }
-
-                      })
-                    }
-                    this.setState({
-                      allChoose: !allChoose,
-                      cacheProducts
-                    })
-                  }}>全选</Button>,
-                  <Button onClick={this.setAvailable}>上架</Button>,
-                  <Button onClick={this.unsetAvailable}>下架</Button>
-                ] : ''
-            }
-          </Header>
-          <Content style={{ margin: '0 16px', height: '85vh' }} >
-            <div style={{ float: 'left', width: '95%', height: '100%' }}>
-              {this.showProduct()}
+            <div style={{ textAlign: "center", margin: "10px 0", height: '5vh', lineHeight: '5vh' }}>
+              <Search
+                placeholder="请输入文本"
+                style={{ width: 150 }}
+                onSearch={value => console.log(value)}
+              />
             </div>
-            <div style={{
-              position: 'fixed',
-              float: 'right',
-              right: 100,
-              height: '100%',
-              width: '40px',
-            }}>
+            <Menu
+              mode="inline"
+              defaultSelectedKeys={[defaultCategory.id]}
+              style={{
+                height: '85vh',
+                overflowY: 'auto'
+              }}
+              onClick={this.handleClick}
+            >
               {
-                viewModel ? [<Anchor key='create-new-category' type='appstore-o' value='添加分类' onClick={() => this.setState({ visible: true, title: "创建新分类" })} style={{
-                  bottom: 240
-                }} />,
-                <Anchor key='create-new-product' type='gift' value='添加产品' onClick={() => this.setState({ visible: true, title: "创建新产品" })} style={{
-                  bottom: 170
-                }} />] : ''
+                this.props.data.productCategorys.map((item) => {
+                  return <Menu.Item key={item.id}>{item.productCategoryDetail[0].category}</Menu.Item>
+                })
               }
-              <Anchor type='plus' value='添加' style={{
-                bottom: 100
-              }} onClick={this.showCreate} />
-            </div>
-            {visible ? this.createSome() : ''}
-          </Content>
+            </Menu>
+          </Sider>
+          <Layout style={{ height: '90vh', width: '80vh' }}>
+            <Header style={{ background: "#ececec", padding: 0, height: '5vh', lineHeight: '5vh', margin: '10px 0' }} >
+              <h2 style={{ width: '120px', fontSize: "20px", paddingLeft: "16px", float: 'left' }}>
+                {isCategoryEdit ?
+                  <Input
+                    defaultValue={defaultCategory.productCategoryDetail[0].category}
+                    onBlur={async (e) => {
+                      const category = e.target.value
+                      if (defaultCategory.id != '1') {
+                        defaultCategory.productCategoryDetail[0].category = category
+                        this.setState({
+                          loading: true
+                        })
+                        let item = Object.assign({}, defaultCategory)
+                        delete item.product
+                        await client.productCategory.request(
+                          `${defaultCategory.id}`,
+                          'put',
+                          item)
+                        this.props.getData(defaultCategory.id)
+                      }
+                      this.setState({
+                        isCategoryEdit: false,
+                        loading: false
+                      })
+                    }} />
+                  : defaultCategory.productCategoryDetail[0].category}
+              </h2>
+              <Button icon='edit' onClick={() => {
+                let isCategoryEdit = this.state.isCategoryEdit
+                this.setState({
+                  isCategoryEdit: !isCategoryEdit
+                })
+              }} style={{ marginLeft: '10px', background: '#94928c', color: 'white' }}>编辑</Button>
+              <Button onClick={() => {
+                this.setState({
+                  isCheck: !isCheck
+                })
+              }}>批量管理</Button>
+              {
+                isCheck ?
+                  [
+                    <Button key='11' onClick={() => {
+                      let cacheProducts = []
+                      if (!allChoose) {
+                        defaultCategory.product.map((item) => {
+                          if (!item.deletedAt) {
+                            cacheProducts.push(item.id)
+                          }
+
+                        })
+                      }
+                      this.setState({
+                        allChoose: !allChoose,
+                        cacheProducts
+                      })
+                    }}>全选</Button>,
+                    <Button key='12' onClick={this.setAvailable}>上架</Button>,
+                    <Button key='13' onClick={this.unsetAvailable}>下架</Button>,
+                    <Button key='14' onClick={this.delAll}>删除</Button>
+                  ] : ''
+              }
+            </Header>
+            <Content style={{ margin: '0 16px', height: '85vh' }} >
+              <div style={{ float: 'left', width: '95%', height: '100%' }}>
+                {this.showProduct()}
+              </div>
+              <div style={{
+                position: 'fixed',
+                float: 'right',
+                right: 100,
+                height: '100%',
+                width: '40px',
+              }}>
+                {
+                  viewModel ? [<Anchor key='create-new-category' type='appstore-o' value='添加分类' onClick={() => this.setState({ visible: true, title: "创建新分类" })} style={{
+                    bottom: 240
+                  }} />,
+                  <Anchor key='create-new-product' type='gift' value='添加产品' onClick={() => this.setState({ visible: true, title: "创建新产品" })} style={{
+                    bottom: 170
+                  }} />] : ''
+                }
+                <Anchor type='plus' value='添加' style={{
+                  bottom: 100
+                }} onClick={this.showCreate} />
+              </div>
+              {visible ? this.createSome() : ''}
+            </Content>
+          </Layout>
         </Layout>
-      </Layout>
+      </Spin>
     )
   }
 }
