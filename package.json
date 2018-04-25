@@ -11,7 +11,7 @@
   },
   "homepage": "https://github.com/weflex/studio-web#readme",
   "dependencies": {
-    "@weflex/gian": "1.37.7",
+    "@weflex/gian": "1.38.1",
     "@weflex/hourminute": "^1.2.0",
     "@weflex/passport.js": "1.2.0",
     "@weflex/weflex-ui": "^2.8.4",
@@ -32,6 +32,7 @@
     "qrcode.react": "^0.5.2",
     "qstringify": "1.4.2",
     "query-string": "^4.3.2",
+    "ramda": "^0.25.0",
     "randomatic": "1.1.5",
     "react": "0.14.9",
     "react-addons-pure-render-mixin": "0.14.7",
@@ -46,7 +47,8 @@
     "superagent": "1.5.0",
     "superagent-prefix": "0.0.2",
     "superagent-promise": "1.1.0",
-    "uglifyjs-webpack-plugin": "^1.2.4"
+    "uglifyjs-webpack-plugin": "^1.2.4",
+    "typescript": "2.3.2"
   },
   "devDependencies": {
     "babel-core": "6.3.21",

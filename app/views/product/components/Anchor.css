@@ -1,0 +1,25 @@
+.product-anchor{
+  border-radius: 54px;
+  height: 60px;
+  width: 60px;
+  text-align: center;
+  line-height: 85px;
+  box-shadow: 0px 1px 5px 3px #bfb9b9;
+  background: #80C7E8;
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  position: fixed;
+  bottom: 100px
+}
+
+.product-anchor:hover{
+  cursor: pointer;
+}
+
+.product-anchor-icon{
+  position: absolute;
+  bottom: 26px;
+  font-size: 25px;
+  left: 17px
+}

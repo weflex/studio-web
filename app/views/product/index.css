@@ -1,0 +1,178 @@
+body {
+    font: normal 100% Helvetica, Arial, sans-serif;
+}
+
+.ant-layout-header {
+    background: white;
+    padding: 0 0px;
+    height: 64px;
+    line-height: 64px;
+}
+
+.search {
+    background: white;
+    padding-bottom: 15px;
+    padding-left: 25px;
+}
+
+.custom-card {
+    text-align: center;
+}
+
+.ant-card-extra {
+    right: 0;
+}
+
+.ant-card-head {
+    padding: 0 12px;
+}
+
+.ant-card-body {
+    padding: 12px 12px 12px 20px;
+}
+
+.counter {
+    float: right;
+}
+
+.price {
+    height: 28px;
+}
+
+.price-left {
+    float: left;
+}
+
+.price span {
+    font-size: 1.1em
+}
+
+.ant-layout-content {
+    overflow-x: auto;
+}
+
+.ant-input-group-wrapper {
+    display: flex;
+}
+
+.ant-input-group-addon {
+    background-color: white;
+}
+
+.ant-tabs-bar {
+    margin-bottom: 0px;
+}
+
+.btn-join {
+    float: left;
+    width: 100px;
+    background-color: #6ED4A4;
+    color: white;
+}
+
+.btn-join:hover {
+    background-color: #72b998;
+    border: 1px solid #72b998;
+    color: white
+}
+
+.btn-join:focus {
+    background-color: #72b998;
+    border: 1px solid #72b998;
+    color: white
+}
+
+.btn-add {
+    float: right;
+    background-color: #80C7E8;
+    color: white;
+}
+
+.btn-add:hover {
+    background-color: #71b3d2;
+    border: 1px solid #71b3d2;
+    color: white
+}
+
+.btn-add:focus {
+    background-color: #72b998;
+    border: 1px solid #72b998;
+    color: white
+}
+
+.shopping-card {
+    position: fixed;
+    top: 50%;
+    width: 35px;
+}
+
+.shopping-card:hover {
+    background: #FF0036
+}
+
+.shopping-card-show {
+    background: #FF0036
+}
+
+.shopping-card-balance-disabled {
+    background-color: #666;
+    cursor: default;
+    width: 248px;
+    height: 40px;
+}
+
+.shopping-card-balance-open {
+    background-color: #ff0036;
+    cursor: default;
+    width: 248px;
+    height: 40px;
+}
+
+.product-card {
+    padding: 10px 0 20px 0;
+    color: red;
+}
+
+.product-card span {
+    font-size: 15px;
+}
+
+.ant-tabs-nav-container {
+    height: 4vh;
+    line-height: 4vh;
+    min-height: 30px;
+}
+
+.ant-tabs-nav .ant-tabs-tab {
+    padding: 0 20px;
+}
+
+.product-create li {
+    margin: 10px 0;
+}
+
+.product-detail {
+    display: block;
+    width: 100px;
+    float: left;
+    margin-right: 10px;
+    line-height: 25px;
+}
+
+.avatar-product {
+    width: 150px;
+    height: 150px;
+}
+
+.avatar-uploader {
+    position: relative;
+    left: 100px;
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 150px;
+    height: 150px;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}

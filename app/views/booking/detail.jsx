@@ -74,7 +74,6 @@ class PaymentDetail extends React.Component {
 
   render() {
     const {description, membershipView, membershipText} = this.props;
-
     return (
       <div className="detail-card booking-payment">
         <h3>费用支付</h3>
