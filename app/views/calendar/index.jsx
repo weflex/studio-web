@@ -46,7 +46,6 @@ class WeflexCalendar extends React.Component {
           const calendar = this.refs.calendar;
           calendar.setState({isEditing: false});
           // hide the resource firstly.
-          //== mixpanel.track( "日历：管理课程/完成");
         }
       },
       {
@@ -59,7 +58,6 @@ class WeflexCalendar extends React.Component {
           const calendar = this.refs.calendar;
           const isEditing = !calendar.state.isEditing;
           calendar.setState({isEditing});
-          mixpanel.track( "日历：管理课程/完成");
         }
       },
       {
@@ -68,7 +66,6 @@ class WeflexCalendar extends React.Component {
           const calendar = this.refs.calendar;
           calendar.setState({isEditing: false});
           ctx.resource.toggle();
-          mixpanel.track( "日历：添加课程");
         }
       }
     ];

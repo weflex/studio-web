@@ -148,7 +148,6 @@ class Detail extends React.Component {
   }
 
   onDelete() {
-    mixpanel.track("课程模板详情：删除课程模板按钮");
     let self = this;
     UIFramework.Modal.confirm({
       title: '确认删除该课程模版？',

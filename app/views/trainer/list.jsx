@@ -56,7 +56,7 @@ class TrainerList extends React.Component {
         return {
           key: index,
           id: trainer.id,
-          name: <Link onClick={() => mixpanel.track("教练：教练详情")} href={URL}>{name}</Link>,
+          name: <Link href={URL}>{name}</Link>,
           phone: trainer.user.phone,
           employmentStatus: trainer.employmentStatus,
           avatar: trainer.user.avatar || defaultAvatar,
@@ -101,7 +101,6 @@ class TrainerList extends React.Component {
         className: 'action',
         render: (_, trainer) =>
           <Button onClick={() => {
-            mixpanel.track("教练：私教排期");
             this.setState({
               ptScheduleModalSchedule: trainer.ptSchedule,
               ptScheduleModalTrainerId: trainer.id,
@@ -146,7 +145,6 @@ class TrainerList extends React.Component {
   }
 
   addTrainer(refName) {
-    mixpanel.track("教练：添加教练");
     this.setState({ [refName + 'Visible']: true });
   }
 

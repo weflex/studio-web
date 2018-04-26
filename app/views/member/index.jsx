@@ -57,7 +57,6 @@ class MemberView extends React.Component {
   }
 
   addNewMember() {
-    mixpanel.track( "会员：邀请新会员");
     this.setState({ showMemberInfo: true });
   }
 
@@ -179,7 +178,6 @@ class MemberView extends React.Component {
         <UIFramework.Modal 
           visible={showMemberInfo}
           onCancel={() => {this.setState({ showMemberInfo: false });}}
-          onClick={() => { mixpanel.track( "会员：邀请新会员" ); }}
           title="邀请新会员"
           footer=""
         >
