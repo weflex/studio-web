@@ -115,7 +115,6 @@ export default class ReportDetail extends Component {
     const { bookingClasses } = this.state;
     const chartsType = { bar: '柱状图', line: '折线图' }
     bookingClasses.type = e.target.value;
-    mixpanel.track(`报表：预定课程情况-${chartsType[bookingClasses.type]}`);
     this.setState({ bookingClasses });
   }
 
