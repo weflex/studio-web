@@ -73,7 +73,6 @@ class ClassPackageList extends React.Component {
             default: key = '次卡'; break;
           }
           break;
-        case 'cashCard': key='储值卡';break;
         default:
           key = '未归类';
       }

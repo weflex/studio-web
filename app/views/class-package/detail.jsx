@@ -128,7 +128,6 @@ class CardDetail extends React.Component {
             options={[
               {text: '团课', value: 'group'},
               {text: '私教', value: 'private'},
-              {text: '全部', value: 'all'},
             ]}
           />
         </UIFramework.Row>
@@ -142,7 +141,6 @@ class CardDetail extends React.Component {
             options={[
               {text: '多次卡', value: 'multiple'},
               {text: '不限次卡', value: 'unlimited'},
-              {text: '储值卡', value: 'cashCard'},
             ]}
           />
         </UIFramework.Row>
@@ -193,22 +191,6 @@ class CardDetail extends React.Component {
             bindStateType={Number}
             bindStateName="data.price" 
             value={this.state.data.price}
-          />
-          <UIFramework.Select
-            flex={0.1}
-            disabled={true}
-            options={[
-              {text: '元', value: 'yuan'},
-            ]}
-          />
-        </UIFramework.Row>
-        <UIFramework.Row name="余额" required={true} key="balance">
-          <UIFramework.TextInput 
-            flex={0.9}
-            bindStateCtx={this}
-            bindStateType={Number}
-            bindStateName="data.balance" 
-            value={this.state.data.balance}
           />
           <UIFramework.Select
             flex={0.1}
