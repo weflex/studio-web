@@ -66,6 +66,7 @@ class ClassPackageList extends React.Component {
       let key;
       switch (item.accessType) {
         case 'unlimited': key = '不限次卡'; break;
+        case 'cashCard': key = '储值卡'; break;
         case 'multiple':
           switch (item.category) {
             case 'group': key = '团课次卡'; break;

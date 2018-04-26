@@ -79,9 +79,9 @@ module.exports = {
     }
   },
   plugins: [
-    new uglify({
-      parallel:true
-    }),
+    // new uglify({
+    //   parallel:true
+    // }),
     new HtmlWebpackPlugin({
       template: './assets/index.html',
       filename: 'index.html',

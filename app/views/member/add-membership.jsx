@@ -118,12 +118,12 @@ export default class extends React.Component {
   onChangePackage(event) {
     let {form} = this.state;
     const curr = this.cache.packages[form.packageId];
-
     form.name = curr.name;
     form.accessType = curr.accessType;
     form.price = curr.price;
     form.available = curr.passes || null;
     form.startsAt = new Date();
+    form.balance = curr.balance || null
     form.expiresAt = this.getExpiresAt(form.startsAt, curr.lifetime);
 
     this.setState({form});
@@ -145,6 +145,7 @@ export default class extends React.Component {
     const membership = {
       name: form.name,
       accessType: form.accessType,
+      balance:form.balance,
       price: form.price,
       startsAt: startOfDay(form.startsAt),
       expiresAt: endOfDay(form.expiresAt),
@@ -153,7 +154,6 @@ export default class extends React.Component {
       venueId: form.venueId,
       memberId: member.id,
     };
-    console.log(membership)
     if(form.available || form.available === 0) {
       membership.available = form.available;
     }
@@ -225,7 +225,6 @@ export default class extends React.Component {
   render() {
     const { operation, form, packageOptions, salesOptions } = this.state;
     const { member } = this.props;
-     
     return (
       <UIFramework>
         <UIFramework.Row name="会员姓名">
@@ -258,6 +257,17 @@ export default class extends React.Component {
             value={form.price}
           />
         </UIFramework.Row>
+        {
+         (form.accessType == 'cashCard') ?  <UIFramework.Row name="余额">
+          <UIFramework.TextInput
+            flex={1}
+            bindStateCtx={this}
+            bindStateName="form.balance"
+            bindStateType={Number}
+            value={form.balance}
+          />
+        </UIFramework.Row>:''
+        }
         <UIFramework.Row name="销售人">
           <UIFramework.Select
             flex={1}
