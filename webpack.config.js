@@ -63,7 +63,7 @@ module.exports = {
     publicPath: '/',
     contentBase: 'assets',
     host: '0.0.0.0',
-    port: 7070,
+    port: 8021,
     historyApiFallback: {
       rewrites: [
         {
@@ -87,7 +87,6 @@ module.exports = {
       filename: 'index.html',
       inject: false,
       chunks: ['app'],
-      mixpanelToken: environment.mixpanelToken,
     }),
     new webpack.DefinePlugin({
       'process.env': {

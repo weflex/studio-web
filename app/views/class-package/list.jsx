@@ -25,7 +25,6 @@ class ClassPackageList extends React.Component {
       {
         title: '新增会卡',
         path: '/class/package/add',
-        onClick: () => {mixpanel.track( "卡种模板：新增会卡" );}
       }
     ];
   }
@@ -48,7 +47,6 @@ class ClassPackageList extends React.Component {
     });
   }
   onClickAddCard() {
-    mixpanel.track( "卡种模板：团课/不限次卡添加卡片按钮");
     this.props.app.router.navigate(window.location.pathname + '/add');
   }
   onClickCard(data) {

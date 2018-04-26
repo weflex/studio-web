@@ -408,7 +408,6 @@ class Detail extends React.Component {
   }
 
   onViewAddOrder() {
-    mixpanel.track( "订单：订单创建");
     this.setState({ modalVisibled: true });
   }
 

@@ -148,7 +148,6 @@ class Detail extends React.Component {
   }
 
   onDelete() {
-    mixpanel.track("课程模板详情：删除课程模板按钮");
     let self = this;
     UIFramework.Modal.confirm({
       title: '确认删除该课程模版？',
@@ -327,7 +326,7 @@ class Detail extends React.Component {
     return (
       <section className="class-template-detail-cover">
         <h3>封面</h3>
-        <div onClick={this.addMixpanel.bind(this)}>
+        <div >
           <ImageCell
             src={this.state.data.cover}
             onClick={this.makeOnOpenImageManager.call(
@@ -346,7 +345,7 @@ class Detail extends React.Component {
     return (
       <section className="class-template-detail-photos">
         <h3>图片</h3>
-        <div onClick={this.addMixpanel.bind(this)}>
+        <div >
           {(this.state.data.photos || []).map((src, index) => {
             return (
               <ImageCell
@@ -373,10 +372,6 @@ class Detail extends React.Component {
         </div>
       </section>
     );
-  }
-
-  addMixpanel() {
-    mixpanel.track("课程模板详情：点击上传图片按钮");
   }
 
   render() {

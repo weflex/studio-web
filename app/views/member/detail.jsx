@@ -83,11 +83,9 @@ class UserProfileCard extends React.Component {
     this.setState({
       modalVisibled: true,
     });
-    mixpanel.track( "会员详情：编辑会员" );
   }
 
   onDelete() {
-    mixpanel.track( "会员详情：删除会员" );
     const { id, modifiedAt, nickname, onCompleteRefresh } = this.props;
     UIFramework.Modal.confirm({
       title: '你确认要删除会员：' + nickname,
@@ -129,7 +127,6 @@ class UserProfileCard extends React.Component {
         memberId: this.props.id,
       });
       this.props.onCompleteRefresh();
-      mixpanel.track( "会员详情：进店登记" );
     } catch (error) {
       console.error(error)
       UIFramework.Message.error('登记失败')
@@ -161,7 +158,7 @@ class UserProfileCard extends React.Component {
               onError={this.onMemberAvatarUploadFail.bind(this)}>
               <UIFramework.Image size={120} src={this.props.avatar} style={{marginRight: '10px'}} />
               <UIFramework.Cell>
-                <UIFramework.Button onClick={() => {mixpanel.track( "会员详情：上传会员头像" )}}>修改会员头像</UIFramework.Button>
+                <UIFramework.Button >修改会员头像</UIFramework.Button>
                 <UIFramework.Divider />
                 <UIFramework.Text text="修改会员头像并不会影响到用户的信息" />
               </UIFramework.Cell>
@@ -234,9 +231,6 @@ class MembershipCard extends React.Component {
    * @method viewModal
    */
   viewModal() {
-    if(!this.props.data){
-      mixpanel.track( "会员详情：添加会卡");
-    }
     this.setState({
       visible: true,
     });
