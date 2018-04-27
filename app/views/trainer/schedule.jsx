@@ -62,7 +62,7 @@ class TrainerSchedule extends React.Component {
         price
       });
       // this.props.onComplete(this.state.schedule);
-      // location.href = '/trainer'
+      location.href = '/trainer'
     } catch (error) {
       console.error(error && error.message);
     }
@@ -99,7 +99,7 @@ class TrainerSchedule extends React.Component {
         <UIFramework.Row name="排课时间" hint="">
           {this.renderSchedule()}
           <Checkbox.Group
-            options={
+            options = {
               range(6, 23).map(item => {
                 return {
                   label: (item > 9 ? item : '0' + item) + ':00',

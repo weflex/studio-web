@@ -63,7 +63,7 @@ module.exports = {
     publicPath: '/',
     contentBase: 'assets',
     host: '0.0.0.0',
-    port: 8021,
+    port: 7070,
     historyApiFallback: {
       rewrites: [
         {
