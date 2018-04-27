@@ -31,6 +31,7 @@ export default class extends Component {
       cacheProducts: [],
       allChoose: false,
       loading: false,
+      imageUrl:'',
       editProduct: {}
     }
     this.showProduct = this.showProduct.bind(this)
@@ -62,6 +63,7 @@ export default class extends Component {
       allChoose: false,
       loading: false,
       editProduct: {},
+      imageUrl:''
     })
   }
 
@@ -69,6 +71,7 @@ export default class extends Component {
     try {
       const venue = await client.user.getVenueById();
       const user = await client.user.getCurrent();
+      const token = await client.resource.token();
       const brand = await client.context.request(
         '/api/brand',
         'get',
@@ -84,6 +87,7 @@ export default class extends Component {
         }
       });
       this.setState({
+        uptoken: token.uptoken,
         brandId: brand[0].id,
         venueId: venue.id,
         classPackage: data,
@@ -197,7 +201,6 @@ export default class extends Component {
                     }}>{item.productDetail[0].productName}</span>
                   }
                 </p>
-                {/* <p className='product-card' >￥ */}
                 {
                   item.isEdit ? <div className='product-card'>￥<InputNumber min={0} style={{ width: 100 }} value={editProduct[item.id].productPricing[0].unitPrice}
                     onChange={(value) => {
@@ -209,7 +212,6 @@ export default class extends Component {
                     }}
                   /> </div> : <p className='product-card' >￥<span>{item.productPricing[0].unitPrice}</span></p>
                 }
-                {/* </p> */}
                 <p style={{
                   fontSize: '13px',
                   width: '100px',
@@ -305,7 +307,7 @@ export default class extends Component {
   }
 
   async addData(e) {
-    const { newCategoryName, categoryName, cacheProduct, type, chooseCategory, classPackageItem, venueId, user, brandId, defaultCategory } = this.state
+    const { newCategoryName, categoryName, cacheProduct, type, chooseCategory, classPackageItem, venueId, user, brandId, defaultCategory ,imageUrl} = this.state
     const addData = this.props.addData
     if (newCategoryName) {
       try {
@@ -344,7 +346,7 @@ export default class extends Component {
       }
       detail.attributes = productAttribute
       const product = await client.product.create({
-        imgUrl: 'http://assets.theweflex.com/cardviews/' + classPackageItem.color.substr(1) + '.png',
+        imgUrl: imageUrl || 'http://assets.theweflex.com/cardviews/' + classPackageItem.color.substr(1) + '.png',
         createdAt: new Date(),
         venueId,
         createdBy: user.id,
