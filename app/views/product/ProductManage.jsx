@@ -329,6 +329,7 @@ export default class extends Component {
         console.log(err)
       }
     } else if (cacheProduct) {
+      
       let detail = {
         productName: cacheProduct.name,
         brandId: brandId,
@@ -351,7 +352,7 @@ export default class extends Component {
         createdAt: new Date(),
         venueId,
         createdBy: user.id,
-        productCode: '00',
+        productCode: cacheProduct.productCode || '01',
         isAvailable: false,
         productDetail: [
           detail
@@ -474,6 +475,7 @@ export default class extends Component {
               name: classPackageItem.name,
               venueId: classPackageItem.venueId,
               packageId: classPackageItem.id,
+              productCode:'00',
               imgUrl: '',
               salesId: null,
               description: classPackageItem.description,
