@@ -142,11 +142,6 @@ class Product extends Component {
             /> : ''
           }
         </TabPane>
-        {/* <TabPane tab={<span><Icon type="android" />回收站</span>} key="2">
-          <ProductCategoryManage
-            {...this.crudActions}
-            data={productCategorys} />
-        </TabPane> */}
       </Tabs>
     )
   }

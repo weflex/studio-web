@@ -171,7 +171,9 @@ class NavBar extends React.Component {
         <NavItem location="/class/package"    hint="会卡模版"  icon="heart"     />
         <NavItem location="/member"           hint="会员管理"  icon="customer"  />
         <NavItem location="/trainer"          hint="教练管理"  icon="idea"      />
-        <NavItem location="/product"          hint="产品管理"  icon="shop"      />
+       {
+         this.state.venue.testUser?<NavItem location="/product"          hint="产品管理"  icon="shop"      />:''
+       }
         <NavItem location="/report"           hint="运营报表"  icon="note"      />
         <NavItem location="/settings"         hint="我的设置"  icon="setting"   />
       </ul>
