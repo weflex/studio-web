@@ -31,7 +31,7 @@ export default class extends Component {
       cacheProducts: [],
       allChoose: false,
       loading: false,
-      imageUrl:'',
+      imageUrl: '',
       editProduct: {}
     }
     this.showProduct = this.showProduct.bind(this)
@@ -43,6 +43,7 @@ export default class extends Component {
     this.setAvailable = this.setAvailable.bind(this)
     this.confirm = this.confirm.bind(this)
     this.delAll = this.delAll.bind(this)
+    this.getBase64 = this.getBase64.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -63,7 +64,7 @@ export default class extends Component {
       allChoose: false,
       loading: false,
       editProduct: {},
-      imageUrl:''
+      imageUrl: ''
     })
   }
 
@@ -71,7 +72,7 @@ export default class extends Component {
     try {
       const venue = await client.user.getVenueById();
       const user = await client.user.getCurrent();
-      const token = await client.resource.token();
+      const token = await client.resource.token(venue.id);
       const brand = await client.context.request(
         '/api/brand',
         'get',
@@ -87,7 +88,7 @@ export default class extends Component {
         }
       });
       this.setState({
-        uptoken: token.uptoken,
+        token: token.uptoken,
         brandId: brand[0].id,
         venueId: venue.id,
         classPackage: data,
@@ -307,7 +308,7 @@ export default class extends Component {
   }
 
   async addData(e) {
-    const { newCategoryName, categoryName, cacheProduct, type, chooseCategory, classPackageItem, venueId, user, brandId, defaultCategory ,imageUrl} = this.state
+    const { newCategoryName, categoryName, cacheProduct, type, chooseCategory, classPackageItem, venueId, user, brandId, defaultCategory } = this.state
     const addData = this.props.addData
     if (newCategoryName) {
       try {
@@ -346,7 +347,7 @@ export default class extends Component {
       }
       detail.attributes = productAttribute
       const product = await client.product.create({
-        imgUrl: imageUrl || 'http://assets.theweflex.com/cardviews/' + classPackageItem.color.substr(1) + '.png',
+        imgUrl: cacheProduct.imgUrl || 'http://assets.theweflex.com/cardviews/' + classPackageItem.color.substr(1) + '.png',
         createdAt: new Date(),
         venueId,
         createdBy: user.id,
@@ -386,6 +387,7 @@ export default class extends Component {
       }
     );
   }
+
   handleCancel = () => {
     this.setState(
       {
@@ -394,7 +396,8 @@ export default class extends Component {
         chooseCategory: '',
         classPackageItem: {},
         newCategoryName: '',
-        visible: false
+        visible: false,
+        imageUrl: ''
       }
     );
   }
@@ -402,7 +405,13 @@ export default class extends Component {
   handleChange = (info) => {
     if (info.file.status === 'done') {
       // Get this url from response in real world.
-      this.getBase64(info.file.originFileObj, imageUrl => this.setState({ imageUrl }));
+      let cacheProduct = this.state.cacheProduct
+      const response = info.file.response
+      cacheProduct.imgUrl = response.uri
+      this.setState({
+        cacheProduct
+      })
+      this.getBase64(info.file.originFileObj, imageUrl => { this.setState({ imageUrl }) });
     }
     this.getBase64(info.file.originFileObj, imageUrl => this.setState({ imageUrl }));
   }
@@ -465,6 +474,7 @@ export default class extends Component {
               name: classPackageItem.name,
               venueId: classPackageItem.venueId,
               packageId: classPackageItem.id,
+              imgUrl: '',
               salesId: null,
               description: classPackageItem.description,
               lifetime: {
