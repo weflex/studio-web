@@ -5,7 +5,7 @@ const environments = require('./config/environments.js');
 const environment = environments[process.env.env];
 const uglify = require('uglifyjs-webpack-plugin');
 
-function dir (subpath) {
+function dir(subpath) {
   return join(__dirname, subpath);
 }
 
@@ -23,8 +23,7 @@ module.exports = {
     extensions: ['.ts', '.tsx', '.jsx', '.js', '']
   },
   module: {
-    loaders: [
-      {
+    loaders: [{
         test: /\.json$/,
         exclude: [/node_modules/],
         loader: 'json-loader'
@@ -36,11 +35,13 @@ module.exports = {
       },
       {
         test: /\.jsx?$/,
-        exclude: [/node_modules/, /server/,/dist/],
+        exclude: [/node_modules/, /server/, /dist/],
         loader: 'babel',
         query: {
           presets: ['react', 'es2015', 'stage-1'],
-          plugins: [['import', { style: 'css', libraryName: 'antd' }]],
+          plugins: [
+            ['import', { style: 'css', libraryName: 'antd' }]
+          ],
         }
       },
       {
@@ -65,8 +66,7 @@ module.exports = {
     host: '0.0.0.0',
     port: 8021,
     historyApiFallback: {
-      rewrites: [
-        {
+      rewrites: [{
           from: /^\/login\/?(\?status.*)?$/,
           to: '/login/index.html'
         },
@@ -80,7 +80,7 @@ module.exports = {
   },
   plugins: [
     new uglify({
-      parallel:true
+      parallel: true
     }),
     new HtmlWebpackPlugin({
       template: './assets/index.html',

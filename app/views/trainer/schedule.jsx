@@ -50,7 +50,7 @@ class TrainerSchedule extends React.Component {
   }
 
   async onSubmit() {
-    const { datetime, durationMinutes, paymentOptionIds, orderMode } = this.state.schedule;
+    const { datetime, durationMinutes, paymentOptionIds, orderMode,price } = this.state.schedule;
     try {
       await client.ptSchedule.create({
         trainerId: this.props.trainerId,
@@ -59,6 +59,7 @@ class TrainerSchedule extends React.Component {
         paymentOptionIds,
         orderMode,
         venueId: this.cache.venueId,
+        price
       });
       // this.props.onComplete(this.state.schedule);
       location.href = '/trainer'
@@ -92,13 +93,13 @@ class TrainerSchedule extends React.Component {
   render() {
     let { schedule } = this.state;
     const { scheduleIndex } = this.state;
-    const { datetime, durationMinutes, paymentOptionIds, orderMode } = this.state.schedule;
+    const { datetime, durationMinutes, paymentOptionIds, orderMode,price } = this.state.schedule;
     return (
       <UIFramework className='trainer-schedule'>
         <UIFramework.Row name="排课时间" hint="">
           {this.renderSchedule()}
           <Checkbox.Group
-            options={
+            options = {
               range(6, 23).map(item => {
                 return {
                   label: (item > 9 ? item : '0' + item) + ':00',
@@ -117,6 +118,22 @@ class TrainerSchedule extends React.Component {
             value={durationMinutes}
             flex={0.9} />
           <span className="weflex-ui-text">分钟</span>
+        </UIFramework.Row>
+        <UIFramework.Row name="价格" hint="">
+          <UIFramework.TextInput 
+            flex={0.9}
+            bindStateCtx={this}
+            bindStateType={Number}
+            bindStateName="schedule.price" 
+            value={price || 0}
+          />
+          <UIFramework.Select
+            flex={0.1}
+            disabled={true}
+            options={[
+              {text: '元', value: 'yuan'},
+            ]}
+          />
         </UIFramework.Row>
         <UIFramework.Row name="预约方式" hint="">
           <RadioGroup onChange={this.onChange} value={orderMode} onChange={(e) => {
