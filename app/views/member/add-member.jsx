@@ -77,6 +77,7 @@ export default class extends React.Component {
           userId = user.id
         }
         await client.member.update(memberId, {
+          venueId:venueId,
           phone: form.phone,
           email: form.email,
           source: form.source,
