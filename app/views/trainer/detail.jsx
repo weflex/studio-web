@@ -386,6 +386,11 @@ module.exports = class TrainerDetail extends React.Component {
       modifiedAt: trainer.modifiedAt,
       roles:trainer.roleIds,
       userId:trainer.userId,
+      roleIds:trainer.roleIds,
+      ptScheduleId:trainer.ptScheduleId,
+      memberIds:trainer.memberIds,
+      classSms:trainer.classSms,
+      languages:trainer.languages
     };
 
     if (dataSource.ptSchedule && dataSource.ptSchedule.paymentOptionIds.indexOf('*') > -1) {
@@ -426,8 +431,12 @@ module.exports = class TrainerDetail extends React.Component {
                       content: dataSource.roles.indexOf("$owner") > -1? '该教练为场馆主教练，无法被删除': '删除后，请及时修改该教练的课程',
                       onOk: async () => {
                         if (dataSource.roles.indexOf("$owner") == -1) {
-                          await client.collaborator.delete(dataSource.id, dataSource.modifiedAt);
-                          location.href = '/trainer/';
+                          try{
+                            await client.collaborator.delete(dataSource.id, dataSource.modifiedAt);
+                            location.href = '/trainer/';
+                          }catch(err){
+                            console.log(err)
+                          }
                         }
                       }
                     });

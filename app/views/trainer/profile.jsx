@@ -14,10 +14,10 @@ class TrainerProfile extends React.Component {
       trainer,
       venueId: trainer && trainer.venueId || '',
       orgId: trainer && trainer.orgId || '',
-      phoneInputDisable: ( Object.keys(props.trainer) ).length > 0,
+      phoneInputDisable: (Object.keys(props.trainer)).length > 0,
     };
   }
-  async componentDidMount () {
+  async componentDidMount() {
     const venue = await client.user.getVenueById();
     this.setState({
       venueId: venue.id,
@@ -26,7 +26,12 @@ class TrainerProfile extends React.Component {
   }
   async onSubmit() {
     const isNewInstance = (undefined === this.state.trainer.id);
-    const {id, phone, name, description, employmentStatus, modifiedAt} = this.state.trainer;
+    const { id, phone, name, description, employmentStatus, modifiedAt } = this.state.trainer;
+    let updateTrainer = this.state.trainer
+    updateTrainer.fullname = {
+      first: name,
+      last: '',
+    }
     try {
       if (isNewInstance) {
         await client.middleware('/transaction/invite/trainer', {
@@ -41,19 +46,10 @@ class TrainerProfile extends React.Component {
           description,
         }, 'post');
       } else {
-        await client.collaborator.update(id, {
-          fullname: {
-            first: name,
-            last: '',
-          },
-          employmentStatus,
-          description,
-        }, modifiedAt);
+        await client.collaborator.update(id,updateTrainer, modifiedAt);
       }
+      location.href = `/trainer/${updateTrainer.id}`
 
-      if (typeof this.props.onComplete === 'function') {
-        this.props.onComplete(this.state.trainer);
-      }
     } catch (err) {
       alert(err.message);
     }
@@ -121,8 +117,8 @@ class TrainerProfile extends React.Component {
         </UIFramework.Row>
         <UIFramework.Row>
           <UIFramework.Button text="保存"
-            onClick={this.onSubmit.bind(this)} 
-            disabled={this.submitDisabled} 
+            onClick={this.onSubmit.bind(this)}
+            disabled={this.submitDisabled}
           />
         </UIFramework.Row>
       </UIFramework>
