@@ -107,7 +107,7 @@ class Detail extends React.Component {
   async onSave() {
     let shouldRefresh = false;
     let resp;
-    const { name, spot, price, paymentOptionIds, description, trainerId } = this.state.data;
+    const { name, spot, price, paymentOptionIds, description, trainerId ,id,modifiedAt} = this.state.data;
     const errorMessage = [];
     if (!name) {
       errorMessage.push('`课程名`');
@@ -131,7 +131,18 @@ class Detail extends React.Component {
       return UIFramework.Message.error('请正确输入' + errorMessage.join('和') + '后确认保存。');
     }
     try {
-      resp = await client.classTemplate.upsert(Object.assign({}, this.state.data));
+      resp = await client.classTemplate.request(
+         id,
+          'PATCH',
+          {
+            name,
+            spot,
+            price,
+            paymentOptionIds,
+            description,
+            trainerId
+          }
+      );
       if (this.props.updateMaster) {
         this.props.updateMaster()
       }
