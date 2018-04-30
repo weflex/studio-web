@@ -76,15 +76,7 @@ export default class extends React.Component {
           const user = await client.user.create(newUser)
           userId = user.id
         }
-        await client.member.update(memberId, {
-          venueId:venueId,
-          phone: form.phone,
-          email: form.email,
-          source: form.source,
-          comment: form.comment,
-          nickname: form.nickname,
-          userId:userId
-        }, form.modifiedAt);
+        await client.member.update(memberId,form, form.modifiedAt);
       }
       if (typeof onComplete === 'function') {
         await onComplete();
