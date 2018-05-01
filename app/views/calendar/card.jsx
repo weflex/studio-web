@@ -424,7 +424,7 @@ class ClassCard extends React.Component {
         {waitMember}
       </div>
     );
-    const title = '课程报名：' + (spot - orders.length || 0) + '/' + spot + "  通知候补：" + number
+    const title = '课程报名：' + (orders.length || 0) + '/' + spot + "  通知候补：" + number
 
     return (
       <Popover content={content} title={title} trigger={trigger} >
