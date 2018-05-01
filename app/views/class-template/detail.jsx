@@ -131,18 +131,23 @@ class Detail extends React.Component {
       return UIFramework.Message.error('请正确输入' + errorMessage.join('和') + '后确认保存。');
     }
     try {
-      resp = await client.classTemplate.request(
-         id,
-          'PATCH',
-          {
-            name,
-            spot,
-            price,
-            paymentOptionIds,
-            description,
-            trainerId
-          }
-      );
+      if(id){
+        resp = await client.classTemplate.request(
+          id,
+           'PATCH',
+           {
+             name,
+             spot,
+             price,
+             paymentOptionIds,
+             description,
+             trainerId
+           }
+       );
+      }else{
+        resp = await client.classTemplate.upsert(Object.assign({}, this.state.data));
+      }
+     
       if (this.props.updateMaster) {
         this.props.updateMaster()
       }
