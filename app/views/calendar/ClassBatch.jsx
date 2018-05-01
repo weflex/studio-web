@@ -168,9 +168,12 @@ class ClassBatch extends React.Component {
         this.cache.ctId = resault.id;
         this.cache.ctModifiedAt = resault.modifiedAt;
       } else {
-        const resault = await client.classTempleList.update(ctId, {
+        const resault = await client.classTempleList.request(
+          ctId, 
+          'PATCH',
+          {
           classList: schedule,
-        }, ctModifiedAt);
+        });
         this.cache.ctModifiedAt = resault.modifiedAt;
       }
       this.setState({ schedule });
