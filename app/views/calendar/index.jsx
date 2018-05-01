@@ -192,8 +192,16 @@ class WeflexCalendar extends React.Component {
         },
         'template',
         {
-          'orders': ['user']
-        },
+          relation: 'orders',
+          scope: {
+            where: {
+              cancelledAt: {
+                exists: false
+              }
+            },
+            include:['user']
+          }
+        }
       ],
       order: 'startsAt ASC'
     }) ).map( (item) => {
