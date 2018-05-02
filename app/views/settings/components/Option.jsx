@@ -139,8 +139,8 @@ class Option extends React.Component {
     } else if (name == 'days') {
       remindMember[name] = value
       form = Object.assign(form, { remindMember })
-    } else {
-      form[name] = value
+    } else if(name == 'lastBookDeadline'){
+      form[name] = parseInt(value)
     }
     this.setState({
       form
