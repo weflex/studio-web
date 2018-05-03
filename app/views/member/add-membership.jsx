@@ -6,10 +6,10 @@ import { format, startOfDay, endOfDay, addDays, addMonths, addYears, isSameDay }
 
 export default class extends React.Component {
   static propTypes = {
-    operation   : React.PropTypes.string,
-    member      : React.PropTypes.object.isRequired,
-    data        : React.PropTypes.object,
-    onComplete  : React.PropTypes.func,
+    operation: React.PropTypes.string,
+    member: React.PropTypes.object.isRequired,
+    data: React.PropTypes.object,
+    onComplete: React.PropTypes.func,
   };
 
   constructor(props) {
@@ -28,7 +28,7 @@ export default class extends React.Component {
       venueId: props.member.venueId,
     };
 
-    if(props.data) {
+    if (props.data) {
       operation = 'edt';
       form = Object.assign(form, props.data);
     }
@@ -49,13 +49,13 @@ export default class extends React.Component {
     this.onChangeStartsAt = this.onChangeStartsAt.bind(this);
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     let form = this.state.form, operation = 'add';
-    if(nextProps.data) {
+    if (nextProps.data) {
       operation = 'edt';
       form = Object.assign(form, nextProps.data);
     }
-    this.setState({operation, form});
+    this.setState({ operation, form });
   }
 
   async componentWillMount() {
@@ -78,18 +78,18 @@ export default class extends React.Component {
     });
     this.cache.packages = keyBy(packageList, 'id');
 
-    const salesOptions = ( await client.collaborator.list({
+    const salesOptions = (await client.collaborator.list({
       where: {
         venueId
       }
-    }) ).map((item) => {
+    })).map((item) => {
       return {
-        text  : item.fullname.first + item.fullname.last,
-        value : item.id,
-        data  : item,
+        text: item.fullname.first + item.fullname.last,
+        value: item.id,
+        data: item,
       };
     });
-    salesOptions.unshift({ text: "（空）", value: null, data: null});
+    salesOptions.unshift({ text: "（空）", value: null, data: null });
 
     this.setState({
       form,
@@ -101,7 +101,7 @@ export default class extends React.Component {
   getExpiresAt(startsAt, lifetime) {
     let expiresAt = null;
 
-    switch(lifetime.scale) {
+    switch (lifetime.scale) {
       case 'day':
         expiresAt = addDays(startsAt, lifetime.value);
         break;
@@ -116,7 +116,7 @@ export default class extends React.Component {
   }
 
   onChangePackage(event) {
-    let {form} = this.state;
+    let { form } = this.state;
     const curr = this.cache.packages[form.packageId];
     form.name = curr.name;
     form.accessType = curr.accessType;
@@ -126,16 +126,16 @@ export default class extends React.Component {
     form.balance = curr.balance || null
     form.expiresAt = this.getExpiresAt(form.startsAt, curr.lifetime);
 
-    this.setState({form});
+    this.setState({ form });
     this.forceUpdate();
   }
 
   onChangeStartsAt(event) {
-    let {form} = this.state;
+    let { form } = this.state;
     const curr = this.cache.packages[form.packageId];
 
     form.expiresAt = this.getExpiresAt(form.startsAt, curr.lifetime);
-    this.setState({form});
+    this.setState({ form });
     this.forceUpdate();
   }
 
@@ -145,48 +145,52 @@ export default class extends React.Component {
     const membership = {
       name: form.name,
       accessType: form.accessType,
-      balance:form.balance,
+      balance: form.balance,
       price: form.price,
       startsAt: startOfDay(form.startsAt),
       expiresAt: endOfDay(form.expiresAt),
       packageId: form.packageId,
-      salesId: (form.salesId === "（空）")? null : form.salesId,
+      salesId: (form.salesId === "（空）") ? null : form.salesId,
       venueId: form.venueId,
       memberId: member.id,
     };
-    if(form.available || form.available === 0) {
+    if (form.available || form.available === 0) {
       membership.available = form.available;
     }
     if (operation === 'edt') {
-      if(data.isExpiresAt && data.expiresAt != form.expiresAt){
-          membership.isExpiresAt=false
+      if (data.isExpiresAt && data.expiresAt != form.expiresAt) {
+        membership.isExpiresAt = false
       }
-      await client.membership.update(data.id, membership, data.modifiedAt);
-      if(!isSameDay(membership.startsAt, data.startsAt) || !isSameDay(membership.expiresAt, data.expiresAt) || membership.available && membership.available !== data.available){
+      await client.membership.request(
+        data.id,
+        'PATCH',
+        membership,
+      );
+      if (!isSameDay(membership.startsAt, data.startsAt) || !isSameDay(membership.expiresAt, data.expiresAt) || membership.available && membership.available !== data.available) {
         let memberOperation = {
           memberId: membership.memberId,
           membershipId: form.id,
           record: '管理员编辑了会卡:' + membership.name,
         }
 
-        if(!isSameDay(membership.startsAt, data.startsAt)){
+        if (!isSameDay(membership.startsAt, data.startsAt)) {
           memberOperation.record += '<br/>生效日期:' + format(data.startsAt, 'YYYY-MM-DD') + '变更为' + format(membership.startsAt, 'YYYY-MM-DD');
         }
-        if(!isSameDay(membership.expiresAt, data.expiresAt)){
+        if (!isSameDay(membership.expiresAt, data.expiresAt)) {
           memberOperation.record += '<br/>到期日期:' + format(data.expiresAt, 'YYYY-MM-DD') + '变更为' + format(membership.expiresAt, 'YYYY-MM-DD');
         }
-        if(membership.available && membership.available !== data.available){
+        if (membership.available && membership.available !== data.available) {
           memberOperation.record += '<br/>剩余次数:' + data.available + '次变更为' + membership.available;
         }
 
         await client.operation.create(memberOperation);
       }
-    } else if(operation === 'add') {
+    } else if (operation === 'add') {
       let memberOperation = {
         memberId: membership.memberId,
         record: '用户购买了会卡:' + membership.name + '<br/>生效日期:' + format(membership.startsAt, 'YYYY-MM-DD') + '<br/>到期日期:' + format(membership.expiresAt, 'YYYY-MM-DD'),
       }
-      if(membership.available) {
+      if (membership.available) {
         memberOperation.record += '<br/>有效次数:' + membership.available;
       };
       await client.membership.create(membership);
@@ -242,7 +246,7 @@ export default class extends React.Component {
                 flex={1}
                 bindStateCtx={this}
                 bindStateName="form.packageId"
-                value={ form.packageId }
+                value={form.packageId}
                 options={packageOptions}
                 onChange={this.onChangePackage}
               />
@@ -258,15 +262,15 @@ export default class extends React.Component {
           />
         </UIFramework.Row>
         {
-         (form.accessType == 'cashCard') ?  <UIFramework.Row name="余额">
-          <UIFramework.TextInput
-            flex={1}
-            bindStateCtx={this}
-            bindStateName="form.balance"
-            bindStateType={Number}
-            value={form.balance}
-          />
-        </UIFramework.Row>:''
+          (form.accessType == 'cashCard') ? <UIFramework.Row name="余额">
+            <UIFramework.TextInput
+              flex={1}
+              bindStateCtx={this}
+              bindStateName="form.balance"
+              bindStateType={Number}
+              value={form.balance}
+            />
+          </UIFramework.Row> : ''
         }
         <UIFramework.Row name="销售人">
           <UIFramework.Select
@@ -279,7 +283,7 @@ export default class extends React.Component {
         </UIFramework.Row>
         {
           (form.accessType === 'multiple')
-          ? <UIFramework.Row name={operation==='add'? "有效次数": "剩余次数"}>
+            ? <UIFramework.Row name={operation === 'add' ? "有效次数" : "剩余次数"}>
               <UIFramework.TextInput
                 flex={1}
                 bindStateCtx={this}
@@ -288,7 +292,7 @@ export default class extends React.Component {
                 value={form.available}
               />
             </UIFramework.Row>
-          : ''
+            : ''
         }
         <UIFramework.Row name="有效期" hint="该会卡生效时间及到期时间">
           <UIFramework.DateInput
@@ -296,31 +300,31 @@ export default class extends React.Component {
             bindStateCtx={this}
             bindStateName="form.startsAt"
             onChange={this.onChangeStartsAt}
-            value={ format(form.startsAt, 'YYYY-MM-DD') }
+            value={format(form.startsAt, 'YYYY-MM-DD')}
           />
-          <span style={{'display': 'inline-block', 'width': '8%', 'lineHeight': '30px', 'textAlign': 'center', 'marginRight': '5px'}}>到</span>
+          <span style={{ 'display': 'inline-block', 'width': '8%', 'lineHeight': '30px', 'textAlign': 'center', 'marginRight': '5px' }}>到</span>
           <UIFramework.DateInput
             flex={0.45}
             bindStateCtx={this}
             bindStateName="form.expiresAt"
-            value={ format(form.expiresAt, 'YYYY-MM-DD') }
+            value={format(form.expiresAt, 'YYYY-MM-DD')}
           />
         </UIFramework.Row>
         <UIFramework.Row>
           <UIFramework.Button
             key="save"
-            text={operation === 'add'? "确认添加": "保存会员信息"}
+            text={operation === 'add' ? "确认添加" : "保存会员信息"}
             onClick={this.onSubmit}
-            disabled={!( form.packageId && (form.price === 0 || form.price ) && form.startsAt && form.expiresAt)}
+            disabled={!(form.packageId && (form.price === 0 || form.price) && form.startsAt && form.expiresAt)}
           />
           {
             (operation === 'edt')
-            ? <UIFramework.Button
+              ? <UIFramework.Button
                 key="del"
                 text="删除会卡"
                 onClick={this.onDelete}
               />
-            : ""
+              : ""
           }
         </UIFramework.Row>
       </UIFramework>
