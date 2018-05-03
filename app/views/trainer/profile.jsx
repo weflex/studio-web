@@ -45,10 +45,11 @@ class TrainerProfile extends React.Component {
           employmentStatus,
           description,
         }, 'post');
+        location.href = '/trainer/'
       } else {
-        await client.collaborator.update(id,updateTrainer, modifiedAt);
+        await client.collaborator.update(id, updateTrainer, modifiedAt);
+        location.href = `/trainer/${updateTrainer.id}`
       }
-      location.href = `/trainer/${updateTrainer.id}`
 
     } catch (err) {
       alert(err.message);
