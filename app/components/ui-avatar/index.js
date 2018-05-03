@@ -22,9 +22,12 @@ class AvatarUploader extends React.Component {
     const isImage = this.checkFile(file)
     if (!isImage) {
       let dataSource = this.props.dataSource
-      await client.user.update(dataSource.userId, {
+      await client.user.request(
+        dataSource.userId, 
+          'PATCH',
+        {
         avatarId: result.id
-      }, '');
+      });
       location.href = '/trainer/' + dataSource.id;
     } else {
       alert(isImage)
