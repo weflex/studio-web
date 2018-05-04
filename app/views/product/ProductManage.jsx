@@ -329,7 +329,6 @@ export default class extends Component {
         console.log(err)
       }
     } else if (cacheProduct) {
-      
       let detail = {
         productName: cacheProduct.name,
         brandId: brandId,
@@ -469,24 +468,11 @@ export default class extends Component {
             const classPackageItem = classPackage.find((item) => {
               return item.id == value
             })
-            let cacheProduct = {
-              price: classPackageItem.price,
-              accessType: classPackageItem.accessType,
-              name: classPackageItem.name,
-              venueId: classPackageItem.venueId,
-              packageId: classPackageItem.id,
-              productCode:'00',
-              imgUrl: '',
-              salesId: null,
-              description: classPackageItem.description,
-              lifetime: {
-                value: classPackageItem.lifetime.value,
-                scale: classPackageItem.lifetime.scale,
-              }
-            }
-            if (classPackageItem.accessType == 'multiple') {
-              cacheProduct.available = classPackageItem.passes
-            }
+            let cacheProduct = ramda.clone(classPackageItem)
+            cacheProduct.packageId = classPackageItem.id
+            cacheProduct.productCode = '00'
+            cacheProduct.imgUrl = ''
+            cacheProduct.salesId = null
             this.setState({
               cacheProduct,
               classPackageItem: classPackageItem
@@ -499,23 +485,8 @@ export default class extends Component {
               })
             }
           </Select>
-        </li >)
+        </li>)
       if (classPackageItem) {
-        if (classPackageItem.accessType == 'multiple') {
-          data.push(
-            <li key='product-accessType'>
-              <div className='product-detail'>有效次数</div>
-              <Input onChange={(e) => {
-                cacheProduct.available = e.target.value
-                this.setState({
-                  cacheProduct
-                })
-              }} value={cacheProduct.available || 0} style={{
-                width: '300px'
-              }} />
-            </li>,
-          )
-        }
         if (classPackageItem.lifetime) {
           const selectAfter = (
             <Select defaultValue={cacheProduct.lifetime.scale} style={{ width: 70 }} onChange={(value) => {
@@ -553,6 +524,35 @@ export default class extends Component {
                 width: 300
               }} />
             </li>)
+        }
+        if (classPackageItem.accessType == 'multiple') {
+          data.push(
+            <li key='product-accessType'>
+              <div className='product-detail'>有效次数</div>
+              <Input onChange={(e) => {
+                cacheProduct.available = e.target.value
+                this.setState({
+                  cacheProduct
+                })
+              }} value={cacheProduct.available || 0} style={{
+                width: '300px'
+              }} />
+            </li>,
+          )
+        } else if (classPackageItem.accessType == 'cashCard') {
+          data.push(
+            <li key='product-accessType'>
+              <div className='product-detail'>余额</div>
+              <Input onChange={(e) => {
+                cacheProduct.balance = e.target.value
+                this.setState({
+                  cacheProduct
+                })
+              }} value={cacheProduct.balance || 0} style={{
+                width: '300px'
+              }} />
+            </li>,
+          )
         }
       }
     } else if (type == '01') {
@@ -649,6 +649,9 @@ export default class extends Component {
               width: '300px'
             }} onChange={(value) => {
               this.setState({
+                classPackageItem: {},
+                imageUrl: '',
+                cacheProduct: {},
                 type: value
               })
             }}>

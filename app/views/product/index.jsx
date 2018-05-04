@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Tabs, Icon, Input, message } from 'antd'
 import ProductManage from './ProductManage'
+import TransactionHistory from './TransactionHistory'
 import { client } from '../../api';
 import './index.css'
 const TabPane = Tabs.TabPane;
@@ -14,6 +15,7 @@ class Product extends Component {
       current: 'cards',
       products: [],
       productCategorys: [],
+      transaction: [],
       showProductModel: true
     }
     this.editData = this.editData.bind(this)
@@ -104,7 +106,54 @@ class Product extends Component {
         return item.id == defaultCategoryId
       })
     }
+
+    const transaction = await client.transaction.list({
+      where: {
+        venueId: venue.id
+      }, include: [{
+        relation: 'userBought',
+        scope: {
+          include: [{
+            relation: 'members',
+            scope: {
+              where: {
+                venueId: venue.id,
+                trashedAt: {
+                  exists: false
+                }
+              }
+            }
+          }]
+        }
+      }, {
+        relation: 'transactionStatus',
+        scope: {
+          include: [{
+            relation: 'transactionStatusDetail',
+            scope: {
+              where: {
+                locale: 'zh'
+              }
+            }
+          }]
+        }
+      }, {
+        relation:'transactionDetail',
+        scope:{
+          include:[{
+            relation:'product',
+            scope:{
+              include:['productDetail']
+            }
+          },'productPricing']
+        }
+      }
+        , { 'paymentType': 'paymentType' }
+      ]
+    })
+    console.log(transaction)
     this.setState({
+      transaction,
       products,
       productCategorys,
       defaultCategory
@@ -130,17 +179,19 @@ class Product extends Component {
   }
 
   render() {
-    const { showProductModel, products, productCategorys, defaultCategory } = this.state
+    const { showProductModel, products, productCategorys, defaultCategory, transaction } = this.state
     return (
       <Tabs style={{ height: '100%' }} defaultActiveKey="1">
-        <TabPane tab={<span><Icon type="apple" />产品管理</span>} key="1">
+        <TabPane tab={<span><Icon type="gift" />产品管理</span>} key="1">
           {
             defaultCategory ? <ProductManage
               {...this.crudActions}
               data={{ products, productCategorys, defaultCategory }}
-              showCreateProduct={this.showCreateProduct}
             /> : ''
           }
+        </TabPane>
+        <TabPane tab={<span><Icon type="bar-chart" />订单列表</span>} key="2">
+          <TransactionHistory data={transaction} />
         </TabPane>
       </Tabs>
     )
