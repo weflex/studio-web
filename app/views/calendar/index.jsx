@@ -261,13 +261,15 @@ class WeflexCalendar extends React.Component {
     this.setState({schedule});
     try {
       results = await client.class.update(classId, classUpdates, etag);
-    } catch (err) {
-      UIFramework.Message.error('我们遇到了一个错误');
-      console.error(err);
-    } finally {
       classUpdates = Object.assign({}, classUpdates, results);
       schedule.addItem(classUpdates);
       this.setState({schedule});
+    } catch (err) {
+      UIFramework.Message.error(err.message);
+      console.error(err);
+      setTimeout(()=>{
+        location.href = '/calendar'
+      },1000)
     }
   }
 
