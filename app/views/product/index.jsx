@@ -15,7 +15,7 @@ class Product extends Component {
       current: 'cards',
       products: [],
       productCategorys: [],
-      transaction:[],
+      transaction: [],
       showProductModel: true
     }
     this.editData = this.editData.bind(this)
@@ -108,36 +108,48 @@ class Product extends Component {
     }
 
     const transaction = await client.transaction.list({
-      where:{
-        venueId:venue.id
-      },include:[{
-        relation:'userBought',
-        scope:{
-          include:[{
-            relation:'members',
-            scope:{
-              where:{
-                venueId:venue.id,
-                trashedAt:{
-                  exists:false
+      where: {
+        venueId: venue.id
+      }, include: [{
+        relation: 'userBought',
+        scope: {
+          include: [{
+            relation: 'members',
+            scope: {
+              where: {
+                venueId: venue.id,
+                trashedAt: {
+                  exists: false
                 }
               }
             }
           }]
         }
-      },{ relation: 'transactionStatus',
-      scope:{
-        include:[{
-          relation:'transactionStatusDetail' ,
-          scope:{
-            where:{
-              locale:'zh'
+      }, {
+        relation: 'transactionStatus',
+        scope: {
+          include: [{
+            relation: 'transactionStatusDetail',
+            scope: {
+              where: {
+                locale: 'zh'
+              }
             }
-          }
-        }]
-      }}
-    ,{'paymentType':'paymentType'}
-    ]
+          }]
+        }
+      }, {
+        relation:'transactionDetail',
+        scope:{
+          include:[{
+            relation:'product',
+            scope:{
+              include:['productDetail']
+            }
+          },'productPricing']
+        }
+      }
+        , { 'paymentType': 'paymentType' }
+      ]
     })
     console.log(transaction)
     this.setState({
@@ -167,10 +179,10 @@ class Product extends Component {
   }
 
   render() {
-    const { showProductModel, products, productCategorys, defaultCategory ,transaction} = this.state
+    const { showProductModel, products, productCategorys, defaultCategory, transaction } = this.state
     return (
       <Tabs style={{ height: '100%' }} defaultActiveKey="2">
-        <TabPane tab={<span><Icon type="apple" />产品管理</span>} key="1">
+        <TabPane tab={<span><Icon type="gift" />产品管理</span>} key="1">
           {
             defaultCategory ? <ProductManage
               {...this.crudActions}
@@ -178,7 +190,7 @@ class Product extends Component {
             /> : ''
           }
         </TabPane>
-        <TabPane tab={<span><Icon type="apple" />订单管理</span>} key="2">
+        <TabPane tab={<span><Icon type="bar-chart" />订单列表</span>} key="2">
           <TransactionHistory data={transaction} />
         </TabPane>
       </Tabs>
