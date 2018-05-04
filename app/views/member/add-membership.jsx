@@ -166,7 +166,7 @@ export default class extends React.Component {
         'PATCH',
         membership,
       );
-      if (!isSameDay(membership.startsAt, data.startsAt) || !isSameDay(membership.expiresAt, data.expiresAt) || membership.available && membership.available !== data.available) {
+      if (!isSameDay(membership.startsAt, data.startsAt) || !isSameDay(membership.expiresAt, data.expiresAt) || membership.available !== data.available || membership.balance != data.balance || membership.price != data.price) {
         let memberOperation = {
           memberId: membership.memberId,
           membershipId: form.id,
@@ -179,10 +179,14 @@ export default class extends React.Component {
         if (!isSameDay(membership.expiresAt, data.expiresAt)) {
           memberOperation.record += '<br/>到期日期:' + format(data.expiresAt, 'YYYY-MM-DD') + '变更为' + format(membership.expiresAt, 'YYYY-MM-DD');
         }
-        if (membership.available && membership.available !== data.available) {
-          memberOperation.record += '<br/>剩余次数:' + data.available + '次变更为' + membership.available;
+        if(membership.price != data.price){
+          memberOperation.record += '<br/>实际支付:' + data.price + '￥,变更为' + membership.price+"￥";
         }
-
+        if (membership.accessType == 'cashCard' && membership.balance != data.balance) {
+          memberOperation.record += '<br/>余额:' + data.balance + '￥,变更为' + membership.balance +"￥";
+        } else if (membership.accessType == 'multiple' && membership.available !== data.available) {
+          memberOperation.record += '<br/>剩余次数:' + data.available + '次,变更为' + membership.available+"次";
+        }
         await client.operation.create(memberOperation);
       }
     } else if (operation === 'add') {
@@ -190,9 +194,11 @@ export default class extends React.Component {
         memberId: membership.memberId,
         record: '用户购买了会卡:' + membership.name + '<br/>生效日期:' + format(membership.startsAt, 'YYYY-MM-DD') + '<br/>到期日期:' + format(membership.expiresAt, 'YYYY-MM-DD'),
       }
-      if (membership.available) {
-        memberOperation.record += '<br/>有效次数:' + membership.available;
-      };
+      if (membership.accessType == 'cashCard') {
+        memberOperation.record += '<br/>余额:' + membership.balance;
+      } else if (membership.accessType == 'multiple') {
+        memberOperation.record += '<br/>剩余次数:' + membership.available;
+      }
       await client.membership.create(membership);
       await client.operation.create(memberOperation);
     }
