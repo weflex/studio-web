@@ -21,6 +21,14 @@ class CardDetail extends React.Component {
       },
     };
   }
+ async componentDidMount(){
+    const venue = await client.user.getVenueById();
+    let data = this.state.data
+    data.venueId = venue.id
+    this.setState({
+      data
+    })
+  }
   async componentWillMount() {
     const id = this.props._[0].toLowerCase();
     let newState = this.state;
@@ -104,7 +112,6 @@ class CardDetail extends React.Component {
     if(errorMessage.length > 0) {
       return UIFramework.Message.error('请正确输入 ' + errorMessage.join('和') + '后确认保存。');
     }
-
     try {
       await client.classPackage.upsert(this.state.data);
     } catch (err) {
@@ -202,7 +209,11 @@ class CardDetail extends React.Component {
             ]}
           />
         </UIFramework.Row>
-        <UIFramework.Row name="余额" required={true} key="balance">
+        {
+          this.state.data.accessType == 'cashCard'?
+          <UIFramework.Row name="余额" required={true} key="balance"
+        hint="储值卡可以设置，非储值卡可以不用设置"
+        >
           <UIFramework.TextInput 
             flex={0.9}
             bindStateCtx={this}
@@ -217,7 +228,8 @@ class CardDetail extends React.Component {
               {text: '元', value: 'yuan'},
             ]}
           />
-        </UIFramework.Row>
+        </UIFramework.Row>:''
+        }
         {/* <UIFramework.Row name="延期次数" required={true} key="extensible"
           hint="会员出差或工作室休息的时候可以给会卡延期">
           <UIFramework.Select
