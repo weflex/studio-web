@@ -329,7 +329,6 @@ export default class extends Component {
         console.log(err)
       }
     } else if (cacheProduct) {
-      console.log(cacheProduct)
       let detail = {
         productName: cacheProduct.name,
         brandId: brandId,

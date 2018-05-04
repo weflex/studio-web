@@ -181,7 +181,7 @@ class Product extends Component {
   render() {
     const { showProductModel, products, productCategorys, defaultCategory, transaction } = this.state
     return (
-      <Tabs style={{ height: '100%' }} defaultActiveKey="2">
+      <Tabs style={{ height: '100%' }} defaultActiveKey="1">
         <TabPane tab={<span><Icon type="gift" />产品管理</span>} key="1">
           {
             defaultCategory ? <ProductManage
