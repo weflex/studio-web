@@ -485,7 +485,7 @@ export default class extends Component {
               })
             }
           </Select>
-        </li >)
+        </li>)
       if (classPackageItem) {
         if (classPackageItem.lifetime) {
           const selectAfter = (
