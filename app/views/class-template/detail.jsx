@@ -107,7 +107,7 @@ class Detail extends React.Component {
   async onSave() {
     let shouldRefresh = false;
     let resp;
-    const { name, spot, price, paymentOptionIds, description, trainerId ,id,modifiedAt} = this.state.data;
+    const { name, spot, price, paymentOptionIds,duration, description, trainerId ,id,modifiedAt} = this.state.data;
     const errorMessage = [];
     if (!name) {
       errorMessage.push('`课程名`');
@@ -136,6 +136,7 @@ class Detail extends React.Component {
           id,
            'PATCH',
            {
+             duration,
              name,
              spot,
              price,

@@ -103,6 +103,7 @@ class NewClassTemplate extends React.Component {
     });
     classPackages = [anyClassPackage, ...classPackages];
     this.setState({
+      venueId:venue.id,
       trainers,
       templates,
       loading: false,
@@ -111,7 +112,7 @@ class NewClassTemplate extends React.Component {
   }
 
   onCreateClass() {
-    const {data} = this.state;
+    const {data,venueId} = this.state;
     let errorMessages = [];
     if( data.price != 0 && (!data.price || data.price < 0) ) {
       errorMessages.push('`价格`');
@@ -137,6 +138,7 @@ class NewClassTemplate extends React.Component {
     });
     newData.from = getTime(newData.from);
     newData.to = getTime(newData.to);
+    newData.venueId = venueId
     if (this.props.ctx) {
       this.props.ctx.createClass(newData);
     } else {
