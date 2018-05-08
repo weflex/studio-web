@@ -151,7 +151,6 @@ class Product extends Component {
         , { 'paymentType': 'paymentType' }
       ]
     })
-    console.log(transaction)
     this.setState({
       transaction,
       products,
