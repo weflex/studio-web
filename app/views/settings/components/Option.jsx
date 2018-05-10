@@ -91,7 +91,7 @@ class Option extends React.Component {
           return true
         }
       }
-    } else if (typeof o != 'boolean' && (typeof o == 'undefined' || o == '' || Number.isNaN(Number(o)))) {
+    } else if (typeof o != 'boolean' && (typeof o == 'undefined' || o === '' || Number.isNaN(Number(o)))) {
       return true
     }
     return false
@@ -139,9 +139,9 @@ class Option extends React.Component {
     } else if (name == 'days') {
       remindMember[name] = value
       form = Object.assign(form, { remindMember })
-    } else if(name == 'lastBookDeadline'){
+    } else if (name == 'lastBookDeadline') {
       form[name] = parseInt(value)
-    } else if(name == 'deadline'){
+    } else if (name == 'deadline') {
       form[name] = parseInt(value)
     }
     this.setState({
@@ -154,10 +154,15 @@ class Option extends React.Component {
     const venue = this.props.venue
     let result = []
     if (!isSet) {
-      result.push(
-      [<p key='1' className="wf-set-tips">当前场馆设置，会员最晚开课前 <span className="wf-tips-color">{venue.deadline}</span> 小时内不能取消订单</p>,
-      <p key='2' className="wf-set-tips">当前场馆设置，会员最晚开课前 <span className="wf-tips-color">{venue.lastBookDeadline}</span> 小时内不能预约课程</p>]
-    )
+      if (venue.deadline) {
+        result.push(
+          <p key='1' className="wf-set-tips">当前场馆设置，会员最晚开课前 <span className="wf-tips-color">{venue.deadline}</span> 小时内不能取消订单</p>)
+      }
+      if (venue.lastBookDeadline) {
+        result.push(
+          <p key='2' className="wf-set-tips">当前场馆设置，会员最晚开课前 <span className="wf-tips-color">{venue.lastBookDeadline}</span> 小时内不能预约课程</p>
+        )
+      }
       if (venue.remindMember && venue.remindMember.isRemind) {
         result.push(<p key='3' className="wf-set-tips">  当前场馆设置，会员会卡过期前 <span className="wf-tips-color">{venue.remindMember.days}</span> 天提醒</p>)
       }
@@ -166,14 +171,14 @@ class Option extends React.Component {
       result.push(
         <ul key='5' className="wf-set-tips">
           <li>
-            <Checkbox defaultChecked={true} />
+            <Checkbox defaultChecked={venue.deadline == 0 ? false:true} />
             当前场馆设置
             <span style={{ color: "#ff9d00" }}>会员最晚开课前</span>
             <Input min={0} defaultValue={venue.deadline} name='deadline' style={{ margin: "0 5px 0 5px", width: 50 }} onBlur={this.form} />
             小时内不能取消订单
           </li>
           <li>
-            <Checkbox defaultChecked={true} />
+            <Checkbox defaultChecked={venue.lastBookDeadline == 0 ? false:true} />
             当前场馆设置
             <span style={{ color: "#ff9d00" }}>会员最晚开课前</span>
             <Input min={0} defaultValue={venue.lastBookDeadline} name='lastBookDeadline' style={{ margin: "0 5px 0 5px", width: 50 }} onBlur={this.form} />
