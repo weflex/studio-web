@@ -64,7 +64,7 @@ module.exports = {
     publicPath: '/',
     contentBase: 'assets',
     host: '0.0.0.0',
-    port: 8021,
+    port: 7070,
     historyApiFallback: {
       rewrites: [{
           from: /^\/login\/?(\?status.*)?$/,
@@ -79,9 +79,9 @@ module.exports = {
     }
   },
   plugins: [
-    new uglify({
-      parallel: true
-    }),
+    // new uglify({
+    //   parallel: true
+    // }),
     new HtmlWebpackPlugin({
       template: './assets/index.html',
       filename: 'index.html',

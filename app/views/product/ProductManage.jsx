@@ -673,6 +673,7 @@ export default class extends Component {
     return <Modal
       visible={true}
       title={title}
+      onCancel={this.handleCancel}
       footer={
         [<Button key="cancel" onClick={this.handleCancel}>取消</Button>,
         <Button key="determine" disabled={disabled} onClick={this.addData}>确定</Button>]
