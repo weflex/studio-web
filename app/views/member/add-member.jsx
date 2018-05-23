@@ -68,9 +68,9 @@ export default class extends React.Component {
           let newUser = {
             sex: 'female',
             phone: form.phone,
-            email: form.nickname + '@register.theweflex.com',
+            email: randomize('Aa0', 10) + '@weflex.com',
             nickname: form.nickname,
-            username: form.nickname,
+            username: form.nickname+randomize('Aa0', 8),
             password: randomize('Aa0', 8),
           };
           const user = await client.user.create(newUser)
